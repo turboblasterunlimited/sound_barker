@@ -4,9 +4,13 @@ import 'dart:async';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:intl/date_symbol_data_local.dart';
 import 'dart:io';
-import 'package:path_provider/path_provider.dart';
+// import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 
+import '../providers/bark.dart';
 import '../providers/barks.dart';
+import '../widgets/saved_barks_grid.dart';
+
 
 // import '../widgets/barks_grid.dart';
 
@@ -105,10 +109,16 @@ class _BarksScreenState extends State<BarksScreen> {
     } catch (err) {
       print('stopRecorder error: $err');
     }
+    Bark bark;
+    try {
+    bark = await Bark(filePath, "Test").uploadBark();
+    } catch (error) {
+      return;
+    } 
     this.setState(() {
+      Provider.of<Barks>(context, listen: false).addBark(bark);
       this._isRecording = false;
     });
-    Bark(filePath).uploadBark();
   }
 
   Future<bool> fileExists(String path) async {
@@ -171,8 +181,9 @@ class _BarksScreenState extends State<BarksScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Center(
-                    // child: BarksGrid(),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                    child: SavedBarksGrid(),
                     ),
               ],
             ),
