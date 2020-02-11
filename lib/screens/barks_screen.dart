@@ -2,13 +2,21 @@ import 'package:flutter/material.dart';
 // import 'package:provider/provider.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:flutter_sound/android_encoder.dart';
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data' show Uint8List;
-import 'package:flutter/material.dart';
+// import 'dart:typed_data' show Uint8List;
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:uuid/uuid.dart';
+import 'package:path_provider/path_provider.dart';
+// import 'package:http/http.dart';
+
+
+import '../providers/barks.dart';
+
+// Cloud Storage
+import 'package:gcloud/storage.dart';
+import 'package:googleapis_auth/auth_io.dart' as auth;
 
 // import '../widgets/barks_grid.dart';
 
@@ -27,6 +35,9 @@ class BarksScreen extends StatefulWidget {
 }
 
 class _BarksScreenState extends State<BarksScreen> {
+  String uniqueFileName;
+  String filePath;
+  var uuid = Uuid();
   bool _isRecording = false;
   List<String> _path = [null, null, null, null, null, null, null];
   StreamSubscription _recorderSubscription;
@@ -53,6 +64,23 @@ class _BarksScreenState extends State<BarksScreen> {
     initializeDateFormatting();
   }
 
+  void uploadFile() {
+    rootBundle
+        .loadString('credentials/gcloud_credentials.json')
+        .then((credData) {
+      var credentials = new auth.ServiceAccountCredentials.fromJson(credData);
+      List<String> scopes = []..addAll(Storage.SCOPES);
+
+      auth
+          .clientViaServiceAccount(credentials, scopes)
+          .then((auth.AutoRefreshingAuthClient client) {
+        var storage = new Storage(client, 'songbarker');
+        Bucket bucket = storage.bucket('song_barker_sequences');
+        new File(this.filePath).openRead().pipe(bucket.write("${this.uniqueFileName}.aac"));
+      });
+    });
+  }
+
   void startRecorder() async {
     try {
       // String path = await flutterSound.startRecorder
@@ -64,9 +92,16 @@ class _BarksScreenState extends State<BarksScreen> {
       //   numChannels: 1,
       //   androidAudioSource: AndroidAudioSource.MIC,
       // );
+      this.uniqueFileName = uuid.v4();
+      Directory tempDir = await getTemporaryDirectory();
+      File outputFile = File('${tempDir.path}/${this.uniqueFileName}.aac');
       String path = await flutterSound.startRecorder(
+        uri: outputFile.path,
         codec: _codec,
       );
+      // String path = await flutterSound.startRecorder(
+      //   codec: _codec,
+      // );
       print('startRecorder: $path');
 
       _recorderSubscription = flutterSound.onRecorderStateChanged.listen((e) {
@@ -77,6 +112,7 @@ class _BarksScreenState extends State<BarksScreen> {
 
         this.setState(() {
           this._recorderTxt = txt.substring(0, 8);
+          filePath = outputFile.path;
         });
       });
       _dbPeakSubscription =
@@ -117,6 +153,7 @@ class _BarksScreenState extends State<BarksScreen> {
     }
     this.setState(() {
       this._isRecording = false;
+      uploadFile();
     });
   }
 
@@ -128,7 +165,7 @@ class _BarksScreenState extends State<BarksScreen> {
     if (_media == t_MEDIA.ASSET || _media == t_MEDIA.BUFFER) return null;
     if (flutterSound.audioState == t_AUDIO_STATE.IS_RECORDING)
       return stopRecorder;
-      
+
     return flutterSound.audioState == t_AUDIO_STATE.IS_STOPPED
         ? startRecorder
         : null;
