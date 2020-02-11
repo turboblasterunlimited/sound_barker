@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
-// import 'package:provider/provider.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'dart:async';
-// import 'dart:typed_data' show Uint8List;
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:intl/date_symbol_data_local.dart';
 import 'dart:io';
-
-// import 'package:http/http.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../providers/barks.dart';
-
-// Cloud Storage
 
 // import '../widgets/barks_grid.dart';
 
@@ -112,8 +107,8 @@ class _BarksScreenState extends State<BarksScreen> {
     }
     this.setState(() {
       this._isRecording = false;
-      Bark(filePath).uploadBark();
     });
+    Bark(filePath).uploadBark();
   }
 
   Future<bool> fileExists(String path) async {
@@ -151,10 +146,15 @@ class _BarksScreenState extends State<BarksScreen> {
                   child: Ink(
                     height: 80,
                     width: 80,
-                    decoration: const ShapeDecoration(
-                      color: Colors.redAccent,
-                      shape: CircleBorder(),
-                    ),
+                    decoration: this._isRecording
+                        ? const ShapeDecoration(
+                            color: Colors.amberAccent,
+                            shape: CircleBorder(),
+                          )
+                        : const ShapeDecoration(
+                            color: Colors.redAccent,
+                            shape: CircleBorder(),
+                          ),
                     child: IconButton(
                       color: Colors.black38,
                       icon: Icon(Icons.mic),

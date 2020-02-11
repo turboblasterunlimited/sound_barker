@@ -9,25 +9,27 @@ class Bark {
   String fileUrl;
   final String filePath;
   final String uniqueFileName = Uuid().v4();
-  
+
   Bark(this.filePath);
 
-  void uploadBark() {
-    rootBundle
-        .loadString('credentials/gcloud_credentials.json')
-        .then((credData) {
-      var credentials = auth.ServiceAccountCredentials.fromJson(credData);
-      List<String> scopes = []..addAll(Storage.SCOPES);
+  void playBark() {}
 
-      auth
-          .clientViaServiceAccount(credentials, scopes)
-          .then((auth.AutoRefreshingAuthClient client) {
-        var storage = Storage(client, 'songbarker');
-        Bucket bucket = storage.bucket('song_barker_sequences');
-        File(this.filePath)
-            .openRead()
-            .pipe(bucket.write("${this.uniqueFileName}.aac"));
-      });
-    });
+  Future<Bucket> accessBucket() async {
+    var credData =
+        await rootBundle.loadString('credentials/gcloud_credentials.json');
+    var credentials = auth.ServiceAccountCredentials.fromJson(credData);
+    List<String> scopes = []..addAll(Storage.SCOPES);
+
+    auth.AutoRefreshingAuthClient client =
+        await auth.clientViaServiceAccount(credentials, scopes);
+    var storage = Storage(client, 'songbarker');
+    return storage.bucket('song_barker_sequences');
+  }
+
+  void uploadBark() async {
+    Bucket bucket = await accessBucket();
+    File(this.filePath)
+        .openRead()
+        .pipe(bucket.write("${this.uniqueFileName}.aac"));
   }
 }
