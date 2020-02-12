@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'dart:async';
 import 'package:intl/intl.dart' show DateFormat;
@@ -10,7 +11,6 @@ import 'package:provider/provider.dart';
 import '../providers/bark.dart';
 import '../providers/barks.dart';
 import '../widgets/saved_barks_grid.dart';
-
 
 // import '../widgets/barks_grid.dart';
 
@@ -94,10 +94,11 @@ class _BarksScreenState extends State<BarksScreen> {
   }
 
   void stopRecorder() async {
+    
+    String barkName = 'Peter Barker';
     try {
       String result = await flutterSound.stopRecorder();
       print('stopRecorder: $result');
-
       if (_recorderSubscription != null) {
         _recorderSubscription.cancel();
         _recorderSubscription = null;
@@ -109,12 +110,37 @@ class _BarksScreenState extends State<BarksScreen> {
     } catch (err) {
       print('stopRecorder error: $err');
     }
+         await showDialog<Null>(
+        context: context,
+        builder: (ctx) => SimpleDialog(
+          title: Text('Name your bark!'),
+          contentPadding: EdgeInsets.all(10),
+          titlePadding: EdgeInsets.all(10),
+          children: <Widget>[
+            TextFormField(
+              initialValue: barkName,
+              decoration: InputDecoration(labelText: 'Name'),
+              onFieldSubmitted: (value) {
+                barkName = value;
+                Navigator.of(ctx).pop();
+              },
+              validator: (value) {
+                if (value.isEmpty) {
+                  return 'Please provide a name.';
+                }
+                return null;
+              },
+            )
+          ],
+        ),
+      );
     Bark bark;
     try {
-    bark = await Bark(filePath, "Test").uploadBark();
+      bark = Bark(filePath, barkName);
+      await bark.uploadBark();
     } catch (error) {
       return;
-    } 
+    }
     this.setState(() {
       Provider.of<Barks>(context, listen: false).addBark(bark);
       this._isRecording = false;
@@ -183,8 +209,8 @@ class _BarksScreenState extends State<BarksScreen> {
               children: <Widget>[
                 Container(
                   width: MediaQuery.of(context).size.width,
-                    child: SavedBarksGrid(),
-                    ),
+                  child: SavedBarksGrid(),
+                ),
               ],
             ),
           ),

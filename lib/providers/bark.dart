@@ -52,7 +52,7 @@ class Bark with ChangeNotifier {
     Future<void> notifyServer() async {
     http.Response response;
     // User ID hardcoded as 999 for now. This should be a post request in the future.
-    final url = 'http://165.227.178.14/999/${this.uniqueFileName}';
+    final url = 'http://165.227.178.14/add_audio/999/${this.uniqueFileName}';
     try {
       response = await http.get(
         url,
