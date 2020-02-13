@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/bark.dart';
+import '../providers/Pet.dart';
+import '../providers/User.dart';
 
-class SavedBark extends StatelessWidget {
+
+class PetMiniView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final bark = Provider.of<Bark>(context, listen: false);
-
+    final pet = Provider.of<Pet>(context, listen: false);
     return Column(
       children: <Widget>[
+        Image.network(pet.imageUrl),
         Text(
-          bark.name,
+          pet.name,
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
         ),
         RaisedButton(
@@ -19,7 +21,7 @@ class SavedBark extends StatelessWidget {
           elevation: 0,
           onPressed: () {
             // Playback bark.
-            print(bark.fileUrl);
+            print(pet.imageUrl);
             () {};
           },
           child: Icon(Icons.play_arrow, color: Colors.purple, size: 30),

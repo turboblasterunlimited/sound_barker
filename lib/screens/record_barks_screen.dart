@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import '../widgets/pet_grid.dart';
+
+import '../widgets/barks_grid.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/record_button.dart';
 
-class BarksScreen extends StatefulWidget {
-  static const routeName = 'bark-screen';
+class RecordBarksScreen extends StatefulWidget {
+  static const routeName = 'record-bark-screen';
 
   @override
-  _BarksScreenState createState() => _BarksScreenState();
+  _RecordBarksScreenState createState() => _RecordBarksScreenState();
 }
 
-class _BarksScreenState extends State<BarksScreen> {
+class _RecordBarksScreenState extends State<RecordBarksScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +35,7 @@ class _BarksScreenState extends State<BarksScreen> {
               children: <Widget>[
                 Container(
                   width: MediaQuery.of(context).size.width,
-                  child: PetGrid(),
+                  // child: AllBarksGrid(), // need to change PetsGrid back to barks grid, this will be grid of all barks.
                 ),
               ],
             ),
@@ -43,4 +44,25 @@ class _BarksScreenState extends State<BarksScreen> {
       ),
     );
   }
+}
+
+Widget _buildProfileImage() {
+  return Center(
+    child: Container(
+      width: 140.0,
+      height: 140.0,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: NetworkImage(
+              'http://cdn.akc.org/content/article-body-image/samoyed_puppy_dog_pictures.jpg'),
+          fit: BoxFit.cover,
+        ),
+        borderRadius: BorderRadius.circular(80.0),
+        border: Border.all(
+          color: Colors.white,
+          width: 10.0,
+        ),
+      ),
+    ),
+  );
 }

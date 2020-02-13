@@ -3,11 +3,15 @@ import 'package:provider/provider.dart';
 
 import './screens/all_songs_screen.dart';
 import './screens/pet_details_screen.dart';
-import './screens/barks_screen.dart';
+import './screens/record_barks_screen.dart';
+import './screens/make_songs_screen.dart';
+
 import './providers/pet.dart';
+import './providers/user.dart';
+import './providers/bark.dart';
+import './providers/song.dart';
 
 void main() => runApp(MyApp());
-
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -16,6 +20,16 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(
           value: Pet(),
         ),
+        ChangeNotifierProvider.value(
+          value: User(),
+        ),
+        // ChangeNotifierProvider.value(
+        //   value: Bark(),
+        // ),
+        // ChangeNotifierProvider.value(
+        //   value: Song(),
+        // ),
+
       ],
       child: MaterialApp(
           title: 'Song Barker',
@@ -30,11 +44,13 @@ class MyApp extends StatelessWidget {
               buttonColor: Colors.amber[200],
             ),
           ),
-          home: BarksScreen(),
+          home: RecordBarksScreen(),
           routes: {
-            BarksScreen.routeName: (ctx) => BarksScreen(),
+            RecordBarksScreen.routeName: (ctx) => RecordBarksScreen(),
             PetDetailsScreen.routeName: (ctx) => PetDetailsScreen(),
             AllSongsScreen.routeName: (ctx) => AllSongsScreen(),
+            MakeSongsScreen.routeName: (ctx) => MakeSongsScreen(),
+
           }),
     );
   }

@@ -2,18 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/pet.dart';
+import './bark_playback_button.dart';
+import '../screens/pet_details_screen.dart';
 
-import './pet_box.dart';
-
-class PetGrid extends StatelessWidget {
+class BarkGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final pet = Provider.of<Pet>(context);
     final savedBarks = pet.savedBarks;
-    return savedBarks.length == 0
+    return false
         ? Column(
               children: <Widget>[
               RawMaterialButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).pushReplacementNamed(PetDetailsScreen.routeName);
+                },
                 child: Icon(
                   Icons.add,
                   color: Colors.blue,
@@ -38,7 +40,7 @@ class PetGrid extends StatelessWidget {
             itemCount: savedBarks.length,
             itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
               value: savedBarks[i],
-              child: SavedBark(),
+              child: BarkPlaybackButton(),
             ),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,

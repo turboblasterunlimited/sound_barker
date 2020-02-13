@@ -4,28 +4,19 @@ import './bark.dart';
 import './song.dart';
 
 class Pet with ChangeNotifier {
-  List<Bark> _savedBarks = [];
-  List<Song> _savedSongs = [];
-  String _name;
+  List<Bark> savedBarks = [];
+  List<Song> savedSongs = [];
+  String name;
+  String imageUrl;
 
-  String get name {
-    return _name;
-  }
-
-  List<Bark> get savedBarks {
-    return [..._savedBarks];
-  }
-
-  List<Song> get savedSongs {
-    return [..._savedSongs];
-  }
+  Pet({this.name, this.imageUrl});
 
   void addBark(Bark bark) {
-    _savedBarks.add(bark);
+    savedBarks.add(bark);
   }
 
   void removeBark(barkToDelete) {
-    _savedBarks.removeWhere((bark) {
+    savedBarks.removeWhere((bark) {
       return bark.name == barkToDelete.name;
     });
   }

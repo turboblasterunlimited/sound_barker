@@ -2,15 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/app_drawer.dart';
-import '../providers/song.dart';
+import '../providers/bark.dart';
 
-class AllSongsScreen extends StatelessWidget {
+class MakeSongsScreen extends StatelessWidget {
   static const routeName = 'make-songs';
-
   @override
   Widget build(BuildContext context) {
-    // final song = Provider.of<Song>(context);
-
+    // final barks = Provider.of<Bark>(context);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -22,7 +20,7 @@ class AllSongsScreen extends StatelessWidget {
       drawer: AppDrawer(),
       body: Center(
 
-        //Gridview.builder for all songs.
+        //GridView.builder of all the barks
 
       ),
     );
