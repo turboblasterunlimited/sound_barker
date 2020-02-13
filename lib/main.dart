@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'screens/barks_screen.dart';
-import './providers/barks.dart';
+import './screens/all_songs_screen.dart';
+import './screens/pet_details_screen.dart';
+import './screens/barks_screen.dart';
+import './providers/pet.dart';
 
 void main() => runApp(MyApp());
 
@@ -12,7 +14,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(
-          value: Barks(),
+          value: Pet(),
         ),
       ],
       child: MaterialApp(
@@ -31,6 +33,8 @@ class MyApp extends StatelessWidget {
           home: BarksScreen(),
           routes: {
             BarksScreen.routeName: (ctx) => BarksScreen(),
+            PetDetailsScreen.routeName: (ctx) => PetDetailsScreen(),
+            AllSongsScreen.routeName: (ctx) => AllSongsScreen(),
           }),
     );
   }

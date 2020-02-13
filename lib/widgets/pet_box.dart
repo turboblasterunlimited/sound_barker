@@ -11,7 +11,7 @@ class SavedBark extends StatelessWidget {
     return Column(
       children: <Widget>[
         Text(
-          bark.title,
+          bark.name,
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
         ),
         RaisedButton(
