@@ -54,28 +54,67 @@ class AppDrawer extends StatelessWidget {
             child: user.petCount() == 0
                 ? Column(
                     mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      RawMaterialButton(
-                        onPressed: () {
-                          Navigator.of(context)
-                              .pushReplacementNamed(PetDetailsScreen.routeName);
-                        },
-                        child: Icon(
-                          Icons.add,
-                          color: Colors.blue,
-                          size: 50,
-                        ),
-                        shape: CircleBorder(),
-                        elevation: 2.0,
-                        fillColor: Colors.white,
-                        padding: const EdgeInsets.all(15.0),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 10, bottom: 20),
-                        child: Text(
-                          'Add a pet!',
-                          style: TextStyle(
-                              fontSize: 20, fontStyle: FontStyle.italic),
+                      Container(
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: user.petCount(),
+                          itemBuilder: (ctx, i) => new GestureDetector(
+                            onTap: () {
+                              Navigator.of(context)
+                                  .pushNamed(PetDetailsScreen.routeName);
+                            },
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Container(
+                                width: 100,
+                                padding: EdgeInsets.only(left: 10, bottom: 20),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Visibility(
+                                      visible: user.pets[i].imageUrl == null,
+                                      child: RawMaterialButton(
+                                        onPressed: () {
+                                          Navigator.of(context)
+                                              .pushReplacementNamed(
+                                                  PetDetailsScreen.routeName);
+                                        },
+                                        child: Icon(
+                                          Icons.add,
+                                          color: Colors.blue,
+                                          size: 50,
+                                        ),
+                                        shape: CircleBorder(),
+                                        elevation: 0,
+                                        fillColor: Colors.white,
+                                        padding: const EdgeInsets.all(15.0),
+                                      ),
+                                    ),
+                                    Visibility(
+                                      visible: user.pets[i].imageUrl != null,
+                                      child: CircleAvatar(
+                                        radius: 40,
+                                        backgroundImage: user
+                                                    .pets[i].imageUrl !=
+                                                null
+                                            ? NetworkImage(
+                                                user.pets[i].imageUrl)
+                                            : AssetImage(
+                                                'assets/images/smallest_file.jpg'),
+                                      ),
+                                    ),
+                                    Text(
+                                      user.pets[i].name,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(fontSize: 20),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -103,25 +142,32 @@ class AppDrawer extends StatelessWidget {
                                   children: <Widget>[
                                     Visibility(
                                       visible: user.pets[i].imageUrl == null,
-                                      child: new RawMaterialButton(
-                                        onPressed: () {},
-                                        child: new Icon(
-                                          Icons.pets,
-                                          color: Colors.blue,
-                                          size: 35.0,
+                                      child: IgnorePointer(
+                                        child: RawMaterialButton(
+                                          onPressed: () {},
+                                          child: Icon(
+                                            Icons.pets,
+                                            color: Colors.blue,
+                                            size: 35.0,
+                                          ),
+                                          shape: CircleBorder(),
+                                          elevation: 0,
+                                          fillColor: Colors.white,
+                                          padding: const EdgeInsets.all(20.0),
                                         ),
-                                        shape: new CircleBorder(),
-                                        elevation: 2.0,
-                                        fillColor: Colors.white,
-                                        padding: const EdgeInsets.all(15.0),
                                       ),
                                     ),
                                     Visibility(
                                       visible: user.pets[i].imageUrl != null,
                                       child: CircleAvatar(
                                         radius: 40,
-                                        backgroundImage:
-                                            NetworkImage(user.pets[i].imageUrl),
+                                        backgroundImage: user
+                                                    .pets[i].imageUrl !=
+                                                null
+                                            ? NetworkImage(
+                                                user.pets[i].imageUrl)
+                                            : AssetImage(
+                                                'assets/images/smallest_file.jpg'),
                                       ),
                                     ),
                                     Text(

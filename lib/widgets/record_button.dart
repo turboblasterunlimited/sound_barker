@@ -143,6 +143,7 @@ class _RecordButtonState extends State<RecordButton> {
               Pet pet = Pet(name: name);
               user.addPet(pet);
               petName = name;
+              petId = pet.id;
               Navigator.of(ctx).pop();
             },
             validator: (value) {
