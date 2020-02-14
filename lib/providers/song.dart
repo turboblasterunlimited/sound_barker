@@ -3,7 +3,6 @@ import 'package:uuid/uuid.dart';
 import 'package:gcloud/storage.dart';
 import 'package:googleapis_auth/auth_io.dart' as auth;
 import 'dart:io';
-import 'package:random_string/random_string.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -12,7 +11,7 @@ class Song {
   String _name;
   String fileUrl;
   final String filePath;
-  final String fileId = Uuid().v4();
+  final String id = Uuid().v4();
 
   Song(this.filePath, this._name);
 

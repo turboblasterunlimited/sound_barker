@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import 'package:grouped_buttons/grouped_buttons.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_sound/flutter_sound.dart';
@@ -10,6 +10,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'dart:io';
 // import 'package:path_provider/path_provider.dart';
 
+import '../providers/user.dart';
 import '../providers/bark.dart';
 import '../providers/pet.dart';
 
@@ -93,7 +94,11 @@ class _RecordButtonState extends State<RecordButton> {
   }
 
   void stopRecorder() async {
-    String barker = 'Peter Barker';
+    final user = Provider.of<User>(context, listen: false);
+    final pets = user.pets;
+    String petId;
+    String petName = 'Peter Barker';
+
     try {
       String result = await flutterSound.stopRecorder();
       print('stopRecorder: $result');
@@ -115,11 +120,24 @@ class _RecordButtonState extends State<RecordButton> {
         contentPadding: EdgeInsets.all(10),
         titlePadding: EdgeInsets.all(10),
         children: <Widget>[
+          Visibility(
+            visible: pets.length != 0,
+            child: RadioButtonGroup(
+              labels: pets.map((pet) => pet.name).toList(),
+              onSelected: (String selected) {
+                petId = user.allPetNameIdPairs()[selected];
+                petName = selected;
+                Navigator.of(ctx).pop();
+              },
+            ),
+          ),
           TextFormField(
-            initialValue: barker,
-            decoration: InputDecoration(labelText: 'Name'),
+            initialValue: petName,
+            decoration: InputDecoration(labelText: pets.length != 0 ? 'Who was recorded?' : 'Someone else?'),
             onFieldSubmitted: (value) {
-              barker = value;
+              Pet pet = Pet(name: value, imageUrl: "/");
+              user.addPet(pet);
+              petName = value;
               Navigator.of(ctx).pop();
             },
             validator: (value) {
@@ -134,7 +152,7 @@ class _RecordButtonState extends State<RecordButton> {
     );
     Bark bark;
     try {
-      bark = Bark(filePath, barker);
+      bark = Bark(petId, petName, filePath);
       await bark.uploadBark();
     } catch (error) {
       return;

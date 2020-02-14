@@ -51,41 +51,74 @@ class AppDrawer extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Center(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: user.petCount(),
-                    itemBuilder: (ctx, i) => new GestureDetector(
-                      onTap: () {
-                        Navigator.of(context)
-                            .pushNamed(PetDetailsScreen.routeName);
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.only(bottom: 20),
-                        child: Column(
-                          children: <Widget>[
-                            CircleAvatar(
-                              radius: 40,
-                              backgroundImage:
-                                  NetworkImage(user.pets[i].imageUrl),
-                            ),
-                            Center(
-                              child: Text(
-                                user.pets[i].name,
-                                style: TextStyle(fontSize: 20),
-                              ),
-                            ),
-                          ],
+            child: user.petCount() == 0
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      RawMaterialButton(
+                        onPressed: () {
+                          Navigator.of(context)
+                              .pushReplacementNamed(PetDetailsScreen.routeName);
+                        },
+                        child: Icon(
+                          Icons.add,
+                          color: Colors.blue,
+                          size: 50,
+                        ),
+                        shape: CircleBorder(),
+                        elevation: 2.0,
+                        fillColor: Colors.white,
+                        padding: const EdgeInsets.all(15.0),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 10, bottom: 20),
+                        child: Text(
+                          'Add a pet!',
+                          style: TextStyle(
+                              fontSize: 20, fontStyle: FontStyle.italic),
                         ),
                       ),
-                    ),
+                    ],
+                  )
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: user.petCount(),
+                          itemBuilder: (ctx, i) => new GestureDetector(
+                            onTap: () {
+                              Navigator.of(context)
+                                  .pushNamed(PetDetailsScreen.routeName);
+                            },
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Container(
+                                width: 100,
+                                padding: EdgeInsets.only(left: 10, bottom: 20),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    CircleAvatar(
+                                      radius: 40,
+                                      backgroundImage:
+                                          NetworkImage(user.pets[i].imageUrl),
+                                    ),
+                                    Text(
+                                      user.pets[i].name,
+                                      style: TextStyle(fontSize: 20),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
-            ),
           ),
         ],
       ),

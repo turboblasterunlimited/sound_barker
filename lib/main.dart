@@ -11,25 +11,34 @@ import './providers/user.dart';
 import './providers/bark.dart';
 import './providers/song.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  // final User user = User();
+  // Pet pet1 = Pet(
+  //     name: "Fido",
+  //     imageUrl:
+  //         'http://cdn.akc.org/content/article-body-image/samoyed_puppy_dog_pictures.jpg');
+  // Pet pet2 = Pet(
+  //     name: "Bilbo",
+  //     imageUrl:
+  //         'https://s3.amazonaws.com/cdn-origin-etr.akc.org/wp-content/uploads/2018/01/12201051/cute-puppy-body-image.jpg');
+  // user.addPet(pet1);
+  // user.addPet(pet2);
+
+
+  runApp(MyApp());
+}
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(
-          value: Pet(),
-        ),
-        ChangeNotifierProvider.value(
           value: User(),
         ),
-        // ChangeNotifierProvider.value(
-        //   value: Bark(),
-        // ),
-        // ChangeNotifierProvider.value(
-        //   value: Song(),
-        // ),
-
+        ChangeNotifierProvider.value(
+          value: Pet(),
+        )
       ],
       child: MaterialApp(
           title: 'Song Barker',
@@ -50,7 +59,6 @@ class MyApp extends StatelessWidget {
             PetDetailsScreen.routeName: (ctx) => PetDetailsScreen(),
             AllSongsScreen.routeName: (ctx) => AllSongsScreen(),
             MakeSongsScreen.routeName: (ctx) => MakeSongsScreen(),
-
           }),
     );
   }

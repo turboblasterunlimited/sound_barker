@@ -1,15 +1,23 @@
 import 'package:flutter/foundation.dart';
 
 import './pet.dart';
+import './bark.dart';
 
 class User with ChangeNotifier {
   String email = 'tovi@gmail.com';
-  List<Pet> _pets = [
-    Pet(name: "Fido", imageUrl: 'http://cdn.akc.org/content/article-body-image/samoyed_puppy_dog_pictures.jpg'), 
-    Pet(name: "Bilbo", imageUrl: 'https://s3.amazonaws.com/cdn-origin-etr.akc.org/wp-content/uploads/2018/01/12201051/cute-puppy-body-image.jpg') 
-  ];
+  String id = '999';
+  List<Pet> _pets = [];
 
-   List<Pet> get pets {
+  List<String> allPetNames() {
+    return pets.map((pet) => pet.name);
+  }
+  List<Bark> allBarks() {
+    final List<Bark> allBarks = [];
+    _pets.forEach((pet) => allBarks.addAll(pet.barks));
+    return allBarks;
+  }
+
+  List<Pet> get pets {
     return [..._pets];
   }
 
@@ -17,8 +25,15 @@ class User with ChangeNotifier {
     _pets.add(pet);
   }
 
+  Map<String, String>allPetNameIdPairs() {
+    Map<String, String> result;
+    pets.forEach((pet) {
+      result.putIfAbsent(pet.name, () => pet.id);
+    });
+    return result;
+  }
+
   int petCount() {
     return _pets.length;
   }
-
 }

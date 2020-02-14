@@ -4,14 +4,9 @@ import '../widgets/barks_grid.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/record_button.dart';
 
-class RecordBarksScreen extends StatefulWidget {
+class RecordBarksScreen extends StatelessWidget {
   static const routeName = 'record-bark-screen';
 
-  @override
-  _RecordBarksScreenState createState() => _RecordBarksScreenState();
-}
-
-class _RecordBarksScreenState extends State<RecordBarksScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +30,7 @@ class _RecordBarksScreenState extends State<RecordBarksScreen> {
               children: <Widget>[
                 Container(
                   width: MediaQuery.of(context).size.width,
-                  // child: AllBarksGrid(), // need to change PetsGrid back to barks grid, this will be grid of all barks.
+                  child: BarksGrid(),
                 ),
               ],
             ),

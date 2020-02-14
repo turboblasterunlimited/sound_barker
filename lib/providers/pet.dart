@@ -1,22 +1,24 @@
 import 'package:flutter/foundation.dart';
+import 'package:uuid/uuid.dart';
 
 import './bark.dart';
 import './song.dart';
 
 class Pet with ChangeNotifier {
-  List<Bark> savedBarks = [];
-  List<Song> savedSongs = [];
   String name;
   String imageUrl;
+  final String id = Uuid().v4();
+  List<Bark> barks = [];
+  List<Song> songs = [];
 
   Pet({this.name, this.imageUrl});
 
   void addBark(Bark bark) {
-    savedBarks.add(bark);
+    barks.add(bark);
   }
 
   void removeBark(barkToDelete) {
-    savedBarks.removeWhere((bark) {
+    barks.removeWhere((bark) {
       return bark.name == barkToDelete.name;
     });
   }

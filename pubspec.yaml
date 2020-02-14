@@ -26,8 +26,8 @@ dependencies:
   http:
   gcloud: ^0.6.3
   googleapis_auth:
-  random_string:
   provider:
+  grouped_buttons: ^1.0.4
 
 
   # The following adds the Cupertino Icons font to your application.
