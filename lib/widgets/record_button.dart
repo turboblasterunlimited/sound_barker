@@ -94,6 +94,9 @@ class _RecordButtonState extends State<RecordButton> {
   }
 
   void stopRecorder() async {
+    setState(() {
+      this._isRecording = false;
+    });
     final user = Provider.of<User>(context, listen: false);
     final pets = user.pets;
     String petId;
@@ -133,11 +136,13 @@ class _RecordButtonState extends State<RecordButton> {
           ),
           TextFormField(
             initialValue: petName,
-            decoration: InputDecoration(labelText: pets.length != 0 ? 'Who was recorded?' : 'Someone else?'),
-            onFieldSubmitted: (value) {
-              Pet pet = Pet(name: value, imageUrl: "/");
+            decoration: InputDecoration(
+                labelText:
+                    pets.length != 0 ? 'Who was recorded?' : 'Someone else?'),
+            onFieldSubmitted: (name) {
+              Pet pet = Pet(name: name);
               user.addPet(pet);
-              petName = value;
+              petName = name;
               Navigator.of(ctx).pop();
             },
             validator: (value) {
@@ -157,9 +162,8 @@ class _RecordButtonState extends State<RecordButton> {
     } catch (error) {
       return;
     }
-    this.setState(() {
+    setState(() {
       Provider.of<Pet>(context, listen: false).addBark(bark);
-      this._isRecording = false;
     });
   }
 

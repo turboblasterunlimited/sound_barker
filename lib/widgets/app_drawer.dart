@@ -101,13 +101,32 @@ class AppDrawer extends StatelessWidget {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: <Widget>[
-                                    CircleAvatar(
-                                      radius: 40,
-                                      backgroundImage:
-                                          NetworkImage(user.pets[i].imageUrl),
+                                    Visibility(
+                                      visible: user.pets[i].imageUrl == null,
+                                      child: new RawMaterialButton(
+                                        onPressed: () {},
+                                        child: new Icon(
+                                          Icons.pets,
+                                          color: Colors.blue,
+                                          size: 35.0,
+                                        ),
+                                        shape: new CircleBorder(),
+                                        elevation: 2.0,
+                                        fillColor: Colors.white,
+                                        padding: const EdgeInsets.all(15.0),
+                                      ),
+                                    ),
+                                    Visibility(
+                                      visible: user.pets[i].imageUrl != null,
+                                      child: CircleAvatar(
+                                        radius: 40,
+                                        backgroundImage:
+                                            NetworkImage(user.pets[i].imageUrl),
+                                      ),
                                     ),
                                     Text(
                                       user.pets[i].name,
+                                      textAlign: TextAlign.center,
                                       style: TextStyle(fontSize: 20),
                                     ),
                                   ],

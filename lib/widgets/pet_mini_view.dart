@@ -14,7 +14,8 @@ class PetMiniView extends StatelessWidget {
         Image.network(pet.imageUrl),
         Text(
           pet.name,
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+          textAlign: TextAlign.center,
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
         ),
         RaisedButton(
           color: Colors.redAccent,

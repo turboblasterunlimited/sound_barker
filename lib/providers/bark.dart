@@ -10,8 +10,7 @@ import 'dart:convert';
 class Bark with ChangeNotifier {
   String _name;
   String fileUrl;
-  final String
-      filePath; // This is initially used for file upload from temp directory. Later (for cropped barks) it can be used for playback.
+  final String filePath; // This is initially used for file upload from temp directory. Later (for cropped barks) it can be used for playback.
   final String fileId = Uuid().v4();
   String petId;
 
@@ -51,7 +50,7 @@ class Bark with ChangeNotifier {
     }
     print(info.downloadLink);
     await notifyServer();
-    await Future.delayed(Duration(seconds: 3), () => print('done')); // This is temporary.
+    await Future.delayed(Duration(seconds: 2), () => print('done')); // This is temporary.
     await splitAudio();
     return this;
   }
@@ -66,8 +65,11 @@ class Bark with ChangeNotifier {
         body: json.encode({
           'uuid': fileId,
         }),
+        headers: {
+          'Content-type' : 'application/json',
+          'Accept': 'application/json',
+        },
       );
-      notifyListeners();
     } catch (error) {
       print(error);
       throw error;
@@ -88,8 +90,11 @@ class Bark with ChangeNotifier {
           'uuid': fileId,
           'pet_id': petId,
         }),
+        headers: {
+          'Content-type' : 'application/json',
+          'Accept': 'application/json',
+        },
       );
-      notifyListeners();
     } catch (error) {
       print(error);
       throw error;

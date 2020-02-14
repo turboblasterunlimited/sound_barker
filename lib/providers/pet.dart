@@ -10,8 +10,7 @@ class Pet with ChangeNotifier {
   final String id = Uuid().v4();
   List<Bark> barks = [];
   List<Song> songs = [];
-
-  Pet({this.name, this.imageUrl});
+  Pet({this.name});
 
   void addBark(Bark bark) {
     barks.add(bark);
