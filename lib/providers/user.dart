@@ -26,7 +26,7 @@ class User with ChangeNotifier {
   }
 
   Map<String, String>allPetNameIdPairs() {
-    Map<String, String> result;
+    Map<String, String> result = {};
     pets.forEach((pet) {
       result.putIfAbsent(pet.name, () => pet.id);
     });

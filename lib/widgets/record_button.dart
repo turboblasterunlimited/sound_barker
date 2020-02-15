@@ -129,6 +129,7 @@ class _RecordButtonState extends State<RecordButton> {
               labels: pets.map((pet) => pet.name).toList(),
               onSelected: (String selected) {
                 petId = user.allPetNameIdPairs()[selected];
+                print("allPetNAmeIdPairs: ${user.allPetNameIdPairs()}  ---  Selected PET ID ${user.allPetNameIdPairs()[selected]}");
                 petName = selected;
                 Navigator.of(ctx).pop();
               },
@@ -138,7 +139,7 @@ class _RecordButtonState extends State<RecordButton> {
             initialValue: petName,
             decoration: InputDecoration(
                 labelText:
-                    pets.length != 0 ? 'Who was recorded?' : 'Someone else?'),
+                    pets.length == 0 ? 'Who was recorded?' : 'Someone else?'),
             onFieldSubmitted: (name) {
               Pet pet = Pet(name: name);
               user.addPet(pet);

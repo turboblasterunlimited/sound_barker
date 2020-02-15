@@ -142,19 +142,17 @@ class AppDrawer extends StatelessWidget {
                                   children: <Widget>[
                                     Visibility(
                                       visible: user.pets[i].imageUrl == null,
-                                      child: IgnorePointer(
-                                        child: RawMaterialButton(
-                                          onPressed: () {},
-                                          child: Icon(
-                                            Icons.pets,
-                                            color: Colors.blue,
-                                            size: 35.0,
-                                          ),
-                                          shape: CircleBorder(),
-                                          elevation: 0,
-                                          fillColor: Colors.white,
-                                          padding: const EdgeInsets.all(20.0),
+                                      child: RawMaterialButton(
+                                        onPressed: () {},
+                                        child: Icon(
+                                          Icons.pets,
+                                          color: Colors.blue,
+                                          size: 35.0,
                                         ),
+                                        shape: CircleBorder(),
+                                        elevation: 0,
+                                        fillColor: Colors.white,
+                                        padding: const EdgeInsets.all(20.0),
                                       ),
                                     ),
                                     Visibility(

@@ -10,7 +10,8 @@ import 'dart:convert';
 class Bark with ChangeNotifier {
   String _name;
   String fileUrl;
-  final String filePath; // This is initially used for file upload from temp directory. Later (for cropped barks) it can be used for playback.
+  final String
+      filePath; // This is initially used for file upload from temp directory. Later (for cropped barks) it can be used for playback.
   final String fileId = Uuid().v4();
   String petId;
 
@@ -50,12 +51,14 @@ class Bark with ChangeNotifier {
     }
     print(info.downloadLink);
     await notifyServer();
-    await Future.delayed(Duration(seconds: 2), () => print('done')); // This is temporary.
-    await splitAudio();
+    await Future.delayed(
+        Duration(seconds: 2), () => print('done')); // This is temporary.
+    String response = await splitAudio();
+    print("One Bark Path: ${retrieveCroppedBarks(response)}");
     return this;
   }
 
-  Future<void> splitAudio() async {
+  Future<String> splitAudio() async {
     http.Response response;
     // User ID hardcoded as 999 for now. This should be a post request in the future.
     final url = 'http://165.227.178.14/split_audio';
@@ -66,7 +69,7 @@ class Bark with ChangeNotifier {
           'uuid': fileId,
         }),
         headers: {
-          'Content-type' : 'application/json',
+          'Content-type': 'application/json',
           'Accept': 'application/json',
         },
       );
@@ -74,7 +77,8 @@ class Bark with ChangeNotifier {
       print(error);
       throw error;
     }
-    print(response.body.toString());
+    print("REsponse content: ${response.body}. ResPONSE.body TYPE: ${response.body.runtimeType}");
+    return response.body;
   }
 
   Future<void> notifyServer() async {
@@ -91,7 +95,7 @@ class Bark with ChangeNotifier {
           'pet_id': petId,
         }),
         headers: {
-          'Content-type' : 'application/json',
+          'Content-type': 'application/json',
           'Accept': 'application/json',
         },
       );
@@ -99,6 +103,40 @@ class Bark with ChangeNotifier {
       print(error);
       throw error;
     }
-    print(response.body.toString());
+    // print(response.body.toString());
+  }
+
+  String retrieveCroppedBarks(response) {
+    var oneBarkPath = json.decode(json.encode(response))["rows"][0]["url"];
+    return oneBarkPath;
   }
 }
+
+// var exampleResponse = {
+//   "rows": [
+//     {
+//       "obj_type": "crop",
+//       "uuid": "4572cfbb-cc0b-48d3-b43a-8fb726002300",
+//       "url":
+//           "gs://de9add42-afa1-4304-8bb1-0bff374ad5f2/cropped/4572cfbb-cc0b-48d3-b43a-8fb726002300.wav"
+//     },
+//     {
+//       "obj_type": "crop",
+//       "uuid": "7f75daed-ef29-46f5-900c-b162324e2fe5",
+//       "url":
+//           "gs://de9add42-afa1-4304-8bb1-0bff374ad5f2/cropped/7f75daed-ef29-46f5-900c-b162324e2fe5.wav"
+//     },
+//     {
+//       "obj_type": "crop",
+//       "uuid": "41754516-8a6d-446c-84e3-bf0711108e90",
+//       "url":
+//           "gs://de9add42-afa1-4304-8bb1-0bff374ad5f2/cropped/41754516-8a6d-446c-84e3-bf0711108e90.wav"
+//     },
+//     {
+//       "obj_type": "crop",
+//       "uuid": "e8f25e15-4eee-4019-921b-45173c3c78ec",
+//       "url":
+//           "gs://de9add42-afa1-4304-8bb1-0bff374ad5f2/cropped/e8f25e15-4eee-4019-921b-45173c3c78ec.wav"
+//     }
+//   ]
+// };
