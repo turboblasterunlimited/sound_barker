@@ -7,23 +7,29 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+class Barks with ChangeNotifier {
+  List<Bark> all = [];
+
+  void addBark(bark) {
+    all.add(bark);
+    notifyListeners();
+    print("All the barks: $all");
+  }
+}
+
 class Bark with ChangeNotifier {
-  String _name;
+  String name;
   String fileUrl;
   final String
       filePath; // This is initially used for file upload from temp directory. Later (for cropped barks) it can be used for playback.
   final String fileId = Uuid().v4();
   String petId;
 
-  Bark(
+  Bark({
     this.petId,
-    this._name,
+    this.name,
     this.filePath,
-  );
-
-  String get name {
-    return _name;
-  }
+  });
 
   void playBark() {}
 
@@ -54,7 +60,7 @@ class Bark with ChangeNotifier {
     await Future.delayed(
         Duration(seconds: 2), () => print('done')); // This is temporary.
     String response = await splitAudio();
-    print("One Bark Path: ${retrieveCroppedBarks(response)}");
+    // print("One Bark Path: ${retrieveCroppedBarks(response)}"); // convert to map
     return this;
   }
 
@@ -90,7 +96,7 @@ class Bark with ChangeNotifier {
         url,
         body: json.encode({
           'client_id': '999',
-          'name': _name,
+          'name': name,
           'uuid': fileId,
           'pet_id': petId,
         }),

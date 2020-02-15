@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/user.dart';
+import '../providers/pets.dart';
 import '../screens/record_barks_screen.dart';
 import '../screens/pet_details_screen.dart';
 import '../screens/all_songs_screen.dart';
@@ -10,7 +10,7 @@ import '../screens/make_songs_screen.dart';
 class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<User>(context);
+    final pets = Provider.of<Pets>(context);
     return Drawer(
       child: Column(
         children: <Widget>[
@@ -51,7 +51,7 @@ class AppDrawer extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: user.petCount() == 0
+            child: pets.all.length == 0
                 ? Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,7 +59,7 @@ class AppDrawer extends StatelessWidget {
                       Container(
                         child: ListView.builder(
                           shrinkWrap: true,
-                          itemCount: user.petCount(),
+                          itemCount: pets.all.length,
                           itemBuilder: (ctx, i) => new GestureDetector(
                             onTap: () {
                               Navigator.of(context)
@@ -74,7 +74,7 @@ class AppDrawer extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: <Widget>[
                                     Visibility(
-                                      visible: user.pets[i].imageUrl == null,
+                                      visible: pets.all[i].imageUrl == null,
                                       child: RawMaterialButton(
                                         onPressed: () {
                                           Navigator.of(context)
@@ -93,20 +93,20 @@ class AppDrawer extends StatelessWidget {
                                       ),
                                     ),
                                     Visibility(
-                                      visible: user.pets[i].imageUrl != null,
+                                      visible: pets.all[i].imageUrl != null,
                                       child: CircleAvatar(
                                         radius: 40,
-                                        backgroundImage: user
-                                                    .pets[i].imageUrl !=
+                                        backgroundImage: pets
+                                                    .all[i].imageUrl !=
                                                 null
                                             ? NetworkImage(
-                                                user.pets[i].imageUrl)
+                                                pets.all[i].imageUrl)
                                             : AssetImage(
                                                 'assets/images/smallest_file.jpg'),
                                       ),
                                     ),
                                     Text(
-                                      user.pets[i].name,
+                                      pets.all[i].name,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(fontSize: 20),
                                     ),
@@ -126,7 +126,7 @@ class AppDrawer extends StatelessWidget {
                       Container(
                         child: ListView.builder(
                           shrinkWrap: true,
-                          itemCount: user.petCount(),
+                          itemCount: pets.all.length,
                           itemBuilder: (ctx, i) => new GestureDetector(
                             onTap: () {
                               Navigator.of(context)
@@ -141,7 +141,7 @@ class AppDrawer extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: <Widget>[
                                     Visibility(
-                                      visible: user.pets[i].imageUrl == null,
+                                      visible: pets.all[i].imageUrl == null,
                                       child: RawMaterialButton(
                                         onPressed: () {},
                                         child: Icon(
@@ -156,20 +156,20 @@ class AppDrawer extends StatelessWidget {
                                       ),
                                     ),
                                     Visibility(
-                                      visible: user.pets[i].imageUrl != null,
+                                      visible: pets.all[i].imageUrl != null,
                                       child: CircleAvatar(
                                         radius: 40,
-                                        backgroundImage: user
-                                                    .pets[i].imageUrl !=
+                                        backgroundImage: pets
+                                                    .all[i].imageUrl !=
                                                 null
                                             ? NetworkImage(
-                                                user.pets[i].imageUrl)
+                                                pets.all[i].imageUrl)
                                             : AssetImage(
                                                 'assets/images/smallest_file.jpg'),
                                       ),
                                     ),
                                     Text(
-                                      user.pets[i].name,
+                                      pets.all[i].name,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(fontSize: 20),
                                     ),

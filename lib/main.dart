@@ -6,9 +6,9 @@ import './screens/pet_details_screen.dart';
 import './screens/record_barks_screen.dart';
 import './screens/make_songs_screen.dart';
 
-import './providers/pet.dart';
+import './providers/pets.dart';
 import './providers/user.dart';
-import './providers/bark.dart';
+import './providers/barks.dart';
 import './providers/song.dart';
 
 void main() {
@@ -34,11 +34,11 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(
-          value: User(),
+          value: Pets(),
         ),
         ChangeNotifierProvider.value(
-          value: Pet(),
-        )
+          value: Barks(),
+        ),
       ],
       child: MaterialApp(
           title: 'Song Barker',

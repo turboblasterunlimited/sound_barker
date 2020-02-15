@@ -10,9 +10,8 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'dart:io';
 // import 'package:path_provider/path_provider.dart';
 
-import '../providers/user.dart';
-import '../providers/bark.dart';
-import '../providers/pet.dart';
+import '../providers/barks.dart';
+import '../providers/pets.dart';
 
 enum t_MEDIA {
   FILE,
@@ -69,7 +68,7 @@ class _RecordButtonState extends State<RecordButton> {
             isUtc: true);
         String txt = DateFormat('mm:ss:SS', 'en_GB').format(date);
 
-        this.setState(() {
+        setState(() {
           this._recorderTxt = txt.substring(0, 8);
         });
       });
@@ -97,10 +96,10 @@ class _RecordButtonState extends State<RecordButton> {
     setState(() {
       this._isRecording = false;
     });
-    final user = Provider.of<User>(context, listen: false);
-    final pets = user.pets;
+    final pets = Provider.of<Pets>(context, listen: false);
     String petId;
     String petName = 'Peter Barker';
+    Pet pet;
 
     try {
       String result = await flutterSound.stopRecorder();
@@ -124,12 +123,11 @@ class _RecordButtonState extends State<RecordButton> {
         titlePadding: EdgeInsets.all(10),
         children: <Widget>[
           Visibility(
-            visible: pets.length != 0,
+            visible: pets.all.length != 0,
             child: RadioButtonGroup(
-              labels: pets.map((pet) => pet.name).toList(),
+              labels: pets.all.map((pet) => pet.name).toList(),
               onSelected: (String selected) {
-                petId = user.allPetNameIdPairs()[selected];
-                print("allPetNAmeIdPairs: ${user.allPetNameIdPairs()}  ---  Selected PET ID ${user.allPetNameIdPairs()[selected]}");
+                petId = pets.allPetNameIdPairs()[selected];
                 petName = selected;
                 Navigator.of(ctx).pop();
               },
@@ -139,10 +137,10 @@ class _RecordButtonState extends State<RecordButton> {
             initialValue: petName,
             decoration: InputDecoration(
                 labelText:
-                    pets.length == 0 ? 'Who was recorded?' : 'Someone else?'),
+                    pets.all.length == 0 ? 'Who was recorded?' : 'Someone else?'),
             onFieldSubmitted: (name) {
-              Pet pet = Pet(name: name);
-              user.addPet(pet);
+              pet = Pet(name: name);
+              pets.all.add(pet);
               petName = name;
               petId = pet.id;
               Navigator.of(ctx).pop();
@@ -158,14 +156,18 @@ class _RecordButtonState extends State<RecordButton> {
       ),
     );
     Bark bark;
-    try {
-      bark = Bark(petId, petName, filePath);
+    print("Checkpoint!!!!!!");
+    // try {
+      bark = Bark(petId: petId, name: petName, filePath: filePath);
       await bark.uploadBark();
-    } catch (error) {
-      return;
-    }
+    // } catch (error) {
+      // print(error);
+      // return;
+    // }
     setState(() {
-      Provider.of<Pet>(context, listen: false).addBark(bark);
+      // Must ALWAYS add bark to both pet and Barks.all
+      pet.addBark(bark);
+      Provider.of<Barks>(context, listen: false).addBark(bark);
     });
   }
 

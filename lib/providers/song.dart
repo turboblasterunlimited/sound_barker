@@ -8,17 +8,14 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class Song {
-  String _name;
+  String name;
   String fileUrl;
   final String filePath;
   final String id = Uuid().v4();
 
-  Song(this.filePath, this._name);
+  Song({this.filePath, this.name});
 
-  String get name {
-    return _name;
-  }
-
+ 
   void playSong() {}
 
   Future<Bucket> accessBucket() async {
