@@ -140,10 +140,8 @@ class _RecordButtonState extends State<RecordButton> {
                     ? 'Who was recorded?'
                     : 'Someone else?'),
             onFieldSubmitted: (name) {
-              pet = Pet(name: name);
-              pets.all.add(pet);
               petName = name;
-              petId = pet.id;
+              petId = null;
               Navigator.of(ctx).pop();
             },
             validator: (value) {
@@ -156,9 +154,15 @@ class _RecordButtonState extends State<RecordButton> {
         ],
       ),
     );
-    Bark bark;
-    bark = Bark(petId: petId, name: petName, filePath: filePath);
-    List<Bark> croppedBarks = await bark.uploadBarkAndRetrieveCroppedBarks();
+    if (petId == null) {
+      Pet pet = await Pet(name: petName).createAndSyncWithServer();
+      petId = pet.id;
+    } else {
+      pets.getById(petId);
+    }
+    
+    Bark rawBark = Bark(petId: petId, name: petName, filePath: filePath);
+    List<Bark> croppedBarks = await rawBark.uploadBarkAndRetrieveCroppedBarks();
     print("Upload and Retrieve Cropped Barks checkpoint");
     addCroppedBarksToPetAndAllBarks(petId, croppedBarks);
   }

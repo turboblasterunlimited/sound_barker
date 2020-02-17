@@ -1,10 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
+import 'dart:convert';
 
 import './barks.dart';
 import './song.dart';
 import './gcloud.dart';
-import './rest_api.dart' as api;
+import './rest_api.dart';
 
 class Pets with ChangeNotifier {
   List<Pet> all = [];
@@ -34,6 +35,12 @@ class Pet with ChangeNotifier, Gcloud, RestAPI {
   List<Song> songs = [];
   Pet({this.name});
 
+  Future<Pet> createAndSyncWithServer() async {
+    String responseBody = await this.createPetOnServer(name);
+    String petId = json.decode(responseBody)["pet_id"];
+    this.id = petId;
+    return this;
+  }
 
   void addBark(Bark bark) {
     barks.add(bark);

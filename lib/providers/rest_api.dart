@@ -6,7 +6,7 @@ class RestAPI {
     'Content-type': 'application/json',
     'Accept': 'application/json',
   };
-  Future<String> createPet(petId, petName) async {
+  Future<String> createPetOnServer(petName) async {
     http.Response response;
     final url = 'http://165.227.178.14/pet';
     try {
@@ -19,10 +19,11 @@ class RestAPI {
       print(error);
       throw error;
     }
+    print("create pet on server response body: ${response.body}");
     return response.body;
   }
 
-  Future<String> splitRawBark(fileId) async {
+  Future<String> splitRawBarkOnServer(fileId) async {
     http.Response response;
     final url = 'http://165.227.178.14/split_audio';
     try {
@@ -37,7 +38,7 @@ class RestAPI {
       print(error);
       throw error;
     }
-    print("Response body content: ${response.body}");
+    print("split bark server response body content: ${response.body}");
     return response.body;
   }
 
@@ -62,3 +63,49 @@ class RestAPI {
     print("Response body content: ${response.body}");
   }
 }
+
+// var exampleResponse = {
+//   "crops": [
+//     {
+//       "uuid": "11351e26-c976-4c41-aef3-bea759827b5d",
+//       "raw_id": "1d3204df-328e-4df0-8d8c-bd510e7fa65b",
+//       "user_id": "tovi-id",
+//       "name": null,
+//       "bucket_url": "gs://1d3204df-328e-4df0-8d8c-bd510e7fa65b/cropped/11351e26-c976-4c41-aef3-bea759827b5d.aac",
+//       "bucket_fp": "1d3204df-328e-4df0-8d8c-bd510e7fa65b/cropped/11351e26-c976-4c41-aef3-bea759827b5d.aac",
+//       "stream_url": null,
+//       "hidden": 0,
+//       "obj_type": "crop"
+//     },
+//     {
+//       "uuid": "c966b714-f983-4e82-a199-37c64880f9ab",
+//       "raw_id": "1d3204df-328e-4df0-8d8c-bd510e7fa65b",
+//       "user_id": "tovi-id",
+//       "name": null,
+//       "bucket_url": "gs://1d3204df-328e-4df0-8d8c-bd510e7fa65b/cropped/c966b714-f983-4e82-a199-37c64880f9ab.aac",
+//       "bucket_fp": "1d3204df-328e-4df0-8d8c-bd510e7fa65b/cropped/c966b714-f983-4e82-a199-37c64880f9ab.aac",
+//       "stream_url": null,
+//       "hidden": 0,
+//       "obj_type": "crop"
+//     },
+//     {
+//       "uuid": "e678aa6f-ac2c-46a2-b20c-889503e31e36",
+//       "raw_id": "1d3204df-328e-4df0-8d8c-bd510e7fa65b",
+//       "user_id": "tovi-id",
+//       "name": null,
+//       "bucket_url": "gs://1d3204df-328e-4df0-8d8c-bd510e7fa65b/cropped/e678aa6f-ac2c-46a2-b20c-889503e31e36.aac",
+//       "bucket_fp": "1d3204df-328e-4df0-8d8c-bd510e7fa65b/cropped/e678aa6f-ac2c-46a2-b20c-889503e31e36.aac",
+//       "stream_url": null,
+//       "hidden": 0,
+//       "obj_type": "crop"
+//     }
+//   ],
+//   "pet": {
+//     "pet_id": 1,
+//     "user_id": "tovi-id",
+//     "name": "woofer",
+//     "image_url": null,
+//     "hidden": 0,
+//     "obj_type": "pet"
+//   }
+// };
