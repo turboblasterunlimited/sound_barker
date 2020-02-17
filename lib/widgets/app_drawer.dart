@@ -96,11 +96,9 @@ class AppDrawer extends StatelessWidget {
                                       visible: pets.all[i].imageUrl != null,
                                       child: CircleAvatar(
                                         radius: 40,
-                                        backgroundImage: pets
-                                                    .all[i].imageUrl !=
+                                        backgroundImage: pets.all[i].imageUrl !=
                                                 null
-                                            ? NetworkImage(
-                                                pets.all[i].imageUrl)
+                                            ? NetworkImage(pets.all[i].imageUrl)
                                             : AssetImage(
                                                 'assets/images/smallest_file.jpg'),
                                       ),
@@ -143,7 +141,10 @@ class AppDrawer extends StatelessWidget {
                                     Visibility(
                                       visible: pets.all[i].imageUrl == null,
                                       child: RawMaterialButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          Navigator.of(context).pushNamed(
+                                              PetDetailsScreen.routeName);
+                                        },
                                         child: Icon(
                                           Icons.pets,
                                           color: Colors.blue,
@@ -159,11 +160,9 @@ class AppDrawer extends StatelessWidget {
                                       visible: pets.all[i].imageUrl != null,
                                       child: CircleAvatar(
                                         radius: 40,
-                                        backgroundImage: pets
-                                                    .all[i].imageUrl !=
+                                        backgroundImage: pets.all[i].imageUrl !=
                                                 null
-                                            ? NetworkImage(
-                                                pets.all[i].imageUrl)
+                                            ? NetworkImage(pets.all[i].imageUrl)
                                             : AssetImage(
                                                 'assets/images/smallest_file.jpg'),
                                       ),

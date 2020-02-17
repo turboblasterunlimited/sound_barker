@@ -136,8 +136,9 @@ class _RecordButtonState extends State<RecordButton> {
           TextFormField(
             initialValue: petName,
             decoration: InputDecoration(
-                labelText:
-                    pets.all.length == 0 ? 'Who was recorded?' : 'Someone else?'),
+                labelText: pets.all.length == 0
+                    ? 'Who was recorded?'
+                    : 'Someone else?'),
             onFieldSubmitted: (name) {
               pet = Pet(name: name);
               pets.all.add(pet);
@@ -156,18 +157,25 @@ class _RecordButtonState extends State<RecordButton> {
       ),
     );
     Bark bark;
-    print("Checkpoint!!!!!!");
-    // try {
-      bark = Bark(petId: petId, name: petName, filePath: filePath);
-      await bark.uploadBark();
-    // } catch (error) {
-      // print(error);
-      // return;
-    // }
+    bark = Bark(petId: petId, name: petName, filePath: filePath);
+    List<Bark> croppedBarks = await bark.uploadBarkAndRetrieveCroppedBarks();
+    print("Upload and Retrieve Cropped Barks checkpoint");
+    addCroppedBarksToPetAndAllBarks(petId, croppedBarks);
+  }
+
+  void addCroppedBarksToPetAndAllBarks(petId, croppedBarks) {
+    Pet pet = Provider.of<Pets>(context, listen: false).getById(petId);
+    Barks barks = Provider.of<Barks>(context, listen: false);
+    int length = barks.all.length;
+    for (var i = 0; i < length; i++) {
+      barks.addBark(croppedBarks[i]);
+      pet.addBark(croppedBarks[i]);
+    }
+    print(" Cropped Barks: $croppedBarks");
+    print("All Barks: ${barks.all}");
+
     setState(() {
       // Must ALWAYS add bark to both pet and Barks.all
-      pet.addBark(bark);
-      Provider.of<Barks>(context, listen: false).addBark(bark);
     });
   }
 

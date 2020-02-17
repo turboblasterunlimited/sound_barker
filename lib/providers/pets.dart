@@ -1,12 +1,17 @@
 import 'package:flutter/foundation.dart';
-import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 import './barks.dart';
 import './song.dart';
+import './gcloud.dart';
+import './rest_api.dart' as api;
 
 class Pets with ChangeNotifier {
   List<Pet> all = [];
+
+  Pet getById(id) {
+    return all.firstWhere((pet) => pet.id == id);
+  }
 
   Map<String, String>allPetNameIdPairs() {
     Map<String, String> result = {};
@@ -21,13 +26,14 @@ class Pets with ChangeNotifier {
   }
 }
 
-class Pet with ChangeNotifier {
+class Pet with ChangeNotifier, Gcloud, RestAPI {
   String name;
   String imageUrl;
-  final String id = Uuid().v4();
+  String id;
   List<Bark> barks = [];
   List<Song> songs = [];
   Pet({this.name});
+
 
   void addBark(Bark bark) {
     barks.add(bark);

@@ -1,11 +1,12 @@
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:uuid/uuid.dart';
 import 'package:gcloud/storage.dart';
-import 'package:googleapis_auth/auth_io.dart' as auth;
+import 'package:uuid/uuid.dart';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import './gcloud.dart';
+import './rest_api.dart';
 
 class Barks with ChangeNotifier {
   List<Bark> all = [];
@@ -17,132 +18,108 @@ class Barks with ChangeNotifier {
   }
 }
 
-class Bark with ChangeNotifier {
+class Bark with ChangeNotifier, Gcloud, RestAPI {
   String name;
   String fileUrl;
-  final String
+  String
       filePath; // This is initially used for file upload from temp directory. Later (for cropped barks) it can be used for playback.
-  final String fileId = Uuid().v4();
+  String fileId;
   String petId;
 
-  Bark({
-    this.petId,
-    this.name,
-    this.filePath,
-  });
-
-  void playBark() {}
-
-  Future<Bucket> accessBucket() async {
-    var credData =
-        await rootBundle.loadString('credentials/gcloud_credentials.json');
-    var credentials = auth.ServiceAccountCredentials.fromJson(credData);
-    List<String> scopes = []..addAll(Storage.SCOPES);
-
-    auth.AutoRefreshingAuthClient client =
-        await auth.clientViaServiceAccount(credentials, scopes);
-    var storage = Storage(client, 'songbarker');
-    return storage.bucket('song_barker_sequences');
+  Bark({petId, name, filePath, fileUrl, fileId}) {
+    this.petId = petId;
+    this.name = name;
+    this.filePath = filePath;
+    this.fileUrl = fileUrl;
+    this.fileId = fileId == null ? Uuid().v4() : fileId;
   }
 
-  Future<Bark> uploadBark() async {
-    var info;
-    Bucket bucket = await accessBucket();
-    try {
-      info =
-          await File(filePath).openRead().pipe(bucket.write("$fileId/raw.aac"));
-    } catch (error) {
-      print('failed to put bark in the bucket');
-      return error;
-    }
-    print(info.downloadLink);
-    await notifyServer();
+  // void playBark() async {
+  //   Bucket bucket = await accessBucket();
+  //   try {
+  //     bucket.read("");
+  //   } catch (error) {
+  //     print('failed to put bark in the bucket');
+  //     return error;
+  //   }
+  // }
+
+  Future <List<Bark>> uploadBarkAndRetrieveCroppedBarks() async {
+    var downloadLink = uploadRawBark(fileId, filePath);
+    // downloadLink for rawBark is probably not needed.
+    print(downloadLink);
+    await notifyServerRawBarkInBucket(fileId, petId);
     await Future.delayed(
         Duration(seconds: 2), () => print('done')); // This is temporary.
-    String response = await splitAudio();
-    // print("One Bark Path: ${retrieveCroppedBarks(response)}"); // convert to map
-    return this;
+    String responseBody = await splitRawBark(fileId);
+    print("Response body content: $responseBody");
+    List<Bark> newBarks = retrieveCroppedBarks(responseBody);
+    return newBarks;
   }
 
-  Future<String> splitAudio() async {
-    http.Response response;
-    // User ID hardcoded as 999 for now. This should be a post request in the future.
-    final url = 'http://165.227.178.14/split_audio';
-    try {
-      response = await http.post(
-        url,
-        body: json.encode({
-          'uuid': fileId,
-        }),
-        headers: {
-          'Content-type': 'application/json',
-          'Accept': 'application/json',
-        },
-      );
-    } catch (error) {
-      print(error);
-      throw error;
+
+
+  List<Bark> retrieveCroppedBarks(response) {
+    print(response);
+    List newBarks = [];
+    Map responseData = json.decode(response);
+    Map cloudBarkData = responseData["crops"];
+    String petId = responseData["pet"]["pet_id"];
+    int barkCount = cloudBarkData.length;
+    for (var i = 0; i < barkCount; i++) {
+      newBarks.add(Bark(
+        fileId: cloudBarkData["uuid"],
+        petId: petId,
+        name: cloudBarkData["name"],
+        fileUrl: cloudBarkData["bucket_fp"]
+      ));
     }
-    print("REsponse content: ${response.body}. ResPONSE.body TYPE: ${response.body.runtimeType}");
-    return response.body;
-  }
-
-  Future<void> notifyServer() async {
-    http.Response response;
-    // User ID hardcoded as 999 for now. This should be a post request in the future.
-    final url = 'http://165.227.178.14/add_raw';
-    try {
-      response = await http.post(
-        url,
-        body: json.encode({
-          'client_id': '999',
-          'name': name,
-          'uuid': fileId,
-          'pet_id': petId,
-        }),
-        headers: {
-          'Content-type': 'application/json',
-          'Accept': 'application/json',
-        },
-      );
-    } catch (error) {
-      print(error);
-      throw error;
-    }
-    // print(response.body.toString());
-  }
-
-  String retrieveCroppedBarks(response) {
-    var oneBarkPath = json.decode(json.encode(response))["rows"][0]["url"];
-    return oneBarkPath;
+    return newBarks;
   }
 }
 
 // var exampleResponse = {
-//   "rows": [
+//   "crops": [
 //     {
-//       "obj_type": "crop",
-//       "uuid": "4572cfbb-cc0b-48d3-b43a-8fb726002300",
-//       "url":
-//           "gs://de9add42-afa1-4304-8bb1-0bff374ad5f2/cropped/4572cfbb-cc0b-48d3-b43a-8fb726002300.wav"
+//       "uuid": "11351e26-c976-4c41-aef3-bea759827b5d",
+//       "raw_id": "1d3204df-328e-4df0-8d8c-bd510e7fa65b",
+//       "user_id": "tovi-id",
+//       "name": null,
+//       "bucket_url": "gs://1d3204df-328e-4df0-8d8c-bd510e7fa65b/cropped/11351e26-c976-4c41-aef3-bea759827b5d.aac",
+//       "bucket_fp": "1d3204df-328e-4df0-8d8c-bd510e7fa65b/cropped/11351e26-c976-4c41-aef3-bea759827b5d.aac",
+//       "stream_url": null,
+//       "hidden": 0,
+//       "obj_type": "crop"
 //     },
 //     {
-//       "obj_type": "crop",
-//       "uuid": "7f75daed-ef29-46f5-900c-b162324e2fe5",
-//       "url":
-//           "gs://de9add42-afa1-4304-8bb1-0bff374ad5f2/cropped/7f75daed-ef29-46f5-900c-b162324e2fe5.wav"
+//       "uuid": "c966b714-f983-4e82-a199-37c64880f9ab",
+//       "raw_id": "1d3204df-328e-4df0-8d8c-bd510e7fa65b",
+//       "user_id": "tovi-id",
+//       "name": null,
+//       "bucket_url": "gs://1d3204df-328e-4df0-8d8c-bd510e7fa65b/cropped/c966b714-f983-4e82-a199-37c64880f9ab.aac",
+//       "bucket_fp": "1d3204df-328e-4df0-8d8c-bd510e7fa65b/cropped/c966b714-f983-4e82-a199-37c64880f9ab.aac",
+//       "stream_url": null,
+//       "hidden": 0,
+//       "obj_type": "crop"
 //     },
 //     {
-//       "obj_type": "crop",
-//       "uuid": "41754516-8a6d-446c-84e3-bf0711108e90",
-//       "url":
-//           "gs://de9add42-afa1-4304-8bb1-0bff374ad5f2/cropped/41754516-8a6d-446c-84e3-bf0711108e90.wav"
-//     },
-//     {
-//       "obj_type": "crop",
-//       "uuid": "e8f25e15-4eee-4019-921b-45173c3c78ec",
-//       "url":
-//           "gs://de9add42-afa1-4304-8bb1-0bff374ad5f2/cropped/e8f25e15-4eee-4019-921b-45173c3c78ec.wav"
+//       "uuid": "e678aa6f-ac2c-46a2-b20c-889503e31e36",
+//       "raw_id": "1d3204df-328e-4df0-8d8c-bd510e7fa65b",
+//       "user_id": "tovi-id",
+//       "name": null,
+//       "bucket_url": "gs://1d3204df-328e-4df0-8d8c-bd510e7fa65b/cropped/e678aa6f-ac2c-46a2-b20c-889503e31e36.aac",
+//       "bucket_fp": "1d3204df-328e-4df0-8d8c-bd510e7fa65b/cropped/e678aa6f-ac2c-46a2-b20c-889503e31e36.aac",
+//       "stream_url": null,
+//       "hidden": 0,
+//       "obj_type": "crop"
 //     }
-//   ]
+//   ],
+//   "pet": {
+//     "pet_id": 1,
+//     "user_id": "tovi-id",
+//     "name": "woofer",
+//     "image_url": null,
+//     "hidden": 0,
+//     "obj_type": "pet"
+//   }
 // };
