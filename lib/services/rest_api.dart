@@ -9,11 +9,14 @@ class RestAPI {
 
   Future<String> renameBarkOnServer(bark) async {
     http.Response response;
+    String body =
+        json.encode({'name': bark.name, "user_id": "999"});
+    print(body);
     final url = 'http://165.227.178.14/crop/${bark.fileId}';
     try {
-      response = await http.put(
+      response = await http.patch(
         url,
-        body: json.encode({'name': bark.name}),
+        body: body,
         headers: jsonHeaders,
       );
     } catch (error) {
@@ -39,11 +42,13 @@ class RestAPI {
 
   Future<String> createPetOnServer(petName) async {
     http.Response response;
+    String body = json.encode({'name': petName, 'user_id': '999'});
+    print(body);
     final url = 'http://165.227.178.14/pet';
     try {
       response = await http.post(
         url,
-        body: json.encode({'name': petName, 'user_id': '999'}),
+        body: body,
         headers: jsonHeaders,
       );
     } catch (error) {
@@ -56,13 +61,16 @@ class RestAPI {
 
   Future<String> splitRawBarkOnServer(fileId) async {
     http.Response response;
+    String body = json.encode({
+      'uuid': fileId,
+      'user_id': '999',
+    });
+    print(body);
     final url = 'http://165.227.178.14/split_audio';
     try {
       response = await http.post(
         url,
-        body: json.encode({
-          'uuid': fileId,
-        }),
+        body: body,
         headers: jsonHeaders,
       );
     } catch (error) {
@@ -75,16 +83,18 @@ class RestAPI {
 
   Future<void> notifyServerRawBarkInBucket(fileId, petId) async {
     http.Response response;
+    String body = json.encode({
+      'user_id': '999',
+      'uuid': fileId,
+      'pet_id': petId,
+    });
+    print(body);
     // User ID hardcoded as 999 for now.
     final url = 'http://165.227.178.14/raw';
     try {
       response = await http.post(
         url,
-        body: json.encode({
-          'user_id': '999',
-          'uuid': fileId,
-          'pet_id': petId,
-        }),
+        body: body,
         headers: jsonHeaders,
       );
     } catch (error) {

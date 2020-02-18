@@ -9,8 +9,9 @@ class BarksGrid extends StatelessWidget {
     final barks = Provider.of<Barks>(context);
     return Column(
       children: <Widget>[
+                Center(child: Text("Animal Sounds", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),),
+
         Divider(),
-        Center(child: Text("Barks")),
         Expanded(
           child: GridView.builder(
             padding: const EdgeInsets.all(10),
