@@ -37,8 +37,9 @@ class Pet with ChangeNotifier, Gcloud, RestAPI {
 
   Future<Pet> createAndSyncWithServer() async {
     String responseBody = await this.createPetOnServer(name);
-    String petId = json.decode(responseBody)["pet_id"];
-    this.id = petId;
+    print(responseBody);
+    int petId = json.decode(responseBody)["pet_id"];
+    this.id = petId.toString();
     return this;
   }
 

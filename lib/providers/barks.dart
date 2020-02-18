@@ -16,6 +16,10 @@ class Barks with ChangeNotifier {
     notifyListeners();
     print("All the barks: $all");
   }
+
+  List get allBarks {
+    return all;
+  }
 }
 
 class Bark with ChangeNotifier, Gcloud, RestAPI {
@@ -44,7 +48,7 @@ class Bark with ChangeNotifier, Gcloud, RestAPI {
   //   }
   // }
 
-  Future <List<Bark>> uploadBarkAndRetrieveCroppedBarks() async {
+  Future <List> uploadBarkAndRetrieveCroppedBarks() async {
     var downloadLink = uploadRawBark(fileId, filePath);
     // downloadLink for rawBark is probably not needed.
     print(downloadLink);
@@ -53,25 +57,23 @@ class Bark with ChangeNotifier, Gcloud, RestAPI {
         Duration(seconds: 2), () => print('done')); // This is temporary.
     String responseBody = await splitRawBarkOnServer(fileId);
     print("Response body content: $responseBody");
-    List<Bark> newBarks = retrieveCroppedBarks(responseBody);
+    List newBarks = retrieveCroppedBarks(responseBody);
     return newBarks;
   }
 
-
-
-  List<Bark> retrieveCroppedBarks(response) {
+  List retrieveCroppedBarks(response) {
     print(response);
     List newBarks = [];
     Map responseData = json.decode(response);
-    Map cloudBarkData = responseData["crops"];
-    String petId = responseData["pet"]["pet_id"];
+    List cloudBarkData = responseData["crops"];
+    String petId = responseData["pet"]["pet_id"].toString();
     int barkCount = cloudBarkData.length;
     for (var i = 0; i < barkCount; i++) {
       newBarks.add(Bark(
-        fileId: cloudBarkData["uuid"],
+        fileId: cloudBarkData[i]["uuid"],
         petId: petId,
-        name: cloudBarkData["name"],
-        fileUrl: cloudBarkData["bucket_fp"]
+        name: cloudBarkData[i]["name"],
+        fileUrl: cloudBarkData[i]["bucket_fp"],
       ));
     }
     return newBarks;

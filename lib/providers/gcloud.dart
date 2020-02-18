@@ -27,6 +27,6 @@ class Gcloud {
       print('failed to put bark in the bucket');
       return error;
     }
-    return info.downloadLink;
+    return info.downloadLink.toString();
   }
 }

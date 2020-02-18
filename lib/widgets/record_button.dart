@@ -156,13 +156,14 @@ class _RecordButtonState extends State<RecordButton> {
     );
     if (petId == null) {
       Pet pet = await Pet(name: petName).createAndSyncWithServer();
+      pets.all.add(pet);
       petId = pet.id;
     } else {
       pets.getById(petId);
     }
-    
+
     Bark rawBark = Bark(petId: petId, name: petName, filePath: filePath);
-    List<Bark> croppedBarks = await rawBark.uploadBarkAndRetrieveCroppedBarks();
+    List croppedBarks = await rawBark.uploadBarkAndRetrieveCroppedBarks();
     print("Upload and Retrieve Cropped Barks checkpoint");
     addCroppedBarksToPetAndAllBarks(petId, croppedBarks);
   }
@@ -170,17 +171,16 @@ class _RecordButtonState extends State<RecordButton> {
   void addCroppedBarksToPetAndAllBarks(petId, croppedBarks) {
     Pet pet = Provider.of<Pets>(context, listen: false).getById(petId);
     Barks barks = Provider.of<Barks>(context, listen: false);
-    int length = barks.all.length;
+    int length = croppedBarks.length;
     for (var i = 0; i < length; i++) {
-      barks.addBark(croppedBarks[i]);
-      pet.addBark(croppedBarks[i]);
+      setState(() {
+        barks.addBark(croppedBarks[i]);
+        pet.addBark(croppedBarks[i]);
+      });
     }
-    print(" Cropped Barks: $croppedBarks");
-    print("All Barks: ${barks.all}");
-
-    setState(() {
-      // Must ALWAYS add bark to both pet and Barks.all
-    });
+    print(" Cropped Barks: ${pet.barks}");
+    print("All Barks: ${barks.allBarks}");
+    // Must ALWAYS add bark to both pet and Barks.all
   }
 
   Future<bool> fileExists(String path) async {

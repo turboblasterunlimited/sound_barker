@@ -2,17 +2,18 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class RestAPI {
-  final Map jsonHeaders = {
+  final Map<String, String> jsonHeaders = {
     'Content-type': 'application/json',
     'Accept': 'application/json',
   };
   Future<String> createPetOnServer(petName) async {
+    print("!!!!creating pet on server....");
     http.Response response;
     final url = 'http://165.227.178.14/pet';
     try {
       response = await http.post(
         url,
-        body: json.encode({'name': petName, 'userId': '999'}),
+        body: json.encode({'name': petName, 'user_id': '999'}),
         headers: jsonHeaders,
       );
     } catch (error) {
