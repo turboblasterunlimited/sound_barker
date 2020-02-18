@@ -17,7 +17,8 @@ class Barks with ChangeNotifier, Gcloud {
   void downloadAllBarksFromBucket() async {
     int barkCount = all.length;
     for (var i = 0; i < barkCount; i++) {
-      String filePath = await downloadBarkFromBucket(all[i].fileUrl, all[i].fileId);
+      String filePath =
+          await downloadBarkFromBucket(all[i].fileUrl, all[i].fileId);
       all[i].filePath = filePath;
       print("filePath for crop: $filePath");
     }
@@ -25,6 +26,13 @@ class Barks with ChangeNotifier, Gcloud {
 
   List get allBarks {
     return all;
+  }
+
+  void removeBark(barkToDelete) {
+    all.removeWhere((bark) {
+      return bark.fileId == barkToDelete.fileId;
+    });
+    notifyListeners();
   }
 }
 
@@ -44,23 +52,26 @@ class Bark with ChangeNotifier, Gcloud, RestAPI {
     this.fileId = fileId == null ? Uuid().v4() : fileId;
   }
 
-  // void playBark() async {
-  //   Bucket bucket = await accessBucket();
-  //   try {
-  //     bucket.read("");
-  //   } catch (error) {
-  //     print('failed to put bark in the bucket');
-  //     return error;
-  //   }
-  // }
+  void rename(name) {
+    this.name = name;
+    notifyListeners();
+  }
 
-  Future <List> uploadBarkAndRetrieveCroppedBarks() async {
+  Future<String> renameOnServer() {
+    return renameBarkOnServer(this);
+  }
+
+  Future<String> deleteFromServer() {
+    return deleteBarkFromServer(this);
+  }
+
+  Future<List> uploadBarkAndRetrieveCroppedBarks() async {
     var downloadLink = uploadRawBark(fileId, filePath);
     // downloadLink for rawBark is probably not needed.
     print(downloadLink);
     await notifyServerRawBarkInBucket(fileId, petId);
     await Future.delayed(
-        Duration(seconds: 2), () => print('done')); // This is temporary.
+        Duration(seconds: 1), () => print('done')); // This is temporary.
     String responseBody = await splitRawBarkOnServer(fileId);
     print("Response body content: $responseBody");
     List newBarks = retrieveCroppedBarks(responseBody);

@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:uuid/uuid.dart';
 import 'dart:convert';
 
 import './barks.dart';
@@ -14,7 +13,7 @@ class Pets with ChangeNotifier {
     return all.firstWhere((pet) => pet.id == id);
   }
 
-  Map<String, String>allPetNameIdPairs() {
+  Map<String, String> allPetNameIdPairs() {
     Map<String, String> result = {};
     all.forEach((pet) {
       result.putIfAbsent(pet.name, () => pet.id);
@@ -22,7 +21,7 @@ class Pets with ChangeNotifier {
     return result;
   }
 
-    List<String> allPetNames() {
+  List<String> allPetNames() {
     return all.map((pet) => pet.name);
   }
 }
@@ -50,10 +49,8 @@ class Pet with ChangeNotifier, Gcloud, RestAPI {
 
   void removeBark(barkToDelete) {
     barks.removeWhere((bark) {
-      return bark.name == barkToDelete.name;
+      return bark.fileId == barkToDelete.fileId;
     });
+    notifyListeners();
   }
-
-
-
 }

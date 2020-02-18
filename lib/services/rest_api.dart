@@ -2,14 +2,42 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class RestAPI {
-
   final Map<String, String> jsonHeaders = {
     'Content-type': 'application/json',
     'Accept': 'application/json',
   };
 
+  Future<String> renameBarkOnServer(bark) async {
+    http.Response response;
+    final url = 'http://165.227.178.14/crop/${bark.fileId}';
+    try {
+      response = await http.put(
+        url,
+        body: json.encode({'name': bark.name}),
+        headers: jsonHeaders,
+      );
+    } catch (error) {
+      print(error);
+      throw error;
+    }
+    print("Edit bark name response body: ${response.body}");
+    return response.body;
+  }
+
+  Future<String> deleteBarkFromServer(bark) async {
+    http.Response response;
+    final url = 'http://165.227.178.14/crop/${bark.fileId}';
+    try {
+      response = await http.delete(url);
+    } catch (error) {
+      print(error);
+      throw error;
+    }
+    print("Delete bark response body: ${response.body}");
+    return response.body;
+  }
+
   Future<String> createPetOnServer(petName) async {
-    print("!!!!creating pet on server....");
     http.Response response;
     final url = 'http://165.227.178.14/pet';
     try {
@@ -63,7 +91,8 @@ class RestAPI {
       print(error);
       throw error;
     }
-    print("Notify Server Raw Bark in bucket response body content: ${response.body}");
+    print(
+        "Notify Server Raw Bark in bucket response body content: ${response.body}");
   }
 }
 
