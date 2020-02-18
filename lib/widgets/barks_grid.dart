@@ -17,7 +17,7 @@ class BarksGrid extends StatelessWidget {
             itemCount: barks.all.length,
             itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
               value: barks.all[i],
-              child: BarkPlaybackButton(i),
+              child: BarkPlaybackButton(i, barks.all[i]),
             ),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,

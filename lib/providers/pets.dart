@@ -4,8 +4,8 @@ import 'dart:convert';
 
 import './barks.dart';
 import './song.dart';
-import './gcloud.dart';
-import './rest_api.dart';
+import '../services/gcloud.dart';
+import '../services/rest_api.dart';
 
 class Pets with ChangeNotifier {
   List<Pet> all = [];

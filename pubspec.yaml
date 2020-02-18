@@ -22,12 +22,12 @@ dependencies:
   flutter_sound: ^2.0.4
   intl:
   uuid:
-  path_provider:
   http:
   gcloud: ^0.6.3
   googleapis_auth:
   provider:
   grouped_buttons: ^1.0.4
+  path_provider: ^1.6.0
 
 
   # The following adds the Cupertino Icons font to your application.

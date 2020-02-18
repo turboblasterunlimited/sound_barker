@@ -2,10 +2,12 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class RestAPI {
+
   final Map<String, String> jsonHeaders = {
     'Content-type': 'application/json',
     'Accept': 'application/json',
   };
+
   Future<String> createPetOnServer(petName) async {
     print("!!!!creating pet on server....");
     http.Response response;
@@ -61,7 +63,7 @@ class RestAPI {
       print(error);
       throw error;
     }
-    print("Response body content: ${response.body}");
+    print("Notify Server Raw Bark in bucket response body content: ${response.body}");
   }
 }
 

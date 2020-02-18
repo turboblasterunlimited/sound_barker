@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:grouped_buttons/grouped_buttons.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'dart:async';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:intl/date_symbol_data_local.dart';
 import 'dart:io';
-// import 'package:path_provider/path_provider.dart';
 
 import '../providers/barks.dart';
 import '../providers/pets.dart';
@@ -99,7 +96,6 @@ class _RecordButtonState extends State<RecordButton> {
     final pets = Provider.of<Pets>(context, listen: false);
     String petId;
     String petName = 'Peter Barker';
-    Pet pet;
 
     try {
       String result = await flutterSound.stopRecorder();
@@ -154,33 +150,33 @@ class _RecordButtonState extends State<RecordButton> {
         ],
       ),
     );
+    // if creating a new pet
     if (petId == null) {
       Pet pet = await Pet(name: petName).createAndSyncWithServer();
       pets.all.add(pet);
       petId = pet.id;
-    } else {
-      pets.getById(petId);
     }
 
     Bark rawBark = Bark(petId: petId, name: petName, filePath: filePath);
     List croppedBarks = await rawBark.uploadBarkAndRetrieveCroppedBarks();
     print("Upload and Retrieve Cropped Barks checkpoint");
-    addCroppedBarksToPetAndAllBarks(petId, croppedBarks);
+    Barks barks = Provider.of<Barks>(context, listen: false);
+    addCroppedBarksToPetAndAllBarks(barks, petId, croppedBarks);
+    barks.downloadAllBarksFromBucket();
   }
 
-  void addCroppedBarksToPetAndAllBarks(petId, croppedBarks) {
+  void addCroppedBarksToPetAndAllBarks(allBarks, petId, croppedBarks) {
     Pet pet = Provider.of<Pets>(context, listen: false).getById(petId);
-    Barks barks = Provider.of<Barks>(context, listen: false);
     int length = croppedBarks.length;
     for (var i = 0; i < length; i++) {
       setState(() {
-        barks.addBark(croppedBarks[i]);
+        allBarks.addBark(croppedBarks[i]);
         pet.addBark(croppedBarks[i]);
+        // Must ALWAYS add bark to both pet and Barks.all
       });
     }
     print(" Cropped Barks: ${pet.barks}");
-    print("All Barks: ${barks.allBarks}");
-    // Must ALWAYS add bark to both pet and Barks.all
+    print("All Barks: ${allBarks.allBarks}");
   }
 
   Future<bool> fileExists(String path) async {

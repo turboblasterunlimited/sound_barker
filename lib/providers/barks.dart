@@ -1,20 +1,26 @@
-import 'package:gcloud/storage.dart';
 import 'package:uuid/uuid.dart';
-import 'dart:io';
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import './gcloud.dart';
-import './rest_api.dart';
+import '../services/gcloud.dart';
+import '../services/rest_api.dart';
 
-class Barks with ChangeNotifier {
+class Barks with ChangeNotifier, Gcloud {
   List<Bark> all = [];
 
   void addBark(bark) {
     all.add(bark);
     notifyListeners();
     print("All the barks: $all");
+  }
+
+  void downloadAllBarksFromBucket() async {
+    int barkCount = all.length;
+    for (var i = 0; i < barkCount; i++) {
+      String filePath = await downloadBarkFromBucket(all[i].fileUrl, all[i].fileId);
+      all[i].filePath = filePath;
+      print("filePath for crop: $filePath");
+    }
   }
 
   List get allBarks {
