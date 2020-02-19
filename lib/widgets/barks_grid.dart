@@ -13,18 +13,12 @@ class BarksGrid extends StatelessWidget {
 
         Divider(),
         Expanded(
-          child: GridView.builder(
+          child: ListView.builder(
             padding: const EdgeInsets.all(10),
             itemCount: barks.all.length,
             itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
               value: barks.all[i],
               child: BarkPlaybackButton(i, barks.all[i]),
-            ),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 3 / 2,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
             ),
           ),
         ),

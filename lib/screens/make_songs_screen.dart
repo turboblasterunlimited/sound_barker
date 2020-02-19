@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/app_drawer.dart';
-import '../providers/barks.dart';
+import '../widgets/creatable_song.dart';
 
 class MakeSongsScreen extends StatelessWidget {
   static const routeName = 'make-songs';
@@ -19,10 +19,13 @@ class MakeSongsScreen extends StatelessWidget {
       ),
       drawer: AppDrawer(),
       body: Center(
-
-        //GridView.builder of all the barks
-
-      ),
+          child: ListView.builder(
+            itemCount: 1,
+            itemBuilder: (ctx, i) {
+              return CreatableSong(
+              );
+            },
+      )),
     );
   }
 }

@@ -14,6 +14,14 @@ class Barks with ChangeNotifier, Gcloud {
     print("All the barks: $all");
   }
 
+  Map<String, String> allBarkNameIdPairs() {
+    Map<String, String> result = {};
+    all.forEach((bark) {
+      result.putIfAbsent(bark.name, () => bark.fileId);
+    });
+    return result;
+  }
+
   void downloadAllBarksFromBucket() async {
     int barkCount = all.length;
     for (var i = 0; i < barkCount; i++) {

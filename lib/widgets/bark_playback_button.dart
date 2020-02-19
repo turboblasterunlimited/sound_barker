@@ -113,7 +113,6 @@ class _BarkPlaybackButtonState extends State<BarkPlaybackButton> {
               return null;
             },
           ),
-        
           FlatButton(
               child: Text("NEVERMIND"),
               onPressed: () {
@@ -140,42 +139,55 @@ class _BarkPlaybackButtonState extends State<BarkPlaybackButton> {
         "${pet.name}_${(widget.index + 1).toString()}";
 
     String barkName = bark.name == null ? placeholderName : bark.name;
-    return Column(
-      children: <Widget>[
-        Text(
-          barkName,
-          style: TextStyle(fontSize: 22),
-        ),
-        Row(
-          children: <Widget>[
-            IconButton(
-              color: Colors.yellow,
-              onPressed: () {
-                renameBark(bark, pet);
-              },
-              icon: Icon(Icons.edit, color: Colors.blueGrey, size: 30),
-            ),
-            Expanded(
-              child: IconButton(
-                color: Colors.blue,
-                onPressed: () {
-                  // Playback bark.
-                  playBark();
-                },
-                icon: Icon(Icons.play_arrow, color: Colors.black, size: 40),
+    return
+
+        // deleteBark(bark, pet);
+        Card(
+      margin: EdgeInsets.symmetric(
+        horizontal: 5,
+        vertical: 3,
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(4),
+        child: ListTile(
+          leading: IconButton(
+            color: Colors.blue,
+            onPressed: () {
+              // Playback bark.
+              playBark();
+            },
+            icon: Icon(Icons.play_arrow, color: Colors.black, size: 40),
+          ),
+          title: GestureDetector(
+            onTap: () {
+              renameBark(bark, pet);
+            },
+            child: RichText(
+              text: TextSpan(
+                style: TextStyle(fontSize: 18),
+                children: [
+                  WidgetSpan(
+                    child: Text(barkName),
+                  ),
+                  WidgetSpan(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                      child: Icon(Icons.edit, color: Colors.blueGrey, size: 20),
+                    ),
+                  ),
+                ],
               ),
             ),
-            IconButton(
-              color: Colors.red,
-              onPressed: () {
-                print('delete');
-                deleteBark(bark, pet);
-              },
-              icon: Icon(Icons.delete, color: Colors.redAccent, size: 26),
-            ),
-          ],
+          ),
+          subtitle: Text(pet.name),
+          trailing: IconButton(
+            onPressed: () {
+              deleteBark(bark, pet);
+            },
+            icon: Icon(Icons.delete, color: Colors.redAccent, size: 30),
+          ),
         ),
-      ],
+      ),
     );
   }
 }

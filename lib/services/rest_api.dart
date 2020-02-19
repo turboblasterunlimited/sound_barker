@@ -7,10 +7,29 @@ class RestAPI {
     'Accept': 'application/json',
   };
 
-  Future<String> renameBarkOnServer(bark) async {
+  Future<String> createSong(cropId, songTitle) async {
     http.Response response;
     String body =
-        json.encode({'name': bark.name, "user_id": "999"});
+        json.encode({'crop_id': cropId, 'name': songTitle, 'user_id': '999'});
+    print(body);
+    final url = 'http://165.227.178.14/sequence';
+    try {
+      response = await http.post(
+        url,
+        body: body,
+        headers: jsonHeaders,
+      );
+    } catch (error) {
+      print(error);
+      throw error;
+    }
+    print("create pet on server response body: ${response.body}");
+    return response.body;
+  }
+
+  Future<String> renameBarkOnServer(bark) async {
+    http.Response response;
+    String body = json.encode({'name': bark.name, "user_id": "999"});
     print(body);
     final url = 'http://165.227.178.14/crop/${bark.fileId}';
     try {
