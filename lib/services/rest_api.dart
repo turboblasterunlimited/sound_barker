@@ -23,7 +23,7 @@ class RestAPI {
       //print(error);
       throw error;
     }
-    //print("create pet on server response body: ${response.body}");
+    print("create pet on server response body: ${response.body}");
     return response.body;
   }
 
@@ -39,7 +39,7 @@ class RestAPI {
         headers: jsonHeaders,
       );
     } catch (error) {
-      //print(error);
+      print(error);
       throw error;
     }
     //print("Edit bark name response body: ${response.body}");

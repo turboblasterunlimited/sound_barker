@@ -9,7 +9,7 @@ import './screens/make_songs_screen.dart';
 import './providers/pets.dart';
 import './providers/user.dart';
 import './providers/barks.dart';
-import './providers/song.dart';
+import './providers/songs.dart';
 
 void main() {
   // final User user = User();
@@ -38,6 +38,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider.value(
           value: Barks(),
+        ),
+        ChangeNotifierProvider.value(
+          value: Songs(),
         ),
       ],
       child: MaterialApp(

@@ -4,19 +4,19 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'dart:async';
 import 'dart:io';
 
-import '../providers/barks.dart';
+import '../providers/songs.dart';
 import '../providers/pets.dart';
 
-class BarkPlaybackCard extends StatefulWidget {
+class SongPlaybackCard extends StatefulWidget {
   final int index;
-  final Bark bark;
-  BarkPlaybackCard(this.index, this.bark);
+  final Song song;
+  SongPlaybackCard(this.index, this.song);
 
   @override
-  _BarkPlaybackCardState createState() => _BarkPlaybackCardState();
+  _SongPlaybackCardState createState() => _SongPlaybackCardState();
 }
 
-class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
+class _SongPlaybackCardState extends State<SongPlaybackCard> {
   FlutterSound flutterSound;
   StreamSubscription _playerSubscription;
 
@@ -37,8 +37,8 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
     super.dispose();
   }
 
-  void playBark() async {
-    String path = widget.bark.filePath;
+  void playSong() async {
+    String path = widget.song.filePath;
     //print('playing bark!');
     //print(path);
     if (File(path).exists() == null) {
@@ -57,17 +57,17 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
         }
       });
     } catch (e) {
-      print("Error: $e");
+      //print("Error: $e");
     }
   }
 
-  void deleteBark(bark, pet) async {
-    final barks = Provider.of<Barks>(context, listen: false);
+  void deleteSong(song, pet) async {
+    final songs = Provider.of<Songs>(context, listen: false);
     await showDialog<Null>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text('Are you sure?'),
-        content: Text('Are you sure you want to delete ${bark.name}?'),
+        content: Text('Are you sure you want to delete ${song.name}?'),
         actions: <Widget>[
           FlatButton(
               child: Text("No, Don't delete it."),
@@ -77,9 +77,9 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
           FlatButton(
               child: Text('Yes. Delete it.'),
               onPressed: () {
-                pet.removeBark(bark);
-                barks.removeBark(bark);
-                bark.deleteFromServer();
+                pet.removeSong(song);
+                songs.removeSong(song);
+                song.deleteFromServer();
                 Navigator.of(ctx).pop();
               })
         ],
@@ -87,12 +87,12 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
     );
   }
 
-  void renameBark(bark, pet) async {
-    String newName = bark.name == null ? "${pet.name}'s bark" : bark.name;
+  void renameSong(song, pet) async {
+    String newName = song.name == null ? "${pet.name}'s song" : song.name;
     await showDialog<Null>(
       context: context,
       builder: (ctx) => SimpleDialog(
-        title: Text('Rename Sound'),
+        title: Text('Rename Song'),
         contentPadding: EdgeInsets.all(10),
         titlePadding: EdgeInsets.all(10),
         children: <Widget>[
@@ -102,8 +102,8 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
               newName = name;
             },
             onFieldSubmitted: (name) {
-              bark.rename(name);
-              bark.renameOnServer();
+              song.rename(name);
+              song.renameOnServer();
               Navigator.of(ctx).pop();
             },
             validator: (value) {
@@ -121,8 +121,8 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
           FlatButton(
             child: Text('RENAME'),
             onPressed: () {
-              bark.rename(newName);
-              bark.renameOnServer();
+              song.rename(newName);
+              song.renameOnServer();
               Navigator.of(ctx).pop();
             },
           ),
@@ -133,12 +133,12 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
 
   @override
   Widget build(BuildContext context) {
-    final bark = Provider.of<Bark>(context, listen: false);
-    final pet = Provider.of<Pets>(context, listen: false).getById(bark.petId);
+    final song = Provider.of<Song>(context, listen: false);
+    final pet = Provider.of<Pets>(context, listen: false).getById(song.petId);
     final String placeholderName =
         "${pet.name}_${(widget.index + 1).toString()}";
 
-    String barkName = bark.name == null ? placeholderName : bark.name;
+    String songName = song.name == null ? placeholderName : song.name;
     return Card(
       margin: EdgeInsets.symmetric(
         horizontal: 5,
@@ -151,20 +151,20 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
             color: Colors.blue,
             onPressed: () {
               // Playback bark.
-              playBark();
+              playSong();
             },
             icon: Icon(Icons.play_arrow, color: Colors.black, size: 40),
           ),
           title: GestureDetector(
             onTap: () {
-              renameBark(bark, pet);
+              renameSong(song, pet);
             },
             child: RichText(
               text: TextSpan(
                 style: TextStyle(fontSize: 18),
                 children: [
                   WidgetSpan(
-                    child: Text(barkName),
+                    child: Text(songName),
                   ),
                   WidgetSpan(
                     child: Padding(
@@ -179,7 +179,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
           subtitle: Text(pet.name),
           trailing: IconButton(
             onPressed: () {
-              deleteBark(bark, pet);
+              deleteSong(song, pet);
             },
             icon: Icon(Icons.delete, color: Colors.redAccent, size: 30),
           ),

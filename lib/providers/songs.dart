@@ -12,14 +12,21 @@ class Songs with ChangeNotifier, Gcloud {
     //print("All the barks: $all");
   }
 
+  void removeSong(songToDelete) {
+    all.removeWhere((song) {
+      return song.fileId == songToDelete.fileId;
+    });
+    notifyListeners();
+  }
+
   void downloadAllSongsFromBucket([List songs]) async {
     songs = songs == null ? all : songs;
     int soundCount = songs.length;
     for (var i = 0; i < soundCount; i++) {
       String filePath =
-          await downloadSoundFromBucket(all[i].fileUrl, all[i].fileId);
+          await downloadSoundFromBucket(songs[i].fileUrl, songs[i].fileId);
       songs[i].filePath = filePath;
-      //print("filePath for song: $filePath");
+      // print("filePath for song: $filePath");
     }
   }
 }
@@ -43,5 +50,7 @@ class Song with ChangeNotifier, Gcloud {
     this.name = responseData["name"];
     this.fileUrl = responseData["bucket_fp"];
     this.filePath = await downloadSoundFromBucket(fileUrl, fileId);
+    // print("filePath for song: ${this.filePath}");
+
   }
 }
