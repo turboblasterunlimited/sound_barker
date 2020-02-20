@@ -11,27 +11,20 @@ class Barks with ChangeNotifier, Gcloud {
   void addBark(bark) {
     all.add(bark);
     notifyListeners();
-    print("All the barks: $all");
+    //print("All the barks: $all");
   }
 
-  Map<String, String> allBarkNameIdPairs() {
-    Map<String, String> result = {};
-    all.forEach((bark) {
-      result.putIfAbsent(bark.name, () => bark.fileId);
-    });
-    return result;
-  }
-
-  void downloadAllBarksFromBucket() async {
-    int barkCount = all.length;
+  void downloadAllBarksFromBucket([List barks]) async {
+    barks = barks == null ? all : barks;
+    int barkCount = barks.length;
     for (var i = 0; i < barkCount; i++) {
       String filePath =
-          await downloadBarkFromBucket(all[i].fileUrl, all[i].fileId);
-      all[i].filePath = filePath;
-      print("filePath for crop: $filePath");
+          await downloadSoundFromBucket(barks[i].fileUrl, barks[i].fileId);
+      barks[i].filePath = filePath;
+      //print("filePath for crop: $filePath");
     }
   }
-
+  
   List get allBarks {
     return all;
   }
@@ -60,6 +53,8 @@ class Bark with ChangeNotifier, Gcloud, RestAPI {
     this.fileId = fileId == null ? Uuid().v4() : fileId;
   }
 
+  
+
   void rename(name) {
     this.name = name;
     notifyListeners();
@@ -73,21 +68,26 @@ class Bark with ChangeNotifier, Gcloud, RestAPI {
     return deleteBarkFromServer(this);
   }
 
+  Future<String> createSongOnServerAndRetrieve() async {
+    String response = await createSong(fileId, "happy birthday", petId);
+    return response;
+  }
+
   Future<List> uploadBarkAndRetrieveCroppedBarks() async {
     var downloadLink = uploadRawBark(fileId, filePath);
     // downloadLink for rawBark is probably not needed.
-    print(downloadLink);
+    //print(downloadLink);
     await notifyServerRawBarkInBucket(fileId, petId);
     await Future.delayed(
         Duration(seconds: 1), () => print('done')); // This is temporary.
-    String responseBody = await splitRawBarkOnServer(fileId);
-    print("Response body content: $responseBody");
+    String responseBody = await splitRawBarkOnServer(fileId, petId);
+    //print("Response body content: $responseBody");
     List newBarks = retrieveCroppedBarks(responseBody);
     return newBarks;
   }
 
   List retrieveCroppedBarks(response) {
-    print(response);
+    //print(response);
     List newBarks = [];
     Map responseData = json.decode(response);
     List cloudBarkData = responseData["crops"];

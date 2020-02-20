@@ -119,7 +119,9 @@ class UserProfilePage extends StatelessWidget {
         children: <Widget>[
           Expanded(
             child: InkWell(
-              onTap: () => print("Recorded bark"),
+              onTap: () {
+                //print("Recorded bark")
+              },
               child: Container(
                 height: 40.0,
                 decoration: BoxDecoration(
@@ -141,7 +143,9 @@ class UserProfilePage extends StatelessWidget {
           SizedBox(width: 10.0),
           Expanded(
             child: InkWell(
-              onTap: () => print("Added song"),
+              onTap: () {
+                //print("Added song")
+              },
               child: Container(
                 height: 40.0,
                 decoration: BoxDecoration(

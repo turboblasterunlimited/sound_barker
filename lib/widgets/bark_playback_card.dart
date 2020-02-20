@@ -7,16 +7,16 @@ import 'dart:io';
 import '../providers/barks.dart';
 import '../providers/pets.dart';
 
-class BarkPlaybackButton extends StatefulWidget {
+class BarkPlaybackCard extends StatefulWidget {
   final int index;
   final Bark bark;
-  BarkPlaybackButton(this.index, this.bark);
+  BarkPlaybackCard(this.index, this.bark);
 
   @override
-  _BarkPlaybackButtonState createState() => _BarkPlaybackButtonState();
+  _BarkPlaybackCardState createState() => _BarkPlaybackCardState();
 }
 
-class _BarkPlaybackButtonState extends State<BarkPlaybackButton> {
+class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
   FlutterSound flutterSound;
   StreamSubscription _playerSubscription;
 
@@ -39,10 +39,10 @@ class _BarkPlaybackButtonState extends State<BarkPlaybackButton> {
 
   void playBark() async {
     String path = widget.bark.filePath;
-    print('playing bark!');
-    print(path);
+    //print('playing bark!');
+    //print(path);
     if (File(path).exists() == null) {
-      print("No audio file found at: $path");
+      //print("No audio file found at: $path");
       return;
     }
     try {
@@ -57,7 +57,7 @@ class _BarkPlaybackButtonState extends State<BarkPlaybackButton> {
         }
       });
     } catch (e) {
-      print("Error: $e");
+      //print("Error: $e");
     }
   }
 
@@ -139,10 +139,7 @@ class _BarkPlaybackButtonState extends State<BarkPlaybackButton> {
         "${pet.name}_${(widget.index + 1).toString()}";
 
     String barkName = bark.name == null ? placeholderName : bark.name;
-    return
-
-        // deleteBark(bark, pet);
-        Card(
+    return Card(
       margin: EdgeInsets.symmetric(
         horizontal: 5,
         vertical: 3,

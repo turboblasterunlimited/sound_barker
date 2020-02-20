@@ -24,7 +24,7 @@ class Gcloud {
     return storage.bucket('song_barker_sequences');
   }
 
-  Future<String> downloadBarkFromBucket(fileUrl, fileId) async {
+  Future<String> downloadSoundFromBucket(fileUrl, fileId) async {
     Bucket bucket = await accessBucket();
     String path = await appStoragePath();
     String filePath = path + '/' + fileId + '.aac';
@@ -39,7 +39,7 @@ class Gcloud {
       info =
           await File(filePath).openRead().pipe(bucket.write("$fileId/raw.aac"));
     } catch (error) {
-      print('failed to put bark in the bucket');
+      //print('failed to put bark in the bucket');
       return error;
     }
     return info.downloadLink.toString();

@@ -13,6 +13,7 @@ class Pets with ChangeNotifier {
     return all.firstWhere((pet) => pet.id == id);
   }
 
+// Delete this nonsense after deleting radio button implementation.
   Map<String, String> allPetNameIdPairs() {
     Map<String, String> result = {};
     all.forEach((pet) {
@@ -36,7 +37,7 @@ class Pet with ChangeNotifier, Gcloud, RestAPI {
 
   Future<Pet> createAndSyncWithServer() async {
     String responseBody = await this.createPetOnServer(name);
-    print(responseBody);
+    //print(responseBody);
     int petId = json.decode(responseBody)["pet_id"];
     this.id = petId.toString();
     return this;
@@ -44,6 +45,11 @@ class Pet with ChangeNotifier, Gcloud, RestAPI {
 
   void addBark(Bark bark) {
     barks.add(bark);
+    notifyListeners();
+  }
+
+  void addSong(Song song) {
+    songs.add(song);
     notifyListeners();
   }
 

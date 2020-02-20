@@ -5,7 +5,7 @@ import '../widgets/app_drawer.dart';
 import '../providers/song.dart';
 
 class AllSongsScreen extends StatelessWidget {
-  static const routeName = 'make-songs';
+  static const routeName = 'all-songs';
 
   @override
   Widget build(BuildContext context) {

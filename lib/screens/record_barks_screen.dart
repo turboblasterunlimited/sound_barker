@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/barks_grid.dart';
+import '../widgets/main_barks_list.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/record_button.dart';
 
@@ -30,7 +30,7 @@ class RecordBarksScreen extends StatelessWidget {
               children: <Widget>[
                 Container(
                   width: MediaQuery.of(context).size.width,
-                  child: BarksGrid(),
+                  child: MainBarksList(),
                 ),
               ],
             ),

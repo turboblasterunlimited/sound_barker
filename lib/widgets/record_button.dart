@@ -57,7 +57,7 @@ class _RecordButtonState extends State<RecordButton> {
       this.filePath = await flutterSound.startRecorder(
         codec: _codec,
       );
-      print('startRecorder: $filePath');
+      //print('startRecorder: $filePath');
 
       _recorderSubscription = flutterSound.onRecorderStateChanged.listen((e) {
         DateTime date = new DateTime.fromMillisecondsSinceEpoch(
@@ -71,7 +71,7 @@ class _RecordButtonState extends State<RecordButton> {
       });
       _dbPeakSubscription =
           flutterSound.onRecorderDbPeakChanged.listen((value) {
-        print("got update -> $value");
+        //print("got update -> $value");
         setState(() {
           this._dbLevel = value;
         });
@@ -82,7 +82,7 @@ class _RecordButtonState extends State<RecordButton> {
         this._path[_codec.index] = filePath;
       });
     } catch (err) {
-      print('startRecorder error: $err');
+      //print('startRecorder error: $err');
       setState(() {
         this._isRecording = false;
       });
@@ -99,7 +99,7 @@ class _RecordButtonState extends State<RecordButton> {
 
     try {
       String result = await flutterSound.stopRecorder();
-      print('stopRecorder: $result');
+      //print('stopRecorder: $result');
       if (_recorderSubscription != null) {
         _recorderSubscription.cancel();
         _recorderSubscription = null;
@@ -109,7 +109,7 @@ class _RecordButtonState extends State<RecordButton> {
         _dbPeakSubscription = null;
       }
     } catch (err) {
-      print('stopRecorder error: $err');
+      //print('stopRecorder error: $err');
     }
     await showDialog<Null>(
       context: context,
@@ -118,17 +118,18 @@ class _RecordButtonState extends State<RecordButton> {
         contentPadding: EdgeInsets.all(10),
         titlePadding: EdgeInsets.all(10),
         children: <Widget>[
-          Visibility(
-            visible: pets.all.length != 0,
-            child: RadioButtonGroup(
-              labels: pets.all.map((pet) => pet.name).toList(),
-              onSelected: (String selected) {
-                petId = pets.allPetNameIdPairs()[selected];
-                petName = selected;
-                Navigator.of(ctx).pop();
-              },
-            ),
-          ),
+          // Visibility(
+            // visible: pets.all.length != 0,
+            // Fix this nonsense.
+            // child: RadioButtonGroup(
+            //   labels: pets.all.map((pet) => pet.name).toList(),
+            //   onSelected: (String selected) {
+            //     petId = pets.allPetNameIdPairs()[selected];
+            //     petName = selected;
+            //     Navigator.of(ctx).pop();
+            //   },
+            // ),
+          // ),
           TextFormField(
             initialValue: petName,
             decoration: InputDecoration(
@@ -159,10 +160,10 @@ class _RecordButtonState extends State<RecordButton> {
 
     Bark rawBark = Bark(petId: petId, name: petName, filePath: filePath);
     List croppedBarks = await rawBark.uploadBarkAndRetrieveCroppedBarks();
-    print("Upload and Retrieve Cropped Barks checkpoint");
+    //print("Upload and Retrieve Cropped Barks checkpoint");
     Barks barks = Provider.of<Barks>(context, listen: false);
     addCroppedBarksToPetAndAllBarks(barks, petId, croppedBarks);
-    barks.downloadAllBarksFromBucket();
+    barks.downloadAllBarksFromBucket(croppedBarks);
   }
 
   void addCroppedBarksToPetAndAllBarks(allBarks, petId, croppedBarks) {
@@ -175,8 +176,8 @@ class _RecordButtonState extends State<RecordButton> {
         // Must ALWAYS add bark to both pet and Barks.all
       });
     }
-    print(" Cropped Barks: ${pet.barks}");
-    print("All Barks: ${allBarks.allBarks}");
+    //print(" Cropped Barks: ${pet.barks}");
+    //print("All Barks: ${allBarks.allBarks}");
   }
 
   Future<bool> fileExists(String path) async {

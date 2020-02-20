@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:grouped_buttons/grouped_buttons.dart';
 
 import '../providers/barks.dart';
+import '../widgets/bark_select_card.dart';
 
 class CreatableSong extends StatelessWidget {
   void createSong(context) async {
@@ -18,13 +18,14 @@ class CreatableSong extends StatelessWidget {
         children: <Widget>[
           Visibility(
             visible: barks.all.length != 0,
-            child: RadioButtonGroup(
-              labels: barks.all.map((bark) => bark.name).toList(),
-              onSelected: (String selected) {
-                barkId = barks.allBarkNameIdPairs()[selected];
-                barkName = selected;
-                Navigator.of(ctx).pop();
-              },
+            child: Container(
+              width: double.maxFinite,
+              height: double.maxFinite,
+              child: ListView.builder(
+              padding: const EdgeInsets.all(10),
+              itemCount: barks.all.length,
+              itemBuilder: (ctx, i) => BarkSelectCard(i, barks.all[i]),
+              ),
             ),
           ),
           Visibility(
