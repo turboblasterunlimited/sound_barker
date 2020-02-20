@@ -9,6 +9,7 @@ import 'dart:io';
 
 import '../providers/barks.dart';
 import '../providers/pets.dart';
+import '../widgets/pet_select_card.dart';
 
 enum t_MEDIA {
   FILE,
@@ -111,6 +112,7 @@ class _RecordButtonState extends State<RecordButton> {
     } catch (err) {
       //print('stopRecorder error: $err');
     }
+    int petsCount = pets.all.length;
     await showDialog<Null>(
       context: context,
       builder: (ctx) => SimpleDialog(
@@ -118,18 +120,32 @@ class _RecordButtonState extends State<RecordButton> {
         contentPadding: EdgeInsets.all(10),
         titlePadding: EdgeInsets.all(10),
         children: <Widget>[
-          // Visibility(
-            // visible: pets.all.length != 0,
-            // Fix this nonsense.
-            // child: RadioButtonGroup(
-            //   labels: pets.all.map((pet) => pet.name).toList(),
-            //   onSelected: (String selected) {
-            //     petId = pets.allPetNameIdPairs()[selected];
-            //     petName = selected;
-            //     Navigator.of(ctx).pop();
-            //   },
-            // ),
-          // ),
+          Visibility(
+            visible: petsCount != 0,
+            child: DropdownButton<String>(
+              items: pets.all.map((pet) {
+                return DropdownMenuItem<String>(
+                  value: pet.id,
+                  child: Text(
+                    pet.name,
+                  ),
+                );
+              }).toList(),
+              onChanged: (id) {
+                setState(() {
+                  petId = id;
+                  petName = pets.getById(id).name;
+                  Navigator.of(ctx).pop();
+                });
+              },
+              value: null,
+              hint: Text("Select your pet."),
+              elevation: 2,
+              // style: TextStyle(color: PURPLE, fontSize: 30),
+              isDense: true,
+              iconSize: 40.0,
+            ),
+          ),
           TextFormField(
             initialValue: petName,
             decoration: InputDecoration(

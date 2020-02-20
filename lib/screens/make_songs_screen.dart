@@ -19,13 +19,13 @@ class MakeSongsScreen extends StatelessWidget {
       ),
       drawer: AppDrawer(),
       body: Center(
-          child: ListView.builder(
-            itemCount: 1,
-            itemBuilder: (ctx, i) {
-              return CreatableSong(
-              );
-            },
-      )),
+        child: ListView.builder(
+          itemCount: 1,
+          itemBuilder: (ctx, i) {
+            return CreatableSong();
+          },
+        ),
+      ),
     );
   }
 }

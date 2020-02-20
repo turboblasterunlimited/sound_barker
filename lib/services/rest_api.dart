@@ -97,7 +97,7 @@ class RestAPI {
       //print(error);
       throw error;
     }
-    //print("split bark server response body content: ${response.body}");
+    print("split bark server response body content: ${response.body}");
     return response.body;
   }
 
