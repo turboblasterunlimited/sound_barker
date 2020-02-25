@@ -56,7 +56,7 @@ class CreatableSong extends StatelessWidget {
             ),
           ),
           title: Text("Happy Birthday"),
-          subtitle: Text('to you.'),
+          subtitle: Text('to you...'),
           trailing: IconButton(
             icon: Icon(Icons.add),
             onPressed: () {

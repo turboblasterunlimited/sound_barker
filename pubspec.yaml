@@ -28,6 +28,7 @@ dependencies:
   provider:
   grouped_buttons: ^1.0.4
   path_provider: ^1.6.0
+  flutter_webview_plugin:
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -54,6 +55,7 @@ flutter:
   assets:
     - credentials/gcloud_credentials.json
     - assets/images/smallest_file.jpg
+    - assets/images/jackie.jpeg
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -11,6 +11,7 @@ class PetDetailsScreen extends StatefulWidget {
 }
 
 class _PetDetailsScreenState extends State<PetDetailsScreen> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,10 +31,12 @@ class _PetDetailsScreenState extends State<PetDetailsScreen> {
 class UserProfilePage extends StatelessWidget {
   final String _fullName = "Scotty";
   final String _breed = "Golden Retriever";
-  final String _bio =
-      "\"Hi My name is Scotty, I like treats!\"";
+  final String _bio = "\"Hi My name is Scotty, I like treats!\"";
 
   Widget _buildCoverImage(Size screenSize) {
+
+
+
     return Container(
       height: screenSize.height / 2.6,
       decoration: BoxDecoration(
@@ -120,7 +123,6 @@ class UserProfilePage extends StatelessWidget {
           Expanded(
             child: InkWell(
               onTap: () {
-                //print("Recorded bark")
               },
               child: Container(
                 height: 40.0,
@@ -130,7 +132,7 @@ class UserProfilePage extends StatelessWidget {
                 ),
                 child: Center(
                   child: Text(
-                    "RECORD BARKS",
+                    "BARK",
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
