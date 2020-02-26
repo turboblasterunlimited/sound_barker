@@ -10,6 +10,8 @@ import './providers/pets.dart';
 import './providers/user.dart';
 import './providers/barks.dart';
 import './providers/songs.dart';
+import './providers/pet_image_controller.dart';
+
 
 void main() {
   // final User user = User();
@@ -41,6 +43,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider.value(
           value: Songs(),
+        ),
+        ChangeNotifierProvider.value(
+          value: PetImageController(),
         ),
       ],
       child: MaterialApp(

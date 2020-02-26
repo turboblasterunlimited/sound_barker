@@ -6,6 +6,7 @@ import 'dart:io';
 
 import '../providers/barks.dart';
 import '../providers/pets.dart';
+import '../providers/pet_image_controller.dart';
 
 class BarkPlaybackCard extends StatefulWidget {
   final int index;
@@ -38,6 +39,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
   }
 
   void playBark() async {
+    Provider.of<PetImageController>(context, listen: false).triggerBark();
     String path = widget.bark.filePath;
     //print('playing bark!');
     //print(path);

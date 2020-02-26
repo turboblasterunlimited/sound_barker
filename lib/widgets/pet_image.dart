@@ -1,53 +1,37 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:song_barker/providers/pet_image_controller.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+import 'package:provider/provider.dart';
 
 class PetImage extends StatefulWidget {
-  PetImage();
 
   @override
   _PetImageState createState() => _PetImageState();
 }
 
 class _PetImageState extends State<PetImage> {
-  final flutterWebviewPlugin = new FlutterWebviewPlugin();
+  Completer<WebViewController> _controller = Completer<WebViewController>();
+  // WebViewController controller;
 
-  void triggerBark() async {
-    await Future.delayed(Duration(seconds: 3));
-    flutterWebviewPlugin.evalJavascript("bark()");
-    triggerBark();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    flutterWebviewPlugin.evalJavascript("bark()");
-    triggerBark();
-  }
-
-  @override
-  void dispose() {
-    flutterWebviewPlugin.dispose();
-    super.dispose();
-  }
+  // void triggerBark(controller) async {
+  //   await Future.delayed(Duration(seconds: 3));
+  //   controller.evaluateJavascript("bark()");
+  // }
 
   @override
   Widget build(BuildContext context) {
-    flutterWebviewPlugin.onUrlChanged.listen((String url) {});
-    // flutterWebviewPlugin.launch(
-    //   'http://165.227.178.14/sample_animation',
-      // rect: new Rect.fromLTWH(
-      //   0.0,
-      //   0.0,
-      //   MediaQuery.of(context).size.width,
-      //   300.0,
-      // ),
-    // );
-    return WebviewScaffold(
-      url: 'http://165.227.178.14/sample_animation',
-      withJavascript: true,
-      scrollBar: true,
-      displayZoomControls: true,
-      withZoom: true,
+    return WebView(
+      onWebViewCreated: (WebViewController c) {
+        _controller.complete(c);
+        Provider.of<PetImageController>(context, listen: false).mountController(c);
+
+      },
+      initialUrl: 'http://165.227.178.14/sample_animation',
+      javascriptMode: JavascriptMode.unrestricted,
+      // javascriptChannels: <JavascriptChannel> [
+
+      // ].toSet(),
     );
   }
 }
