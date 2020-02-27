@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 // import 'package:song_barker/widgets/image_transformer.dart';
 
-import '../widgets/main_barks_list.dart';
+import '../widgets/pet_tabview.dart';
 import '../widgets/app_drawer.dart';
-import '../widgets/record_button.dart';
 import '../widgets/pet_image.dart';
 
 class RecordBarksScreen extends StatelessWidget {
@@ -22,25 +21,8 @@ class RecordBarksScreen extends StatelessWidget {
       drawer: AppDrawer(),
       body: Column(
         children: <Widget>[
-          Expanded(
-            child: PetImage(),
-          ),
-          Expanded(
-            child: RecordButton(),
-          ),
-          Expanded(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  // child: ImageTransform(),
-                  child: MainBarksList(),
-                ),
-              ],
-            ),
-          ),
+          PetImage(),
+          PetTabview(),
         ],
       ),
     );

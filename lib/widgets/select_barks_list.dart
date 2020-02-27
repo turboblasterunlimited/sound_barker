@@ -10,7 +10,7 @@ class SelectBarksList extends StatelessWidget {
       children: <Widget>[
         Center(
           child: Text(
-            "Animal Sounds",
+            "Sounds",
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
         ),

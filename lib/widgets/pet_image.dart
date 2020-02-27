@@ -21,17 +21,20 @@ class _PetImageState extends State<PetImage> {
 
   @override
   Widget build(BuildContext context) {
-    return WebView(
-      onWebViewCreated: (WebViewController c) {
-        _controller.complete(c);
-        Provider.of<PetImageController>(context, listen: false).mountController(c);
+    return Flexible(
+          flex: 1,
+          child: WebView(
+        onWebViewCreated: (WebViewController c) {
+          _controller.complete(c);
+          Provider.of<PetImageController>(context, listen: false).mountController(c);
 
-      },
-      initialUrl: 'http://165.227.178.14/sample_animation',
-      javascriptMode: JavascriptMode.unrestricted,
-      // javascriptChannels: <JavascriptChannel> [
+        },
+        initialUrl: 'http://165.227.178.14/sample_animation',
+        javascriptMode: JavascriptMode.unrestricted,
+        // javascriptChannels: <JavascriptChannel> [
 
-      // ].toSet(),
+        // ].toSet(),
+      ),
     );
   }
 }

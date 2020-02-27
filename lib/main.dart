@@ -26,11 +26,22 @@ void main() {
   // user.addPet(pet1);
   // user.addPet(pet2);
 
-
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  Map<int, Color> color = {
+  50: Color.fromRGBO(136, 14, 79, .1),
+  100: Color.fromRGBO(136, 14, 79, .2),
+  200: Color.fromRGBO(136, 14, 79, .3),
+  300: Color.fromRGBO(136, 14, 79, .4),
+  400: Color.fromRGBO(136, 14, 79, .5),
+  500: Color.fromRGBO(136, 14, 79, .6),
+  600: Color.fromRGBO(136, 14, 79, .7),
+  700: Color.fromRGBO(136, 14, 79, .8),
+  800: Color.fromRGBO(136, 14, 79, .9),
+  900: Color.fromRGBO(136, 14, 79, 1),
+};
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -51,8 +62,8 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
           title: 'Song Barker',
           theme: ThemeData(
-            primarySwatch: Colors.teal,
-            accentColor: Colors.lightBlueAccent,
+            primarySwatch: MaterialColor(0xff419D78, color),
+            accentColor: Color(0xff2D3047),
             fontFamily: 'Lato',
             buttonTheme: ButtonThemeData(
               minWidth: 200.0,

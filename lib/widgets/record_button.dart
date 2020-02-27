@@ -212,30 +212,17 @@ class _RecordButtonState extends State<RecordButton> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        RawMaterialButton(
-          onPressed: onStartRecorderPressed(),
-          child: Icon(
-            Icons.mic,
-            color: Colors.black38,
-            size: 50,
-          ),
-          shape: CircleBorder(),
-          elevation: 2.0,
-          fillColor: this._isRecording ? Colors.redAccent[200] : Colors.white,
-          padding: const EdgeInsets.all(15.0),
-        ),
-        Padding(
-          padding: EdgeInsets.only(top: 10),
-          child: Text(
-            'Record some noises!',
-            style: TextStyle(fontSize: 20, fontStyle: FontStyle.italic),
-          ),
-        ),
-      ],
+    return RawMaterialButton(
+      onPressed: onStartRecorderPressed(),
+      child: Icon(
+        Icons.mic,
+        color: Colors.black38,
+        size: 40,
+      ),
+      shape: CircleBorder(),
+      elevation: 2.0,
+      fillColor: this._isRecording ? Colors.redAccent[200] : Colors.white,
+      padding: const EdgeInsets.all(15.0),
     );
   }
 }

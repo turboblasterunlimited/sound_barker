@@ -1,22 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:song_barker/widgets/bark_playback_card.dart';
-import '../providers/barks.dart';
-import './bark_playback_card.dart';
-import '../screens/pet_details_screen.dart';
 
-class MainBarksList extends StatelessWidget {
+import '../widgets/bark_playback_card.dart';
+import './bark_playback_card.dart';
+import '../widgets/record_button.dart';
+import '../providers/barks.dart';
+
+class BarkList extends StatefulWidget {
+  @override
+  _BarkListState createState() => _BarkListState();
+}
+
+class _BarkListState extends State<BarkList> {
+  @override
   Widget build(BuildContext context) {
     final barks = Provider.of<Barks>(context);
+
     return Column(
       children: <Widget>[
-        Center(
-          child: Text(
-            "Animal Sounds",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: RecordButton(),
         ),
-        Divider(),
         Expanded(
           child: ListView.builder(
             padding: const EdgeInsets.all(10),
