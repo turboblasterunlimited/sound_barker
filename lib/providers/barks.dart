@@ -53,15 +53,14 @@ class Bark with ChangeNotifier, Gcloud, RestAPI {
     this.fileId = fileId == null ? Uuid().v4() : fileId;
   }
 
-  
-
-  void rename(name) {
+  Future<String> rename(name) async {
+    try {
+     await renameBarkOnServer(this);
+    } catch(e) {
+      throw e;
+    }
     this.name = name;
     notifyListeners();
-  }
-
-  Future<String> renameOnServer() {
-    return renameBarkOnServer(this);
   }
 
   Future<String> deleteFromServer() {

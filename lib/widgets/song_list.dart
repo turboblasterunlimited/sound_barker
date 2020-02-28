@@ -48,11 +48,11 @@ class _SongListState extends State<SongList> {
     await showDialog<Null>(
       context: context,
       builder: (ctx) => SimpleDialog(
-        title: Text('Select Bark'),
+        title: Text('Select Song'),
         contentPadding: EdgeInsets.all(10),
         titlePadding: EdgeInsets.all(10),
         children: <Widget>[
-          (Card(
+          Card(
             margin: EdgeInsets.symmetric(
               horizontal: 15,
               vertical: 4,
@@ -79,7 +79,7 @@ class _SongListState extends State<SongList> {
                 ),
               ),
             ),
-          )),
+          ),
         ],
       ),
     );

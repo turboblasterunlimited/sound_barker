@@ -6,6 +6,7 @@ import 'dart:io';
 
 import '../providers/songs.dart';
 import '../providers/pets.dart';
+import '../functions/error_dialog.dart';
 
 class SongPlaybackCard extends StatefulWidget {
   final int index;
@@ -57,7 +58,7 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
         }
       });
     } catch (e) {
-      //print("Error: $e");
+      showErrorDialog(context, e);
     }
   }
 
@@ -101,9 +102,12 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
             onChanged: (name) {
               newName = name;
             },
-            onFieldSubmitted: (name) {
-              song.rename(name);
-              song.renameOnServer();
+            onFieldSubmitted: (name) async {
+              try {
+                await song.rename(name);
+              } catch(e) {
+                showErrorDialog(context, e);
+              }
               Navigator.of(ctx).pop();
             },
             validator: (value) {
@@ -120,9 +124,12 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
               }),
           FlatButton(
             child: Text('RENAME'),
-            onPressed: () {
-              song.rename(newName);
-              song.renameOnServer();
+            onPressed: () async {
+              try{
+                await song.rename(newName);
+              } catch(e) {
+                showErrorDialog(context, e);
+              }
               Navigator.of(ctx).pop();
             },
           ),
@@ -150,15 +157,12 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
           leading: IconButton(
             color: Colors.blue,
             onPressed: () {
-              // Playback bark.
               playSong();
             },
             icon: Icon(Icons.play_arrow, color: Colors.black, size: 40),
           ),
           title: GestureDetector(
-            onTap: () {
-              renameSong(song, pet);
-            },
+            onTap: () => renameSong(song, pet),
             child: RichText(
               text: TextSpan(
                 style: TextStyle(fontSize: 18),

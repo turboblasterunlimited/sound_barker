@@ -9,8 +9,8 @@ class RestAPI {
 
   Future<String> createSong(cropId, songTitle, petId) async {
     http.Response response;
-    String body =
-        json.encode({'uuid': cropId, 'name': songTitle, 'user_id': '999', 'pet_id': petId});
+    String body = json.encode(
+        {'uuid': cropId, 'name': songTitle, 'user_id': '999', 'pet_id': petId});
     //print(body);
     final url = 'http://165.227.178.14/sequence_audio';
     try {
@@ -24,6 +24,25 @@ class RestAPI {
       throw error;
     }
     print("create pet on server response body: ${response.body}");
+    return response.body;
+  }
+
+  Future<String> renameSongOnServer(song) async {
+    http.Response response;
+    String body = json.encode({'name': song.name, "user_id": "999"});
+    //print(body);
+    final url = 'http://165.227.178.14/sequence/${song.fileId}';
+    try {
+      response = await http.patch(
+        url,
+        body: body,
+        headers: jsonHeaders,
+      );
+    } catch (error) {
+      print(error);
+      throw error;
+    }
+    //print("Edit bark name response body: ${response.body}");
     return response.body;
   }
 

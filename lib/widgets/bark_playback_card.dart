@@ -7,6 +7,7 @@ import 'dart:io';
 import '../providers/barks.dart';
 import '../providers/pets.dart';
 import '../providers/pet_image_controller.dart';
+import '../functions/error_dialog.dart';
 
 class BarkPlaybackCard extends StatefulWidget {
   final int index;
@@ -78,11 +79,17 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
               }),
           FlatButton(
               child: Text('Yes. Delete it.'),
-              onPressed: () {
+              onPressed: () async {
+                try {
+                  await bark.deleteFromServer();
+                } catch (e) {
+                  showErrorDialog(context, e);
+                  return;
+                } finally {
+                  Navigator.of(ctx).pop();
+                }
                 pet.removeBark(bark);
                 barks.removeBark(bark);
-                bark.deleteFromServer();
-                Navigator.of(ctx).pop();
               })
         ],
       ),
@@ -104,8 +111,11 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
               newName = name;
             },
             onFieldSubmitted: (name) {
-              bark.rename(name);
-              bark.renameOnServer();
+              try {
+                bark.rename(name);
+              } catch (e) {
+                showErrorDialog(context, e);
+              }
               Navigator.of(ctx).pop();
             },
             validator: (value) {
@@ -123,8 +133,11 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
           FlatButton(
             child: Text('RENAME'),
             onPressed: () {
-              bark.rename(newName);
-              bark.renameOnServer();
+              try {
+                bark.rename(newName);
+              } catch (e) {
+                showErrorDialog(context, e);
+              }
               Navigator.of(ctx).pop();
             },
           ),
@@ -159,7 +172,11 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
           ),
           title: GestureDetector(
             onTap: () {
-              renameBark(bark, pet);
+              try {
+                renameBark(bark, pet);
+              } catch (e) {
+                showErrorDialog(context, e);
+              }
             },
             child: RichText(
               text: TextSpan(

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import '../services/gcloud.dart';
 import 'dart:convert';
+
 import '../services/rest_api.dart';
 
 class Songs with ChangeNotifier, Gcloud {
@@ -31,7 +32,7 @@ class Songs with ChangeNotifier, Gcloud {
   }
 }
 
-class Song with ChangeNotifier, Gcloud {
+class Song with ChangeNotifier, Gcloud, RestAPI {
   String name;
   String fileUrl;
   String filePath;
@@ -42,6 +43,16 @@ class Song with ChangeNotifier, Gcloud {
 
   void playSong() {}
 
+  Future<List> renameSong(responseBody) async {
+    try {
+      await renameSongOnServer(this);
+    } catch (e) {
+      throw e;
+    }
+    this.name = name;
+    notifyListeners();
+  }
+
   Future<List> retrieveSong(responseBody) async {
     //print(responseBody);
     Map responseData = json.decode(responseBody);
@@ -51,6 +62,5 @@ class Song with ChangeNotifier, Gcloud {
     this.fileUrl = responseData["bucket_fp"];
     this.filePath = await downloadSoundFromBucket(fileUrl, fileId);
     // print("filePath for song: ${this.filePath}");
-
   }
 }
