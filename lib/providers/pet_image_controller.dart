@@ -9,6 +9,6 @@ class PetImageController with ChangeNotifier{
   }
 
   void triggerBark() async {
-    webViewController.evaluateJavascript("bark()");
+    webViewController.evaluateJavascript("bark(.1, .05)");
   }
 }

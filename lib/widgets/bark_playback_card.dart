@@ -79,17 +79,17 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
               }),
           FlatButton(
               child: Text('Yes. Delete it.'),
-              onPressed: () async {
+              onPressed: () {
                 try {
-                  await bark.deleteFromServer();
+                  barks.removeBark(bark);
+                  pet.removeBark(bark);
+                  bark.removeFromStorage();
+                  bark.deleteFromServer();
                 } catch (e) {
                   showErrorDialog(context, e);
-                  return;
                 } finally {
                   Navigator.of(ctx).pop();
                 }
-                pet.removeBark(bark);
-                barks.removeBark(bark);
               })
         ],
       ),

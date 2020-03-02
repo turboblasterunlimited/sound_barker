@@ -1,10 +1,11 @@
 import 'package:flutter/foundation.dart';
 import '../services/gcloud.dart';
 import 'dart:convert';
+import 'dart:io';
 
 import '../services/rest_api.dart';
 
-class Songs with ChangeNotifier, Gcloud {
+class Songs with ChangeNotifier, Gcloud, RestAPI {
   List<Song> all = [];
 
   void addSong(bark) {
@@ -41,19 +42,29 @@ class Song with ChangeNotifier, Gcloud, RestAPI {
 
   Song({this.filePath, this.name, this.fileUrl, this.fileId, this.petId});
 
-  void playSong() {}
-
-  Future<List> renameSong(responseBody) async {
+  void removeFromStorage() {
     try {
-      await renameSongOnServer(this);
+      File(filePath).deleteSync(recursive: false);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<String> deleteFromServer() {
+    return deleteSongFromServer(this);
+  }
+
+  void rename(newName) async {
+    try {
+      await renameSongOnServer(this, newName);
     } catch (e) {
       throw e;
     }
-    this.name = name;
+    this.name = newName;
     notifyListeners();
   }
 
-  Future<List> retrieveSong(responseBody) async {
+  void retrieveSong(responseBody) async {
     //print(responseBody);
     Map responseData = json.decode(responseBody);
     this.fileId = responseData["uuid"];

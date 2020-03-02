@@ -1,6 +1,7 @@
 import 'package:uuid/uuid.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:convert';
+import 'dart:io';
 
 import '../services/gcloud.dart';
 import '../services/rest_api.dart';
@@ -24,12 +25,13 @@ class Barks with ChangeNotifier, Gcloud {
       //print("filePath for crop: $filePath");
     }
   }
-  
+
   List get allBarks {
     return all;
   }
 
   void removeBark(barkToDelete) {
+    barkToDelete.removeFromStorage();
     all.removeWhere((bark) {
       return bark.fileId == barkToDelete.fileId;
     });
@@ -53,10 +55,18 @@ class Bark with ChangeNotifier, Gcloud, RestAPI {
     this.fileId = fileId == null ? Uuid().v4() : fileId;
   }
 
+  void removeFromStorage() {
+    try {
+      File(filePath).delete();
+    } catch (e) {
+      print(e);
+    }
+  }
+
   Future<String> rename(name) async {
     try {
-     await renameBarkOnServer(this);
-    } catch(e) {
+      await renameBarkOnServer(this);
+    } catch (e) {
       throw e;
     }
     this.name = name;

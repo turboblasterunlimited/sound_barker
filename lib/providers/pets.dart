@@ -59,4 +59,11 @@ class Pet with ChangeNotifier, Gcloud, RestAPI {
     });
     notifyListeners();
   }
+
+  void removeSong(songToDelete) {
+    barks.removeWhere((song) {
+      return song.fileId == songToDelete.fileId;
+    });
+    notifyListeners();
+  }
 }

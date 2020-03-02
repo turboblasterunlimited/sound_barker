@@ -27,9 +27,9 @@ class RestAPI {
     return response.body;
   }
 
-  Future<String> renameSongOnServer(song) async {
+  Future<String> renameSongOnServer(song, newName) async {
     http.Response response;
-    String body = json.encode({'name': song.name, "user_id": "999"});
+    String body = json.encode({'name': newName, "user_id": "999"});
     //print(body);
     final url = 'http://165.227.178.14/sequence/${song.fileId}';
     try {
@@ -42,7 +42,7 @@ class RestAPI {
       print(error);
       throw error;
     }
-    //print("Edit bark name response body: ${response.body}");
+    print("Edit bark name response body: ${response.body}");
     return response.body;
   }
 
@@ -62,6 +62,19 @@ class RestAPI {
       throw error;
     }
     //print("Edit bark name response body: ${response.body}");
+    return response.body;
+  }
+
+  Future<String> deleteSongFromServer(song) async {
+    http.Response response;
+    final url = 'http://165.227.178.14/sequence/${song.fileId}';
+    try {
+      response = await http.delete(url);
+    } catch (error) {
+      //print(error);
+      throw error;
+    }
+    //print("Delete bark response body: ${response.body}");
     return response.body;
   }
 

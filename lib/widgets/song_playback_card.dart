@@ -78,10 +78,16 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
           FlatButton(
               child: Text('Yes. Delete it.'),
               onPressed: () {
-                pet.removeSong(song);
-                songs.removeSong(song);
-                song.deleteFromServer();
-                Navigator.of(ctx).pop();
+                try {
+                  songs.removeSong(song);
+                  pet.removeSong(song);
+                  song.removeFromStorage();
+                  song.deleteFromServer();
+                } catch (e) {
+                  showErrorDialog(ctx, e.toString());
+                } finally {
+                  Navigator.of(ctx).pop();
+                }
               })
         ],
       ),
@@ -89,7 +95,18 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
   }
 
   void renameSong(song, pet) async {
-    String newName = song.name == null ? "${pet.name}'s song" : song.name;
+    String newName = song.name;
+
+    void _submitNameChange(ctx) async {
+      print("New name: $newName");
+      try {
+        await song.rename(newName);
+      } catch (e) {
+        showErrorDialog(context, e);
+      }
+      Navigator.of(ctx).pop();
+    }
+
     await showDialog<Null>(
       context: context,
       builder: (ctx) => SimpleDialog(
@@ -100,15 +117,10 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
           TextFormField(
             initialValue: newName,
             onChanged: (name) {
-              newName = name;
+              setState(() => newName = name);
             },
-            onFieldSubmitted: (name) async {
-              try {
-                await song.rename(name);
-              } catch(e) {
-                showErrorDialog(context, e);
-              }
-              Navigator.of(ctx).pop();
+            onFieldSubmitted: (name) {
+              _submitNameChange(ctx);
             },
             validator: (value) {
               if (value.isEmpty) {
@@ -124,13 +136,8 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
               }),
           FlatButton(
             child: Text('RENAME'),
-            onPressed: () async {
-              try{
-                await song.rename(newName);
-              } catch(e) {
-                showErrorDialog(context, e);
-              }
-              Navigator.of(ctx).pop();
+            onPressed: () {
+              _submitNameChange(ctx);
             },
           ),
         ],
@@ -140,7 +147,7 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
 
   @override
   Widget build(BuildContext context) {
-    final song = Provider.of<Song>(context, listen: false);
+    final song = Provider.of<Song>(context);
     final pet = Provider.of<Pets>(context, listen: false).getById(song.petId);
     final String placeholderName =
         "${pet.name}_${(widget.index + 1).toString()}";

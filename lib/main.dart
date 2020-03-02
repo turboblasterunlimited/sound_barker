@@ -42,18 +42,28 @@ class MyApp extends StatelessWidget {
   800: Color.fromRGBO(136, 14, 79, .9),
   900: Color.fromRGBO(136, 14, 79, 1),
 };
+
   @override
   Widget build(BuildContext context) {
+    Song song = Song(name: "Test", fileId: "9b6f1c1b-f9af-4430-b75c-3326ca121cc9", filePath: "/Users/tovinewman/Library/Developer/CoreSimulator/Devices/3FD6B298-8ED0-40F2-955F-5C12BB3D6AB4/data/Containers/Data/Application/7FF25BC5-0F53-41FE-9227-39C11056F60A/Documents/9b6f1c1b-f9af-4430-b75c-3326ca121cc9.aac");
+    Pet charles = Pet(name: "Charles");
+    charles.songs.add(song);
+    Pets allPets = Pets();
+    allPets.all.add(charles);
+
+    Songs songs = Songs();
+    songs.all.add(song);
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(
-          value: Pets(),
+          value: allPets,
         ),
         ChangeNotifierProvider.value(
           value: Barks(),
         ),
         ChangeNotifierProvider.value(
-          value: Songs(),
+          value: songs,
         ),
         ChangeNotifierProvider.value(
           value: PetImageController(),
