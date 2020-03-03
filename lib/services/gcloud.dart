@@ -26,7 +26,7 @@ class Gcloud {
   Future<String> downloadSoundFromBucket(fileUrl, fileId) async {
     String path = await appStoragePath();
     String filePath = path + '/' + fileId + '.aac';
-    if (await File(fileUrl).exists()) return filePath;
+    if (await File(filePath).exists()) return filePath;
 
     Bucket bucket = await accessBucket();
     bucket.read(fileUrl).pipe(new File(filePath).openWrite());
