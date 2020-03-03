@@ -4,7 +4,7 @@ import '../widgets/song_list.dart';
 import '../widgets/bark_list.dart';
 import '../widgets/image_list.dart';
 
-class PetTabview extends StatelessWidget {
+class InterfaceSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return Flexible(
       flex: 2,

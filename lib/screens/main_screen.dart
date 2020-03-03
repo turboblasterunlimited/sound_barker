@@ -4,19 +4,19 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../providers/barks.dart';
 import '../providers/songs.dart';
-import '../widgets/pet_tabview.dart';
+import '../widgets/interface_selector.dart';
 import '../widgets/app_drawer.dart';
-import '../widgets/pet_image.dart';
+import '../widgets/singing_image.dart';
 
-class RecordBarksScreen extends StatefulWidget {
-  static const routeName = 'record-bark-screen';
+class MainScreen extends StatefulWidget {
+  static const routeName = 'main-screen';
   bool _showSpinner = false;
 
   @override
-  _RecordBarksScreenState createState() => _RecordBarksScreenState();
+  _MainScreenState createState() => _MainScreenState();
 }
 
-class _RecordBarksScreenState extends State<RecordBarksScreen> {
+class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     Barks barks = Provider.of<Barks>(context, listen: false);
@@ -36,7 +36,6 @@ class _RecordBarksScreenState extends State<RecordBarksScreen> {
               Icons.cloud_download,
             ),
             onPressed: () async {
-
               setState(() => widget._showSpinner = true);
               await downloadEverything();
               setState(() => widget._showSpinner = false);
@@ -51,7 +50,7 @@ class _RecordBarksScreenState extends State<RecordBarksScreen> {
       drawer: AppDrawer(),
       body: Column(
         children: <Widget>[
-          PetImage(),
+          SingingImage(),
           Visibility(
             visible: widget._showSpinner,
             child: Flexible(
@@ -65,7 +64,7 @@ class _RecordBarksScreenState extends State<RecordBarksScreen> {
               ),
             ),
           ),
-          Visibility(visible: !widget._showSpinner, child: PetTabview()),
+          Visibility(visible: !widget._showSpinner, child: InterfaceSelector()),
         ],
       ),
     );

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../screens/record_barks_screen.dart';
-import '../screens/make_songs_screen.dart';
+import '../screens/main_screen.dart';
 
 class AppDrawer extends StatelessWidget {
   @override
@@ -23,18 +22,18 @@ class AppDrawer extends StatelessWidget {
                   title: Text('Recording Booth'),
                   onTap: () {
                     Navigator.of(context)
-                        .pushReplacementNamed(RecordBarksScreen.routeName);
+                        .pushReplacementNamed(MainScreen.routeName);
                   },
                 ),
                 Divider(),
-                ListTile(
-                    leading: Icon(Icons.pets),
-                    title: Text('Make Songs'),
-                    onTap: () {
-                      Navigator.of(context)
-                          .pushReplacementNamed(MakeSongsScreen.routeName);
-                    }),
-                Divider(),
+                // ListTile(
+                //     leading: Icon(Icons.pets),
+                //     title: Text('Make Songs'),
+                //     onTap: () {
+                //       Navigator.of(context)
+                //           .pushReplacementNamed(MakeSongsScreen.routeName);
+                //     }),
+                // Divider(),
               ],
             ),
           ),

@@ -6,8 +6,6 @@ import '../widgets/bark_select_card.dart';
 
 class CreatableSong extends StatelessWidget {
   void createSong(context) async {
-    String barkName;
-    String barkId;
     Barks barks = Provider.of<Barks>(context, listen: false);
     await showDialog<Null>(
       context: context,

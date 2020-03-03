@@ -4,13 +4,13 @@ import 'package:song_barker/providers/image_controller.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:provider/provider.dart';
 
-class PetImage extends StatefulWidget {
+class SingingImage extends StatefulWidget {
 
   @override
-  _PetImageState createState() => _PetImageState();
+  _SingingImageState createState() => _SingingImageState();
 }
 
-class _PetImageState extends State<PetImage> {
+class _SingingImageState extends State<SingingImage> {
   Completer<WebViewController> _controller = Completer<WebViewController>();
   // WebViewController controller;
 
@@ -29,7 +29,7 @@ class _PetImageState extends State<PetImage> {
           Provider.of<ImageController>(context, listen: false).mountController(c);
 
         },
-        initialUrl: 'http://165.227.178.14/sample_animation',
+        // initialUrl: 'http://165.227.178.14/sample_animation',
         javascriptMode: JavascriptMode.unrestricted,
         // javascriptChannels: <JavascriptChannel> [
 

@@ -82,7 +82,6 @@ class Song with ChangeNotifier, Gcloud, RestAPI {
     //print(responseBody);
     Map responseData = json.decode(responseBody);
     this.fileId = responseData["uuid"];
-    this.petId = responseData["pet_id"].toString();
     this.name = responseData["name"];
     this.fileUrl = responseData["bucket_fp"];
     this.filePath = await downloadSoundFromBucket(fileUrl, fileId);

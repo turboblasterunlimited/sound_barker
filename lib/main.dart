@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import './screens/pet_details_screen.dart';
-import './screens/record_barks_screen.dart';
-import './screens/make_songs_screen.dart';
-
+import './screens/main_screen.dart';
 import './providers/images.dart';
 import './providers/barks.dart';
 import './providers/songs.dart';
@@ -57,7 +54,6 @@ class MyApp extends StatelessWidget {
 
     return MultiProvider(
       providers: [
-
         ChangeNotifierProvider.value(
           value: Barks(),
         ),
@@ -87,11 +83,9 @@ class MyApp extends StatelessWidget {
               buttonColor: Colors.amber[200],
             ),
           ),
-          home: RecordBarksScreen(),
+          home: MainScreen(),
           routes: {
-            RecordBarksScreen.routeName: (ctx) => RecordBarksScreen(),
-            PetDetailsScreen.routeName: (ctx) => PetDetailsScreen(),
-            MakeSongsScreen.routeName: (ctx) => MakeSongsScreen(),
+            MainScreen.routeName: (ctx) => MainScreen(),
           }),
     );
   }
