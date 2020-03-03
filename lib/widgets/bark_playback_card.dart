@@ -1,70 +1,47 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_sound/flutter_sound.dart';
-import 'dart:async';
+import 'package:provider/provider.dart';
 import 'dart:io';
 
 import '../providers/barks.dart';
-import '../providers/pets.dart';
 import '../providers/pet_image_controller.dart';
 import '../functions/error_dialog.dart';
 
 class BarkPlaybackCard extends StatefulWidget {
   final int index;
   final Bark bark;
-  BarkPlaybackCard(this.index, this.bark);
+  final FlutterSound flutterSound;
+  BarkPlaybackCard(this.index, this.bark, this.flutterSound);
 
   @override
   _BarkPlaybackCardState createState() => _BarkPlaybackCardState();
 }
 
 class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
-  FlutterSound flutterSound;
-  StreamSubscription _playerSubscription;
-
-  bool _isPlaying = false;
-
-  @override
-  void initState() {
-    super.initState();
-    flutterSound = new FlutterSound();
-    flutterSound.setSubscriptionDuration(0.01);
-    flutterSound.setDbPeakLevelUpdate(0.8);
-    flutterSound.setDbLevelEnabled(true);
-  }
-
+  
   @override
   void dispose() {
-    flutterSound.stopPlayer();
+    widget.flutterSound.stopPlayer();
     super.dispose();
   }
 
   void playBark() async {
     Provider.of<PetImageController>(context, listen: false).triggerBark();
     String path = widget.bark.filePath;
-    //print('playing bark!');
-    //print(path);
+  
     if (File(path).exists() == null) {
-      //print("No audio file found at: $path");
       return;
     }
     try {
-      path = await flutterSound.startPlayer(path);
-      await flutterSound.setVolume(1.0);
+      path = await widget.flutterSound.startPlayer(path);
+      await widget.flutterSound.setVolume(1.0);
 
-      _playerSubscription = flutterSound.onPlayerStateChanged.listen((e) {
-        if (e != null) {
-          this.setState(() {
-            this._isPlaying = true;
-          });
-        }
-      });
     } catch (e) {
       print("Error: $e");
     }
   }
 
-  void deleteBark(bark, pet) async {
+  void deleteBark(bark) async {
     final barks = Provider.of<Barks>(context, listen: false);
     await showDialog<Null>(
       context: context,
@@ -82,7 +59,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
               onPressed: () {
                 try {
                   barks.removeBark(bark);
-                  pet.removeBark(bark);
+                  // pet.removeBark(bark);
                   bark.removeFromStorage();
                   bark.deleteFromServer();
                 } catch (e) {
@@ -96,8 +73,8 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
     );
   }
 
-  void renameBark(bark, pet) async {
-    String newName = bark.name == null ? "${pet.name}'s bark" : bark.name;
+  void renameBark(bark) async {
+    String newName = bark.name;
     await showDialog<Null>(
       context: context,
       builder: (ctx) => SimpleDialog(
@@ -149,11 +126,11 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
   @override
   Widget build(BuildContext context) {
     final bark = Provider.of<Bark>(context, listen: false);
-    final pet = Provider.of<Pets>(context, listen: false).getById(bark.petId);
-    final String placeholderName =
-        "${pet.name}_${(widget.index + 1).toString()}";
+    // final pet = Provider.of<Pets>(context, listen: false).getById(bark.petId);
+    // final String placeholderName =
+    //     "${pet.name}_${(widget.index + 1).toString()}";
 
-    String barkName = bark.name == null ? placeholderName : bark.name;
+    String barkName = bark.name;
     return Card(
       margin: EdgeInsets.symmetric(
         horizontal: 5,
@@ -165,7 +142,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
           leading: IconButton(
             color: Colors.blue,
             onPressed: () {
-              // Playback bark.
+              widget.flutterSound.stopPlayer();
               playBark();
             },
             icon: Icon(Icons.play_arrow, color: Colors.black, size: 40),
@@ -173,7 +150,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
           title: GestureDetector(
             onTap: () {
               try {
-                renameBark(bark, pet);
+                renameBark(bark);
               } catch (e) {
                 showErrorDialog(context, e);
               }
@@ -195,10 +172,10 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
               ),
             ),
           ),
-          subtitle: Text(pet.name),
+          // subtitle: Text(pet.name),
           trailing: IconButton(
             onPressed: () {
-              deleteBark(bark, pet);
+              deleteBark(bark);
             },
             icon: Icon(Icons.delete, color: Colors.redAccent, size: 30),
           ),

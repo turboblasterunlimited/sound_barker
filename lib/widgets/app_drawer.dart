@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../providers/pets.dart';
 import '../screens/record_barks_screen.dart';
 import '../screens/pet_details_screen.dart';
-import '../screens/all_songs_screen.dart';
 import '../screens/make_songs_screen.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -37,14 +36,6 @@ class AppDrawer extends StatelessWidget {
                     onTap: () {
                       Navigator.of(context)
                           .pushReplacementNamed(MakeSongsScreen.routeName);
-                    }),
-                Divider(),
-                ListTile(
-                    leading: Icon(Icons.library_music),
-                    title: Text('All Songs'),
-                    onTap: () {
-                      Navigator.of(context)
-                          .pushReplacementNamed(AllSongsScreen.routeName);
                     }),
                 Divider(),
               ],

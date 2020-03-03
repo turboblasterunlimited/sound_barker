@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_sound/flutter_sound.dart';
-import 'package:song_barker/screens/all_songs_screen.dart';
 import 'dart:async';
 import 'dart:io';
 

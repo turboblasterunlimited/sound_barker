@@ -5,8 +5,7 @@ import 'package:googleapis_auth/auth_io.dart' as auth;
 import 'package:path_provider/path_provider.dart';
 
 
-class Gcloud {  
-
+class Gcloud {
   Future<String> appStoragePath() async {
     Directory appDocDir = await getApplicationDocumentsDirectory();
     return appDocDir.path;
@@ -25,9 +24,11 @@ class Gcloud {
   }
 
   Future<String> downloadSoundFromBucket(fileUrl, fileId) async {
-    Bucket bucket = await accessBucket();
     String path = await appStoragePath();
     String filePath = path + '/' + fileId + '.aac';
+    if (await File(fileUrl).exists()) return filePath;
+
+    Bucket bucket = await accessBucket();
     bucket.read(fileUrl).pipe(new File(filePath).openWrite());
     return filePath;
   }

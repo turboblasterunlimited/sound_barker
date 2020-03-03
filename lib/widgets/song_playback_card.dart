@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_sound/flutter_sound.dart';
-import 'dart:async';
 import 'dart:io';
 
 import '../providers/songs.dart';
@@ -11,58 +10,36 @@ import '../functions/error_dialog.dart';
 class SongPlaybackCard extends StatefulWidget {
   final int index;
   final Song song;
-  SongPlaybackCard(this.index, this.song);
+  final FlutterSound flutterSound;
+  SongPlaybackCard(this.index, this.song, this.flutterSound);
 
   @override
   _SongPlaybackCardState createState() => _SongPlaybackCardState();
 }
 
 class _SongPlaybackCardState extends State<SongPlaybackCard> {
-  FlutterSound flutterSound;
-  StreamSubscription _playerSubscription;
-
-  bool _isPlaying = false;
-
-  @override
-  void initState() {
-    super.initState();
-    flutterSound = new FlutterSound();
-    flutterSound.setSubscriptionDuration(0.01);
-    flutterSound.setDbPeakLevelUpdate(0.8);
-    flutterSound.setDbLevelEnabled(true);
-  }
 
   @override
   void dispose() {
-    flutterSound.stopPlayer();
+    widget.flutterSound.stopPlayer();
     super.dispose();
   }
 
   void playSong() async {
     String path = widget.song.filePath;
-    //print('playing bark!');
-    //print(path);
     if (File(path).exists() == null) {
-      //print("No audio file found at: $path");
       return;
     }
     try {
-      path = await flutterSound.startPlayer(path);
-      await flutterSound.setVolume(1.0);
-
-      _playerSubscription = flutterSound.onPlayerStateChanged.listen((e) {
-        if (e != null) {
-          this.setState(() {
-            this._isPlaying = true;
-          });
-        }
-      });
+      widget.flutterSound.stopPlayer();
+      path = await widget.flutterSound.startPlayer(path);
+      await widget.flutterSound.setVolume(1.0);
     } catch (e) {
       showErrorDialog(context, e);
     }
   }
 
-  void deleteSong(song, pet) async {
+  void deleteSong(song) async {
     final songs = Provider.of<Songs>(context, listen: false);
     await showDialog<Null>(
       context: context,
@@ -80,7 +57,6 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
               onPressed: () {
                 try {
                   songs.removeSong(song);
-                  pet.removeSong(song);
                   song.removeFromStorage();
                   song.deleteFromServer();
                 } catch (e) {
@@ -94,7 +70,7 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
     );
   }
 
-  void renameSong(song, pet) async {
+  void renameSong(song) async {
     String newName = song.name;
 
     void _submitNameChange(ctx) async {
@@ -148,11 +124,11 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
   @override
   Widget build(BuildContext context) {
     final song = Provider.of<Song>(context);
-    final pet = Provider.of<Pets>(context, listen: false).getById(song.petId);
-    final String placeholderName =
-        "${pet.name}_${(widget.index + 1).toString()}";
+    // final pet = Provider.of<Pets>(context, listen: false).getById(song.petId);
+    // final String placeholderName =
+    //     "${pet.name}_${(widget.index + 1).toString()}";
 
-    String songName = song.name == null ? placeholderName : song.name;
+    String songName = song.name;
     return Card(
       margin: EdgeInsets.symmetric(
         horizontal: 5,
@@ -169,7 +145,7 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
             icon: Icon(Icons.play_arrow, color: Colors.black, size: 40),
           ),
           title: GestureDetector(
-            onTap: () => renameSong(song, pet),
+            onTap: () => renameSong(song),
             child: RichText(
               text: TextSpan(
                 style: TextStyle(fontSize: 18),
@@ -187,10 +163,10 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
               ),
             ),
           ),
-          subtitle: Text(pet.name),
+          // subtitle: Text(pet.name),
           trailing: IconButton(
             onPressed: () {
-              deleteSong(song, pet);
+              deleteSong(song);
             },
             icon: Icon(Icons.delete, color: Colors.redAccent, size: 30),
           ),

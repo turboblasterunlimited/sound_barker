@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_sound/flutter_sound.dart';
 
+import '../providers/sound_controller.dart';
 import 'package:song_barker/widgets/song_playback_card.dart';
 import '../providers/songs.dart';
 import 'creatable_song.dart';
@@ -13,7 +15,6 @@ class SongList extends StatefulWidget {
 }
 
 class _SongListState extends State<SongList> {
-
   void selectBarksForSongDialog(context) async {
     Barks barks = Provider.of<Barks>(context, listen: false);
     await showDialog<Null>(
@@ -88,6 +89,8 @@ class _SongListState extends State<SongList> {
   @override
   Widget build(BuildContext context) {
     Songs songs = Provider.of<Songs>(context);
+    FlutterSound flutterSound =
+        Provider.of<SoundController>(context).flutterSound;
 
     return Column(
       children: <Widget>[
@@ -112,7 +115,7 @@ class _SongListState extends State<SongList> {
             itemCount: songs.all.length,
             itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
               value: songs.all[i],
-              child: SongPlaybackCard(i, songs.all[i]),
+              child: SongPlaybackCard(i, songs.all[i], flutterSound),
             ),
           ),
         ),

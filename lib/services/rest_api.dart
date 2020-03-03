@@ -65,6 +65,32 @@ class RestAPI {
     return response.body;
   }
 
+  Future<String> retrieveAllSongsFromServer() async {
+    http.Response response;
+    final url = 'http://165.227.178.14/all/sequence/999';
+    try {
+      response = await http.get(url);
+    } catch (error) {
+      print(error);
+      throw error;
+    }
+    print("Get all Songs response body: ${response.body}");
+    return response.body;
+  }
+
+  Future<String> retrieveAllBarksFromServer() async {
+    http.Response response;
+    final url = 'http://165.227.178.14/all/crop/999';
+    try {
+      response = await http.get(url);
+    } catch (error) {
+      print(error);
+      throw error;
+    }
+    print("Get all Barks response body: ${response.body}");
+    return response.body;
+  }
+
   Future<String> deleteSongFromServer(song) async {
     http.Response response;
     final url = 'http://165.227.178.14/sequence/${song.fileId}';

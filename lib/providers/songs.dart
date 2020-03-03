@@ -21,14 +21,28 @@ class Songs with ChangeNotifier, Gcloud, RestAPI {
     notifyListeners();
   }
 
-  void downloadAllSongsFromBucket([List songs]) async {
+  // ALL SONGS THAT AREN'T HIDDEN UNLESS THEY EXIST
+  Future retrieveAllSongs() async {
+    String response = await retrieveAllSongsFromServer();
+    json.decode(response).forEach((serverSong) {
+      if(serverSong["hidden"] == "1") return;
+      Song song = Song(name: serverSong["name"], fileUrl: serverSong["bucket_fp"], fileId: serverSong["crop_id"]);
+      if (all.indexWhere((song) => song.fileId == serverSong["crop_id"]) == -1) {
+        all.add(song);
+      }
+    });
+    await _downloadAllSongsFromBucket();
+    notifyListeners();
+  }
+
+  // downloadSoundFromBucket only downloads songs that don't already exist on the FS
+  Future _downloadAllSongsFromBucket([List songs]) async {
     songs = songs == null ? all : songs;
     int soundCount = songs.length;
     for (var i = 0; i < soundCount; i++) {
       String filePath =
           await downloadSoundFromBucket(songs[i].fileUrl, songs[i].fileId);
       songs[i].filePath = filePath;
-      // print("filePath for song: $filePath");
     }
   }
 }

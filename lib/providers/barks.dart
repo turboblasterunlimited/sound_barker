@@ -6,7 +6,7 @@ import 'dart:io';
 import '../services/gcloud.dart';
 import '../services/rest_api.dart';
 
-class Barks with ChangeNotifier, Gcloud {
+class Barks with ChangeNotifier, Gcloud, RestAPI {
   List<Bark> all = [];
 
   void addBark(bark) {
@@ -15,14 +15,26 @@ class Barks with ChangeNotifier, Gcloud {
     //print("All the barks: $all");
   }
 
-  void downloadAllBarksFromBucket([List barks]) async {
+  Future retrieveAllBarks() async {
+    String response = await retrieveAllBarksFromServer();
+    json.decode(response).forEach((serverBark) {
+      if(serverBark["hidden"] == "1") return;
+      Bark bark = Bark(name: serverBark["name"], fileUrl: serverBark["bucket_fp"], fileId: serverBark["crop_id"]);
+      if (all.indexWhere((song) => song.fileId == serverBark["crop_id"]) == -1) {
+        all.add(bark);
+      }
+    });
+    await downloadAllBarksFromBucket();
+    notifyListeners();
+  }
+
+  Future downloadAllBarksFromBucket([List barks]) async {
     barks = barks == null ? all : barks;
     int barkCount = barks.length;
     for (var i = 0; i < barkCount; i++) {
       String filePath =
           await downloadSoundFromBucket(barks[i].fileUrl, barks[i].fileId);
       barks[i].filePath = filePath;
-      //print("filePath for crop: $filePath");
     }
   }
 

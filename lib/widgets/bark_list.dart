@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_sound/flutter_sound.dart';
 
 import '../widgets/bark_playback_card.dart';
 import './bark_playback_card.dart';
 import '../widgets/record_button.dart';
 import '../providers/barks.dart';
+import '../providers/sound_controller.dart';
 
 class BarkList extends StatefulWidget {
   @override
@@ -14,6 +16,14 @@ class BarkList extends StatefulWidget {
 class _BarkListState extends State<BarkList> {
   @override
   Widget build(BuildContext context) {
+    FlutterSound flutterSound =
+        Provider.of<SoundController>(context).flutterSound;
+
+    void dispose() {
+      flutterSound.stopPlayer();
+      super.dispose();
+    }
+
     final barks = Provider.of<Barks>(context);
 
     return Column(
@@ -28,7 +38,7 @@ class _BarkListState extends State<BarkList> {
             itemCount: barks.all.length,
             itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
               value: barks.all[i],
-              child: BarkPlaybackCard(i, barks.all[i]),
+              child: BarkPlaybackCard(i, barks.all[i], flutterSound),
             ),
           ),
         ),
