@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'dart:io';
 
 import '../providers/barks.dart';
-import '../providers/pet_image_controller.dart';
+import '../providers/image_controller.dart';
 import '../functions/error_dialog.dart';
 
 class BarkPlaybackCard extends StatefulWidget {
@@ -26,7 +26,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
   }
 
   void playBark() async {
-    Provider.of<PetImageController>(context, listen: false).triggerBark();
+    Provider.of<ImageController>(context, listen: false).triggerBark();
     String path = widget.bark.filePath;
   
     if (File(path).exists() == null) {
@@ -90,6 +90,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
             onFieldSubmitted: (name) {
               try {
                 bark.rename(name);
+                
               } catch (e) {
                 showErrorDialog(context, e);
               }
@@ -125,7 +126,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
 
   @override
   Widget build(BuildContext context) {
-    final bark = Provider.of<Bark>(context, listen: false);
+    final bark = Provider.of<Bark>(context);
     // final pet = Provider.of<Pets>(context, listen: false).getById(bark.petId);
     // final String placeholderName =
     //     "${pet.name}_${(widget.index + 1).toString()}";

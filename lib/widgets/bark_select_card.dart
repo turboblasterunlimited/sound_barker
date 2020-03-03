@@ -5,7 +5,6 @@ import 'dart:async';
 import 'dart:io';
 
 import '../providers/barks.dart';
-import '../providers/pets.dart';
 import '../providers/songs.dart';
 
 class BarkSelectCard extends StatefulWidget {
@@ -62,17 +61,15 @@ class _BarkSelectCardState extends State<BarkSelectCard> {
     }
   }
 
-  void createSong(songs, pet) async {
+  void createSong(songs) async {
     String responseBody = await widget.bark.createSongOnServerAndRetrieve();
     Song song = Song();
     song.retrieveSong(responseBody);
     songs.addSong(song);
-    pet.addSong(song);
   }
 
   @override
   Widget build(BuildContext context) {
-    final pet = Provider.of<Pets>(context, listen: false).getById(widget.bark.petId);
     final songs = Provider.of<Songs>(context, listen: false);
     return Card(
       margin: EdgeInsets.symmetric(
@@ -84,13 +81,13 @@ class _BarkSelectCardState extends State<BarkSelectCard> {
         child: ListTile(
           leading: IconButton(
             onPressed: () {
-              createSong(songs, pet);
+              createSong(songs);
               Navigator.of(context).pop();
             },
             icon: Icon(Icons.queue_music, color: Colors.blue, size: 30),
           ),
           title: Text(widget.bark.name),
-          subtitle: Text(pet.name),
+          // subtitle: Text(''),
           trailing: IconButton(
             color: Colors.blue,
             onPressed: () {

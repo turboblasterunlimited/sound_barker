@@ -19,11 +19,6 @@ class _BarkListState extends State<BarkList> {
     FlutterSound flutterSound =
         Provider.of<SoundController>(context).flutterSound;
 
-    void dispose() {
-      flutterSound.stopPlayer();
-      super.dispose();
-    }
-
     final barks = Provider.of<Barks>(context);
 
     return Column(

@@ -5,11 +5,10 @@ import './screens/pet_details_screen.dart';
 import './screens/record_barks_screen.dart';
 import './screens/make_songs_screen.dart';
 
-import './providers/pets.dart';
 import './providers/images.dart';
 import './providers/barks.dart';
 import './providers/songs.dart';
-import './providers/pet_image_controller.dart';
+import './providers/image_controller.dart';
 import './providers/sound_controller.dart';
 
 
@@ -58,9 +57,7 @@ class MyApp extends StatelessWidget {
 
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(
-          value: Pets(),
-        ),
+
         ChangeNotifierProvider.value(
           value: Barks(),
         ),
@@ -68,7 +65,7 @@ class MyApp extends StatelessWidget {
           value: Songs(),
         ),
         ChangeNotifierProvider.value(
-          value: PetImageController(),
+          value: ImageController(),
         ),
         ChangeNotifierProvider.value(
           value: Images(),

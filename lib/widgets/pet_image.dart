@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:song_barker/providers/pet_image_controller.dart';
+import 'package:song_barker/providers/image_controller.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -26,7 +26,7 @@ class _PetImageState extends State<PetImage> {
           child: WebView(
         onWebViewCreated: (WebViewController c) {
           _controller.complete(c);
-          Provider.of<PetImageController>(context, listen: false).mountController(c);
+          Provider.of<ImageController>(context, listen: false).mountController(c);
 
         },
         initialUrl: 'http://165.227.178.14/sample_animation',

@@ -103,11 +103,11 @@ class Bark with ChangeNotifier, Gcloud, RestAPI {
         Duration(seconds: 1), () => print('done')); // This is temporary.
     String responseBody = await splitRawBarkOnServer(fileId, petId);
     //print("Response body content: $responseBody");
-    List newBarks = retrieveCroppedBarks(responseBody);
+    List newBarks = parseCroppedBarks(responseBody);
     return newBarks;
   }
 
-  List retrieveCroppedBarks(response) {
+  List parseCroppedBarks(response) {
     //print(response);
     List newBarks = [];
     Map responseData = json.decode(response);

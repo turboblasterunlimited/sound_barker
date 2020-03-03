@@ -23,7 +23,7 @@ class RestAPI {
       //print(error);
       throw error;
     }
-    print("create pet on server response body: ${response.body}");
+    print("create Song on server response body: ${response.body}");
     return response.body;
   }
 
@@ -117,31 +117,12 @@ class RestAPI {
     return response.body;
   }
 
-  Future<String> createPetOnServer(petName) async {
-    http.Response response;
-    String body = json.encode({'name': petName, 'user_id': '999'});
-    //print(body);
-    final url = 'http://165.227.178.14/pet';
-    try {
-      response = await http.post(
-        url,
-        body: body,
-        headers: jsonHeaders,
-      );
-    } catch (error) {
-      //print(error);
-      throw error;
-    }
-    //print("create pet on server response body: ${response.body}");
-    return response.body;
-  }
-
-  Future<String> splitRawBarkOnServer(fileId, petId) async {
+  Future<String> splitRawBarkOnServer(fileId, imageName) async {
     http.Response response;
     String body = json.encode({
       'uuid': fileId,
       'user_id': '999',
-      'pet_id': petId,
+      'name': imageName,
     });
     //print(body);
     final url = 'http://165.227.178.14/split_audio';
@@ -159,12 +140,12 @@ class RestAPI {
     return response.body;
   }
 
-  Future<void> notifyServerRawBarkInBucket(fileId, petId) async {
+  Future<void> notifyServerRawBarkInBucket(fileId, imageName) async {
     http.Response response;
     String body = json.encode({
       'user_id': '999',
       'uuid': fileId,
-      'pet_id': petId,
+      'name': imageName,
     });
     //print(body);
     // User ID hardcoded as 999 for now.

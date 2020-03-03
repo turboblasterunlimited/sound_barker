@@ -4,7 +4,6 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'dart:io';
 
 import '../providers/songs.dart';
-import '../providers/pets.dart';
 import '../functions/error_dialog.dart';
 
 class SongPlaybackCard extends StatefulWidget {

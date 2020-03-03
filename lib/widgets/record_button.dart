@@ -8,8 +8,6 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'dart:io';
 
 import '../providers/barks.dart';
-import '../providers/pets.dart';
-import '../widgets/pet_select_card.dart';
 
 enum t_MEDIA {
   FILE,
@@ -72,7 +70,6 @@ class _RecordButtonState extends State<RecordButton> {
       });
       _dbPeakSubscription =
           flutterSound.onRecorderDbPeakChanged.listen((value) {
-        //print("got update -> $value");
         setState(() {
           this._dbLevel = value;
         });
@@ -83,7 +80,6 @@ class _RecordButtonState extends State<RecordButton> {
         this._path[_codec.index] = filePath;
       });
     } catch (err) {
-      //print('startRecorder error: $err');
       setState(() {
         this._isRecording = false;
       });
@@ -94,9 +90,7 @@ class _RecordButtonState extends State<RecordButton> {
     setState(() {
       this._isRecording = false;
     });
-    final pets = Provider.of<Pets>(context, listen: false);
-    String petId;
-    String petName = 'Peter Barker';
+    String imageName;
 
     try {
       String result = await flutterSound.stopRecorder();
@@ -112,88 +106,24 @@ class _RecordButtonState extends State<RecordButton> {
     } catch (err) {
       //print('stopRecorder error: $err');
     }
-    int petsCount = pets.all.length;
-    await showDialog<Null>(
-      context: context,
-      builder: (ctx) => SimpleDialog(
-        title: Text('Who made that noise?'),
-        contentPadding: EdgeInsets.all(10),
-        titlePadding: EdgeInsets.all(10),
-        children: <Widget>[
-          Visibility(
-            visible: petsCount != 0,
-            child: DropdownButton<String>(
-              items: pets.all.map((pet) {
-                return DropdownMenuItem<String>(
-                  value: pet.id,
-                  child: Text(
-                    pet.name,
-                  ),
-                );
-              }).toList(),
-              onChanged: (id) {
-                setState(() {
-                  petId = id;
-                  petName = pets.getById(id).name;
-                  Navigator.of(ctx).pop();
-                });
-              },
-              value: null,
-              hint: Text("Select your pet."),
-              elevation: 2,
-              // style: TextStyle(color: PURPLE, fontSize: 30),
-              isDense: true,
-              iconSize: 40.0,
-            ),
-          ),
-          TextFormField(
-            initialValue: petName,
-            decoration: InputDecoration(
-                labelText: pets.all.length == 0
-                    ? 'Who was recorded?'
-                    : 'Someone else?'),
-            onFieldSubmitted: (name) {
-              petName = name;
-              petId = null;
-              Navigator.of(ctx).pop();
-            },
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'Please provide a name.';
-              }
-              return null;
-            },
-          )
-        ],
-      ),
-    );
-    // if creating a new pet
-    if (petId == null) {
-      Pet pet = await Pet(name: petName).createAndSyncWithServer();
-      pets.all.add(pet);
-      petId = pet.id;
-    }
+    
+  
 
-    Bark rawBark = Bark(petId: petId, name: petName, filePath: filePath);
+    Bark rawBark = Bark(name: imageName, filePath: filePath);
     List croppedBarks = await rawBark.uploadBarkAndRetrieveCroppedBarks();
     //print("Upload and Retrieve Cropped Barks checkpoint");
     Barks barks = Provider.of<Barks>(context, listen: false);
-    addCroppedBarksToPetAndAllBarks(barks, petId, croppedBarks);
+    addCroppedBarksToAllBarks(barks, croppedBarks);
     barks.downloadAllBarksFromBucket(croppedBarks);
   }
 
-  void addCroppedBarksToPetAndAllBarks(allBarks, petId, croppedBarks) {
-    Pet pet = Provider.of<Pets>(context, listen: false).getById(petId);
+  void addCroppedBarksToAllBarks(allBarks, croppedBarks) {
     int length = croppedBarks.length;
     for (var i = 0; i < length; i++) {
       setState(() {
         allBarks.addBark(croppedBarks[i]);
-        pet.addBark(croppedBarks[i]);
-        // Must ALWAYS add bark to both pet and Barks.all
       });
     }
-    //print(" Cropped Barks: ${pet.barks}");
-    //print("All Barks: ${allBarks.allBarks}");
   }
 
   Future<bool> fileExists(String path) async {
