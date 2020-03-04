@@ -27,7 +27,7 @@ class Gcloud {
     String path = await appStoragePath();
     String filePath = path + '/' + fileId + '.aac';
     if (await File(filePath).exists()) return filePath;
-
+    print("FILE PATH DOES NOT EXIST! $filePath");
     Bucket bucket = await accessBucket();
     bucket.read(fileUrl).pipe(new File(filePath).openWrite());
     return filePath;

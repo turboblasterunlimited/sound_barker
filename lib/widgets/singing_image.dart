@@ -29,7 +29,7 @@ class _SingingImageState extends State<SingingImage> {
           Provider.of<ImageController>(context, listen: false).mountController(c);
 
         },
-        // initialUrl: 'http://165.227.178.14/sample_animation',
+        initialUrl: 'http://165.227.178.14/sample_animation',
         javascriptMode: JavascriptMode.unrestricted,
         // javascriptChannels: <JavascriptChannel> [
 

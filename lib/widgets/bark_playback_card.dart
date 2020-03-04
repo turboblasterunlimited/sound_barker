@@ -59,7 +59,6 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
               onPressed: () {
                 try {
                   barks.removeBark(bark);
-                  // pet.removeBark(bark);
                   bark.removeFromStorage();
                   bark.deleteFromServer();
                 } catch (e) {
@@ -127,10 +126,6 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
   @override
   Widget build(BuildContext context) {
     final bark = Provider.of<Bark>(context);
-    // final pet = Provider.of<Pets>(context, listen: false).getById(bark.petId);
-    // final String placeholderName =
-    //     "${pet.name}_${(widget.index + 1).toString()}";
-
     String barkName = bark.name;
     return Card(
       margin: EdgeInsets.symmetric(

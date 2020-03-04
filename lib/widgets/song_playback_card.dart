@@ -123,10 +123,6 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
   @override
   Widget build(BuildContext context) {
     final song = Provider.of<Song>(context);
-    // final pet = Provider.of<Pets>(context, listen: false).getById(song.petId);
-    // final String placeholderName =
-    //     "${pet.name}_${(widget.index + 1).toString()}";
-
     String songName = song.name;
     return Card(
       margin: EdgeInsets.symmetric(

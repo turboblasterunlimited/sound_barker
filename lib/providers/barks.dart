@@ -18,9 +18,9 @@ class Barks with ChangeNotifier, Gcloud, RestAPI {
   Future retrieveAllBarks() async {
     String response = await retrieveAllBarksFromServer();
     json.decode(response).forEach((serverBark) {
-      if(serverBark["hidden"] == "1") return;
-      Bark bark = Bark(name: serverBark["name"], fileUrl: serverBark["bucket_fp"], fileId: serverBark["crop_id"]);
-      if (all.indexWhere((song) => song.fileId == serverBark["crop_id"]) == -1) {
+      if(serverBark["hidden"] == 1) return;
+      Bark bark = Bark(name: serverBark["name"], fileUrl: serverBark["bucket_fp"], fileId: serverBark["uuid"]);
+      if (all.indexWhere((bark) => bark.fileId == serverBark["uuid"]) == -1) {
         all.add(bark);
       }
     });
@@ -57,10 +57,8 @@ class Bark with ChangeNotifier, Gcloud, RestAPI {
   String
       filePath; // This is initially used for file upload from temp directory. Later (for cropped barks) it can be used for playback.
   String fileId;
-  String petId;
 
-  Bark({petId, name, filePath, fileUrl, fileId}) {
-    this.petId = petId;
+  Bark({name, filePath, fileUrl, fileId}) {
     this.name = name;
     this.filePath = filePath;
     this.fileUrl = fileUrl;
@@ -90,7 +88,7 @@ class Bark with ChangeNotifier, Gcloud, RestAPI {
   }
 
   Future<String> createSongOnServerAndRetrieve() async {
-    String response = await createSong(fileId, "happy birthday", petId);
+    String response = await createSong(fileId, "happy birthday");
     return response;
   }
 
@@ -98,10 +96,10 @@ class Bark with ChangeNotifier, Gcloud, RestAPI {
     var downloadLink = uploadRawBark(fileId, filePath);
     // downloadLink for rawBark is probably not needed.
     //print(downloadLink);
-    await notifyServerRawBarkInBucket(fileId, petId);
-    await Future.delayed(
-        Duration(seconds: 1), () => print('done')); // This is temporary.
-    String responseBody = await splitRawBarkOnServer(fileId, petId);
+    await notifyServerRawBarkInBucket(fileId, 'imageName');
+    // await Future.delayed(
+    //     Duration(seconds: 1), () => print('done')); // This is temporary.
+    String responseBody = await splitRawBarkOnServer(fileId, 'imageName');
     //print("Response body content: $responseBody");
     List newBarks = parseCroppedBarks(responseBody);
     return newBarks;
@@ -110,14 +108,11 @@ class Bark with ChangeNotifier, Gcloud, RestAPI {
   List parseCroppedBarks(response) {
     //print(response);
     List newBarks = [];
-    Map responseData = json.decode(response);
-    List cloudBarkData = responseData["crops"];
-    String petId = responseData["pet"]["pet_id"].toString();
+    List cloudBarkData = json.decode(response);
     int barkCount = cloudBarkData.length;
     for (var i = 0; i < barkCount; i++) {
       newBarks.add(Bark(
         fileId: cloudBarkData[i]["uuid"],
-        petId: petId,
         name: cloudBarkData[i]["name"],
         fileUrl: cloudBarkData[i]["bucket_fp"],
       ));

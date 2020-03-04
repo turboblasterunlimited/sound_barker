@@ -25,9 +25,16 @@ class Songs with ChangeNotifier, Gcloud, RestAPI {
   Future retrieveAllSongs() async {
     String response = await retrieveAllSongsFromServer();
     json.decode(response).forEach((serverSong) {
-      if(serverSong["hidden"] == "1") return;
-      Song song = Song(name: serverSong["name"], fileUrl: serverSong["bucket_fp"], fileId: serverSong["crop_id"]);
-      if (all.indexWhere((song) => song.fileId == serverSong["crop_id"]) == -1) {
+      if (serverSong["hidden"] == 1) return;
+      print(
+          "INDEX OF THE SONG IN LOCAL SONGS: ${all.indexWhere((song) => song.fileId == serverSong["uuid"])}");
+      print(serverSong["hidden"] == 1);
+      Song song = Song(
+          name: serverSong["name"],
+          fileUrl: serverSong["bucket_fp"],
+          fileId: serverSong["uuid"]);
+      if (all.indexWhere((song) => song.fileId == serverSong["uuid"]) ==
+          -1) {
         all.add(song);
       }
     });
@@ -52,15 +59,14 @@ class Song with ChangeNotifier, Gcloud, RestAPI {
   String fileUrl;
   String filePath;
   String fileId;
-  String petId;
 
-  Song({this.filePath, this.name, this.fileUrl, this.fileId, this.petId});
+  Song({this.filePath, this.name, this.fileUrl, this.fileId});
 
   void removeFromStorage() {
     try {
       File(filePath).deleteSync(recursive: false);
     } catch (e) {
-      print(e);
+      print("Error: $e");
     }
   }
 
