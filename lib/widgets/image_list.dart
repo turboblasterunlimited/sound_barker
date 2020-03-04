@@ -16,31 +16,50 @@ class _ImageListState extends State<ImageList> {
     return Column(
       children: <Widget>[
         Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: RawMaterialButton(
-            onPressed: () {
-              // uploadImage(),
-            },
-            child: Icon(
-              Icons.camera_alt,
-              color: Colors.black38,
-              size: 40,
-            ),
-            shape: CircleBorder(),
-            elevation: 2.0,
-            fillColor: Colors.white,
-            padding: const EdgeInsets.all(15.0),
+          padding: const EdgeInsets.all(8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              RawMaterialButton(
+                onPressed: () {
+                  // uploadImage(),
+                },
+                child: Icon(
+                  Icons.image,
+                  color: Colors.black38,
+                  size: 40,
+                ),
+                shape: CircleBorder(),
+                elevation: 2.0,
+                fillColor: Colors.white,
+                padding: const EdgeInsets.all(15.0),
+              ),
+              RawMaterialButton(
+                onPressed: () {
+                  // uploadImage(),
+                },
+                child: Icon(
+                  Icons.camera_alt,
+                  color: Colors.black38,
+                  size: 40,
+                ),
+                shape: CircleBorder(),
+                elevation: 2.0,
+                fillColor: Colors.white,
+                padding: const EdgeInsets.all(15.0),
+              ),
+            ],
           ),
         ),
         // Expanded(
-          // child: ListView.builder(
-          //   padding: const EdgeInsets.all(10),
-          //   itemCount: images.all.length,
-          //   itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
-          //     value: images.all[i],
-          //     child: ImageCard(i, images.all[i]),
-          //   ),
-          // ),
+        // child: ListView.builder(
+        //   padding: const EdgeInsets.all(10),
+        //   itemCount: images.all.length,
+        //   itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
+        //     value: images.all[i],
+        //     child: ImageCard(i, images.all[i]),
+        //   ),
+        // ),
         // ),
       ],
     );

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_sound/flutter_sound.dart';
 import 'dart:io';
 
+import '../providers/sound_controller.dart';
 import '../providers/songs.dart';
 import '../functions/error_dialog.dart';
 
 class SongPlaybackCard extends StatefulWidget {
   final int index;
   final Song song;
-  final FlutterSound flutterSound;
-  SongPlaybackCard(this.index, this.song, this.flutterSound);
+  final SoundController soundController;
+  SongPlaybackCard(this.index, this.song, this.soundController);
 
   @override
   _SongPlaybackCardState createState() => _SongPlaybackCardState();
@@ -20,7 +20,7 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
 
   @override
   void dispose() {
-    widget.flutterSound.stopPlayer();
+    widget.soundController.stopPlayer();
     super.dispose();
   }
 
@@ -30,9 +30,9 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
       return;
     }
     try {
-      widget.flutterSound.stopPlayer();
-      path = await widget.flutterSound.startPlayer(path);
-      await widget.flutterSound.setVolume(1.0);
+      widget.soundController.stopPlayer();
+      path = await widget.soundController.startPlayer(path);
+      await widget.soundController.flutterSound.setVolume(1.0);
     } catch (e) {
       showErrorDialog(context, e);
     }

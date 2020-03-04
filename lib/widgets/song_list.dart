@@ -89,8 +89,7 @@ class _SongListState extends State<SongList> {
   @override
   Widget build(BuildContext context) {
     Songs songs = Provider.of<Songs>(context);
-    FlutterSound flutterSound =
-        Provider.of<SoundController>(context).flutterSound;
+    SoundController soundController = Provider.of<SoundController>(context);
 
     return Column(
       children: <Widget>[
@@ -115,7 +114,7 @@ class _SongListState extends State<SongList> {
             itemCount: songs.all.length,
             itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
               value: songs.all[i],
-              child: SongPlaybackCard(i, songs.all[i], flutterSound),
+              child: SongPlaybackCard(i, songs.all[i], soundController),
             ),
           ),
         ),

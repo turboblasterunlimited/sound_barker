@@ -16,8 +16,8 @@ class BarkList extends StatefulWidget {
 class _BarkListState extends State<BarkList> {
   @override
   Widget build(BuildContext context) {
-    FlutterSound flutterSound =
-        Provider.of<SoundController>(context).flutterSound;
+    SoundController soundController =
+        Provider.of<SoundController>(context);
 
     final barks = Provider.of<Barks>(context);
 
@@ -33,7 +33,7 @@ class _BarkListState extends State<BarkList> {
             itemCount: barks.all.length,
             itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
               value: barks.all[i],
-              child: BarkPlaybackCard(i, barks.all[i], flutterSound),
+              child: BarkPlaybackCard(i, barks.all[i], soundController),
             ),
           ),
         ),

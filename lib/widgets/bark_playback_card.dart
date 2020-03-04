@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sound/flutter_sound.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
 
+import '../providers/sound_controller.dart';
 import '../providers/barks.dart';
 import '../providers/image_controller.dart';
 import '../functions/error_dialog.dart';
@@ -10,8 +10,8 @@ import '../functions/error_dialog.dart';
 class BarkPlaybackCard extends StatefulWidget {
   final int index;
   final Bark bark;
-  final FlutterSound flutterSound;
-  BarkPlaybackCard(this.index, this.bark, this.flutterSound);
+  final SoundController soundController;
+  BarkPlaybackCard(this.index, this.bark, this.soundController);
 
   @override
   _BarkPlaybackCardState createState() => _BarkPlaybackCardState();
@@ -21,7 +21,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
   
   @override
   void dispose() {
-    widget.flutterSound.stopPlayer();
+    widget.soundController.stopPlayer();
     super.dispose();
   }
 
@@ -33,8 +33,8 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
       return;
     }
     try {
-      path = await widget.flutterSound.startPlayer(path);
-      await widget.flutterSound.setVolume(1.0);
+      path = await widget.soundController.startPlayer(path);
+      await widget.soundController.flutterSound.setVolume(1.0);
 
     } catch (e) {
       print("Error: $e");
@@ -138,7 +138,6 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
           leading: IconButton(
             color: Colors.blue,
             onPressed: () {
-              widget.flutterSound.stopPlayer();
               playBark();
             },
             icon: Icon(Icons.play_arrow, color: Colors.black, size: 40),
