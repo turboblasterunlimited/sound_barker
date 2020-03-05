@@ -58,7 +58,7 @@ class Bark with ChangeNotifier, Gcloud, RestAPI {
       filePath; // This is initially used for file upload from temp directory. Later (for cropped barks) it can be used for playback.
   String fileId;
 
-  Bark({name, filePath, fileUrl, fileId}) {
+  Bark({String name, String filePath, String fileUrl, String fileId}) {
     this.name = name;
     this.filePath = filePath;
     this.fileUrl = fileUrl;

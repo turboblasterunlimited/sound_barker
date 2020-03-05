@@ -2,14 +2,9 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:gcloud/storage.dart';
 import 'package:googleapis_auth/auth_io.dart' as auth;
-import 'package:path_provider/path_provider.dart';
-
+import '../functions/app_storage_path.dart';
 
 class Gcloud {
-  Future<String> appStoragePath() async {
-    Directory appDocDir = await getApplicationDocumentsDirectory();
-    return appDocDir.path;
-  }
 
   Future<Bucket> accessBucket() async {
     var credData =

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../widgets/song_list.dart';
 import '../widgets/bark_list.dart';
-import '../widgets/image_list.dart';
+import '../widgets/picture_grid.dart';
 
 class InterfaceSelector extends StatelessWidget {
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class InterfaceSelector extends StatelessWidget {
                 children: [
                   BarkList(),
                   SongList(),
-                  ImageList(),
+                  PictureGrid(),
                 ],
               ),
             ),
