@@ -7,7 +7,7 @@ import '../widgets/picture_grid.dart';
 class InterfaceSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return Flexible(
-      flex: 2,
+      flex: 3,
       child: DefaultTabController(
         length: 3,
         child: Column(
@@ -16,9 +16,12 @@ class InterfaceSelector extends StatelessWidget {
               color: Theme.of(context).accentColor,
               child: TabBar(
                 tabs: [
-                  Tab(icon: Icon(Icons.mic), text: "SOUNDS"),
-                  Tab(icon: Icon(Icons.library_music), text: "SONGS"),
-                  Tab(icon: Icon(Icons.camera_alt), text: "IMAGES"),
+                  Tab(text: "SOUNDS"),
+                  Tab(text: "SONGS"),
+                  Tab(text: "IMAGES"),
+                  // Tab(icon: Icon(Icons.mic), text: "SOUNDS"),
+                  // Tab(icon: Icon(Icons.library_music), text: "SONGS"),
+                  // Tab(icon: Icon(Icons.camera_alt), text: "IMAGES"),
                 ],
               ),
             ),

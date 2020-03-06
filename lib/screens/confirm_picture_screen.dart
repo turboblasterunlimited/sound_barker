@@ -16,7 +16,8 @@ class ConfirmPictureScreen extends StatelessWidget {
     void _submitPicture(context) {
       Picture newPicture = Picture(name: _pictureName, filePath: _filePath);
       pictures.add(newPicture);
-      Navigator.pop(context);
+      int count = 0;
+      Navigator.of(context).popUntil((_) => count++ >= 2);
     }
 
     return Scaffold(

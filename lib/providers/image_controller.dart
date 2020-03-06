@@ -11,4 +11,8 @@ class ImageController with ChangeNotifier{
   void triggerBark() async {
     webViewController.evaluateJavascript("bark(.1, .05)");
   }
+
+  void loadImage(base64Image) async {
+    webViewController.evaluateJavascript("loadImage($base64Image)");
+  }
 }

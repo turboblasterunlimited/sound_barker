@@ -2,6 +2,8 @@ PODS:
   - camera (0.0.1):
     - Flutter
   - Flutter (1.0.0)
+  - flutter_native_image (0.0.1):
+    - Flutter
   - flutter_sound (0.0.1):
     - Flutter
   - path_provider (0.0.1):
@@ -12,6 +14,7 @@ PODS:
 DEPENDENCIES:
   - camera (from `.symlinks/plugins/camera/ios`)
   - Flutter (from `Flutter`)
+  - flutter_native_image (from `.symlinks/plugins/flutter_native_image/ios`)
   - flutter_sound (from `.symlinks/plugins/flutter_sound/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - webview_flutter (from `.symlinks/plugins/webview_flutter/ios`)
@@ -21,6 +24,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/camera/ios"
   Flutter:
     :path: Flutter
+  flutter_native_image:
+    :path: ".symlinks/plugins/flutter_native_image/ios"
   flutter_sound:
     :path: ".symlinks/plugins/flutter_sound/ios"
   path_provider:
@@ -31,6 +36,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   camera: 38cc83ae9a5667bb5a71c7d9edaf60a91920fd4e
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  flutter_native_image: 9c0b7451838484458e5b0fae007b86a4c2d4bdfe
   flutter_sound: 0e8163ceac1e00eb6d894e2ae4641ba726a2c479
   path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
   webview_flutter: bec7599de6bfbe8008a739aa3ebd7b364ea9d0cd

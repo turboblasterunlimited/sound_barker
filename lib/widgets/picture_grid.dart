@@ -73,7 +73,7 @@ class _PictureGridState extends State<PictureGrid> {
             ),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
-              childAspectRatio: 3 / 2,
+              // childAspectRatio: 3 / 2,
               crossAxisSpacing: 10,
               mainAxisSpacing: 10,
             ),

@@ -83,6 +83,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_native_image:
+    dependency: "direct main"
+    description:
+      name: flutter_native_image
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.5+2"
   flutter_sound:
     dependency: "direct main"
     description:
@@ -179,6 +186,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.0.4"
+  outline_material_icons:
+    dependency: "direct main"
+    description:
+      name: outline_material_icons
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.1"
   path:
     dependency: transitive
     description:

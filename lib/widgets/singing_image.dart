@@ -5,7 +5,6 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:provider/provider.dart';
 
 class SingingImage extends StatefulWidget {
-
   @override
   _SingingImageState createState() => _SingingImageState();
 }
@@ -22,13 +21,15 @@ class _SingingImageState extends State<SingingImage> {
   @override
   Widget build(BuildContext context) {
     return Flexible(
-          flex: 1,
-          child: WebView(
+      flex: 2,
+      child: WebView(
         onWebViewCreated: (WebViewController c) {
           _controller.complete(c);
-          Provider.of<ImageController>(context, listen: false).mountController(c);
-
+          Provider.of<ImageController>(context, listen: false)
+              .mountController(c);
         },
+        // initialUrl: 'assets/webview/sample_animation',
+
         initialUrl: 'http://165.227.178.14/sample_animation',
         javascriptMode: JavascriptMode.unrestricted,
         // javascriptChannels: <JavascriptChannel> [
