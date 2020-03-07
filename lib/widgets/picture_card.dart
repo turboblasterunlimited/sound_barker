@@ -5,6 +5,7 @@ import 'dart:io';
 import 'dart:convert';
 
 import '../providers/pictures.dart';
+import '../functions/app_storage_path.dart';
 
 class PictureCard extends StatelessWidget {
   @override
@@ -13,11 +14,17 @@ class PictureCard extends StatelessWidget {
     final pictures = Provider.of<Pictures>(context, listen: false);
     final ImageController imageController =
         Provider.of<ImageController>(context);
+    
+    print(myAppStoragePath);
+    Directory(myAppStoragePath).list().forEach((item)=> {print(item.path)});
+    print(picture.name + "!!!!!!!!! ");
+    print(File(picture.filePath).existsSync());
 
     void passPictureToWebview() {
+      String encodingPrefix = "data:image/png;base64,";
       String base64Image =
           base64.encode(File(picture.filePath).readAsBytesSync());
-      imageController.loadImage(base64Image);
+      imageController.loadImage('"' + encodingPrefix + base64Image + '"');
     }
 
     return Container(

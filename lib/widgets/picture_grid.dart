@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:camera/camera.dart';
+import 'package:song_barker/functions/app_storage_path.dart';
 
 import '../providers/pictures.dart';
 import '../screens/camera_screen.dart';
 import '../widgets/picture_card.dart';
+import 'package:path_provider/path_provider.dart';
 
 class PictureGrid extends StatefulWidget {
   @override
@@ -46,9 +48,7 @@ class _PictureGridState extends State<PictureGrid> {
                       builder: (context) => CameraScreen(cameras),
                     ),
                   );
-
-                  // Navigator.of(context)
-                  //     .pushNamed(CameraScreen.routeName, arguments: cameras);
+                  // print(await appStoragePath());
                 },
                 child: Icon(
                   Icons.camera_alt,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:song_barker/functions/app_storage_path.dart';
 
 import './screens/main_screen.dart';
 import './screens/camera_screen.dart';
@@ -12,6 +13,8 @@ import './providers/sound_controller.dart';
 
 void main() async {
   runApp(MyApp());
+    appStoragePath();
+
 }
 
 class MyApp extends StatelessWidget {

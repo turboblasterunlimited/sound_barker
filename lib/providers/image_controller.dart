@@ -13,6 +13,6 @@ class ImageController with ChangeNotifier{
   }
 
   void loadImage(base64Image) async {
-    webViewController.evaluateJavascript("loadImage($base64Image)");
+    webViewController.evaluateJavascript("update_texture($base64Image)");
   }
 }

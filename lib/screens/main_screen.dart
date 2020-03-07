@@ -41,8 +41,8 @@ class _MainScreenState extends State<MainScreen> {
       // extendBodyBehindAppBar: true,
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white, size: 30),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+        backgroundColor: Theme.of(context).accentColor,
+        // elevation: 0,
         centerTitle: true,
         actions: <Widget>[
           IconButton(

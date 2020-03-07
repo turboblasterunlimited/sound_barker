@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:path/path.dart' show join;
-import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:image/image.dart' as IMG;
+import 'package:song_barker/functions/app_storage_path.dart';
 import 'dart:math';
 
 import 'confirm_picture_screen.dart';
@@ -113,7 +113,7 @@ class _CameraScreenState extends State<CameraScreen> {
                           width: _width,
                           height: (_width * .8) / _controller.value.aspectRatio,
                           child: CameraPreview(
-                              _controller), // this is my CameraPreview
+                              _controller),
                         ),
                       ),
                     ),
@@ -132,7 +132,7 @@ class _CameraScreenState extends State<CameraScreen> {
                     onPressed: () async {
                       try {
                         final tempPath = join(
-                          (await getTemporaryDirectory()).path,
+                          await appStoragePath(),
                           DateTime.now().toString(),
                         );
                         print("SAVEing TempIMAGE TO $tempPath");
