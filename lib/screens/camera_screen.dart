@@ -65,7 +65,7 @@ class _CameraScreenState extends State<CameraScreen> {
     var outlineColor = Colors.black;
 
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      extendBody: true,
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white, size: 30),
         backgroundColor: Colors.transparent,

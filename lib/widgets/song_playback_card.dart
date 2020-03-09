@@ -5,6 +5,7 @@ import 'dart:io';
 import '../providers/sound_controller.dart';
 import '../providers/songs.dart';
 import '../functions/error_dialog.dart';
+import '../providers/image_controller.dart';
 
 class SongPlaybackCard extends StatefulWidget {
   final int index;
@@ -17,6 +18,7 @@ class SongPlaybackCard extends StatefulWidget {
 }
 
 class _SongPlaybackCardState extends State<SongPlaybackCard> {
+  ImageController imageController;
 
   @override
   void dispose() {
@@ -24,7 +26,23 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
     super.dispose();
   }
 
-  void playSong() async {
+  void performHappyBirthday(context) async {
+    imageController = Provider.of<ImageController>(context, listen: false);
+    imageController.triggerBark(duration: .1, distance: .03);
+    await Future.delayed(Duration(milliseconds: 200));
+    imageController.triggerBark(duration: .1, distance: .03);
+    await Future.delayed(Duration(milliseconds: 200));
+    imageController.triggerBark(duration: .2, distance: .03);
+    await Future.delayed(Duration(milliseconds: 500));
+    imageController.triggerBark(duration: .2, distance: .03);
+    await Future.delayed(Duration(milliseconds: 500));
+    imageController.triggerBark(duration: .2, distance: .03);
+    await Future.delayed(Duration(milliseconds: 500));
+    imageController.triggerBark(duration: .4, distance: .04);
+  }
+
+  void playSong(context) async {
+    performHappyBirthday(context);
     String path = widget.song.filePath;
     if (File(path).exists() == null) {
       return;
@@ -122,6 +140,7 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
 
   @override
   Widget build(BuildContext context) {
+    context = context;
     final song = Provider.of<Song>(context);
     String songName = song.name;
     return Card(
@@ -135,7 +154,7 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
           leading: IconButton(
             color: Colors.blue,
             onPressed: () {
-              playSong();
+              playSong(context);
             },
             icon: Icon(Icons.play_arrow, color: Colors.black, size: 40),
           ),

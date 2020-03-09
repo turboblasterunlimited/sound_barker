@@ -8,8 +8,8 @@ class ImageController with ChangeNotifier {
     this.webViewController = controller;
   }
 
-  void triggerBark() async {
-    webViewController.evaluateJavascript("bark(.1, .05)");
+  void triggerBark({duration= .2, distance= .05}) async {
+    webViewController.evaluateJavascript("bark($duration, $distance)");
   }
 
   void loadImage(base64Image) async {
