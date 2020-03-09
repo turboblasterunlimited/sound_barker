@@ -18,7 +18,6 @@ class BarkPlaybackCard extends StatefulWidget {
 }
 
 class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
-  
   @override
   void dispose() {
     widget.soundController.stopPlayer();
@@ -28,14 +27,13 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
   void playBark() async {
     Provider.of<ImageController>(context, listen: false).triggerBark();
     String path = widget.bark.filePath;
-  
+
     if (File(path).exists() == null) {
       return;
     }
     try {
       path = await widget.soundController.startPlayer(path);
       await widget.soundController.flutterSound.setVolume(1.0);
-
     } catch (e) {
       print("Error: $e");
     }
@@ -74,6 +72,16 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
 
   void renameBark(bark) async {
     String newName = bark.name;
+
+    void _submitNameChange(ctx) {
+      try {
+        bark.rename(newName);
+      } catch (e) {
+        showErrorDialog(context, e);
+      }
+      Navigator.of(ctx).pop();
+    }
+
     await showDialog<Null>(
       context: context,
       builder: (ctx) => SimpleDialog(
@@ -86,14 +94,8 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
             onChanged: (name) {
               newName = name;
             },
-            onFieldSubmitted: (name) {
-              try {
-                bark.rename(name);
-                
-              } catch (e) {
-                showErrorDialog(context, e);
-              }
-              Navigator.of(ctx).pop();
+            onFieldSubmitted: (_) {
+              _submitNameChange(ctx);
             },
             validator: (value) {
               if (value.isEmpty) {
@@ -110,12 +112,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
           FlatButton(
             child: Text('RENAME'),
             onPressed: () {
-              try {
-                bark.rename(newName);
-              } catch (e) {
-                showErrorDialog(context, e);
-              }
-              Navigator.of(ctx).pop();
+              _submitNameChange(ctx);
             },
           ),
         ],

@@ -73,13 +73,13 @@ class Bark with ChangeNotifier, Gcloud, RestAPI {
     }
   }
 
-  Future<String> rename(name) async {
+  Future<String> rename(newName) async {
     try {
-      await renameBarkOnServer(this);
+      await renameBarkOnServer(this, newName);
     } catch (e) {
       throw e;
     }
-    this.name = name;
+    this.name = newName;
     notifyListeners();
   }
 

@@ -46,10 +46,10 @@ class RestAPI {
     return response.body;
   }
 
-  Future<String> renameBarkOnServer(bark) async {
+  Future<String> renameBarkOnServer(bark, newName) async {
     http.Response response;
-    String body = json.encode({'name': bark.name, "user_id": "999"});
-    //print(body);
+    String body = json.encode({'name': newName, "user_id": "999"});
+    print(body);
     final url = 'http://165.227.178.14/crop/${bark.fileId}';
     try {
       response = await http.patch(
@@ -61,7 +61,7 @@ class RestAPI {
       print(error);
       throw error;
     }
-    //print("Edit bark name response body: ${response.body}");
+    print("Edit bark name response body: ${response.body}");
     return response.body;
   }
 

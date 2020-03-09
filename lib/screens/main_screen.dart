@@ -39,47 +39,50 @@ class _MainScreenState extends State<MainScreen> {
 
     return Scaffold(
       // extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white, size: 30),
-        backgroundColor: Theme.of(context).accentColor,
-        // elevation: 0,
-        centerTitle: true,
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              OMIcons.cloudDownload,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(30.0),
+        child: AppBar(
+          iconTheme: IconThemeData(color: Colors.white, size: 30),
+          backgroundColor: Theme.of(context).accentColor,
+          // elevation: 0,
+          centerTitle: true,
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                OMIcons.cloudDownload,
+              ),
+              onPressed: () async {
+                setState(() => widget._showSpinner = true);
+                await downloadEverything();
+                setState(() => widget._showSpinner = false);
+              },
             ),
-            onPressed: () async {
-              setState(() => widget._showSpinner = true);
-              await downloadEverything();
-              setState(() => widget._showSpinner = false);
-            },
+          ],
+          title: Text(
+            'Song Barker',
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 23,
+                shadows: [
+                  Shadow(
+                      // bottomLeft
+                      offset: Offset(-1.5, -1.5),
+                      color: outlineColor),
+                  Shadow(
+                      // bottomRight
+                      offset: Offset(1.5, -1.5),
+                      color: outlineColor),
+                  Shadow(
+                      // topRight
+                      offset: Offset(1.5, 1.5),
+                      color: outlineColor),
+                  Shadow(
+                      // topLeft
+                      offset: Offset(-1.5, 1.5),
+                      color: outlineColor),
+                ],
+                color: Colors.white),
           ),
-        ],
-        title: Text(
-          'Song Barker',
-          style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 23,
-              shadows: [
-                Shadow(
-                    // bottomLeft
-                    offset: Offset(-1.5, -1.5),
-                    color: outlineColor),
-                Shadow(
-                    // bottomRight
-                    offset: Offset(1.5, -1.5),
-                    color: outlineColor),
-                Shadow(
-                    // topRight
-                    offset: Offset(1.5, 1.5),
-                    color: outlineColor),
-                Shadow(
-                    // topLeft
-                    offset: Offset(-1.5, 1.5),
-                    color: outlineColor),
-              ],
-              color: Colors.white),
         ),
       ),
       drawer: AppDrawer(),

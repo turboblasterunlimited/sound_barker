@@ -30,6 +30,8 @@ class _SingingImageState extends State<SingingImage> {
         },
         
         initialUrl: 'https://www.thedogbarksthesong.ml/sample_animation',
+        // initialUrl: 'http://webglreport.com/',
+        // initialUrl: 'https://html5test.com/',
         javascriptMode: JavascriptMode.unrestricted,
         // javascriptChannels: <JavascriptChannel> [
 
