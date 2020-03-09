@@ -9,13 +9,6 @@ import 'dart:io';
 
 import '../providers/barks.dart';
 
-// enum t_MEDIA {
-//   FILE,
-//   BUFFER,
-//   ASSET,
-//   STREAM,
-// }
-
 class RecordButton extends StatefulWidget {
   static const routeName = 'bark-screen';
 
@@ -26,19 +19,17 @@ class RecordButton extends StatefulWidget {
 class _RecordButtonState extends State<RecordButton> {
   String filePath;
   bool _isRecording = false;
-  // List<String> _path = [null, null, null, null, null, null, null];
   StreamSubscription _recorderSubscription;
   StreamSubscription _dbPeakSubscription;
   StreamSubscription _playerSubscription;
   FlutterSound flutterSound;
 
-  String _recorderTxt = '00:00:00';
-  String _playerTxt = '00:00:00';
-  double _dbLevel;
+  // String _recorderTxt = '00:00:00';
+  // String _playerTxt = '00:00:00';
+  // double _dbLevel;
 
   double sliderCurrentPosition = 0.0;
   double maxDuration = 1.0;
-  // t_MEDIA _media = t_MEDIA.FILE;
   t_CODEC _codec = t_CODEC.CODEC_AAC;
 
   @override
@@ -65,20 +56,19 @@ class _RecordButtonState extends State<RecordButton> {
             isUtc: true);
         String txt = DateFormat('mm:ss:SS', 'en_GB').format(date);
 
-        setState(() {
-          this._recorderTxt = txt.substring(0, 8);
-        });
+        // setState(() {
+        //   this._recorderTxt = txt.substring(0, 8);
+        // });
       });
       _dbPeakSubscription =
           flutterSound.onRecorderDbPeakChanged.listen((value) {
-        setState(() {
-          this._dbLevel = value;
-        });
+        // setState(() {
+        //   this._dbLevel = value;
+        // });
       });
 
       this.setState(() {
         this._isRecording = true;
-        // this._path[_codec.index] = filePath;
       });
     } catch (err) {
       setState(() {
@@ -132,7 +122,6 @@ class _RecordButtonState extends State<RecordButton> {
   }
 
   onStartRecorderPressed() {
-    // if (_media == t_MEDIA.ASSET || _media == t_MEDIA.BUFFER) return null;
     if (flutterSound.audioState == t_AUDIO_STATE.IS_RECORDING)
       return stopRecorder;
 
