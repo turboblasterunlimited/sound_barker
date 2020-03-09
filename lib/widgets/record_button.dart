@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sound/ios_quality.dart';
 import 'package:provider/provider.dart';
-import 'package:grouped_buttons/grouped_buttons.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'dart:async';
 import 'package:intl/intl.dart' show DateFormat;
@@ -9,12 +9,12 @@ import 'dart:io';
 
 import '../providers/barks.dart';
 
-enum t_MEDIA {
-  FILE,
-  BUFFER,
-  ASSET,
-  STREAM,
-}
+// enum t_MEDIA {
+//   FILE,
+//   BUFFER,
+//   ASSET,
+//   STREAM,
+// }
 
 class RecordButton extends StatefulWidget {
   static const routeName = 'bark-screen';
@@ -26,7 +26,7 @@ class RecordButton extends StatefulWidget {
 class _RecordButtonState extends State<RecordButton> {
   String filePath;
   bool _isRecording = false;
-  List<String> _path = [null, null, null, null, null, null, null];
+  // List<String> _path = [null, null, null, null, null, null, null];
   StreamSubscription _recorderSubscription;
   StreamSubscription _dbPeakSubscription;
   StreamSubscription _playerSubscription;
@@ -38,7 +38,7 @@ class _RecordButtonState extends State<RecordButton> {
 
   double sliderCurrentPosition = 0.0;
   double maxDuration = 1.0;
-  t_MEDIA _media = t_MEDIA.FILE;
+  // t_MEDIA _media = t_MEDIA.FILE;
   t_CODEC _codec = t_CODEC.CODEC_AAC;
 
   @override
@@ -55,6 +55,7 @@ class _RecordButtonState extends State<RecordButton> {
     try {
       this.filePath = await flutterSound.startRecorder(
         codec: _codec,
+        iosQuality: IosQuality.HIGH
       );
       //print('startRecorder: $filePath');
 
@@ -77,7 +78,7 @@ class _RecordButtonState extends State<RecordButton> {
 
       this.setState(() {
         this._isRecording = true;
-        this._path[_codec.index] = filePath;
+        // this._path[_codec.index] = filePath;
       });
     } catch (err) {
       setState(() {
@@ -131,7 +132,7 @@ class _RecordButtonState extends State<RecordButton> {
   }
 
   onStartRecorderPressed() {
-    if (_media == t_MEDIA.ASSET || _media == t_MEDIA.BUFFER) return null;
+    // if (_media == t_MEDIA.ASSET || _media == t_MEDIA.BUFFER) return null;
     if (flutterSound.audioState == t_AUDIO_STATE.IS_RECORDING)
       return stopRecorder;
 
