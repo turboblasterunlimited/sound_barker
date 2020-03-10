@@ -28,6 +28,19 @@ class Gcloud {
     return filePath;
   }
 
+  Future<String> uploadPicture(fileId, filePath) async {
+    var info;
+    Bucket bucket = await accessBucket();
+    try {
+      info =
+          await File(filePath).openRead().pipe(bucket.write("images/$fileId.jpg"));
+    } catch (error) {
+      //print('failed to put bark in the bucket');
+      return error;
+    }
+    return info.downloadLink.toString();
+  }
+
   Future<String> uploadRawBark(fileId, filePath) async {
     var info;
     Bucket bucket = await accessBucket();

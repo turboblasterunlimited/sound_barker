@@ -7,6 +7,7 @@ import '../providers/songs.dart';
 import '../functions/error_dialog.dart';
 import '../providers/image_controller.dart';
 
+
 class SongPlaybackCard extends StatefulWidget {
   final int index;
   final Song song;
@@ -29,9 +30,9 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
   void performHappyBirthday(context) async {
     imageController = Provider.of<ImageController>(context, listen: false);
     imageController.triggerBark(duration: .1, distance: .03);
-    await Future.delayed(Duration(milliseconds: 200));
+    await Future.delayed(Duration(milliseconds: 250));
     imageController.triggerBark(duration: .1, distance: .03);
-    await Future.delayed(Duration(milliseconds: 200));
+    await Future.delayed(Duration(milliseconds: 250));
     imageController.triggerBark(duration: .2, distance: .03);
     await Future.delayed(Duration(milliseconds: 500));
     imageController.triggerBark(duration: .2, distance: .03);
@@ -41,13 +42,40 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
     imageController.triggerBark(duration: .4, distance: .04);
   }
 
+    void performDarthVader(context) async {
+    imageController = Provider.of<ImageController>(context, listen: false);
+    imageController.triggerBark(duration: .1, distance: .03);
+    await Future.delayed(Duration(milliseconds: 550));
+    imageController.triggerBark(duration: .1, distance: .03);
+    await Future.delayed(Duration(milliseconds: 500));
+    imageController.triggerBark(duration: .2, distance: .03);
+    await Future.delayed(Duration(milliseconds: 500));
+    imageController.triggerBark(duration: .2, distance: .03);
+    await Future.delayed(Duration(milliseconds: 250));
+    imageController.triggerBark(duration: .2, distance: .03);
+    await Future.delayed(Duration(milliseconds: 250));
+    imageController.triggerBark(duration: .4, distance: .04);
+  }
+
+  void performSong(context) {
+    switch(widget.song.formulaId) {
+      case "1": {
+        performHappyBirthday(context);
+      }
+      break;
+      case "2": {
+        performDarthVader(context);
+      }
+    }
+  }
+
   void playSong(context) async {
-    performHappyBirthday(context);
     String path = widget.song.filePath;
     if (File(path).exists() == null) {
       return;
     }
     try {
+      performSong(context);
       widget.soundController.stopPlayer();
       path = await widget.soundController.startPlayer(path);
       await widget.soundController.flutterSound.setVolume(1.0);

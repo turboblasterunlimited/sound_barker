@@ -33,8 +33,7 @@ class Songs with ChangeNotifier, Gcloud, RestAPI {
           name: serverSong["name"],
           fileUrl: serverSong["bucket_fp"],
           fileId: serverSong["uuid"]);
-      if (all.indexWhere((song) => song.fileId == serverSong["uuid"]) ==
-          -1) {
+      if (all.indexWhere((song) => song.fileId == serverSong["uuid"]) == -1) {
         all.add(song);
       }
     });
@@ -59,8 +58,9 @@ class Song with ChangeNotifier, Gcloud, RestAPI {
   String fileUrl;
   String filePath;
   String fileId;
+  String formulaId;
 
-  Song({this.filePath, this.name, this.fileUrl, this.fileId});
+  Song({this.filePath, this.name, this.fileUrl, this.fileId, this.formulaId});
 
   void removeFromStorage() {
     try {
@@ -90,6 +90,7 @@ class Song with ChangeNotifier, Gcloud, RestAPI {
     this.fileId = responseData["uuid"];
     this.name = responseData["name"];
     this.fileUrl = responseData["bucket_fp"];
+    this.formulaId = responseData["song_id"];
     this.filePath = await downloadSoundFromBucket(fileUrl, fileId);
     // print("filePath for song: ${this.filePath}");
   }

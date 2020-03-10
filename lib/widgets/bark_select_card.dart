@@ -10,7 +10,8 @@ import '../providers/songs.dart';
 class BarkSelectCard extends StatefulWidget {
   final int index;
   final Bark bark;
-  BarkSelectCard(this.index, this.bark);
+  final songId;
+  BarkSelectCard(this.index, this.bark, this.songId);
 
   @override
   _BarkSelectCardState createState() => _BarkSelectCardState();
@@ -61,8 +62,8 @@ class _BarkSelectCardState extends State<BarkSelectCard> {
     }
   }
 
-  void createSong(songs) async {
-    String responseBody = await widget.bark.createSongOnServerAndRetrieve();
+  void createSong(songs, songId) async {
+    String responseBody = await widget.bark.createSongOnServerAndRetrieve(songId);
     Song song = Song();
     song.retrieveSong(responseBody);
     songs.addSong(song);
@@ -81,7 +82,7 @@ class _BarkSelectCardState extends State<BarkSelectCard> {
         child: ListTile(
           leading: IconButton(
             onPressed: () {
-              createSong(songs);
+              createSong(songs, widget.songId);
               Navigator.of(context).pop();
             },
             icon: Icon(Icons.queue_music, color: Colors.blue, size: 30),

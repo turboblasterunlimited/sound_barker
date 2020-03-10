@@ -6,8 +6,7 @@ import '../providers/sound_controller.dart';
 import 'package:song_barker/widgets/song_playback_card.dart';
 import '../providers/songs.dart';
 import 'creatable_song.dart';
-import '../providers/barks.dart';
-import 'bark_select_card.dart';
+import 'song_select_card.dart';
 
 class SongList extends StatefulWidget {
   @override
@@ -15,35 +14,10 @@ class SongList extends StatefulWidget {
 }
 
 class _SongListState extends State<SongList> {
-  void selectBarksForSongDialog(context) async {
-    Barks barks = Provider.of<Barks>(context, listen: false);
-    await showDialog<Null>(
-      context: context,
-      builder: (ctx) => SimpleDialog(
-        title: Text('Select Bark'),
-        contentPadding: EdgeInsets.all(10),
-        titlePadding: EdgeInsets.all(10),
-        children: <Widget>[
-          Visibility(
-            visible: barks.all.length != 0,
-            child: Container(
-              width: double.maxFinite,
-              height: double.maxFinite,
-              child: ListView.builder(
-                padding: const EdgeInsets.all(10),
-                itemCount: barks.all.length,
-                itemBuilder: (ctx, i) => BarkSelectCard(i, barks.all[i]),
-              ),
-            ),
-          ),
-          Visibility(
-            visible: barks.all.length > 0,
-            child: Text("You have no barks recorded."),
-          )
-        ],
-      ),
-    );
-  }
+  List<Map> availableSongs = [
+    {"name": "Happy Birthday", "price": 1, "id": 1},
+    {"name": "Darth Vader", "price": 2, "id": 2}
+  ];
 
   void showSongsToCreateDialog(context) async {
     await showDialog<Null>(
@@ -53,32 +27,14 @@ class _SongListState extends State<SongList> {
         contentPadding: EdgeInsets.all(10),
         titlePadding: EdgeInsets.all(10),
         children: <Widget>[
-          Card(
-            margin: EdgeInsets.symmetric(
-              horizontal: 15,
-              vertical: 4,
-            ),
-            child: Padding(
-              padding: EdgeInsets.all(8),
-              child: ListTile(
-                leading: CircleAvatar(
-                  child: Padding(
-                    padding: EdgeInsets.all(5),
-                    child: FittedBox(
-                      child: Text('\$1'),
-                    ),
-                  ),
-                ),
-                title: Text("Happy Birthday"),
-                subtitle: Text('to you...'),
-                trailing: IconButton(
-                  icon: Icon(Icons.add),
-                  onPressed: () {
-                    Navigator.of(ctx).pop();
-                    selectBarksForSongDialog(context);
-                  },
-                ),
-              ),
+          Container(
+            width: double.maxFinite,
+            height: double.maxFinite,
+            child: ListView.builder(
+              padding: const EdgeInsets.all(10),
+              itemCount: availableSongs.length,
+              itemBuilder: (ctx, i) =>
+                  SongSelectCard(i, availableSongs[i], availableSongs[i]["id"]),
             ),
           ),
         ],

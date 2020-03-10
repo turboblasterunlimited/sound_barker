@@ -87,18 +87,15 @@ class Bark with ChangeNotifier, Gcloud, RestAPI {
     return deleteBarkFromServer(this);
   }
 
-  Future<String> createSongOnServerAndRetrieve() async {
-    String response = await createSong(fileId, "happy birthday");
+  Future<String> createSongOnServerAndRetrieve(songId) async {
+    String response = await createSong(fileId, songId);
     return response;
   }
 
   Future<List> uploadBarkAndRetrieveCroppedBarks() async {
-    var downloadLink = uploadRawBark(fileId, filePath);
+    var downloadLink = await uploadRawBark(fileId, filePath);
     // downloadLink for rawBark is probably not needed.
     //print(downloadLink);
-    await notifyServerRawBarkInBucket(fileId, 'imageName');
-    // await Future.delayed(
-    //     Duration(seconds: 1), () => print('done')); // This is temporary.
     String responseBody = await splitRawBarkOnServer(fileId, 'imageName');
     //print("Response body content: $responseBody");
     List newBarks = parseCroppedBarks(responseBody);

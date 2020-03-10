@@ -7,10 +7,10 @@ class RestAPI {
     'Accept': 'application/json',
   };
 
-  Future<String> createSong(cropId, songTitle) async {
+  Future<String> createSong(cropId, songId) async {
     http.Response response;
-    String body = json.encode(
-        {'uuid': cropId, 'name': songTitle, 'user_id': '999'});
+    String body =
+        json.encode({'uuid': cropId, 'user_id': '999', 'song_id': songId});
     //print(body);
     final url = 'http://165.227.178.14/sequence_audio';
     try {
@@ -46,6 +46,27 @@ class RestAPI {
     return response.body;
   }
 
+  Future<String> createImageOnServer(image) async {
+    // ADD MOUTH COORDINATES WHEN READY!
+    http.Response response;
+    String body =
+        json.encode({'uuid': image.fileId, 'name': image.name, 'user_id': '999'});
+    //print(body);
+    final url = 'http://165.227.178.14/image';
+    try {
+      response = await http.post(
+        url,
+        body: body,
+        headers: jsonHeaders,
+      );
+    } catch (error) {
+      //print(error);
+      throw error;
+    }
+    print("create Image on server response body: ${response.body}");
+    return response.body;
+  }
+
   Future<String> renameBarkOnServer(bark, newName) async {
     http.Response response;
     String body = json.encode({'name': newName, "user_id": "999"});
@@ -78,6 +99,19 @@ class RestAPI {
     return response.body;
   }
 
+    Future<String> retrieveAllImagesFromServer() async {
+    http.Response response;
+    final url = 'http://165.227.178.14/all/image/999';
+    try {
+      response = await http.get(url);
+    } catch (error) {
+      print(error);
+      throw error;
+    }
+    print("Get all Images response body: ${response.body}");
+    return response.body;
+  }
+
   Future<String> retrieveAllBarksFromServer() async {
     http.Response response;
     final url = 'http://165.227.178.14/all/crop/999';
@@ -92,7 +126,7 @@ class RestAPI {
   }
 
   Future<String> deleteSongFromServer(song) async {
-        print('checkpoint!');
+    print('checkpoint!');
 
     http.Response response;
     final url = 'http://165.227.178.14/sequence/${song.fileId}';
@@ -127,7 +161,7 @@ class RestAPI {
       'user_id': '999',
       'name': imageName,
     });
-    //print(body);
+    print(body);
     final url = 'http://165.227.178.14/split_audio';
     try {
       response = await http.post(
@@ -142,28 +176,5 @@ class RestAPI {
     print("split bark server response body content: ${response.body}");
     return response.body;
   }
-
-  Future<void> notifyServerRawBarkInBucket(fileId, imageName) async {
-    http.Response response;
-    String body = json.encode({
-      'user_id': '999',
-      'uuid': fileId,
-      'name': imageName,
-    });
-    //print(body);
-    // User ID hardcoded as 999 for now.
-    final url = 'http://165.227.178.14/raw';
-    try {
-      response = await http.post(
-        url,
-        body: body,
-        headers: jsonHeaders,
-      );
-    } catch (error) {
-      print(error);
-      throw error;
-    }
-    // print(
-    //     "Notify Server Raw Bark in bucket response body content: ${response.body}");
-  }
+  
 }

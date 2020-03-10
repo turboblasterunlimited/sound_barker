@@ -15,6 +15,7 @@ class ConfirmPictureScreen extends StatelessWidget {
 
     void _submitPicture(context) {
       Picture newPicture = Picture(name: _pictureName, filePath: _filePath);
+      newPicture.uploadPictureAndSaveToServer();
       pictures.add(newPicture);
       int count = 0;
       Navigator.of(context).popUntil((_) => count++ >= 2);

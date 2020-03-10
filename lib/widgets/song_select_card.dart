@@ -2,10 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/barks.dart';
-import '../widgets/bark_select_card.dart';
+import 'bark_select_card.dart';
 
-class CreatableSong extends StatelessWidget {
-  void createSong(context, songId) async {
+class SongSelectCard extends StatefulWidget {
+  final int index;
+  final Map song;
+  final int songId;
+  SongSelectCard(this.index, this.song, this.songId);
+
+  @override
+  _SongSelectCardState createState() => _SongSelectCardState();
+}
+
+class _SongSelectCardState extends State<SongSelectCard> {
+  void selectBarksForSongDialog(context, songId) async {
     Barks barks = Provider.of<Barks>(context, listen: false);
     await showDialog<Null>(
       context: context,
@@ -20,9 +30,10 @@ class CreatableSong extends StatelessWidget {
               width: double.maxFinite,
               height: double.maxFinite,
               child: ListView.builder(
-              padding: const EdgeInsets.all(10),
-              itemCount: barks.all.length,
-              itemBuilder: (ctx, i) => BarkSelectCard(i, barks.all[i], songId),
+                padding: const EdgeInsets.all(10),
+                itemCount: barks.all.length,
+                itemBuilder: (ctx, i) =>
+                    BarkSelectCard(i, barks.all[i], songId),
               ),
             ),
           ),
@@ -49,16 +60,17 @@ class CreatableSong extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.all(5),
               child: FittedBox(
-                child: Text('\$1'),
+                child: Text('\$${widget.song["price"]}'),
               ),
             ),
           ),
-          title: Text("Happy Birthday"),
-          subtitle: Text('to you...'),
+          title: Text(widget.song["name"]),
+          // subtitle: Text('to you...'),
           trailing: IconButton(
             icon: Icon(Icons.add),
             onPressed: () {
-              createSong(context, 1);
+              Navigator.of(context).pop();
+              selectBarksForSongDialog(context, widget.song["id"]);
             },
           ),
         ),

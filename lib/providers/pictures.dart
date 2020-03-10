@@ -8,7 +8,6 @@ import '../services/rest_api.dart';
 
 class Pictures with ChangeNotifier, Gcloud {
   List<Picture> all = [
-
     // iOS Pictures
     // Picture(
     //     filePath:
@@ -18,8 +17,6 @@ class Pictures with ChangeNotifier, Gcloud {
     //     filePath:
     //         "/Users/tovinewman/Library/Developer/CoreSimulator/Devices/3FD6B298-8ED0-40F2-955F-5C12BB3D6AB4/data/Containers/Data/Application/27E1B6B2-219E-480F-8E0D-0B0B4AAD9E4A/Documents/dog.jpg",
     //     name: "dog"),
-
-
 
     // Android Pictures
     // Picture(
@@ -47,8 +44,20 @@ class Pictures with ChangeNotifier, Gcloud {
   }
 }
 
-class Picture with ChangeNotifier {
+class Picture with ChangeNotifier, RestAPI, Gcloud {
   String name;
+  String fileUrl;
   String filePath;
-  Picture({this.filePath, this.name});
+  String fileId;
+  Picture({String name, String filePath, String fileUrl, String fileId}) {
+    this.name = name;
+    this.filePath = filePath;
+    this.fileUrl = fileUrl;
+    this.fileId = fileId == null ? Uuid().v4() : fileId;
+  }
+
+  void uploadPictureAndSaveToServer() async {
+    this.fileUrl = await uploadPicture(fileId, filePath);
+    createImageOnServer(this);
+  }
 }
