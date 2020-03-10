@@ -15,10 +15,10 @@ class PictureCard extends StatelessWidget {
     final ImageController imageController =
         Provider.of<ImageController>(context);
     
-    print(myAppStoragePath);
-    Directory(myAppStoragePath).list().forEach((item)=> {print(item.path)});
-    print(picture.name + "!!!!!!!!! ");
-    print(File(picture.filePath).existsSync());
+    // print(myAppStoragePath);
+    // Directory(myAppStoragePath).list().forEach((item)=> {print(item.path)});
+    // print(picture.name + "!!!!!!!!! ");
+    // print(File(picture.filePath).existsSync());
 
     void passPictureToWebview() {
       String encodingPrefix = "data:image/png;base64,";

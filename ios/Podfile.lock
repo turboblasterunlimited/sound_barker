@@ -1,9 +1,9 @@
 PODS:
   - camera (0.0.1):
     - Flutter
-  - Flutter (1.0.0)
-  - flutter_native_image (0.0.1):
+  - file_picker (0.0.1):
     - Flutter
+  - Flutter (1.0.0)
   - flutter_sound (0.0.1):
     - Flutter
   - path_provider (0.0.1):
@@ -15,8 +15,8 @@ PODS:
 
 DEPENDENCIES:
   - camera (from `.symlinks/plugins/camera/ios`)
+  - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `Flutter`)
-  - flutter_native_image (from `.symlinks/plugins/flutter_native_image/ios`)
   - flutter_sound (from `.symlinks/plugins/flutter_sound/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - path_provider_macos (from `.symlinks/plugins/path_provider_macos/ios`)
@@ -25,10 +25,10 @@ DEPENDENCIES:
 EXTERNAL SOURCES:
   camera:
     :path: ".symlinks/plugins/camera/ios"
+  file_picker:
+    :path: ".symlinks/plugins/file_picker/ios"
   Flutter:
     :path: Flutter
-  flutter_native_image:
-    :path: ".symlinks/plugins/flutter_native_image/ios"
   flutter_sound:
     :path: ".symlinks/plugins/flutter_sound/ios"
   path_provider:
@@ -40,8 +40,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   camera: 38cc83ae9a5667bb5a71c7d9edaf60a91920fd4e
+  file_picker: 408623be2125b79a4539cf703be3d4b3abe5e245
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  flutter_native_image: 9c0b7451838484458e5b0fae007b86a4c2d4bdfe
   flutter_sound: 0e8163ceac1e00eb6d894e2ae4641ba726a2c479
   path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
   path_provider_macos: f760a3c5b04357c380e2fddb6f9db6f3015897e0

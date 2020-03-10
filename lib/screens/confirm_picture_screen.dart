@@ -3,22 +3,24 @@ import 'dart:io';
 import 'package:provider/provider.dart';
 
 import '../providers/pictures.dart';
+import 'main_screen.dart';
 
 class ConfirmPictureScreen extends StatelessWidget {
-  final String _filePath;
-  const ConfirmPictureScreen(this._filePath);
+  final Picture newPicture;
+  const ConfirmPictureScreen(this.newPicture);
 
   @override
   Widget build(BuildContext context) {
     Pictures pictures = Provider.of<Pictures>(context, listen: false);
+
     String _pictureName = "";
 
     void _submitPicture(context) {
-      Picture newPicture = Picture(name: _pictureName, filePath: _filePath);
+      newPicture.name = _pictureName;
       newPicture.uploadPictureAndSaveToServer();
       pictures.add(newPicture);
       int count = 0;
-      Navigator.of(context).popUntil((_) => count++ >= 2);
+      Navigator.of(context).pushNamed(MainScreen.routeName);
     }
 
     return Scaffold(
@@ -32,7 +34,7 @@ class ConfirmPictureScreen extends StatelessWidget {
       body: Column(
         children: <Widget>[
           Expanded(
-            child: Image.file(File(_filePath)),
+            child: Image.file(File(newPicture.filePath)),
           ),
           Expanded(
             child: Padding(

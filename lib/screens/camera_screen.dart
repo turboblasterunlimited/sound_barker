@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:path/path.dart' show join;
-import 'dart:io';
-import 'package:image/image.dart' as IMG;
 import 'package:song_barker/functions/app_storage_path.dart';
-import 'dart:math';
 
 import 'confirm_picture_screen.dart';
+import '../providers/pictures.dart';
 
 class CameraScreen extends StatefulWidget {
   static const routeName = 'camera-screen';
@@ -37,26 +35,6 @@ class _CameraScreenState extends State<CameraScreen> {
   void dispose() {
     _controller?.dispose();
     super.dispose();
-  }
-
-  Future<String> _cropPhoto(String filePath) async {
-    var bytes = await File(filePath).readAsBytes();
-    IMG.Image src = IMG.decodeImage(bytes);
-
-    var cropSize = min(src.width, src.height);
-    int offsetX = (src.width - min(src.width, src.height)) ~/ 2;
-    int offsetY = (src.height - min(src.width, src.height)) ~/ 2;
-
-    IMG.Image destImage =
-        IMG.copyCrop(src, offsetX, offsetY, cropSize, cropSize);
-
-    var jpg = IMG.encodeJpg(destImage);
-
-    File(filePath).deleteSync();
-
-    await File(filePath).writeAsBytes(jpg);
-
-    return filePath;
   }
 
   @override
@@ -131,20 +109,19 @@ class _CameraScreenState extends State<CameraScreen> {
                     child: Icon(Icons.camera_alt),
                     onPressed: () async {
                       try {
-                        final tempPath = join(
-                          await appStoragePath(),
+                        final filePath = join(
+                          myAppStoragePath,
                           DateTime.now().toString(),
                         );
-                        print("SAVEing TempIMAGE TO $tempPath");
-                        await _controller.takePicture(tempPath);
-                        String croppedPhotoPath = await _cropPhoto(tempPath);
-                        print("SAVEing CroppedIMAGE TO $croppedPhotoPath");
-
+                        print("SAVEing TempIMAGE TO $filePath");
+                        await _controller.takePicture(filePath);
+                        Picture newPicture = Picture(filePath: filePath);
+                        await newPicture.crop();
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                ConfirmPictureScreen(croppedPhotoPath),
+                                ConfirmPictureScreen(newPicture),
                           ),
                         );
                       } catch (e) {

@@ -1,7 +1,8 @@
 import 'package:uuid/uuid.dart';
 import 'package:flutter/foundation.dart';
-import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
+import 'package:image/image.dart' as IMG;
 
 import '../services/gcloud.dart';
 import '../services/rest_api.dart';
@@ -56,8 +57,25 @@ class Picture with ChangeNotifier, RestAPI, Gcloud {
     this.fileId = fileId == null ? Uuid().v4() : fileId;
   }
 
-  void uploadPictureAndSaveToServer() async {
+  Future<void> uploadPictureAndSaveToServer() async {
     this.fileUrl = await uploadPicture(fileId, filePath);
-    createImageOnServer(this);
+    await createImageOnServer(this);
+  }
+
+  Future<void> crop() async {
+    var bytes = await File(filePath).readAsBytes();
+    IMG.Image src = IMG.decodeImage(bytes);
+
+    var cropSize = min(src.width, src.height);
+    int offsetX = (src.width - min(src.width, src.height)) ~/ 2;
+    int offsetY = (src.height - min(src.width, src.height)) ~/ 2;
+
+    IMG.Image destImage =
+        IMG.copyCrop(src, offsetX, offsetY, cropSize, cropSize);
+
+    var jpg = IMG.encodeJpg(destImage);
+
+    File(filePath).deleteSync();
+    await File(filePath).writeAsBytes(jpg);
   }
 }

@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_sound/flutter_sound.dart';
 
 import '../providers/sound_controller.dart';
 import 'package:song_barker/widgets/song_playback_card.dart';
 import '../providers/songs.dart';
-import 'creatable_song.dart';
 import 'song_select_card.dart';
 
 class SongList extends StatefulWidget {

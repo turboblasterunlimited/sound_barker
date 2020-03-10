@@ -33,7 +33,7 @@ class Gcloud {
     Bucket bucket = await accessBucket();
     try {
       info =
-          await File(filePath).openRead().pipe(bucket.write("images/$fileId.jpg"));
+          await File(filePath).openRead().pipe(bucket.write("images/$fileId"));
     } catch (error) {
       //print('failed to put bark in the bucket');
       return error;

@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:camera/camera.dart';
 import 'package:song_barker/functions/app_storage_path.dart';
+import 'package:file_picker/file_picker.dart';
+import 'dart:io';
+import 'package:path/path.dart';
+import 'package:song_barker/screens/confirm_picture_screen.dart';
 
 import '../providers/pictures.dart';
 import '../screens/camera_screen.dart';
@@ -17,7 +21,7 @@ class _PictureGridState extends State<PictureGrid> {
   @override
   Widget build(BuildContext context) {
     Pictures pictures = Provider.of<Pictures>(context);
-
+    print(myAppStoragePath);
     return Column(
       children: <Widget>[
         Padding(
@@ -26,8 +30,22 @@ class _PictureGridState extends State<PictureGrid> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               RawMaterialButton(
-                onPressed: () {
-                  // uploadImage(),
+                onPressed: () async {
+                  File file = await FilePicker.getFile(type: FileType.IMAGE);
+                  String newFilePath = join(
+                    myAppStoragePath,
+                    DateTime.now().toString(),
+                  );
+                  await file.copy(newFilePath);
+                  Picture newPicture = Picture(filePath: newFilePath);
+                  await newPicture.crop();
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ConfirmPictureScreen(newPicture),
+                    ),
+                  );
                 },
                 child: Icon(
                   Icons.filter,
