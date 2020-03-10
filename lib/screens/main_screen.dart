@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 
+import '../providers/pictures.dart';
 import '../providers/barks.dart';
 import '../providers/songs.dart';
 import '../widgets/interface_selector.dart';
@@ -31,10 +32,12 @@ class _MainScreenState extends State<MainScreen> {
 
     Barks barks = Provider.of<Barks>(context, listen: false);
     Songs songs = Provider.of<Songs>(context, listen: false);
+    Pictures pictures = Provider.of<Pictures>(context, listen: false);
 
     Future downloadEverything() async {
-      await songs.retrieveAllSongs();
-      await barks.retrieveAllBarks();
+      await songs.retrieveAll();
+      await barks.retrieveAll();
+      await pictures.retrieveAll();
     }
 
     return Scaffold(

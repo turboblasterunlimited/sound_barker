@@ -10,7 +10,6 @@ import 'package:song_barker/screens/confirm_picture_screen.dart';
 import '../providers/pictures.dart';
 import '../screens/camera_screen.dart';
 import '../widgets/picture_card.dart';
-import 'package:path_provider/path_provider.dart';
 
 class PictureGrid extends StatefulWidget {
   @override

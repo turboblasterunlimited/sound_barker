@@ -3,36 +3,13 @@ import 'package:flutter/foundation.dart';
 import 'dart:io';
 import 'dart:math';
 import 'package:image/image.dart' as IMG;
+import 'dart:convert';
 
 import '../services/gcloud.dart';
 import '../services/rest_api.dart';
 
-class Pictures with ChangeNotifier, Gcloud {
-  List<Picture> all = [
-    // iOS Pictures
-    // Picture(
-    //     filePath:
-    //         "/Users/tovinewman/Library/Developer/CoreSimulator/Devices/3FD6B298-8ED0-40F2-955F-5C12BB3D6AB4/data/Containers/Data/Application/27E1B6B2-219E-480F-8E0D-0B0B4AAD9E4A/Documents/drrudo.png",
-    //     name: "dr. rudo"),
-    // Picture(
-    //     filePath:
-    //         "/Users/tovinewman/Library/Developer/CoreSimulator/Devices/3FD6B298-8ED0-40F2-955F-5C12BB3D6AB4/data/Containers/Data/Application/27E1B6B2-219E-480F-8E0D-0B0B4AAD9E4A/Documents/dog.jpg",
-    //     name: "dog"),
-
-    // Android Pictures
-    // Picture(
-    //     filePath:
-    //         "/data/user/0/com.example.song_barker/cache/2020-03-06 14:02:14.359453",
-    //     name: "couch"),
-    // Picture(
-    //     filePath:
-    //         "/data/user/0/com.example.song_barker/cache/2020-03-06 13:52:09.254723",
-    //     name: "door"),
-    // Picture(
-    //     filePath:
-    //         "/data/user/0/com.example.song_barker/cache/2020-03-06 14:03:25.095228",
-    //     name: "window")
-  ];
+class Pictures with ChangeNotifier, Gcloud, RestAPI {
+  List<Picture> all = [];
 
   void add(Picture picture) {
     all.add(picture);
@@ -42,6 +19,33 @@ class Pictures with ChangeNotifier, Gcloud {
   void remove(picture) {
     all.remove(picture);
     notifyListeners();
+  }
+
+  Future retrieveAll() async {
+    String response = await retrieveAllImagesFromServer();
+    json.decode(response).forEach((serverImage) {
+      if (serverImage["hidden"] == 1) return;
+      Picture bark = Picture(
+          name: serverImage["name"],
+          fileUrl: serverImage["bucket_fp"],
+          fileId: serverImage["uuid"]);
+      if (all.indexWhere((bark) => bark.fileId == serverImage["uuid"]) == -1) {
+        all.add(bark);
+      }
+    });
+    await downloadAllImagesFromBucket();
+    notifyListeners();
+  }
+
+  Future downloadAllImagesFromBucket([List images]) async {
+    images = images == null ? all : images;
+    int barkCount = images.length;
+    for (var i = 0; i < barkCount; i++) {
+      String filePath = await downloadFromBucket(
+          images[i].fileUrl, images[i].fileId,
+          true);
+      images[i].filePath = filePath;
+    }
   }
 }
 
@@ -58,7 +62,7 @@ class Picture with ChangeNotifier, RestAPI, Gcloud {
   }
 
   Future<void> uploadPictureAndSaveToServer() async {
-    this.fileUrl = await uploadPicture(fileId, filePath);
+    this.fileUrl = await uploadAsset(fileId, filePath, true);
     await createImageOnServer(this);
   }
 

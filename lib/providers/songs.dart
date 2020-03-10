@@ -22,7 +22,7 @@ class Songs with ChangeNotifier, Gcloud, RestAPI {
   }
 
   // ALL SONGS THAT AREN'T HIDDEN UNLESS THEY EXIST
-  Future retrieveAllSongs() async {
+  Future retrieveAll() async {
     String response = await retrieveAllSongsFromServer();
     json.decode(response).forEach((serverSong) {
       if (serverSong["hidden"] == 1) return;
@@ -41,13 +41,13 @@ class Songs with ChangeNotifier, Gcloud, RestAPI {
     notifyListeners();
   }
 
-  // downloadSoundFromBucket only downloads songs that don't already exist on the FS
+  // downloadFromBucket only downloads songs that don't already exist on the FS
   Future _downloadAllSongsFromBucket([List songs]) async {
     songs = songs == null ? all : songs;
     int soundCount = songs.length;
     for (var i = 0; i < soundCount; i++) {
       String filePath =
-          await downloadSoundFromBucket(songs[i].fileUrl, songs[i].fileId);
+          await downloadFromBucket(songs[i].fileUrl, songs[i].fileId, false);
       songs[i].filePath = filePath;
     }
   }
@@ -91,7 +91,7 @@ class Song with ChangeNotifier, Gcloud, RestAPI {
     this.name = responseData["name"];
     this.fileUrl = responseData["bucket_fp"];
     this.formulaId = responseData["song_id"];
-    this.filePath = await downloadSoundFromBucket(fileUrl, fileId);
+    this.filePath = await downloadFromBucket(fileUrl, fileId, false);
     // print("filePath for song: ${this.filePath}");
   }
 }

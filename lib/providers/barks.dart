@@ -15,7 +15,7 @@ class Barks with ChangeNotifier, Gcloud, RestAPI {
     //print("All the barks: $all");
   }
 
-  Future retrieveAllBarks() async {
+  Future retrieveAll() async {
     String response = await retrieveAllBarksFromServer();
     json.decode(response).forEach((serverBark) {
       if(serverBark["hidden"] == 1) return;
@@ -33,7 +33,7 @@ class Barks with ChangeNotifier, Gcloud, RestAPI {
     int barkCount = barks.length;
     for (var i = 0; i < barkCount; i++) {
       String filePath =
-          await downloadSoundFromBucket(barks[i].fileUrl, barks[i].fileId);
+          await downloadFromBucket(barks[i].fileUrl, barks[i].fileId, false);
       barks[i].filePath = filePath;
     }
   }
@@ -93,7 +93,7 @@ class Bark with ChangeNotifier, Gcloud, RestAPI {
   }
 
   Future<List> uploadBarkAndRetrieveCroppedBarks() async {
-    var downloadLink = await uploadRawBark(fileId, filePath);
+    var downloadLink = await uploadAsset(fileId, filePath, false);
     // downloadLink for rawBark is probably not needed.
     //print(downloadLink);
     String responseBody = await splitRawBarkOnServer(fileId, 'imageName');
