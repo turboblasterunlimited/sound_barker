@@ -90,8 +90,7 @@ class _CameraScreenState extends State<CameraScreen> {
                         child: Container(
                           width: _width,
                           height: (_width * .8) / _controller.value.aspectRatio,
-                          child: CameraPreview(
-                              _controller),
+                          child: CameraPreview(_controller),
                         ),
                       ),
                     ),
@@ -108,15 +107,15 @@ class _CameraScreenState extends State<CameraScreen> {
                   child: FloatingActionButton(
                     child: Icon(Icons.camera_alt),
                     onPressed: () async {
+                      Picture newPicture = Picture();
                       try {
                         final filePath = join(
                           myAppStoragePath,
-                          DateTime.now().toString(),
-                          ".jpg",
+                          newPicture.fileId + ".jpg",
                         );
                         print("SAVEing TempIMAGE TO $filePath");
                         await _controller.takePicture(filePath);
-                        Picture newPicture = Picture(filePath: filePath);
+                         newPicture.filePath = filePath;
                         await newPicture.crop();
                         Navigator.push(
                           context,

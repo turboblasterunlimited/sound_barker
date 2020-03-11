@@ -31,12 +31,13 @@ class _PictureGridState extends State<PictureGrid> {
               RawMaterialButton(
                 onPressed: () async {
                   File file = await FilePicker.getFile(type: FileType.IMAGE);
-                  String newFilePath = join(
-                    myAppStoragePath,
-                    DateTime.now().toString(),
-                  );
+                  Picture newPicture = Picture();
+                  final newFilePath = join(
+                          myAppStoragePath,
+                          newPicture.fileId + ".jpg",
+                        );
                   await file.copy(newFilePath);
-                  Picture newPicture = Picture(filePath: newFilePath);
+                  newPicture.filePath = newFilePath;
                   await newPicture.crop();
 
                   Navigator.push(

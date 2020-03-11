@@ -20,7 +20,10 @@ class ConfirmPictureScreen extends StatelessWidget {
       newPicture.uploadPictureAndSaveToServer();
       pictures.add(newPicture);
       int count = 0;
-      Navigator.of(context).pushNamed(MainScreen.routeName);
+      Navigator.popUntil(
+        context,
+        ModalRoute.withName(Navigator.defaultRouteName),
+      );
     }
 
     return Scaffold(
