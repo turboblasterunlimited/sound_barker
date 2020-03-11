@@ -15,9 +15,9 @@ class Songs with ChangeNotifier, Gcloud, RestAPI {
   }
 
   void removeSong(songToDelete) {
-    all.removeWhere((song) {
-      return song.fileId == songToDelete.fileId;
-    });
+    songToDelete.deleteFromServer();
+    all.remove(songToDelete);
+    File(songToDelete.filePath).delete();
     notifyListeners();
   }
 

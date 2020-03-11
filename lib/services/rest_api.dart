@@ -167,12 +167,12 @@ class RestAPI {
     return response.body;
   }
 
-  Future<String> splitRawBarkOnServer(fileId, imageName) async {
+  Future<String> splitRawBarkOnServer(fileId, imageId) async {
     http.Response response;
     String body = json.encode({
       'uuid': fileId,
       'user_id': '999',
-      'name': imageName,
+      'image_id': imageId,
     });
     print(body);
     final url = 'http://165.227.178.14/split_audio';

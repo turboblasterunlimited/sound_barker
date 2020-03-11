@@ -102,8 +102,6 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
               onPressed: () {
                 try {
                   songs.removeSong(song);
-                  song.removeFromStorage();
-                  song.deleteFromServer();
                 } catch (e) {
                   showErrorDialog(ctx, e.toString());
                 } finally {

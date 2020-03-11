@@ -56,9 +56,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
               child: Text('Yes. Delete it.'),
               onPressed: () {
                 try {
-                  barks.removeBark(bark);
-                  bark.removeFromStorage();
-                  bark.deleteFromServer();
+                  barks.remove(bark);
                 } catch (e) {
                   showErrorDialog(context, e);
                 } finally {

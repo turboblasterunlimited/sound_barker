@@ -10,6 +10,11 @@ import '../services/rest_api.dart';
 
 class Pictures with ChangeNotifier, Gcloud, RestAPI {
   List<Picture> all = [];
+  Picture mountedPicture;
+
+  String mountedPictureFileId() {
+    return mountedPicture == null ? null : mountedPicture.fileId;
+  }
 
   void add(Picture picture) {
     all.add(picture);
@@ -24,6 +29,7 @@ class Pictures with ChangeNotifier, Gcloud, RestAPI {
       return;
     }
     all.remove(picture);
+    File(picture.filePath).delete();
     notifyListeners();
   }
 
@@ -31,6 +37,12 @@ class Pictures with ChangeNotifier, Gcloud, RestAPI {
     String response = await retrieveAllImagesFromServer();
     json.decode(response).forEach((serverImage) {
       if (serverImage["hidden"] == 1) return;
+      if (serverImage["uuid"] == null) return;
+
+      // print("INSIDE RETRIEVE ALL 1");
+      // print(serverImage);
+      // print("INSIDE RETRIEVE ALL 2");
+
       Picture pic = Picture(
           name: serverImage["name"],
           // SERVER IS NOT PROVIDING A FILE URL ATM....
@@ -64,12 +76,18 @@ class Picture with ChangeNotifier, RestAPI, Gcloud {
   String filePath;
   String fileId;
   String mouthCoordinates;
-  Picture({String name, String filePath, String fileUrl, String fileId, String mouthCoordinates}) {
+  Picture(
+      {String name,
+      String filePath,
+      String fileUrl,
+      String fileId,
+      String mouthCoordinates = "[(0.452, 0.415), (0.631, 0.334)]"}) {
     this.mouthCoordinates = mouthCoordinates;
     this.name = name;
     this.filePath = filePath;
     this.fileUrl = fileUrl;
     this.fileId = fileId == null ? Uuid().v4() : fileId;
+    print(this);
   }
 
   Future<void> uploadPictureAndSaveToServer() async {

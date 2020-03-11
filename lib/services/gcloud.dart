@@ -20,6 +20,8 @@ class Gcloud {
     String filePath = myAppStoragePath + '/' + fileId;
     filePath += image == true ? ".jpg" : '.aac';
     Bucket bucket = await accessBucket();
+    // print(image ? "THIS Is an IMAGE!!!" : "");
+    // print("fileUrl: $fileUrl, filePath: $filePath");
     try { bucket.read(fileUrl).pipe(new File(filePath).openWrite());
     } catch (e) {
       print(e);

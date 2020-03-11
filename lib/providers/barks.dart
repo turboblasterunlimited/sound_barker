@@ -42,11 +42,10 @@ class Barks with ChangeNotifier, Gcloud, RestAPI {
     return all;
   }
 
-  void removeBark(barkToDelete) {
-    barkToDelete.removeFromStorage();
-    all.removeWhere((bark) {
-      return bark.fileId == barkToDelete.fileId;
-    });
+  void remove(barkToDelete) {
+    barkToDelete.deleteFromServer();
+    all.remove(barkToDelete);
+    File(barkToDelete.filePath).delete();
     notifyListeners();
   }
 }
@@ -63,14 +62,6 @@ class Bark with ChangeNotifier, Gcloud, RestAPI {
     this.filePath = filePath;
     this.fileUrl = fileUrl;
     this.fileId = fileId == null ? Uuid().v4() : fileId;
-  }
-
-  void removeFromStorage() {
-    try {
-      File(filePath).delete();
-    } catch (e) {
-      print(e);
-    }
   }
 
   Future<String> rename(newName) async {
@@ -92,11 +83,11 @@ class Bark with ChangeNotifier, Gcloud, RestAPI {
     return response;
   }
 
-  Future<List> uploadBarkAndRetrieveCroppedBarks() async {
+  Future<List> uploadBarkAndRetrieveCroppedBarks(imageId) async {
     var downloadLink = await uploadAsset(fileId, filePath, false);
     // downloadLink for rawBark is probably not needed.
     //print(downloadLink);
-    String responseBody = await splitRawBarkOnServer(fileId, 'imageName');
+    String responseBody = await splitRawBarkOnServer(fileId, imageId);
     //print("Response body content: $responseBody");
     List newBarks = parseCroppedBarks(responseBody);
     return newBarks;

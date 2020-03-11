@@ -8,6 +8,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'dart:io';
 
 import '../providers/barks.dart';
+import '../providers/pictures.dart';
 
 class RecordButton extends StatefulWidget {
   static const routeName = 'bark-screen';
@@ -100,8 +101,9 @@ class _RecordButtonState extends State<RecordButton> {
     
   
 
-    Bark rawBark = Bark(name: imageName, filePath: filePath);
-    List croppedBarks = await rawBark.uploadBarkAndRetrieveCroppedBarks();
+    Bark rawBark = Bark(filePath: filePath);
+    Pictures pictures = Provider.of<Pictures>(context, listen: false);
+    List croppedBarks = await rawBark.uploadBarkAndRetrieveCroppedBarks(pictures.mountedPictureFileId);
     //print("Upload and Retrieve Cropped Barks checkpoint");
     Barks barks = Provider.of<Barks>(context, listen: false);
     addCroppedBarksToAllBarks(barks, croppedBarks);
