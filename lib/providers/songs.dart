@@ -30,6 +30,7 @@ class Songs with ChangeNotifier, Gcloud, RestAPI {
           "INDEX OF THE SONG IN LOCAL SONGS: ${all.indexWhere((song) => song.fileId == serverSong["uuid"])}");
       print(serverSong["hidden"] == 1);
       Song song = Song(
+          formulaId: serverSong["song_id"],
           name: serverSong["name"],
           fileUrl: serverSong["bucket_fp"],
           fileId: serverSong["uuid"]);

@@ -9,6 +9,8 @@ class ImageController with ChangeNotifier {
   }
 
   void triggerBark({duration= .2, distance= .05}) async {
+    print("Bark Triggered... Duration:$duration, Distance: $distance");
+    
     webViewController.evaluateJavascript("bark($duration, $distance)");
   }
 
