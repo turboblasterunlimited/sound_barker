@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:song_barker/providers/image_controller.dart';
 import 'dart:io';
-import 'dart:convert';
 
 import '../providers/pictures.dart';
-import '../functions/app_storage_path.dart';
 
 class PictureCard extends StatelessWidget {
   @override
@@ -20,13 +18,6 @@ class PictureCard extends StatelessWidget {
     // print(picture.name + "!!!!!!!!! ");
     // print(File(picture.filePath).existsSync());
 
-    void passPictureToWebview() {
-      String encodingPrefix = "data:image/png;base64,";
-      String base64Image =
-          base64.encode(File(picture.filePath).readAsBytesSync());
-      imageController.loadImage('"' + encodingPrefix + base64Image + '"');
-    }
-
     return Container(
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
@@ -36,7 +27,7 @@ class PictureCard extends StatelessWidget {
               GestureDetector(
                 onTap: () {
                   print("Clicked on image...");
-                  passPictureToWebview();
+                  imageController.loadImage(picture);
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),

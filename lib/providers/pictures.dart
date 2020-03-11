@@ -82,7 +82,7 @@ class Picture with ChangeNotifier, RestAPI, Gcloud {
       String filePath,
       String fileUrl,
       String fileId,
-      String mouthCoordinates = "[(0.452, 0.415), (0.631, 0.334)]"}) {
+      String mouthCoordinates = "[0.452, 0.415], [0.631, 0.334]"}) {
     this.mouthCoordinates = mouthCoordinates;
     this.name = name;
     this.filePath = filePath;

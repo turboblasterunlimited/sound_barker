@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/pictures.dart';
 import 'main_screen.dart';
+import '../providers/image_controller.dart';
 
 class ConfirmPictureScreen extends StatelessWidget {
   final Picture newPicture;
@@ -12,13 +13,16 @@ class ConfirmPictureScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Pictures pictures = Provider.of<Pictures>(context, listen: false);
-
+    ImageController imageController = Provider.of<ImageController>(context);
     String _pictureName = "";
 
     void _submitPicture(context) {
       newPicture.name = _pictureName;
       newPicture.uploadPictureAndSaveToServer();
       pictures.add(newPicture);
+      pictures.mountedPicture = newPicture;
+      imageController.loadImage(newPicture);
+
       int count = 0;
       Navigator.popUntil(
         context,
