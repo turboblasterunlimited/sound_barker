@@ -49,8 +49,8 @@ class RestAPI {
   Future<String> createImageOnServer(image) async {
     // ADD MOUTH COORDINATES WHEN READY!
     http.Response response;
-    String body =
-        json.encode({'uuid': image.fileId, 'name': image.name, 'user_id': '999'});
+    String body = json
+        .encode({'uuid': image.fileId, 'name': image.name, 'user_id': '999'});
     //print(body);
     final url = 'http://165.227.178.14/image';
     try {
@@ -99,7 +99,7 @@ class RestAPI {
     return response.body;
   }
 
-    Future<String> retrieveAllImagesFromServer() async {
+  Future<String> retrieveAllImagesFromServer() async {
     http.Response response;
     final url = 'http://165.227.178.14/all/image/999';
     try {
@@ -125,8 +125,21 @@ class RestAPI {
     return response.body;
   }
 
+  Future<String> deleteImageFromServer(image) async {
+    http.Response response;
+    final url = 'http://165.227.178.14/image/${image.fileId}';
+    try {
+      response = await http.delete(url);
+    } catch (error) {
+      print("Error: $error");
+      throw error;
+    }
+    // print("Song Name: ${image.name}, Song ID: ${song.fileId}");
+    print("Delete picture response body: ${response.body}");
+    return response.body;
+  }
+
   Future<String> deleteSongFromServer(song) async {
-    print('checkpoint!');
 
     http.Response response;
     final url = 'http://165.227.178.14/sequence/${song.fileId}';
@@ -176,5 +189,4 @@ class RestAPI {
     print("split bark server response body content: ${response.body}");
     return response.body;
   }
-  
 }

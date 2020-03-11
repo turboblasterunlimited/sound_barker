@@ -17,6 +17,12 @@ class Pictures with ChangeNotifier, Gcloud, RestAPI {
   }
 
   void remove(picture) {
+    try {
+      deleteImageFromServer(picture);
+    } catch (e) {
+      print(e);
+      return;
+    }
     all.remove(picture);
     notifyListeners();
   }
@@ -25,12 +31,15 @@ class Pictures with ChangeNotifier, Gcloud, RestAPI {
     String response = await retrieveAllImagesFromServer();
     json.decode(response).forEach((serverImage) {
       if (serverImage["hidden"] == 1) return;
-      Picture bark = Picture(
+      Picture pic = Picture(
           name: serverImage["name"],
-          fileUrl: serverImage["bucket_fp"],
-          fileId: serverImage["uuid"]);
-      if (all.indexWhere((bark) => bark.fileId == serverImage["uuid"]) == -1) {
-        all.add(bark);
+          // SERVER IS NOT PROVIDING A FILE URL ATM....
+          // fileUrl: serverImage["bucket_fp"],
+          fileId: serverImage["uuid"],
+          mouthCoordinates: serverImage["mouth_coordinates"]);
+      if (all.indexWhere((pic) => pic.fileId == serverImage["uuid"]) == -1) {
+        pic.fileUrl = "images/${pic.fileId}.jpg";
+        all.add(pic);
       }
     });
     await downloadAllImagesFromBucket();
@@ -39,12 +48,12 @@ class Pictures with ChangeNotifier, Gcloud, RestAPI {
 
   Future downloadAllImagesFromBucket([List images]) async {
     images = images == null ? all : images;
-    int barkCount = images.length;
-    for (var i = 0; i < barkCount; i++) {
-      String filePath = await downloadFromBucket(
-          images[i].fileUrl, images[i].fileId,
-          true);
+    int imagesCount = images.length;
+    for (var i = 0; i < imagesCount; i++) {
+      String filePath =
+          await downloadFromBucket(images[i].fileUrl, images[i].fileId, true);
       images[i].filePath = filePath;
+      // print("downloadAllImagesFromBucket: ${json.encode(images[i])}");
     }
   }
 }
@@ -54,7 +63,9 @@ class Picture with ChangeNotifier, RestAPI, Gcloud {
   String fileUrl;
   String filePath;
   String fileId;
-  Picture({String name, String filePath, String fileUrl, String fileId}) {
+  String mouthCoordinates;
+  Picture({String name, String filePath, String fileUrl, String fileId, String mouthCoordinates}) {
+    this.mouthCoordinates = mouthCoordinates;
     this.name = name;
     this.filePath = filePath;
     this.fileUrl = fileUrl;
@@ -77,7 +88,8 @@ class Picture with ChangeNotifier, RestAPI, Gcloud {
     IMG.Image destImage =
         IMG.copyCrop(src, offsetX, offsetY, cropSize, cropSize);
 
-    var jpg = IMG.encodeJpg(destImage);
+    destImage = IMG.copyResize(destImage, width: 400);
+    var jpg = IMG.encodeJpg(destImage, quality: 80);
 
     File(filePath).deleteSync();
     await File(filePath).writeAsBytes(jpg);

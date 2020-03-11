@@ -18,23 +18,24 @@ class Gcloud {
 
   Future<String> downloadFromBucket(fileUrl, fileId, [image]) async {
     String filePath = myAppStoragePath + '/' + fileId;
-    filePath += image == true ? "" : '.aac';
-    // if (await File(filePath).exists()) return filePath;
-    // print("FILE PATH DOES NOT EXIST! $filePath");
+    filePath += image == true ? ".jpg" : '.aac';
     Bucket bucket = await accessBucket();
-    bucket.read(fileUrl).pipe(new File(filePath).openWrite());
+    try { bucket.read(fileUrl).pipe(new File(filePath).openWrite());
+    } catch (e) {
+      print(e);
+    }
     return filePath;
   }
 
   Future<String> uploadAsset(fileId, filePath, [image]) async {
-    String bucketWritePath = image == true ? "images/$fileId" : "$fileId/raw.aac";
+    String bucketWritePath = image == true ? "images/$fileId.jpg" : "$fileId/raw.aac";
     var info;
     Bucket bucket = await accessBucket();
     try {
       info =
           await File(filePath).openRead().pipe(bucket.write(bucketWritePath));
     } catch (error) {
-      //print('failed to put bark in the bucket');
+      print(error);
       return error;
     }
     return info.downloadLink.toString();
