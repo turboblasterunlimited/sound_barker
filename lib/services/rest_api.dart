@@ -49,8 +49,12 @@ class RestAPI {
   Future<String> createImageOnServer(image) async {
     // ADD MOUTH COORDINATES WHEN READY!
     http.Response response;
-    String body = json
-        .encode({'uuid': image.fileId, 'name': image.name, 'user_id': '999'});
+    String body = json.encode({
+      'uuid': image.fileId,
+      'name': image.name,
+      'user_id': '999',
+      'mouth_coordinates': image.mouthCoordinates,
+    });
     //print(body);
     final url = 'http://165.227.178.14/image';
     try {
@@ -140,7 +144,6 @@ class RestAPI {
   }
 
   Future<String> deleteSongFromServer(song) async {
-
     http.Response response;
     final url = 'http://165.227.178.14/sequence/${song.fileId}';
     try {

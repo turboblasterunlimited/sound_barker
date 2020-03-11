@@ -112,6 +112,7 @@ class _CameraScreenState extends State<CameraScreen> {
                         final filePath = join(
                           myAppStoragePath,
                           DateTime.now().toString(),
+                          ".jpg",
                         );
                         print("SAVEing TempIMAGE TO $filePath");
                         await _controller.takePicture(filePath);

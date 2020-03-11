@@ -17,6 +17,7 @@ class Pictures with ChangeNotifier, Gcloud, RestAPI {
   }
 
   void add(Picture picture) {
+    print("MouthCoordinates: ${picture.mouthCoordinates}");
     all.add(picture);
     notifyListeners();
   }
@@ -51,7 +52,7 @@ class Pictures with ChangeNotifier, Gcloud, RestAPI {
           mouthCoordinates: serverImage["mouth_coordinates"]);
       if (all.indexWhere((pic) => pic.fileId == serverImage["uuid"]) == -1) {
         pic.fileUrl = "images/${pic.fileId}.jpg";
-        all.add(pic);
+        add(pic);
       }
     });
     await downloadAllImagesFromBucket();
