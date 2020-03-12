@@ -38,16 +38,19 @@ class _MainScreenState extends State<MainScreen> {
       await songs.retrieveAll();
       await barks.retrieveAll();
       await pictures.retrieveAll();
+      pictures.mountedPicture = pictures.all.first;
     }
 
     return Scaffold(
-      // extendBodyBehindAppBar: true,
+      extendBodyBehindAppBar: true,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(30.0),
+        preferredSize: Size.fromHeight(28.0),
         child: AppBar(
-          iconTheme: IconThemeData(color: Colors.white, size: 30),
-          backgroundColor: Theme.of(context).accentColor,
-          // elevation: 0,
+          iconTheme: IconThemeData(color: Theme.of(context).accentColor, size: 30),
+          // backgroundColor: Theme.of(context).accentColor,
+          backgroundColor: Colors.transparent,
+
+          elevation: 0,
           centerTitle: true,
           actions: <Widget>[
             IconButton(

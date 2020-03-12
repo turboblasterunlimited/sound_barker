@@ -20,8 +20,8 @@ class _SingingImageState extends State<SingingImage> {
 
   @override
   Widget build(BuildContext context) {
-    return Flexible(
-      flex: 2,
+    return AspectRatio(
+      aspectRatio: 1/1,
       child: WebView(
         onWebViewCreated: (WebViewController c) {
           _controller.complete(c);
