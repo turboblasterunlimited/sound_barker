@@ -44,58 +44,47 @@ class _CameraScreenState extends State<CameraScreen> {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      extendBody: true,
-      appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white, size: 30),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-        title: Text(
-          'Song Barker',
-          style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 23,
-              shadows: [
-                Shadow(
-                    // bottomLeft
-                    offset: Offset(-1.5, -1.5),
-                    color: outlineColor),
-                Shadow(
-                    // bottomRight
-                    offset: Offset(1.5, -1.5),
-                    color: outlineColor),
-                Shadow(
-                    // topRight
-                    offset: Offset(1.5, 1.5),
-                    color: outlineColor),
-                Shadow(
-                    // topLeft
-                    offset: Offset(-1.5, 1.5),
-                    color: outlineColor),
-              ],
-              color: Colors.white),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(28.0),
+        child: AppBar(
+          iconTheme: IconThemeData(color: Colors.white, size: 30),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          centerTitle: true,
+          title: Text(
+            'Song Barker',
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 23,
+                shadows: [
+                  Shadow(
+                      // bottomLeft
+                      offset: Offset(-1.5, -1.5),
+                      color: outlineColor),
+                  Shadow(
+                      // bottomRight
+                      offset: Offset(1.5, -1.5),
+                      color: outlineColor),
+                  Shadow(
+                      // topRight
+                      offset: Offset(1.5, 1.5),
+                      color: outlineColor),
+                  Shadow(
+                      // topLeft
+                      offset: Offset(-1.5, 1.5),
+                      color: outlineColor),
+                ],
+                color: Colors.white),
+          ),
         ),
       ),
       body: !_controller.value.isInitialized
           ? Container()
           : Column(
               children: <Widget>[
-                Container(
-                  width: _width,
-                  height: _width * .8,
-                  child: ClipRect(
-                    child: OverflowBox(
-                      alignment: Alignment.center,
-                      child: FittedBox(
-                        fit: BoxFit.fitWidth,
-                        child: Container(
-                          width: _width,
-                          height: (_width * .8) / _controller.value.aspectRatio,
-                          child: CameraPreview(_controller),
-                        ),
-                      ),
-                    ),
-                  ),
+                AspectRatio(
+                  aspectRatio: 1 / 1,
+                  child: CameraPreview(_controller),
                 ),
                 // Expanded(
                 //   flex: 1,
@@ -104,31 +93,33 @@ class _CameraScreenState extends State<CameraScreen> {
                 //     child: CameraPreview(_controller),
                 //   ),
                 // ),
-                Center(
-                  child: FloatingActionButton(
-                    child: Icon(Icons.camera_alt),
-                    onPressed: () async {
-                      Picture newPicture = Picture();
-                      try {
-                        final filePath = join(
-                          myAppStoragePath,
-                          newPicture.fileId + ".jpg",
-                        );
-                        print("SAVEing TempIMAGE TO $filePath");
-                        await _controller.takePicture(filePath);
-                         newPicture.filePath = filePath;
-                        await newPicture.crop();
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                ConfirmPictureScreen(newPicture),
-                          ),
-                        );
-                      } catch (e) {
-                        print(e);
-                      }
-                    },
+                Expanded(
+                  child: Center(
+                    child: FloatingActionButton(
+                      child: Icon(Icons.camera_alt),
+                      onPressed: () async {
+                        Picture newPicture = Picture();
+                        try {
+                          final filePath = join(
+                            myAppStoragePath,
+                            newPicture.fileId + ".jpg",
+                          );
+                          print("SAVEing TempIMAGE TO $filePath");
+                          await _controller.takePicture(filePath);
+                          newPicture.filePath = filePath;
+                          await newPicture.crop();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  ConfirmPictureScreen(newPicture),
+                            ),
+                          );
+                        } catch (e) {
+                          print(e);
+                        }
+                      },
+                    ),
                   ),
                 ),
               ],
