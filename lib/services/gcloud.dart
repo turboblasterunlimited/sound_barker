@@ -3,8 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:gcloud/storage.dart';
 import 'package:googleapis_auth/auth_io.dart' as auth;
 import '../functions/app_storage_path.dart';
+import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 
 class Gcloud {
+  final FlutterFFmpeg _flutterFFmpeg = new FlutterFFmpeg();
+
   Future<Bucket> accessBucket() async {
     var credData =
         await rootBundle.loadString('credentials/gcloud_credentials.json');
@@ -17,12 +20,19 @@ class Gcloud {
   }
 
   Future<String> downloadFromBucket(fileUrl, fileId, [image]) async {
-    String filePath = myAppStoragePath + '/' + fileId;
-    filePath += image == true ? ".jpg" : '.aac';
     Bucket bucket = await accessBucket();
-    // print(image ? "THIS Is an IMAGE!!!" : "");
-    // print("fileUrl: $fileUrl, filePath: $filePath");
-    try { bucket.read(fileUrl).pipe(new File(filePath).openWrite());
+    String filePathBase = myAppStoragePath + '/' + fileId;
+    String filePath = filePathBase;
+    
+    filePath += image == true ? ".jpg" : '.aac';
+    try { 
+      await bucket.read(fileUrl).pipe(new File(filePath).openWrite());
+      if (image != true) {
+        // Makes a wav file and deletes the .aac file.
+        await _flutterFFmpeg.execute("-i $filePath $filePathBase.wav");
+        File(filePath).delete();
+        filePath = filePathBase + ".wav";
+      }
     } catch (e) {
       print(e);
     }

@@ -4,8 +4,15 @@ PODS:
   - file_picker (0.0.1):
     - Flutter
   - Flutter (1.0.0)
+  - flutter_ffmpeg (0.2.10):
+    - Flutter
+    - flutter_ffmpeg/https (= 0.2.10)
+  - flutter_ffmpeg/https (0.2.10):
+    - Flutter
+    - mobile-ffmpeg-https (= 4.3.1)
   - flutter_sound (0.0.1):
     - Flutter
+  - mobile-ffmpeg-https (4.3.1)
   - path_provider (0.0.1):
     - Flutter
   - path_provider_macos (0.0.1):
@@ -17,10 +24,15 @@ DEPENDENCIES:
   - camera (from `.symlinks/plugins/camera/ios`)
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `Flutter`)
+  - flutter_ffmpeg (from `.symlinks/plugins/flutter_ffmpeg/ios`)
   - flutter_sound (from `.symlinks/plugins/flutter_sound/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - path_provider_macos (from `.symlinks/plugins/path_provider_macos/ios`)
   - webview_flutter (from `.symlinks/plugins/webview_flutter/ios`)
+
+SPEC REPOS:
+  trunk:
+    - mobile-ffmpeg-https
 
 EXTERNAL SOURCES:
   camera:
@@ -29,6 +41,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/file_picker/ios"
   Flutter:
     :path: Flutter
+  flutter_ffmpeg:
+    :path: ".symlinks/plugins/flutter_ffmpeg/ios"
   flutter_sound:
     :path: ".symlinks/plugins/flutter_sound/ios"
   path_provider:
@@ -42,11 +56,13 @@ SPEC CHECKSUMS:
   camera: 38cc83ae9a5667bb5a71c7d9edaf60a91920fd4e
   file_picker: 408623be2125b79a4539cf703be3d4b3abe5e245
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  flutter_ffmpeg: cf0a6941ef67e88248c998cc3e34f8acb0b4e454
   flutter_sound: 0e8163ceac1e00eb6d894e2ae4641ba726a2c479
+  mobile-ffmpeg-https: c4a3c255163ddb1abc4b4dfc613c2d885f8c46eb
   path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
   path_provider_macos: f760a3c5b04357c380e2fddb6f9db6f3015897e0
   webview_flutter: bec7599de6bfbe8008a739aa3ebd7b364ea9d0cd
 
-PODFILE CHECKSUM: 1b66dae606f75376c5f2135a8290850eeb09ae83
+PODFILE CHECKSUM: d08aec9c20db7ca0c6a105fcf2ac89fc5f66e87b
 
 COCOAPODS: 1.8.4
