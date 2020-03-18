@@ -11,12 +11,7 @@ class SingingImage extends StatefulWidget {
 
 class _SingingImageState extends State<SingingImage> {
   Completer<WebViewController> _controller = Completer<WebViewController>();
-  // WebViewController controller;
 
-  // void triggerBark(controller) async {
-  //   await Future.delayed(Duration(seconds: 3));
-  //   controller.evaluateJavascript("bark()");
-  // }
 
   @override
   Widget build(BuildContext context) {

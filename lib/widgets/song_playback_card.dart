@@ -6,7 +6,7 @@ import '../providers/sound_controller.dart';
 import '../providers/songs.dart';
 import '../functions/error_dialog.dart';
 import '../providers/image_controller.dart';
-
+import '../services/wave_streamer.dart' as WaveStreamer;
 
 class SongPlaybackCard extends StatefulWidget {
   final int index;
@@ -27,58 +27,14 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
     super.dispose();
   }
 
-  void performHappyBirthday(context) async {
-    imageController = Provider.of<ImageController>(context, listen: false);
-    imageController.triggerBark(duration: .1, distance: .03);
-    await Future.delayed(Duration(milliseconds: 250));
-    imageController.triggerBark(duration: .1, distance: .03);
-    await Future.delayed(Duration(milliseconds: 250));
-    imageController.triggerBark(duration: .2, distance: .03);
-    await Future.delayed(Duration(milliseconds: 500));
-    imageController.triggerBark(duration: .2, distance: .03);
-    await Future.delayed(Duration(milliseconds: 500));
-    imageController.triggerBark(duration: .2, distance: .03);
-    await Future.delayed(Duration(milliseconds: 500));
-    imageController.triggerBark(duration: .4, distance: .04);
-  }
-
-    void performDarthVader(context) async {
-    imageController = Provider.of<ImageController>(context, listen: false);
-    imageController.triggerBark(duration: .1, distance: .03);
-    await Future.delayed(Duration(milliseconds: 550));
-    imageController.triggerBark(duration: .1, distance: .03);
-    await Future.delayed(Duration(milliseconds: 500));
-    imageController.triggerBark(duration: .2, distance: .03);
-    await Future.delayed(Duration(milliseconds: 500));
-    imageController.triggerBark(duration: .2, distance: .03);
-    await Future.delayed(Duration(milliseconds: 250));
-    imageController.triggerBark(duration: .2, distance: .03);
-    await Future.delayed(Duration(milliseconds: 250));
-    imageController.triggerBark(duration: .4, distance: .04);
-  }
-
-  void performSong(context) {
-    switch(widget.song.formulaId) {
-      case "1": {
-        performHappyBirthday(context);
-      }
-      break;
-      case "2": {
-        performDarthVader(context);
-      }
-    }
-  }
-
   void playSong(context) async {
+    final imageController = Provider.of<ImageController>(context, listen: false);
     String path = widget.song.filePath;
-    if (File(path).exists() == null) {
-      return;
-    }
     try {
-      performSong(context);
+      WaveStreamer.performAudio(context, path, imageController);
       widget.soundController.stopPlayer();
-      path = await widget.soundController.startPlayer(path);
-      await widget.soundController.flutterSound.setVolume(1.0);
+      widget.soundController.startPlayer(path);
+      widget.soundController.flutterSound.setVolume(1.0);
     } catch (e) {
       showErrorDialog(context, e);
     }

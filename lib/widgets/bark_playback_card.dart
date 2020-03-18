@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gcloud/pubsub.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
 
@@ -6,6 +7,7 @@ import '../providers/sound_controller.dart';
 import '../providers/barks.dart';
 import '../providers/image_controller.dart';
 import '../functions/error_dialog.dart';
+import '../services/wave_streamer.dart' as WaveStreamer;
 
 class BarkPlaybackCard extends StatefulWidget {
   final int index;
@@ -25,17 +27,15 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
   }
 
   void playBark() async {
-    Provider.of<ImageController>(context, listen: false).triggerBark();
+    final imageController = Provider.of<ImageController>(context, listen: false);
     String path = widget.bark.filePath;
-
-    if (File(path).exists() == null) {
-      return;
-    }
     try {
-      path = await widget.soundController.startPlayer(path);
-      await widget.soundController.flutterSound.setVolume(1.0);
+      WaveStreamer.performAudio(context, path, imageController);
+      widget.soundController.stopPlayer();
+      widget.soundController.startPlayer(path);
+      widget.soundController.flutterSound.setVolume(1.0);
     } catch (e) {
-      print("Error: $e");
+      showErrorDialog(context, e);
     }
   }
 
