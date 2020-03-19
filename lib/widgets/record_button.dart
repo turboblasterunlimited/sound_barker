@@ -46,9 +46,7 @@ class _RecordButtonState extends State<RecordButton> {
   void startRecorder() async {
     try {
       this.filePath = await flutterSound.startRecorder(
-        codec: _codec,
-        iosQuality: IosQuality.HIGH
-      );
+          codec: _codec, iosQuality: IosQuality.HIGH);
       //print('startRecorder: $filePath');
 
       _recorderSubscription = flutterSound.onRecorderStateChanged.listen((e) {
@@ -82,11 +80,9 @@ class _RecordButtonState extends State<RecordButton> {
     setState(() {
       this._isRecording = false;
     });
-    String imageName;
 
     try {
-      String result = await flutterSound.stopRecorder();
-      //print('stopRecorder: $result');
+      await flutterSound.stopRecorder();
       if (_recorderSubscription != null) {
         _recorderSubscription.cancel();
         _recorderSubscription = null;
@@ -96,26 +92,23 @@ class _RecordButtonState extends State<RecordButton> {
         _dbPeakSubscription = null;
       }
     } catch (err) {
-      //print('stopRecorder error: $err');
+      print('stopRecorder error: $err');
     }
-    
-  
 
     Bark rawBark = Bark(filePath: filePath);
     Pictures pictures = Provider.of<Pictures>(context, listen: false);
-    List croppedBarks = await rawBark.uploadBarkAndRetrieveCroppedBarks(pictures.mountedPictureFileId());
-    //print("Upload and Retrieve Cropped Barks checkpoint");
+    List croppedBarks = await rawBark
+        .uploadBarkAndRetrieveCroppedBarks(pictures.mountedPictureFileId());
     Barks barks = Provider.of<Barks>(context, listen: false);
     addCroppedBarksToAllBarks(barks, croppedBarks);
     barks.downloadAllBarksFromBucket(croppedBarks);
   }
 
-  void addCroppedBarksToAllBarks(allBarks, croppedBarks) {
+  void addCroppedBarksToAllBarks(Barks barks, croppedBarks) {
     int length = croppedBarks.length;
     for (var i = 0; i < length; i++) {
-      setState(() {
-        allBarks.addBark(croppedBarks[i]);
-      });
+      barks.addBark(croppedBarks[i]);
+      // barks.listKey.currentState.insertItem(0);
     }
   }
 

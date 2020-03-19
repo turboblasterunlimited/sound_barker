@@ -13,7 +13,7 @@ import '../widgets/singing_image.dart';
 
 class MainScreen extends StatefulWidget {
   static const routeName = 'main-screen';
-  bool _showSpinner = false;
+  // bool _showSpinner = false;
 
   @override
   _MainScreenState createState() => _MainScreenState();
@@ -28,6 +28,8 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final GlobalKey<AnimatedListState> _listKey =
+        GlobalKey<AnimatedListState>();
     var outlineColor = Theme.of(context).accentColor;
 
     Barks barks = Provider.of<Barks>(context, listen: false);
@@ -35,8 +37,8 @@ class _MainScreenState extends State<MainScreen> {
     Pictures pictures = Provider.of<Pictures>(context, listen: false);
 
     Future downloadEverything() async {
-      await songs.retrieveAll();
       await barks.retrieveAll();
+      await songs.retrieveAll();
       await pictures.retrieveAll();
       pictures.mountedPicture = pictures.all.first;
     }
@@ -46,7 +48,8 @@ class _MainScreenState extends State<MainScreen> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(28.0),
         child: AppBar(
-          iconTheme: IconThemeData(color: Theme.of(context).accentColor, size: 30),
+          iconTheme:
+              IconThemeData(color: Theme.of(context).accentColor, size: 30),
           // backgroundColor: Theme.of(context).accentColor,
           backgroundColor: Colors.transparent,
 
@@ -58,9 +61,7 @@ class _MainScreenState extends State<MainScreen> {
                 OMIcons.cloudDownload,
               ),
               onPressed: () async {
-                setState(() => widget._showSpinner = true);
                 await downloadEverything();
-                setState(() => widget._showSpinner = false);
               },
             ),
           ],
@@ -95,20 +96,19 @@ class _MainScreenState extends State<MainScreen> {
       body: Column(
         children: <Widget>[
           SingingImage(),
-          Visibility(
-            visible: widget._showSpinner,
-            child: Flexible(
-              flex: 2,
-              child: Container(
-                height: 400,
-                child: SpinKitRing(
-                  color: Colors.blue,
-                  size: 100.0,
-                ),
-              ),
-            ),
-          ),
-          Visibility(visible: !widget._showSpinner, child: InterfaceSelector()),
+
+          // Flexible(
+          //   flex: 2,
+          //   child: Container(
+          //     height: 400,
+          //     child: SpinKitRing(
+          //       color: Colors.blue,
+          //       size: 100.0,
+          //     ),
+          //   ),
+          // ),
+
+          InterfaceSelector(),
         ],
       ),
     );

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:convert';
@@ -8,26 +9,34 @@ import '../services/rest_api.dart';
 
 class Barks with ChangeNotifier, Gcloud, RestAPI {
   List<Bark> all = [];
+  final listKey = GlobalKey<AnimatedListState>();
 
   void addBark(bark) {
     all.insert(0, bark);
-    notifyListeners();
+    listKey.currentState.insertItem(0);
+    // notifyListeners();
     //print("All the barks: $all");
   }
 
   Future retrieveAll() async {
     String response = await retrieveAllBarksFromServer();
-    json.decode(response).forEach((serverBark) {
-      if(serverBark["hidden"] == 1) return;
-      Bark bark = Bark(name: serverBark["name"], fileUrl: serverBark["bucket_fp"], fileId: serverBark["uuid"]);
-      if (all.indexWhere((bark) => bark.fileId == serverBark["uuid"]) == -1) {
-        all.add(bark);
+    json.decode(response).forEach((serverBark) async {
+      if (serverBark["hidden"] == 1) return;
+      Bark bark = Bark(
+          name: serverBark["name"],
+          fileUrl: serverBark["bucket_fp"],
+          fileId: serverBark["uuid"]);
+      // if serverBark isn't already in in barks.all
+      if (all.indexWhere((bark) => bark.fileId == serverBark["uuid"].toString()) == -1) {
+        print("bark.fileId: ${bark.fileId}, serverBark: ${serverBark["uuid"].toString()}");
+        await downloadAllBarksFromBucket([bark]);
+        addBark(bark);
       }
     });
-    await downloadAllBarksFromBucket();
+    // await downloadAllBarksFromBucket();
     notifyListeners();
   }
-
+  // downloads the files either from all barks in memory or just the barks passed.
   Future downloadAllBarksFromBucket([List barks]) async {
     barks = barks == null ? all : barks;
     int barkCount = barks.length;

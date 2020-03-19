@@ -23,8 +23,15 @@ class Gcloud {
     Bucket bucket = await accessBucket();
     String filePathBase = myAppStoragePath + '/' + fileId;
     String filePath = filePathBase;
-    
-    filePath += image == true ? ".jpg" : '.aac';
+        
+    if (image == true) {
+      filePath += ".jpg";
+      if (await File(filePath).exists()) return filePath;
+    } else {
+      filePath += ".aac";
+      if (await File(filePathBase + ".wav").exists()) return filePathBase + ".wav";
+    }
+
     try { 
       await bucket.read(fileUrl).pipe(new File(filePath).openWrite());
       if (image != true) {
