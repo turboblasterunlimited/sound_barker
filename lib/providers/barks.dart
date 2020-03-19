@@ -13,9 +13,8 @@ class Barks with ChangeNotifier, Gcloud, RestAPI {
 
   void addBark(bark) {
     all.insert(0, bark);
-    listKey.currentState.insertItem(0);
+    if (listKey.currentState != null) listKey.currentState.insertItem(0);
     // notifyListeners();
-    //print("All the barks: $all");
   }
 
   Future retrieveAll() async {
@@ -28,7 +27,6 @@ class Barks with ChangeNotifier, Gcloud, RestAPI {
           fileId: serverBark["uuid"]);
       // if serverBark isn't already in in barks.all
       if (all.indexWhere((bark) => bark.fileId == serverBark["uuid"].toString()) == -1) {
-        print("bark.fileId: ${bark.fileId}, serverBark: ${serverBark["uuid"].toString()}");
         await downloadAllBarksFromBucket([bark]);
         addBark(bark);
       }

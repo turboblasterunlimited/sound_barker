@@ -10,8 +10,11 @@ import '../services/wave_streamer.dart' as WaveStreamer;
 class SongPlaybackCard extends StatefulWidget {
   final int index;
   final Song song;
+  final Songs songs;
   final SoundController soundController;
-  SongPlaybackCard(this.index, this.song, this.soundController);
+  final Animation animation;
+  SongPlaybackCard(
+      this.index, this.song, this.songs, this.soundController, this.animation);
 
   @override
   _SongPlaybackCardState createState() => _SongPlaybackCardState();
@@ -27,7 +30,8 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
   }
 
   void playSong(context) async {
-    final imageController = Provider.of<ImageController>(context, listen: false);
+    final imageController =
+        Provider.of<ImageController>(context, listen: false);
     String filePath = widget.song.filePath;
     try {
       WaveStreamer.performAudio(filePath, imageController);
@@ -39,13 +43,12 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
     }
   }
 
-  void deleteSong(song) async {
-    final songs = Provider.of<Songs>(context, listen: false);
+  void deleteSong() async {
     await showDialog<Null>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text('Are you sure?'),
-        content: Text('Are you sure you want to delete ${song.name}?'),
+        content: Text('Are you sure you want to delete ${widget.song.name}?'),
         actions: <Widget>[
           FlatButton(
               child: Text("No, Don't delete it."),
@@ -55,26 +58,33 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
           FlatButton(
               child: Text('Yes. Delete it.'),
               onPressed: () {
+                Navigator.of(ctx).pop();
                 try {
-                  songs.removeSong(song);
+                  widget.songs.removeSong(widget.song);
+                  AnimatedList.of(context).removeItem(
+                      widget.index,
+                      (context, animation) => SongPlaybackCard(
+                          widget.index,
+                          widget.song,
+                          widget.songs,
+                          widget.soundController,
+                          animation));
                 } catch (e) {
                   showErrorDialog(ctx, e.toString());
-                } finally {
-                  Navigator.of(ctx).pop();
-                }
+                } finally {}
               })
         ],
       ),
     );
   }
 
-  void renameSong(song) async {
-    String newName = song.name;
+  void renameSong() async {
+    String newName = widget.song.name;
 
     void _submitNameChange(ctx) async {
       print("New name: $newName");
       try {
-        await song.rename(newName);
+        await widget.song.rename(newName);
       } catch (e) {
         showErrorDialog(context, e);
       }
@@ -121,49 +131,51 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
 
   @override
   Widget build(BuildContext context) {
-    context = context;
-    final song = Provider.of<Song>(context);
-    String songName = song.name;
-    return Card(
-      margin: EdgeInsets.symmetric(
-        horizontal: 5,
-        vertical: 3,
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(4),
-        child: ListTile(
-          leading: IconButton(
-            color: Colors.blue,
-            onPressed: () {
-              playSong(context);
-            },
-            icon: Icon(Icons.play_arrow, color: Colors.black, size: 40),
-          ),
-          title: GestureDetector(
-            onTap: () => renameSong(song),
-            child: RichText(
-              text: TextSpan(
-                style: TextStyle(fontSize: 18),
-                children: [
-                  WidgetSpan(
-                    child: Text(songName),
-                  ),
-                  WidgetSpan(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                      child: Icon(Icons.edit, color: Colors.blueGrey, size: 20),
+    String songName = widget.song.name;
+    return SizeTransition(
+      sizeFactor: widget.animation,
+      child: Card(
+        margin: EdgeInsets.symmetric(
+          horizontal: 5,
+          vertical: 3,
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(4),
+          child: ListTile(
+            leading: IconButton(
+              color: Colors.blue,
+              onPressed: () {
+                playSong(context);
+              },
+              icon: Icon(Icons.play_arrow, color: Colors.black, size: 40),
+            ),
+            title: GestureDetector(
+              onTap: () => renameSong(),
+              child: RichText(
+                text: TextSpan(
+                  style: TextStyle(fontSize: 18),
+                  children: [
+                    WidgetSpan(
+                      child: Text(songName),
                     ),
-                  ),
-                ],
+                    WidgetSpan(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                        child:
+                            Icon(Icons.edit, color: Colors.blueGrey, size: 20),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          // subtitle: Text(pet.name),
-          trailing: IconButton(
-            onPressed: () {
-              deleteSong(song);
-            },
-            icon: Icon(Icons.delete, color: Colors.redAccent, size: 30),
+            // subtitle: Text(pet.name),
+            trailing: IconButton(
+              onPressed: () {
+                deleteSong();
+              },
+              icon: Icon(Icons.delete, color: Colors.redAccent, size: 30),
+            ),
           ),
         ),
       ),

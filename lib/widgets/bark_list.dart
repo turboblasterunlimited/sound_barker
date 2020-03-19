@@ -12,7 +12,8 @@ class BarkList extends StatefulWidget {
   _BarkListState createState() => _BarkListState();
 }
 
-class _BarkListState extends State<BarkList> with SingleTickerProviderStateMixin {
+class _BarkListState extends State<BarkList>
+    with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final SoundController soundController =
@@ -31,7 +32,9 @@ class _BarkListState extends State<BarkList> with SingleTickerProviderStateMixin
             key: barks.listKey,
             initialItemCount: barks.all.length,
             padding: const EdgeInsets.all(10),
-            itemBuilder: (ctx, i, Animation<double> animation) => BarkPlaybackCard(i, barks.all[i], barks, soundController, animation),
+            itemBuilder: (ctx, i, Animation<double> animation) =>
+                BarkPlaybackCard(
+                    i, barks.all[i], barks, soundController, animation),
           ),
         ),
       ],

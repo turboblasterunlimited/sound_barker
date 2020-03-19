@@ -42,7 +42,7 @@ class _SongListState extends State<SongList> {
 
   @override
   Widget build(BuildContext context) {
-    Songs songs = Provider.of<Songs>(context);
+    Songs songs = Provider.of<Songs>(context, listen: false);
     SoundController soundController = Provider.of<SoundController>(context);
 
     return Column(
@@ -63,13 +63,13 @@ class _SongListState extends State<SongList> {
           ),
         ),
         Expanded(
-          child: ListView.builder(
+          child: AnimatedList(
+            key: songs.listKey,
+            initialItemCount: songs.all.length,
             padding: const EdgeInsets.all(10),
-            itemCount: songs.all.length,
-            itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
-              value: songs.all[i],
-              child: SongPlaybackCard(i, songs.all[i], soundController),
-            ),
+            itemBuilder: (ctx, i, Animation<double> animation) =>
+                SongPlaybackCard(
+                    i, songs.all[i], songs, soundController, animation),
           ),
         ),
       ],

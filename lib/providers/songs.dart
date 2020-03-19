@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import '../services/gcloud.dart';
 import 'dart:convert';
@@ -7,18 +8,19 @@ import '../services/rest_api.dart';
 
 class Songs with ChangeNotifier, Gcloud, RestAPI {
   List<Song> all = [];
+  final listKey = GlobalKey<AnimatedListState>();
 
   void addSong(song) {
     all.insert(0, song);
-    notifyListeners();
-    //print("All the barks: $all");
+    if (listKey.currentState != null) listKey.currentState.insertItem(0);
+    // notifyListeners();
   }
 
   void removeSong(songToDelete) {
     songToDelete.deleteFromServer();
     all.remove(songToDelete);
     File(songToDelete.filePath).delete();
-    notifyListeners();
+    // notifyListeners();
   }
 
   // ALL SONGS THAT AREN'T HIDDEN UNLESS THEY EXIST
@@ -35,11 +37,12 @@ class Songs with ChangeNotifier, Gcloud, RestAPI {
           fileUrl: serverSong["bucket_fp"],
           fileId: serverSong["uuid"]);
       if (all.indexWhere((song) => song.fileId == serverSong["uuid"]) == -1) {
-        all.add(song);
+        _downloadAllSongsFromBucket([song]);
+        addSong(song);
       }
     });
-    await _downloadAllSongsFromBucket();
-    notifyListeners();
+    
+    // notifyListeners();
   }
 
   // downloadFromBucket only downloads songs that don't already exist on the FS
@@ -75,7 +78,7 @@ class Song with ChangeNotifier, Gcloud, RestAPI {
     return deleteSongFromServer(this);
   }
 
-  void rename(newName) async {
+  Future<void> rename(newName) async {
     try {
       await renameSongOnServer(this, newName);
     } catch (e) {
