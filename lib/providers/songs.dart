@@ -8,8 +8,8 @@ import '../services/rest_api.dart';
 class Songs with ChangeNotifier, Gcloud, RestAPI {
   List<Song> all = [];
 
-  void addSong(bark) {
-    all.add(bark);
+  void addSong(song) {
+    all.insert(0, song);
     notifyListeners();
     //print("All the barks: $all");
   }

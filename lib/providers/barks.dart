@@ -10,7 +10,7 @@ class Barks with ChangeNotifier, Gcloud, RestAPI {
   List<Bark> all = [];
 
   void addBark(bark) {
-    all.add(bark);
+    all.insert(0, bark);
     notifyListeners();
     //print("All the barks: $all");
   }

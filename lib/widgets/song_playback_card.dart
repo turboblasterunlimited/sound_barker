@@ -28,11 +28,11 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
 
   void playSong(context) async {
     final imageController = Provider.of<ImageController>(context, listen: false);
-    String path = widget.song.filePath;
+    String filePath = widget.song.filePath;
     try {
-      WaveStreamer.performAudio(context, path, imageController);
+      WaveStreamer.performAudio(filePath, imageController);
       widget.soundController.stopPlayer();
-      widget.soundController.startPlayer(path);
+      widget.soundController.startPlayer(filePath);
       widget.soundController.flutterSound.setVolume(1.0);
     } catch (e) {
       showErrorDialog(context, e);

@@ -56,7 +56,7 @@ import 'dart:async';
 // String header = bytes;
 // Int16List soundData = bytes.sublist(headerOffset).buffer.asInt16List();
 // print("Number of samples: ${soundData.length}");
-performAudio(context, path, imageController) {
+performAudio(path, imageController) {
   if (File(path).exists() == null) {
     return;
   }
