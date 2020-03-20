@@ -43,11 +43,10 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
   void playBark() async {
     final imageController =
         Provider.of<ImageController>(context, listen: false);
-    String filePath = widget.bark.filePath;
     try {
-      WaveStreamer.performAudio(filePath, imageController);
+      WaveStreamer.performAudio(widget.bark.filePath, imageController);
       widget.soundController.stopPlayer();
-      widget.soundController.startPlayer(filePath);
+      widget.soundController.startPlayer(widget.bark.filePath);
       widget.soundController.flutterSound.setVolume(1.0);
     } catch (e) {
       showErrorDialog(context, e);

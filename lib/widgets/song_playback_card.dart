@@ -20,8 +20,20 @@ class SongPlaybackCard extends StatefulWidget {
   _SongPlaybackCardState createState() => _SongPlaybackCardState();
 }
 
-class _SongPlaybackCardState extends State<SongPlaybackCard> {
+class _SongPlaybackCardState extends State<SongPlaybackCard>
+    with TickerProviderStateMixin {
   ImageController imageController;
+  AnimationController renameAnimationController;
+
+  @override
+  void initState() {
+    renameAnimationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 500),
+    );
+    super.initState();
+    renameAnimationController.forward();
+  }
 
   @override
   void dispose() {
@@ -79,16 +91,16 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
   }
 
   void renameSong() async {
-    String newName = widget.song.name;
-
     void _submitNameChange(ctx) async {
-      print("New name: $newName");
       try {
-        await widget.song.rename(newName);
+        widget.song.rename(widget.song.name);
       } catch (e) {
         showErrorDialog(context, e);
       }
       Navigator.of(ctx).pop();
+      await renameAnimationController.reverse();
+      setState(() {});
+      renameAnimationController.forward();
     }
 
     await showDialog<Null>(
@@ -99,11 +111,11 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
         titlePadding: EdgeInsets.all(10),
         children: <Widget>[
           TextFormField(
-            initialValue: newName,
+            initialValue: widget.song.name,
             onChanged: (name) {
-              setState(() => newName = name);
+              widget.song.name = name;
             },
-            onFieldSubmitted: (name) {
+            onFieldSubmitted: (_) {
               _submitNameChange(ctx);
             },
             validator: (value) {
@@ -151,21 +163,27 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
             ),
             title: GestureDetector(
               onTap: () => renameSong(),
-              child: RichText(
-                text: TextSpan(
-                  style: TextStyle(fontSize: 18),
-                  children: [
-                    WidgetSpan(
-                      child: Text(songName),
+              child: Center(
+                child: FadeTransition(
+                  opacity: renameAnimationController,
+                  child: RichText(
+                    text: TextSpan(
+                      style: TextStyle(fontSize: 18),
+                      children: [
+                        WidgetSpan(
+                          child: Text(songName),
+                        ),
+                        WidgetSpan(
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 2.0),
+                            child: Icon(Icons.edit,
+                                color: Colors.blueGrey, size: 20),
+                          ),
+                        ),
+                      ],
                     ),
-                    WidgetSpan(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                        child:
-                            Icon(Icons.edit, color: Colors.blueGrey, size: 20),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),
