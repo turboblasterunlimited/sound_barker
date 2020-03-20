@@ -23,7 +23,6 @@ class ConfirmPictureScreen extends StatelessWidget {
       pictures.mountedPicture = newPicture;
       imageController.loadImage(newPicture);
 
-      int count = 0;
       Navigator.popUntil(
         context,
         ModalRoute.withName(Navigator.defaultRouteName),

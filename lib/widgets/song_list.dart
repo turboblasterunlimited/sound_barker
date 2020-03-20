@@ -12,6 +12,7 @@ class SongList extends StatefulWidget {
 }
 
 class _SongListState extends State<SongList> {
+  // IN THE FUTURE, RETRIEVE LIST SONGS FROM THE SERVER
   List<Map> availableSongs = [
     {"name": "Happy Birthday", "price": 1, "id": 1},
     {"name": "Darth Vader", "price": 2, "id": 2}

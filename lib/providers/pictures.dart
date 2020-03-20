@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:io';
@@ -18,8 +19,8 @@ class Pictures with ChangeNotifier, Gcloud, RestAPI {
 
   void add(Picture picture) {
     print("MouthCoordinates: ${picture.mouthCoordinates}");
-    all.add(picture);
-    notifyListeners();
+    all.insert(0, picture);
+    // notifyListeners();
   }
 
   void remove(picture) {
@@ -36,13 +37,9 @@ class Pictures with ChangeNotifier, Gcloud, RestAPI {
 
   Future retrieveAll() async {
     String response = await retrieveAllImagesFromServer();
-    json.decode(response).forEach((serverImage) {
+    json.decode(response).forEach((serverImage) async {
       if (serverImage["hidden"] == 1) return;
       if (serverImage["uuid"] == null) return;
-
-      // print("INSIDE RETRIEVE ALL 1");
-      // print(serverImage);
-      // print("INSIDE RETRIEVE ALL 2");
 
       Picture pic = Picture(
           name: serverImage["name"],
@@ -52,11 +49,11 @@ class Pictures with ChangeNotifier, Gcloud, RestAPI {
           mouthCoordinates: serverImage["mouth_coordinates"]);
       if (all.indexWhere((pic) => pic.fileId == serverImage["uuid"]) == -1) {
         pic.fileUrl = "images/${pic.fileId}.jpg";
+        await downloadAllImagesFromBucket([pic]);
         add(pic);
+        notifyListeners();
       }
     });
-    await downloadAllImagesFromBucket();
-    notifyListeners();
   }
 
   Future downloadAllImagesFromBucket([List images]) async {
@@ -77,6 +74,7 @@ class Picture with ChangeNotifier, RestAPI, Gcloud {
   String filePath;
   String fileId;
   String mouthCoordinates;
+  bool creationAnimation;
   Picture(
       {String name,
       String filePath,
@@ -88,6 +86,7 @@ class Picture with ChangeNotifier, RestAPI, Gcloud {
     this.filePath = filePath;
     this.fileUrl = fileUrl;
     this.fileId = fileId == null ? Uuid().v4() : fileId;
+    this.creationAnimation = true;
     print(this);
   }
 
@@ -114,6 +113,5 @@ class Picture with ChangeNotifier, RestAPI, Gcloud {
     File(filePath).deleteSync();
     await File(filePath).writeAsBytes(jpg);
     print("Inside Crop...after filePath: $filePath");
-
   }
 }

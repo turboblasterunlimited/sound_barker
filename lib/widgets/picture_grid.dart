@@ -16,7 +16,11 @@ class PictureGrid extends StatefulWidget {
   _PictureGridState createState() => _PictureGridState();
 }
 
-class _PictureGridState extends State<PictureGrid> {
+class _PictureGridState extends State<PictureGrid> with AutomaticKeepAliveClientMixin {
+  
+  @override
+  bool get wantKeepAlive => true;
+
   @override
   Widget build(BuildContext context) {
     Pictures pictures = Provider.of<Pictures>(context);
@@ -86,8 +90,8 @@ class _PictureGridState extends State<PictureGrid> {
             padding: const EdgeInsets.all(10),
             itemCount: pictures.all.length,
             itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
-              value: pictures.all[i],
-              child: PictureCard(),
+              key: UniqueKey(),
+              child: PictureCard(i, pictures.all[i], pictures),
             ),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
