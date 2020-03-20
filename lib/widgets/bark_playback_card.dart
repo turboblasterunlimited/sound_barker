@@ -13,13 +13,27 @@ class BarkPlaybackCard extends StatefulWidget {
   final Barks barks;
   final SoundController soundController;
   final Animation<double> animation;
-  BarkPlaybackCard(this.index, this.bark, this.barks, this.soundController, this.animation);
+  BarkPlaybackCard(
+      this.index, this.bark, this.barks, this.soundController, this.animation);
 
   @override
   _BarkPlaybackCardState createState() => _BarkPlaybackCardState();
 }
 
-class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
+class _BarkPlaybackCardState extends State<BarkPlaybackCard>
+    with TickerProviderStateMixin {
+  AnimationController renameAnimationController;
+
+  @override
+  void initState() {
+    renameAnimationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 500),
+    );
+    super.initState();
+    renameAnimationController.forward();
+  }
+
   @override
   void dispose() {
     widget.soundController.stopPlayer();
@@ -57,15 +71,15 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
               onPressed: () {
                 Navigator.of(ctx).pop();
                 try {
-                  // setState(() {
-                  //   ;
-                  // });
                   widget.barks.remove(widget.bark);
-                  print("This type is: ${this.runtimeType}");
-                  print("Index${widget.index}");
-
-                  AnimatedList.of(context)
-                      .removeItem(widget.index, (context, animation) => BarkPlaybackCard(widget.index, widget.bark, widget.barks, widget.soundController, animation));
+                  AnimatedList.of(context).removeItem(
+                      widget.index,
+                      (context, animation) => BarkPlaybackCard(
+                          widget.index,
+                          widget.bark,
+                          widget.barks,
+                          widget.soundController,
+                          animation));
                 } catch (e) {
                   showErrorDialog(context, e);
                 }
@@ -76,15 +90,17 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
   }
 
   void renameBark() async {
-    String newName = widget.bark.name;
 
-    void _submitNameChange(ctx) {
+    void _submitNameChange(ctx) async {
       try {
-        widget.bark.rename(newName);
+        widget.bark.rename(widget.bark.name);
       } catch (e) {
         showErrorDialog(context, e);
       }
       Navigator.of(ctx).pop();
+      await renameAnimationController.reverse();
+      setState((){});
+      renameAnimationController.forward();
     }
 
     await showDialog<Null>(
@@ -95,9 +111,9 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
         titlePadding: EdgeInsets.all(10),
         children: <Widget>[
           TextFormField(
-            initialValue: newName,
-            onChanged: (name) {
-              newName = name;
+            initialValue: widget.bark.name,
+            onChanged: (newName) {
+              widget.bark.name = newName;
             },
             onFieldSubmitted: (_) {
               _submitNameChange(ctx);
@@ -127,7 +143,6 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
 
   @override
   Widget build(BuildContext context) {
-    String barkName = widget.bark.name;
     return SizeTransition(
       sizeFactor: widget.animation,
       child: Card(
@@ -153,21 +168,27 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
                   showErrorDialog(context, e);
                 }
               },
-              child: RichText(
-                text: TextSpan(
-                  style: TextStyle(fontSize: 18),
-                  children: [
-                    WidgetSpan(
-                      child: Text(barkName),
+              child: Center(
+                child: FadeTransition(
+                  opacity: renameAnimationController,
+                  child: RichText(
+                    text: TextSpan(
+                      style: TextStyle(fontSize: 18),
+                      children: [
+                        WidgetSpan(
+                          child: Text(widget.bark.name),
+                        ),
+                        WidgetSpan(
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 2.0),
+                            child: Icon(Icons.edit,
+                                color: Colors.blueGrey, size: 20),
+                          ),
+                        ),
+                      ],
                     ),
-                    WidgetSpan(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                        child:
-                            Icon(Icons.edit, color: Colors.blueGrey, size: 20),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),
