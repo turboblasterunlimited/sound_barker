@@ -37,6 +37,7 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
 
   @override
   void dispose() {
+    renameAnimationController.dispose();
     widget.soundController.stopPlayer();
     super.dispose();
   }
@@ -171,14 +172,14 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
                       style: TextStyle(fontSize: 18),
                       children: [
                         WidgetSpan(
-                          child: Text(songName),
+                          child: Text(songName, style: TextStyle(fontWeight: FontWeight.bold)),
                         ),
                         WidgetSpan(
                           child: Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 2.0),
                             child: Icon(Icons.edit,
-                                color: Colors.blueGrey, size: 20),
+                                color: Colors.grey[400], size: 16),
                           ),
                         ),
                       ],

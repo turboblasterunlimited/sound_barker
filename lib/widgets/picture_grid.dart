@@ -90,6 +90,7 @@ class _PictureGridState extends State<PictureGrid> with AutomaticKeepAliveClient
             padding: const EdgeInsets.all(10),
             itemCount: pictures.all.length,
             itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
+              value: pictures.all[i],
               key: UniqueKey(),
               child: PictureCard(i, pictures.all[i], pictures),
             ),

@@ -36,6 +36,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
 
   @override
   void dispose() {
+    renameAnimationController.dispose();
     widget.soundController.stopPlayer();
     super.dispose();
   }
@@ -175,14 +176,14 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
                       style: TextStyle(fontSize: 18),
                       children: [
                         WidgetSpan(
-                          child: Text(widget.bark.name),
+                          child: Text(widget.bark.name, style: TextStyle(fontWeight: FontWeight.bold)),
                         ),
                         WidgetSpan(
                           child: Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 2.0),
                             child: Icon(Icons.edit,
-                                color: Colors.blueGrey, size: 20),
+                                color: Colors.grey[400], size: 16),
                           ),
                         ),
                       ],

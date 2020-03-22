@@ -63,7 +63,8 @@ class _BarkSelectCardState extends State<BarkSelectCard> {
   }
 
   void createSong(songs, songId) async {
-    String responseBody = await widget.bark.createSongOnServerAndRetrieve(songId);
+    String responseBody =
+        await widget.bark.createSongOnServerAndRetrieve(songId);
     Song song = Song();
     song.retrieveSong(responseBody);
     songs.addSong(song);
@@ -85,7 +86,10 @@ class _BarkSelectCardState extends State<BarkSelectCard> {
               createSong(songs, widget.songId);
               Navigator.of(context).pop();
             },
-            icon: Icon(Icons.queue_music, color: Colors.blue, size: 30),
+            icon: Text(
+              "use",
+              style: TextStyle(color: Colors.blue, fontSize: 15),
+            ),
           ),
           title: Text(widget.bark.name),
           // subtitle: Text(''),
