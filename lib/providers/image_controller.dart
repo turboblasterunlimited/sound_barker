@@ -19,6 +19,9 @@ class ImageController with ChangeNotifier {
     String base64Image = base64.encode(File(picture.filePath).readAsBytesSync());
     webViewController
         .evaluateJavascript("update_texture('$encodingPrefix$base64Image')");
+    print("Setting mouth coordinates... Which are: ${picture.mouthCoordinates}");
     webViewController.evaluateJavascript("set_mouth_coordinates(${picture.mouthCoordinates})");
+    print("Done!");
+
   }
 }

@@ -26,13 +26,21 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
     ImageController imageController = Provider.of<ImageController>(context);
     String _pictureName = "";
 
+    String dartToJsCoordinates() {
+      double left = widget.coordinates["left"] / 400;
+      double top = 1 - (widget.coordinates["top"] / 400);
+      double right = (widget.coordinates["left"] + widget.coordinates["width"]) / 400;
+      double bottom = 1 - (widget.coordinates["top"] + widget.coordinates["height"]) / 400;
+      return "[$left, $top], [$right, $bottom]";
+    }
+
     void _submitPicture(context) {
       widget.newPicture.name = _pictureName;
+      widget.newPicture.mouthCoordinates = dartToJsCoordinates();
       widget.newPicture.uploadPictureAndSaveToServer();
       pictures.add(widget.newPicture);
       pictures.mountedPicture = widget.newPicture;
       imageController.loadImage(widget.newPicture);
-
       Navigator.popUntil(
         context,
         ModalRoute.withName(Navigator.defaultRouteName),
@@ -44,28 +52,20 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
     Widget paintOnPicture() {
       return GestureDetector(
         onPanStart: (details) {
-          // print("Start: ${details.globalPosition}");
           setState(() {
             widget.coordinates["left"] = details.globalPosition.dx;
             widget.coordinates["top"] = details.globalPosition.dy;
-            // print("Start! coordinates: $_coordinates");
           });
         },
         onPanUpdate: (details) {
-          // print("Update dx: ${details.globalPosition.dx}");
-          // print("Update dy: ${details.globalPosition.dy}");
-
           setState(() {
             widget.coordinates["width"] =
                 details.globalPosition.dx - widget.coordinates["left"];
             widget.coordinates["height"] =
                 details.globalPosition.dy - widget.coordinates["top"];
-            // print(widget.coordinates.hashCode);
           });
-          print("coordinates: $widget.coordinates");
         },
         onPanEnd: (details) {
-          print("Done painting!");
         },
         child: CustomPaint(
           painter: CoordinatesMaker(widget.coordinates),
@@ -196,8 +196,6 @@ class CoordinatesMaker extends CustomPainter {
   CoordinatesMaker(this.coordinates) : super();
   @override
   void paint(Canvas canvas, Size size) {
-    print(coordinates.hashCode);
-    print("coordinates from painter: $coordinates");
     final paint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 4.0
