@@ -44,6 +44,15 @@ class _PictureCardState extends State<PictureCard>
     super.dispose();
   }
 
+  String imageActions(String action) {
+    if (action == "DELETE") {
+      animationController.reverse();
+      widget.pictures.remove(widget.picture);
+      imageController.loadImage(widget.pictures.all.first);
+    } else if (action == "SET MOUTH") {
+    } else if (action == "RENAME") {}
+  }
+
   pictureCard(animation) {
     return Container(
       child: ClipRRect(
@@ -67,19 +76,41 @@ class _PictureCardState extends State<PictureCard>
               Positioned(
                 right: -25,
                 top: -5,
-                child: RawMaterialButton(
-                  onPressed: () async {
-                    await animationController.reverse();
-                    widget.pictures.remove(widget.picture);
-                  },
-                  child: Icon(
-                    Icons.delete,
-                    color: Colors.black38,
-                    size: 20,
-                  ),
-                  shape: CircleBorder(),
-                  elevation: 2.0,
-                  fillColor: Colors.red,
+                child: Stack(
+                  children: <Widget>[
+                    PopupMenuButton(
+                      onSelected: imageActions,
+                      child: RawMaterialButton(
+                        child: Icon(
+                          Icons.more_vert,
+                          color: Colors.black38,
+                          size: 20,
+                        ),
+                        shape: CircleBorder(),
+                        elevation: 2.0,
+                        fillColor: Colors.white,
+                      ),
+                      itemBuilder: (BuildContext context) {
+                        return [
+                          PopupMenuItem<String>(
+                            value: "RENAME",
+                            child: Text("Rename"),
+                          ),
+                          PopupMenuItem<String>(
+                            value: "SET MOUTH",
+                            child: Text("Set mouth"),
+                          ),
+                          PopupMenuItem<String>(
+                            value: "DELETE",
+                            child: Text(
+                              "Delete",
+                              style: TextStyle(color: Colors.redAccent),
+                            ),
+                          ),
+                        ];
+                      },
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -92,8 +123,8 @@ class _PictureCardState extends State<PictureCard>
   @override
   Widget build(BuildContext context) {
     imageController = Provider.of<ImageController>(context);
-    Animation animation =
-        Tween(begin: 0.0, end: 1.0).animate(animationController);
+    Animation animation = Tween(begin: 0.0, end: 1.0).animate(
+        new CurvedAnimation(parent: animationController, curve: Curves.ease));
 
     return AnimatedBuilder(
       key: widget.key,

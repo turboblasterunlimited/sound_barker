@@ -36,12 +36,13 @@ class _MainScreenState extends State<MainScreen> {
     Songs songs = Provider.of<Songs>(context, listen: false);
     Pictures pictures = Provider.of<Pictures>(context, listen: false);
 
-    Future downloadEverything() async {
-      await barks.retrieveAll();
-      await songs.retrieveAll();
-      await pictures.retrieveAll();
-      pictures.mountedPicture = pictures.all.first;
+    void downloadEverything() {
+      barks.retrieveAll();
+      songs.retrieveAll();
+      pictures.retrieveAll();
     }
+    downloadEverything();
+
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -60,8 +61,8 @@ class _MainScreenState extends State<MainScreen> {
               icon: Icon(
                 OMIcons.cloudDownload,
               ),
-              onPressed: () async {
-                await downloadEverything();
+              onPressed: () {
+                downloadEverything();
               },
             ),
           ],
