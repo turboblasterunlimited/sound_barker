@@ -116,6 +116,19 @@ class RestAPI {
     return response.body;
   }
 
+    static Future<String> retrieveAllCreatableSongsFromServer() async {
+    http.Response response;
+    final url = 'http://165.227.178.14/all/song/-1';
+    try {
+      response = await http.get(url);
+    } catch (error) {
+      print(error);
+      throw error;
+    }
+    print("Get all Creatable Songs response body: ${response.body}");
+    return response.body;
+  }
+
   Future<String> retrieveAllBarksFromServer() async {
     http.Response response;
     final url = 'http://165.227.178.14/all/crop/999';

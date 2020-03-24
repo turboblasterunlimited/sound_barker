@@ -13,6 +13,7 @@ class AppDrawer extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 AppBar(
+                  backgroundColor: Theme.of(context).accentColor,
                   title: Text('Song Barker'),
                   automaticallyImplyLeading: false,
                 ),

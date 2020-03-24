@@ -39,7 +39,6 @@ class _CameraScreenState extends State<CameraScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var _width = MediaQuery.of(context).size.width;
     var outlineColor = Colors.black;
 
     return Scaffold(

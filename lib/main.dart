@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:song_barker/functions/app_storage_path.dart';
 
+import './screens/song_category_select_screen.dart';
 import './screens/main_screen.dart';
 import './providers/pictures.dart';
 import './providers/barks.dart';
@@ -11,8 +12,7 @@ import './providers/sound_controller.dart';
 
 void main() async {
   runApp(MyApp());
-    appStoragePath();
-
+  appStoragePath();
 }
 
 class MyApp extends StatelessWidget {
@@ -50,6 +50,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+          debugShowCheckedModeBanner: false,
           title: 'Song Barker',
           theme: ThemeData(
             primarySwatch: MaterialColor(0xff419D78, color),
@@ -65,6 +66,8 @@ class MyApp extends StatelessWidget {
           home: MainScreen(),
           routes: {
             MainScreen.routeName: (ctx) => MainScreen(),
+            SongCategorySelectScreen.routeName: (ctx) =>
+                SongCategorySelectScreen(),
           }),
     );
   }

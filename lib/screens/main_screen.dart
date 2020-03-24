@@ -41,8 +41,8 @@ class _MainScreenState extends State<MainScreen> {
       songs.retrieveAll();
       pictures.retrieveAll();
     }
-    downloadEverything();
 
+    downloadEverything();
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -66,31 +66,31 @@ class _MainScreenState extends State<MainScreen> {
               },
             ),
           ],
-          title: Text(
-            'Song Barker',
-            style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 23,
-                shadows: [
-                  Shadow(
-                      // bottomLeft
-                      offset: Offset(-1.5, -1.5),
-                      color: outlineColor),
-                  Shadow(
-                      // bottomRight
-                      offset: Offset(1.5, -1.5),
-                      color: outlineColor),
-                  Shadow(
-                      // topRight
-                      offset: Offset(1.5, 1.5),
-                      color: outlineColor),
-                  Shadow(
-                      // topLeft
-                      offset: Offset(-1.5, 1.5),
-                      color: outlineColor),
-                ],
-                color: Colors.white),
-          ),
+          // title: Text(
+          //   'Song Barker',
+          //   style: TextStyle(
+          //       fontWeight: FontWeight.bold,
+          //       fontSize: 23,
+          //       shadows: [
+          //         Shadow(
+          //             // bottomLeft
+          //             offset: Offset(-1.5, -1.5),
+          //             color: outlineColor),
+          //         Shadow(
+          //             // bottomRight
+          //             offset: Offset(1.5, -1.5),
+          //             color: outlineColor),
+          //         Shadow(
+          //             // topRight
+          //             offset: Offset(1.5, 1.5),
+          //             color: outlineColor),
+          //         Shadow(
+          //             // topLeft
+          //             offset: Offset(-1.5, 1.5),
+          //             color: outlineColor),
+          //       ],
+          //       color: Colors.white),
+          // ),
         ),
       ),
       drawer: AppDrawer(),

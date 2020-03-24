@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:song_barker/screens/song_category_select_screen.dart';
 import '../providers/sound_controller.dart';
 import 'package:song_barker/widgets/song_playback_card.dart';
 import '../providers/songs.dart';
-import 'song_select_card.dart';
 
 class SongList extends StatefulWidget {
   @override
@@ -13,33 +13,33 @@ class SongList extends StatefulWidget {
 
 class _SongListState extends State<SongList> {
   // IN THE FUTURE, RETRIEVE LIST SONGS FROM THE SERVER
-  List<Map> availableSongs = [
-    {"name": "Happy Birthday", "price": 1, "id": 1},
-    {"name": "Darth Vader", "price": 2, "id": 2}
-  ];
+  // List<Map> availableSongs = [
+  //   {"name": "Happy Birthday", "price": 1, "id": 1},
+  //   {"name": "Darth Vader", "price": 2, "id": 2}
+  // ];
 
-  void showSongsToCreateDialog(context) async {
-    await showDialog<Null>(
-      context: context,
-      builder: (ctx) => SimpleDialog(
-        title: Text('Select Song'),
-        contentPadding: EdgeInsets.all(10),
-        titlePadding: EdgeInsets.all(10),
-        children: <Widget>[
-          Container(
-            width: double.maxFinite,
-            height: double.maxFinite,
-            child: ListView.builder(
-              padding: const EdgeInsets.all(10),
-              itemCount: availableSongs.length,
-              itemBuilder: (ctx, i) =>
-                  SongSelectCard(i, availableSongs[i], availableSongs[i]["id"]),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // void showSongsToCreateDialog(context) async {
+  //   await showDialog<Null>(
+  //     context: context,
+  //     builder: (ctx) => SimpleDialog(
+  //       title: Text('Select Song'),
+  //       contentPadding: EdgeInsets.all(10),
+  //       titlePadding: EdgeInsets.all(10),
+  //       children: <Widget>[
+  //         Container(
+  //           width: double.maxFinite,
+  //           height: double.maxFinite,
+  //           child: ListView.builder(
+  //             padding: const EdgeInsets.all(10),
+  //             itemCount: availableSongs.length,
+  //             itemBuilder: (ctx, i) =>
+  //                 SongSelectCard(i, availableSongs[i], availableSongs[i]["id"]),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +51,9 @@ class _SongListState extends State<SongList> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: RawMaterialButton(
-            onPressed: () => showSongsToCreateDialog(context),
+            onPressed: () {
+              Navigator.pushNamed(context, SongCategorySelectScreen.routeName);
+            },
             child: Icon(
               Icons.add,
               color: Colors.black38,

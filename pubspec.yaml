@@ -60,7 +60,6 @@ flutter:
   assets:
     - credentials/gcloud_credentials.json
     - assets/images/smallest_file.jpg
-    - assets/images/dog.jpg
 
   #  - images/a_dot_ham.jpeg
 
