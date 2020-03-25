@@ -62,8 +62,8 @@ class _PictureCardState extends State<PictureCard>
             children: <Widget>[
               GestureDetector(
                 onTap: () {
-                  print("Clicked on image...");
                   imageController.loadImage(widget.picture);
+                  widget.pictures.mountedPicture = widget.picture;
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
