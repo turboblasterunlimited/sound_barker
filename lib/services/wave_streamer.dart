@@ -89,7 +89,7 @@ class WaveStreamer {
     List<int> waveSamples = samples.toList();
     double _amplitude;
     List<int> tempSubList;
-    Timer.periodic(Duration(milliseconds: 100), (t) {
+    Timer.periodic(Duration(milliseconds: 110), (t) {
       if (waveSamples.length < 1764) {
         _controller.close();
         return;

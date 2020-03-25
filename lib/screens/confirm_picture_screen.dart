@@ -14,6 +14,7 @@ class ConfirmPictureScreen extends StatefulWidget {
     "width": 0.0,
     "height": 0.0,
   };
+  bool mouthAreaSet = false;
 
   @override
   _ConfirmPictureScreenState createState() => _ConfirmPictureScreenState();
@@ -24,13 +25,14 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
   Widget build(BuildContext context) {
     Pictures pictures = Provider.of<Pictures>(context, listen: false);
     ImageController imageController = Provider.of<ImageController>(context);
-    String _pictureName = "";
 
     String dartToJsCoordinates() {
       double left = widget.coordinates["left"] / 400;
       double top = 1 - (widget.coordinates["top"] / 400);
-      double right = (widget.coordinates["left"] + widget.coordinates["width"]) / 400;
-      double bottom = 1 - (widget.coordinates["top"] + widget.coordinates["height"]) / 400;
+      double right =
+          (widget.coordinates["left"] + widget.coordinates["width"]) / 400;
+      double bottom =
+          1 - (widget.coordinates["top"] + widget.coordinates["height"]) / 400;
       return "[$left, $top], [$right, $bottom]";
     }
 
@@ -47,32 +49,10 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
       );
     }
 
-    var outlineColor = Colors.black;
-
-    Widget paintOnPicture() {
-      return GestureDetector(
-        onPanStart: (details) {
-          setState(() {
-            widget.coordinates["left"] = details.globalPosition.dx;
-            widget.coordinates["top"] = details.globalPosition.dy;
-          });
-        },
-        onPanUpdate: (details) {
-          setState(() {
-            widget.coordinates["width"] =
-                details.globalPosition.dx - widget.coordinates["left"];
-            widget.coordinates["height"] =
-                details.globalPosition.dy - widget.coordinates["top"];
-          });
-        },
-        onPanEnd: (details) {
-        },
-        child: CustomPaint(
-          painter: CoordinatesMaker(widget.coordinates),
-          child: Container(
-          ),
-        ),
-      );
+    bool invalid() {
+      if (widget.newPicture.name == null) return true;
+      if (widget.coordinates["width"] == 0.0) return true;
+      return false;
     }
 
     return Scaffold(
@@ -83,32 +63,6 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
           iconTheme: IconThemeData(color: Colors.white, size: 30),
           backgroundColor: Colors.transparent,
           elevation: 0,
-          centerTitle: true,
-          title: Text(
-            'Select mouth area',
-            style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 23,
-                shadows: [
-                  Shadow(
-                      // bottomLeft
-                      offset: Offset(-1.5, -1.5),
-                      color: outlineColor),
-                  Shadow(
-                      // bottomRight
-                      offset: Offset(1.5, -1.5),
-                      color: outlineColor),
-                  Shadow(
-                      // topRight
-                      offset: Offset(1.5, 1.5),
-                      color: outlineColor),
-                  Shadow(
-                      // topLeft
-                      offset: Offset(-1.5, 1.5),
-                      color: outlineColor),
-                ],
-                color: Colors.white),
-          ),
         ),
       ),
       body: Column(
@@ -119,7 +73,29 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                 Image.file(
                   File(widget.newPicture.filePath),
                 ),
-                paintOnPicture(),
+                GestureDetector(
+                  onPanStart: (details) {
+                    setState(() {
+                      widget.coordinates["left"] = details.globalPosition.dx;
+                      widget.coordinates["top"] = details.globalPosition.dy;
+                    });
+                  },
+                  onPanUpdate: (details) {
+                    setState(() {
+                      widget.coordinates["width"] = details.globalPosition.dx -
+                          widget.coordinates["left"];
+                      widget.coordinates["height"] =
+                          details.globalPosition.dy - widget.coordinates["top"];
+                    });
+                  },
+                  onPanEnd: (details) async {
+                    setState(() => widget.mouthAreaSet = true);
+                  },
+                  child: CustomPaint(
+                    painter: CoordinatesMaker(widget.coordinates),
+                    child: Container(),
+                  ),
+                ),
               ],
             ),
           ),
@@ -129,21 +105,36 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  TextFormField(
-                    style: TextStyle(fontSize: 30),
-                    textAlign: TextAlign.center,
-                    autofocus: true,
-                    onChanged: (value) {
-                      widget.newPicture.name = value;
+                  GestureDetector(
+                    onTap: () {
+                      print(widget.mouthAreaSet);
                     },
-                    onFieldSubmitted: (value) {
-                      if (value.isEmpty) return;
-                      widget.newPicture.name = value;
-                      _submitPicture(context);
-                    },
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: 'Give it a name',
+                    child: Visibility(
+                      visible: !widget.mouthAreaSet,
+                      child: Text(
+                        "Highlight the mouth area",
+                        style: TextStyle(fontSize: 30),
+                      ),
+                    ),
+                  ),
+                  Visibility(
+                    visible: widget.mouthAreaSet,
+                    child: TextFormField(
+                      style: TextStyle(fontSize: 30),
+                      textAlign: TextAlign.center,
+                      autofocus: true,
+                      onChanged: (value) {
+                        widget.newPicture.name = value;
+                      },
+                      onFieldSubmitted: (value) {
+                        widget.newPicture.name = value;
+                        if (invalid()) return;
+                        _submitPicture(context);
+                      },
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: "What is this picture's name?",
+                      ),
                     ),
                   ),
                   Expanded(
@@ -153,6 +144,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                       children: <Widget>[
                         RawMaterialButton(
                           onPressed: () {
+                            if (invalid()) return;
                             _submitPicture(context);
                           },
                           child: Icon(
