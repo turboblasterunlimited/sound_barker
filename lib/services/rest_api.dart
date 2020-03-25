@@ -10,9 +10,16 @@ class RestAPI {
   Future<String> createSong(cropId, songId) async {
     http.Response response;
     String body =
-        json.encode({'uuid': cropId, 'user_id': '999', 'song_id': songId});
-    //print(body);
-    final url = 'http://165.227.178.14/sequence_audio';
+        json.encode({'uuids': ['$cropId'], 'user_id': '999', 'song_id': songId.toString()});
+
+    //     json.encode({
+    //   'uuids': ['2d401ce3-c675-4dc9-8f4b-714558fdb32b', 'e764cbcf-2f07-4d75-b1ef-87ea1c0cd95c'],
+    //   'user_id': '999',
+    //   'song_id': songId
+    // });
+
+    print("create song on server req body: $body");
+    final url = 'http://165.227.178.14/midi_to_audio';
     try {
       response = await http.post(
         url,
@@ -55,7 +62,7 @@ class RestAPI {
       'user_id': '999',
       'mouth_coordinates': image.mouthCoordinates,
     });
-    //print(body);
+    print("Image upload body: $body");
     final url = 'http://165.227.178.14/image';
     try {
       response = await http.post(
@@ -116,7 +123,7 @@ class RestAPI {
     return response.body;
   }
 
-    static Future<String> retrieveAllCreatableSongsFromServer() async {
+  static Future<String> retrieveAllCreatableSongsFromServer() async {
     http.Response response;
     final url = 'http://165.227.178.14/all/song/-1';
     try {

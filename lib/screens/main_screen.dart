@@ -42,7 +42,9 @@ class _MainScreenState extends State<MainScreen> {
       pictures.retrieveAll();
     }
 
-    downloadEverything();
+    if (barks.all.isEmpty && songs.all.isEmpty && pictures.all.isEmpty) {
+      downloadEverything();
+    }
 
     return Scaffold(
       extendBodyBehindAppBar: true,

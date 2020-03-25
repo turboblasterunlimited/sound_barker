@@ -1,64 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_sound/flutter_sound.dart';
-import 'dart:async';
-import 'dart:io';
 
+import '../functions/error_dialog.dart';
+import '../providers/sound_controller.dart';
 import '../providers/barks.dart';
 import '../providers/songs.dart';
 
 class BarkSelectCard extends StatefulWidget {
-  final int index;
   final Bark bark;
-  final songId;
-  BarkSelectCard(this.index, this.bark, this.songId);
+  final Map creatableSong;
+  final SoundController soundController;
+
+  BarkSelectCard(this.bark, this.creatableSong, this.soundController);
 
   @override
   _BarkSelectCardState createState() => _BarkSelectCardState();
 }
 
 class _BarkSelectCardState extends State<BarkSelectCard> {
-  FlutterSound flutterSound;
-  StreamSubscription _playerSubscription;
-
-  bool _isPlaying = false;
-
-  @override
-  void initState() {
-    super.initState();
-    flutterSound = new FlutterSound();
-    flutterSound.setSubscriptionDuration(0.01);
-    flutterSound.setDbPeakLevelUpdate(0.8);
-    flutterSound.setDbLevelEnabled(true);
-  }
-
-  @override
-  void dispose() {
-    flutterSound.stopPlayer();
-    super.dispose();
-  }
-
   void playBark() async {
-    String path = widget.bark.filePath;
-    //print('playing bark!');
-    //print(path);
-    if (File(path).exists() == null) {
-      //print("No audio file found at: $path");
-      return;
-    }
     try {
-      path = await flutterSound.startPlayer(path);
-      await flutterSound.setVolume(1.0);
-
-      _playerSubscription = flutterSound.onPlayerStateChanged.listen((e) {
-        if (e != null) {
-          this.setState(() {
-            this._isPlaying = true;
-          });
-        }
-      });
+      widget.soundController.stopPlayer();
+      widget.soundController.startPlayer(widget.bark.filePath);
+      widget.soundController.flutterSound.setVolume(1.0);
     } catch (e) {
-      //print("Error: $e");
+      showErrorDialog(context, e);
     }
   }
 
@@ -83,23 +49,24 @@ class _BarkSelectCardState extends State<BarkSelectCard> {
         child: ListTile(
           leading: IconButton(
             onPressed: () {
-              createSong(songs, widget.songId);
-              Navigator.of(context).pop();
+              createSong(songs, widget.creatableSong["id"]);
+              Navigator.popUntil(
+                context,
+                ModalRoute.withName(Navigator.defaultRouteName),
+              );
             },
             icon: Text(
-              "use",
-              style: TextStyle(color: Colors.blue, fontSize: 15),
+              "Use",
+              style: TextStyle(color: Colors.blue[800], fontSize: 16),
             ),
           ),
           title: Text(widget.bark.name),
-          // subtitle: Text(''),
           trailing: IconButton(
             color: Colors.blue,
             onPressed: () {
-              // Playback bark.
               playBark();
             },
-            icon: Icon(Icons.play_arrow, color: Colors.black, size: 40),
+            icon: Icon(Icons.play_arrow, color: Colors.blueGrey, size: 40),
           ),
         ),
       ),

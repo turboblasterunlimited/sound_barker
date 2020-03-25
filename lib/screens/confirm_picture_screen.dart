@@ -35,7 +35,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
     }
 
     void _submitPicture(context) {
-      widget.newPicture.name = _pictureName;
+      print("New picture name: ${widget.newPicture.name}");
       widget.newPicture.mouthCoordinates = dartToJsCoordinates();
       widget.newPicture.uploadPictureAndSaveToServer();
       pictures.add(widget.newPicture);
@@ -85,7 +85,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
           elevation: 0,
           centerTitle: true,
           title: Text(
-            'Song Barker',
+            'Select mouth area',
             style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 23,
@@ -134,10 +134,11 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                     textAlign: TextAlign.center,
                     autofocus: true,
                     onChanged: (value) {
-                      _pictureName = value;
+                      widget.newPicture.name = value;
                     },
                     onFieldSubmitted: (value) {
                       if (value.isEmpty) return;
+                      widget.newPicture.name = value;
                       _submitPicture(context);
                     },
                     decoration: InputDecoration(
