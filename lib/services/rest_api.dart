@@ -2,15 +2,15 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class RestAPI {
-  final Map<String, String> jsonHeaders = {
+  static final Map<String, String> jsonHeaders = {
     'Content-type': 'application/json',
     'Accept': 'application/json',
   };
 
-  Future<String> createSong(cropId, songId) async {
+  static Future<String> createSong(cropIds, songId) async {
     http.Response response;
     String body =
-        json.encode({'uuids': ['$cropId'], 'user_id': '999', 'song_id': songId.toString()});
+        json.encode({'uuids': cropIds, 'user_id': '999', 'song_id': songId.toString()});
 
     //     json.encode({
     //   'uuids': ['2d401ce3-c675-4dc9-8f4b-714558fdb32b', 'e764cbcf-2f07-4d75-b1ef-87ea1c0cd95c'],

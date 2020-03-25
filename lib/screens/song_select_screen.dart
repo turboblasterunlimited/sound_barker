@@ -50,7 +50,7 @@ Widget songCategoryCard(ctx, i, song) {
       Navigator.push(
         ctx,
         MaterialPageRoute(
-          builder: (context) => BarkSelectScreen(song),
+          builder: (context) => BarkSelectScreen(song, selectedBarkIds: []),
         ),
       );
     },

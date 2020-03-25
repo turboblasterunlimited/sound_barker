@@ -2,8 +2,6 @@ import 'dart:typed_data';
 import 'dart:io';
 import 'dart:async';
 
-// import 'package:playground/playground.dart' as playground;
-
 // int headerOffset = 44;
 // File sample = await File("${Directory.current.path}/lib/assets/sample.wav");
 
@@ -56,6 +54,7 @@ import 'dart:async';
 // String header = bytes;
 // Int16List soundData = bytes.sublist(headerOffset).buffer.asInt16List();
 // print("Number of samples: ${soundData.length}");
+
 performAudio(path, imageController) {
   if (File(path).exists() == null) {
     return;
@@ -63,7 +62,7 @@ performAudio(path, imageController) {
   try {
     imageController.setMouth(0);
     final waveStreamer = WaveStreamer(path).stream;
-    final subscription = waveStreamer.listen((_amplitude) {
+    waveStreamer.listen((_amplitude) {
       print('Frame amplitude: $_amplitude');
       imageController.setMouth(_amplitude);
     }, onError: (e) {
@@ -80,8 +79,6 @@ class WaveStreamer {
   // 40 milliseconds == 1/25 frames per second
   // 1764 samples per frame for a 44100 hertz sample rate
   WaveStreamer(String filePath) {
-    // divisor number of samples in a frame of animation Xs the max possible average amplitude
-    int divisor = 1764 * 10000;
     int headerOffset = 44;
 
     Uint8List bytes = File(filePath).readAsBytesSync();
@@ -95,6 +92,7 @@ class WaveStreamer {
         return;
       }
       tempSubList = waveSamples.sublist(0, 1763);
+      // divisor number of samples in a frame of animation Xs the max possible average amplitude
       int divisor = 1764 * 10000;
       // amplitude from 0 to 1
       _amplitude = tempSubList.reduce((a, b) => a.abs() + b.abs()) / divisor;

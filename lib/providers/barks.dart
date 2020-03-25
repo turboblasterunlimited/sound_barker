@@ -85,11 +85,6 @@ class Bark with ChangeNotifier, Gcloud, RestAPI {
     return deleteBarkFromServer(this);
   }
 
-  Future<String> createSongOnServerAndRetrieve(songId) async {
-    String response = await createSong(fileId, songId);
-    return response;
-  }
-
   Future<List> uploadBarkAndRetrieveCroppedBarks(imageId) async {
     var downloadLink = await uploadAsset(fileId, filePath, false);
     // downloadLink for rawBark is probably not needed.

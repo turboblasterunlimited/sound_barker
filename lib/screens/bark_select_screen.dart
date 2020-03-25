@@ -8,7 +8,8 @@ import '../widgets/bark_select_card.dart';
 
 class BarkSelectScreen extends StatefulWidget {
   final song;
-  BarkSelectScreen(this.song);
+  final List selectedBarkIds;
+  BarkSelectScreen(this.song, {this.selectedBarkIds});
 
   @override
   _BarkSelectScreenState createState() => _BarkSelectScreenState();
@@ -41,6 +42,7 @@ class _BarkSelectScreenState extends State<BarkSelectScreen> {
                 barks.all[i],
                 widget.song,
                 Provider.of<SoundController>(context, listen: false),
+                widget.selectedBarkIds
               ),
             ),
           ),

@@ -5,13 +5,17 @@ import '../functions/error_dialog.dart';
 import '../providers/sound_controller.dart';
 import '../providers/barks.dart';
 import '../providers/songs.dart';
+import '../screens/bark_select_screen.dart';
+import '../services/rest_api.dart';
 
 class BarkSelectCard extends StatefulWidget {
   final Bark bark;
   final Map creatableSong;
   final SoundController soundController;
+  final List selectedBarkIds;
 
-  BarkSelectCard(this.bark, this.creatableSong, this.soundController);
+  BarkSelectCard(
+      this.bark, this.creatableSong, this.soundController, this.selectedBarkIds);
 
   @override
   _BarkSelectCardState createState() => _BarkSelectCardState();
@@ -30,7 +34,7 @@ class _BarkSelectCardState extends State<BarkSelectCard> {
 
   void createSong(songs, songId) async {
     String responseBody =
-        await widget.bark.createSongOnServerAndRetrieve(songId);
+        await RestAPI.createSong(widget.selectedBarkIds, songId);
     Song song = Song();
     song.retrieveSong(responseBody);
     songs.addSong(song);
@@ -49,11 +53,25 @@ class _BarkSelectCardState extends State<BarkSelectCard> {
         child: ListTile(
           leading: IconButton(
             onPressed: () {
-              createSong(songs, widget.creatableSong["id"]);
-              Navigator.popUntil(
-                context,
-                ModalRoute.withName(Navigator.defaultRouteName),
-              );
+              setState(() => widget.selectedBarkIds.insert(0, widget.bark.fileId));
+              if (widget.creatableSong["track_count"] >
+                  widget.selectedBarkIds.length) {
+                // If we need more barks for this song we select another bark.
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BarkSelectScreen(widget.creatableSong,
+                        selectedBarkIds: widget.selectedBarkIds),
+                  ),
+                );
+              } else {
+                // Else, create the song
+                createSong(songs, widget.creatableSong["id"]);
+                Navigator.popUntil(
+                  context,
+                  ModalRoute.withName(Navigator.defaultRouteName),
+                );
+              }
             },
             icon: Text(
               "Use",
