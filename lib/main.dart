@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:song_barker/functions/app_storage_path.dart';
 
+import 'package:song_barker/providers/active_wave_streamer.dart';
 import './screens/song_category_select_screen.dart';
 import './screens/main_screen.dart';
 import './providers/pictures.dart';
@@ -47,6 +48,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider.value(
           value: SoundController(),
+        ),
+        ChangeNotifierProvider.value(
+          value: ActiveWaveStreamer(),
         ),
       ],
       child: MaterialApp(

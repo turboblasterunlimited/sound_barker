@@ -19,7 +19,21 @@ class _BarkSelectScreenState extends State<BarkSelectScreen> {
   @override
   Widget build(BuildContext context) {
     Barks barks = Provider.of<Barks>(context, listen: false);
+    String instructionText;
 
+    if (widget.song["track_count"] == 1) {
+      instructionText = "Pick a sound";
+    } else if (widget.selectedBarkIds.length == 0) {
+      instructionText = "Pick 1st sound";
+    } else if (widget.selectedBarkIds.length == 1) {
+      instructionText = "Pick 2nd sound";
+    } else if (widget.selectedBarkIds.length == 2) {
+      instructionText = "Pick 3rd sound";
+    } else if (widget.selectedBarkIds.length == 3) {
+      instructionText = "Pick 4th sound";
+    } else if (widget.selectedBarkIds.length == 4) {
+      instructionText = "Pick 5th sound";
+    }
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white, size: 30),
@@ -27,7 +41,7 @@ class _BarkSelectScreenState extends State<BarkSelectScreen> {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          "Pick a sound",
+          instructionText,
           style: TextStyle(
               fontWeight: FontWeight.bold, fontSize: 23, color: Colors.white),
         ),
@@ -39,11 +53,10 @@ class _BarkSelectScreenState extends State<BarkSelectScreen> {
               padding: const EdgeInsets.all(10),
               itemCount: barks.all.length,
               itemBuilder: (ctx, i) => BarkSelectCard(
-                barks.all[i],
-                widget.song,
-                Provider.of<SoundController>(context, listen: false),
-                widget.selectedBarkIds
-              ),
+                  barks.all[i],
+                  widget.song,
+                  Provider.of<SoundController>(context, listen: false),
+                  widget.selectedBarkIds),
             ),
           ),
         ],

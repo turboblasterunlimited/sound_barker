@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -23,6 +24,8 @@ class BarkPlaybackCard extends StatefulWidget {
 class _BarkPlaybackCardState extends State<BarkPlaybackCard>
     with TickerProviderStateMixin {
   AnimationController renameAnimationController;
+  StreamSubscription<double> waveStreamer;
+  ImageController imageController;
 
   @override
   void initState() {
@@ -32,23 +35,34 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
     );
     super.initState();
     renameAnimationController.forward();
+    imageController =
+        Provider.of<ImageController>(context, listen: false);
   }
 
   @override
   void dispose() {
     renameAnimationController.dispose();
-    widget.soundController.stopPlayer();
+    stopAll();
     super.dispose();
   }
 
+  void stopAll() {
+    waveStreamer?.cancel();
+    imageController.setMouth(0);
+    widget.soundController.stopPlayer();
+  }
+
+  void startAll() {
+    waveStreamer =
+        WaveStreamer.performAudio(widget.bark.filePath, imageController);
+    widget.soundController.startPlayer(widget.bark.filePath);
+    widget.soundController.flutterSound.setVolume(1.0);
+  }
+
   void playBark() async {
-    final imageController =
-        Provider.of<ImageController>(context, listen: false);
     try {
-      WaveStreamer.performAudio(widget.bark.filePath, imageController);
-      widget.soundController.stopPlayer();
-      widget.soundController.startPlayer(widget.bark.filePath);
-      widget.soundController.flutterSound.setVolume(1.0);
+      stopAll();
+      startAll();
     } catch (e) {
       showErrorDialog(context, e);
     }
@@ -90,7 +104,6 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
   }
 
   void renameBark() async {
-
     void _submitNameChange(ctx) async {
       try {
         widget.bark.rename(widget.bark.name);
@@ -99,7 +112,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
       }
       Navigator.of(ctx).pop();
       await renameAnimationController.reverse();
-      setState((){});
+      setState(() {});
       renameAnimationController.forward();
     }
 
@@ -176,7 +189,8 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
                       style: TextStyle(fontSize: 18),
                       children: [
                         WidgetSpan(
-                          child: Text(widget.bark.name, style: TextStyle(fontWeight: FontWeight.bold)),
+                          child: Text(widget.bark.name,
+                              style: TextStyle(fontWeight: FontWeight.bold)),
                         ),
                         WidgetSpan(
                           child: Padding(

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:async';
 
 import '../providers/sound_controller.dart';
 import '../providers/songs.dart';
 import '../functions/error_dialog.dart';
 import '../providers/image_controller.dart';
 import '../services/wave_streamer.dart' as WaveStreamer;
+import '../providers/active_wave_streamer.dart';
 
 class SongPlaybackCard extends StatefulWidget {
   final int index;
@@ -24,6 +26,7 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
     with TickerProviderStateMixin {
   ImageController imageController;
   AnimationController renameAnimationController;
+  StreamSubscription<double> waveStreamer;
 
   @override
   void initState() {
@@ -33,24 +36,35 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
     );
     super.initState();
     renameAnimationController.forward();
+    imageController = Provider.of<ImageController>(context, listen: false);
   }
 
   @override
   void dispose() {
     renameAnimationController.dispose();
-    widget.soundController.stopPlayer();
+    stopAll();
     super.dispose();
   }
 
+  void stopAll() {
+    waveStreamer?.cancel();
+    imageController.setMouth(0);
+    widget.soundController.stopPlayer();
+  }
+
+  void startAll() {
+    stopAll();
+    Provider.of<ActiveWaveStreamer>(context, listen: false).waveStreamer?.cancel();
+    waveStreamer = WaveStreamer.performAudio(widget.song.filePath, imageController);
+    Provider.of<ActiveWaveStreamer>(context, listen: false).waveStreamer = waveStreamer;
+    widget.soundController.startPlayer(widget.song.filePath);
+    widget.soundController.flutterSound.setVolume(1.0);
+  }
+
   void playSong(context) async {
-    final imageController =
-        Provider.of<ImageController>(context, listen: false);
-    String filePath = widget.song.filePath;
     try {
-      WaveStreamer.performAudio(filePath, imageController);
-      widget.soundController.stopPlayer();
-      widget.soundController.startPlayer(filePath);
-      widget.soundController.flutterSound.setVolume(1.0);
+      // stopAll();
+      startAll();
     } catch (e) {
       showErrorDialog(context, e);
     }
@@ -172,7 +186,8 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
                       style: TextStyle(fontSize: 18),
                       children: [
                         WidgetSpan(
-                          child: Text(songName, style: TextStyle(fontWeight: FontWeight.bold)),
+                          child: Text(songName,
+                              style: TextStyle(fontWeight: FontWeight.bold)),
                         ),
                         WidgetSpan(
                           child: Padding(

@@ -55,14 +55,16 @@ import 'dart:async';
 // Int16List soundData = bytes.sublist(headerOffset).buffer.asInt16List();
 // print("Number of samples: ${soundData.length}");
 
-performAudio(path, imageController) {
+StreamSubscription<double> performAudio(path, imageController) {
   if (File(path).exists() == null) {
-    return;
+    return null;
   }
+  Stream<double> waveStreamer;
+  StreamSubscription<double> subscription;
   try {
     imageController.setMouth(0);
-    final waveStreamer = WaveStreamer(path).stream;
-    waveStreamer.listen((_amplitude) {
+    waveStreamer = WaveStreamer(path).stream;
+    subscription = waveStreamer.listen((_amplitude) {
       print('Frame amplitude: $_amplitude');
       imageController.setMouth(_amplitude);
     }, onError: (e) {
@@ -73,6 +75,7 @@ performAudio(path, imageController) {
   } catch (e) {
     print("Error: $e");
   }
+  return subscription;
 }
 
 class WaveStreamer {
