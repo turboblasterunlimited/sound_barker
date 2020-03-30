@@ -22,8 +22,21 @@ class AppDrawer extends StatelessWidget {
                   leading: Icon(Icons.mic),
                   title: Text('Recording Booth'),
                   onTap: () {
-                    Navigator.of(context)
-                        .pushReplacementNamed(MainScreen.routeName);
+                    Navigator.popUntil(
+                      context,
+                      ModalRoute.withName(Navigator.defaultRouteName),
+                    );
+                  },
+                ),
+                Divider(),
+                ListTile(
+                  leading: Icon(Icons.portrait),
+                  title: Text('Account'),
+                  onTap: () {
+                    Navigator.popUntil(
+                      context,
+                      ModalRoute.withName(Navigator.defaultRouteName),
+                    );
                   },
                 ),
                 Divider(),

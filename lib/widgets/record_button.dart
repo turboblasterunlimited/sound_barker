@@ -9,6 +9,7 @@ import 'dart:io';
 
 import '../providers/barks.dart';
 import '../providers/pictures.dart';
+import '../providers/spinner_state.dart';
 
 class RecordButton extends StatefulWidget {
   static const routeName = 'bark-screen';
@@ -24,6 +25,7 @@ class _RecordButtonState extends State<RecordButton> {
   StreamSubscription _dbPeakSubscription;
   StreamSubscription _playerSubscription;
   FlutterSound flutterSound;
+  SpinnerState spinnerState;
 
   // String _recorderTxt = '00:00:00';
   // String _playerTxt = '00:00:00';
@@ -41,6 +43,7 @@ class _RecordButtonState extends State<RecordButton> {
     flutterSound.setDbPeakLevelUpdate(0.8);
     flutterSound.setDbLevelEnabled(true);
     initializeDateFormatting();
+    spinnerState = Provider.of<SpinnerState>(context, listen: false);
   }
 
   void startRecorder() async {
@@ -77,6 +80,7 @@ class _RecordButtonState extends State<RecordButton> {
   }
 
   void stopRecorder() async {
+    spinnerState.loadBarks();
     setState(() {
       this._isRecording = false;
     });
@@ -102,13 +106,13 @@ class _RecordButtonState extends State<RecordButton> {
     Barks barks = Provider.of<Barks>(context, listen: false);
     addCroppedBarksToAllBarks(barks, croppedBarks);
     barks.downloadAllBarksFromBucket(croppedBarks);
+    spinnerState.stopLoading();
   }
 
   void addCroppedBarksToAllBarks(Barks barks, croppedBarks) {
     int length = croppedBarks.length;
     for (var i = 0; i < length; i++) {
       barks.addBark(croppedBarks[i]);
-      // barks.listKey.currentState.insertItem(0);
     }
   }
 

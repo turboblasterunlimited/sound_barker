@@ -27,7 +27,7 @@ class _PictureCardState extends State<PictureCard>
     animationController =
         AnimationController(vsync: this, duration: const Duration(seconds: 1));
 
-    // If was just created, animate. Otherwise, don't.
+    // If was just created, animate in. Otherwise, don't.
     if (widget.picture.creationAnimation) {
       animationController.forward();
     } else {

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:song_barker/providers/spinner_state.dart';
 
 import '../widgets/bark_playback_card.dart';
 import './bark_playback_card.dart';
@@ -7,26 +9,36 @@ import '../widgets/record_button.dart';
 import '../providers/barks.dart';
 import '../providers/sound_controller.dart';
 
-class BarkList extends StatefulWidget {
-  @override
-  _BarkListState createState() => _BarkListState();
-}
-
-class _BarkListState extends State<BarkList>
-    with SingleTickerProviderStateMixin {
+class BarkList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final SoundController soundController =
         Provider.of<SoundController>(context);
-
     final barks = Provider.of<Barks>(context, listen: false);
-
     return Column(
       children: <Widget>[
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: RecordButton(),
         ),
+        Consumer<SpinnerState>(builder: (ctx, spinState, _) {
+          return Visibility(
+            visible: spinState.barksLoading,
+            // visible: true,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 9),
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(18.0),
+                  child: SpinKitWave(
+                    color: Theme.of(context).primaryColor,
+                    size: 20,
+                  ),
+                ),
+              ),
+            ),
+          );
+        }),
         Expanded(
           child: AnimatedList(
             key: barks.listKey,

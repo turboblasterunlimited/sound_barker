@@ -7,6 +7,7 @@ import '../providers/barks.dart';
 import '../providers/songs.dart';
 import '../screens/bark_select_screen.dart';
 import '../services/rest_api.dart';
+import '../providers/spinner_state.dart';
 
 class BarkSelectCard extends StatefulWidget {
   final Bark bark;
@@ -22,6 +23,14 @@ class BarkSelectCard extends StatefulWidget {
 }
 
 class _BarkSelectCardState extends State<BarkSelectCard> {
+  SpinnerState spinnerState;
+
+  @override
+  void initState() {
+    super.initState();
+    spinnerState = Provider.of<SpinnerState>(context, listen: false);
+  }
+
   void playBark() async {
     try {
       widget.soundController.stopPlayer();
@@ -33,11 +42,13 @@ class _BarkSelectCardState extends State<BarkSelectCard> {
   }
 
   void createSong(songs, songId) async {
+    spinnerState.loadSongs();
     String responseBody =
         await RestAPI.createSong(widget.selectedBarkIds, songId);
     Song song = Song();
     song.retrieveSong(responseBody);
     songs.addSong(song);
+    spinnerState.stopLoading();
   }
 
   @override
@@ -65,7 +76,7 @@ class _BarkSelectCardState extends State<BarkSelectCard> {
                   ),
                 );
               } else {
-                // Else, create the song
+                // Else, create the song.
                 createSong(songs, widget.creatableSong["id"]);
                 Navigator.popUntil(
                   context,

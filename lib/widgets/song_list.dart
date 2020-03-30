@@ -5,6 +5,8 @@ import 'package:song_barker/screens/song_category_select_screen.dart';
 import '../providers/sound_controller.dart';
 import 'package:song_barker/widgets/song_playback_card.dart';
 import '../providers/songs.dart';
+import '../providers/spinner_state.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class SongList extends StatefulWidget {
   @override
@@ -36,6 +38,24 @@ class _SongListState extends State<SongList> {
             padding: const EdgeInsets.all(15.0),
           ),
         ),
+        Consumer<SpinnerState>(builder: (ctx, spinState, _) {
+          return Visibility(
+            visible: spinState.songLoading,
+            // visible: true,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 9),
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(18.0),
+                  child: SpinKitWave(
+                    color: Theme.of(context).primaryColor,
+                    size: 20,
+                  ),
+                ),
+              ),
+            ),
+          );
+        }),
         Expanded(
           child: AnimatedList(
             key: songs.listKey,

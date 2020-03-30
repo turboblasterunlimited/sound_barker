@@ -79,9 +79,11 @@ StreamSubscription<double> performAudio(path, imageController) {
 }
 
 class WaveStreamer {
+  
   // 40 milliseconds == 1/25 frames per second
   // 1764 samples per frame for a 44100 hertz sample rate
   WaveStreamer(String filePath) {
+
     int headerOffset = 44;
 
     Uint8List bytes = File(filePath).readAsBytesSync();
@@ -99,6 +101,7 @@ class WaveStreamer {
       int divisor = 1764 * 10000;
       // amplitude from 0 to 1
       _amplitude = tempSubList.reduce((a, b) => a.abs() + b.abs()) / divisor;
+      _amplitude = _amplitude > 1.0 ? 1.0 : _amplitude;
       _controller.sink.add(_amplitude);
       waveSamples.removeRange(0, 1763);
     });

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 
 import '../providers/pictures.dart';
@@ -20,6 +19,8 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   void initState() {
     super.initState();
@@ -48,9 +49,25 @@ class _MainScreenState extends State<MainScreen> {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
+      key: _scaffoldKey,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(28.0),
         child: AppBar(
+          leading: RawMaterialButton(
+            child: Icon(
+                  Icons.menu,
+                  color: Colors.white,
+                  size: 22,
+                ),
+                shape: CircleBorder(),
+                // elevation: 2.0,
+                fillColor: Theme.of(context).accentColor,
+                
+                // padding: const EdgeInsets.all(15.0),
+            onPressed: () {
+              _scaffoldKey.currentState.openDrawer();
+            },
+          ),
           iconTheme:
               IconThemeData(color: Theme.of(context).accentColor, size: 30),
           // backgroundColor: Theme.of(context).accentColor,
@@ -59,14 +76,14 @@ class _MainScreenState extends State<MainScreen> {
           elevation: 0,
           centerTitle: true,
           actions: <Widget>[
-            IconButton(
-              icon: Icon(
-                OMIcons.cloudDownload,
-              ),
-              onPressed: () {
-                downloadEverything();
-              },
-            ),
+            // IconButton(
+            //   icon: Icon(
+            //     OMIcons.cloudDownload,
+            //   ),
+            //   onPressed: () {
+            //     downloadEverything();
+            //   },
+            // ),
           ],
           // title: Text(
           //   'Song Barker',

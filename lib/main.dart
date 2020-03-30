@@ -10,6 +10,8 @@ import './providers/barks.dart';
 import './providers/songs.dart';
 import './providers/image_controller.dart';
 import './providers/sound_controller.dart';
+import './providers/spinner_state.dart';
+
 
 void main() async {
   runApp(MyApp());
@@ -51,6 +53,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider.value(
           value: ActiveWaveStreamer(),
+        ),
+        ChangeNotifierProvider.value(
+          value: SpinnerState(),
         ),
       ],
       child: MaterialApp(

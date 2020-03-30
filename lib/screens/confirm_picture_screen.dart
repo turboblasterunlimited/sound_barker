@@ -67,7 +67,8 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
       ),
       body: Column(
         children: <Widget>[
-          Expanded(
+          AspectRatio(
+            aspectRatio: 1 / 1,
             child: Stack(
               children: <Widget>[
                 Image.file(
