@@ -44,7 +44,7 @@ class _CameraScreenState extends State<CameraScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(28.0),
+        preferredSize: Size.fromHeight(30.0),
         child: AppBar(
           iconTheme: IconThemeData(color: Colors.white, size: 30),
           backgroundColor: Colors.transparent,

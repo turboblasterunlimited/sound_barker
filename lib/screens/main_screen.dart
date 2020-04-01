@@ -48,25 +48,29 @@ class _MainScreenState extends State<MainScreen> {
     }
 
     return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
       extendBodyBehindAppBar: true,
       key: _scaffoldKey,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(28.0),
+        preferredSize: Size.fromHeight(30.0),
         child: AppBar(
-          leading: RawMaterialButton(
-            child: Icon(
-                  Icons.menu,
-                  color: Colors.white,
-                  size: 22,
-                ),
-                shape: CircleBorder(),
-                // elevation: 2.0,
-                fillColor: Theme.of(context).accentColor,
-                
-                // padding: const EdgeInsets.all(15.0),
-            onPressed: () {
-              _scaffoldKey.currentState.openDrawer();
-            },
+          leading: Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: RawMaterialButton(
+              child: Icon(
+                Icons.menu,
+                color: Colors.white,
+                size: 22,
+              ),
+              shape: CircleBorder(),
+              // elevation: 2.0,
+              fillColor: Theme.of(context).accentColor,
+
+              // padding: const EdgeInsets.all(15.0),
+              onPressed: () {
+                _scaffoldKey.currentState.openDrawer();
+              },
+            ),
           ),
           iconTheme:
               IconThemeData(color: Theme.of(context).accentColor, size: 30),

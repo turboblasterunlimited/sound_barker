@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:song_barker/functions/app_storage_path.dart';
+import 'package:flutter/rendering.dart';
 
 import 'package:song_barker/providers/active_wave_streamer.dart';
 import './screens/song_category_select_screen.dart';
@@ -14,8 +15,11 @@ import './providers/spinner_state.dart';
 
 
 void main() async {
+  // debugPaintSizeEnabled = true;
+
   runApp(MyApp());
   appStoragePath();
+
 }
 
 class MyApp extends StatelessWidget {

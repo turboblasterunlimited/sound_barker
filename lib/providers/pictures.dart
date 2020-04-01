@@ -107,7 +107,7 @@ class Picture with ChangeNotifier, RestAPI, Gcloud {
     IMG.Image destImage =
         IMG.copyCrop(src, offsetX, offsetY, cropSize, cropSize);
 
-    destImage = IMG.copyResize(destImage, width: 400);
+    destImage = IMG.copyResize(destImage, width: 800);
     var jpg = IMG.encodeJpg(destImage, quality: 80);
 
     File(filePath).deleteSync();
