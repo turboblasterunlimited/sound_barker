@@ -16,8 +16,8 @@ class PictureGrid extends StatefulWidget {
   _PictureGridState createState() => _PictureGridState();
 }
 
-class _PictureGridState extends State<PictureGrid> with AutomaticKeepAliveClientMixin {
-  
+class _PictureGridState extends State<PictureGrid>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
@@ -27,19 +27,18 @@ class _PictureGridState extends State<PictureGrid> with AutomaticKeepAliveClient
     print(myAppStoragePath);
     return Column(
       children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          ButtonBar(
+            // buttonPadding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+            alignment: MainAxisAlignment.center,
             children: <Widget>[
               RawMaterialButton(
                 onPressed: () async {
                   File file = await FilePicker.getFile(type: FileType.IMAGE);
                   Picture newPicture = Picture();
                   final newFilePath = join(
-                          myAppStoragePath,
-                          newPicture.fileId + ".jpg",
-                        );
+                    myAppStoragePath,
+                    newPicture.fileId + ".jpg",
+                  );
                   await file.copy(newFilePath);
                   newPicture.filePath = newFilePath;
                   await newPicture.crop();
@@ -54,12 +53,15 @@ class _PictureGridState extends State<PictureGrid> with AutomaticKeepAliveClient
                 child: Icon(
                   Icons.filter,
                   color: Colors.black38,
-                  size: 40,
+                  size: 30,
                 ),
-                shape: CircleBorder(),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                  // side: BorderSide(color: Colors.red),
+                ),
                 elevation: 2.0,
                 fillColor: Colors.white,
-                padding: const EdgeInsets.all(15.0),
+                padding: const EdgeInsets.all(5.0),
               ),
               RawMaterialButton(
                 onPressed: () async {
@@ -75,16 +77,18 @@ class _PictureGridState extends State<PictureGrid> with AutomaticKeepAliveClient
                 child: Icon(
                   Icons.camera_alt,
                   color: Colors.black38,
-                  size: 40,
+                  size: 30,
                 ),
-                shape: CircleBorder(),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                  // side: BorderSide(color: Colors.red),
+                ),
                 elevation: 2.0,
                 fillColor: Colors.white,
-                padding: const EdgeInsets.all(15.0),
+                padding: const EdgeInsets.all(5.0),
               ),
             ],
           ),
-        ),
         Expanded(
           child: GridView.builder(
             padding: const EdgeInsets.all(10),

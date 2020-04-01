@@ -18,32 +18,40 @@ class BarkList extends StatelessWidget {
     return Column(
       children: <Widget>[
         Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: RecordButton(),
-        ),
+            padding: const EdgeInsets.all(8),
+            child: Align(
+              // alignment: Alignment(-.9, 0),
+              child: RecordButton(),
+            ),
+          ),
+       
         Consumer<SpinnerState>(builder: (ctx, spinState, _) {
-          return Visibility(
-            visible: spinState.barksLoading,
-            // visible: true,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 9),
-              child: Card(
+          return Column(
+            children: <Widget>[
+              Visibility(
+                visible: spinState.barksLoading,
+                // visible: true,
                 child: Padding(
-                  padding: const EdgeInsets.all(18.0),
-                  child: SpinKitWave(
-                    color: Theme.of(context).primaryColor,
-                    size: 20,
+                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: SpinKitWave(
+                        color: Theme.of(context).primaryColor,
+                        size: 20,
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
+            ],
           );
         }),
         Expanded(
           child: AnimatedList(
             key: barks.listKey,
             initialItemCount: barks.all.length,
-            padding: const EdgeInsets.all(10),
+            // padding: const EdgeInsets.all(0),
             itemBuilder: (ctx, i, Animation<double> animation) =>
                 BarkPlaybackCard(
                     i, barks.all[i], barks, soundController, animation),

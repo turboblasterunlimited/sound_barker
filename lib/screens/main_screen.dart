@@ -12,7 +12,6 @@ import '../widgets/singing_image.dart';
 
 class MainScreen extends StatefulWidget {
   static const routeName = 'main-screen';
-  // bool _showSpinner = false;
 
   @override
   _MainScreenState createState() => _MainScreenState();
@@ -37,10 +36,10 @@ class _MainScreenState extends State<MainScreen> {
     Songs songs = Provider.of<Songs>(context, listen: false);
     Pictures pictures = Provider.of<Pictures>(context, listen: false);
 
-    void downloadEverything() {
-      barks.retrieveAll();
-      songs.retrieveAll();
-      pictures.retrieveAll();
+    void downloadEverything() async {
+      await barks.retrieveAll();
+      await songs.retrieveAll();
+      await pictures.retrieveAll();
     }
 
     if (barks.all.isEmpty && songs.all.isEmpty && pictures.all.isEmpty) {
@@ -55,18 +54,18 @@ class _MainScreenState extends State<MainScreen> {
         preferredSize: Size.fromHeight(30.0),
         child: AppBar(
           leading: Padding(
-            padding: const EdgeInsets.only(top: 8),
+            padding: const EdgeInsets.only(top: 5),
             child: RawMaterialButton(
               child: Icon(
                 Icons.menu,
                 color: Colors.white,
-                size: 22,
+                size: 20,
               ),
               shape: CircleBorder(),
-              // elevation: 2.0,
+              elevation: 2.0,
               fillColor: Theme.of(context).accentColor,
 
-              // padding: const EdgeInsets.all(15.0),
+              // padding: const EdgeInsets.all(10.0),
               onPressed: () {
                 _scaffoldKey.currentState.openDrawer();
               },
@@ -120,18 +119,6 @@ class _MainScreenState extends State<MainScreen> {
       body: Column(
         children: <Widget>[
           SingingImage(),
-
-          // Flexible(
-          //   flex: 2,
-          //   child: Container(
-          //     height: 400,
-          //     child: SpinKitRing(
-          //       color: Colors.blue,
-          //       size: 100.0,
-          //     ),
-          //   ),
-          // ),
-
           InterfaceSelector(),
         ],
       ),

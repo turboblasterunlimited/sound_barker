@@ -22,20 +22,22 @@ class _SongListState extends State<SongList> {
     return Column(
       children: <Widget>[
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
           child: RawMaterialButton(
             onPressed: () {
               Navigator.pushNamed(context, SongCategorySelectScreen.routeName);
             },
-            child: Icon(
-              Icons.add,
-              color: Colors.black38,
-              size: 40,
+            child: Text(
+              "NEW SONG",
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            shape: CircleBorder(),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5.0),
+              // side: BorderSide(color: Colors.red),
+            ),
             elevation: 2.0,
             fillColor: Colors.white,
-            padding: const EdgeInsets.all(15.0),
+            padding: const EdgeInsets.all(12.0),
           ),
         ),
         Consumer<SpinnerState>(builder: (ctx, spinState, _) {
@@ -43,17 +45,17 @@ class _SongListState extends State<SongList> {
             visible: spinState.songLoading,
             // visible: true,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 9),
-              child: Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(18.0),
-                  child: SpinKitWave(
-                    color: Theme.of(context).primaryColor,
-                    size: 20,
+                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: SpinKitWave(
+                        color: Theme.of(context).primaryColor,
+                        size: 20,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
           );
         }),
         Expanded(

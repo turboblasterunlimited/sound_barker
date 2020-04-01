@@ -164,14 +164,14 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
           vertical: 3,
         ),
         child: Padding(
-          padding: EdgeInsets.all(4),
+          padding: EdgeInsets.all(0),
           child: ListTile(
             leading: IconButton(
               color: Colors.blue,
               onPressed: () {
                 playBark();
               },
-              icon: Icon(Icons.play_arrow, color: Colors.black, size: 40),
+              icon: Icon(Icons.play_arrow, color: Colors.black, size: 30),
             ),
             title: GestureDetector(
               onTap: () {

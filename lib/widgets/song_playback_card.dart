@@ -167,14 +167,14 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
           vertical: 3,
         ),
         child: Padding(
-          padding: EdgeInsets.all(4),
+          padding: EdgeInsets.all(0),
           child: ListTile(
             leading: IconButton(
               color: Colors.blue,
               onPressed: () {
                 playSong(context);
               },
-              icon: Icon(Icons.play_arrow, color: Colors.black, size: 40),
+              icon: Icon(Icons.play_arrow, color: Colors.black, size: 30),
             ),
             title: GestureDetector(
               onTap: () => renameSong(),

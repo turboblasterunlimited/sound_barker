@@ -133,15 +133,17 @@ class _RecordButtonState extends State<RecordButton> {
   Widget build(BuildContext context) {
     return RawMaterialButton(
       onPressed: onStartRecorderPressed(),
-      child: Icon(
-        Icons.mic,
-        color: Colors.black38,
-        size: 40,
+      child: Text(
+        "RECORD SOUNDS",
+        style: TextStyle(fontWeight: FontWeight.bold),
       ),
-      shape: CircleBorder(),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(5.0),
+        // side: BorderSide(color: Colors.red),
+      ),
       elevation: 2.0,
       fillColor: this._isRecording ? Colors.redAccent[200] : Colors.white,
-      padding: const EdgeInsets.all(15.0),
+      padding: const EdgeInsets.all(12.0),
     );
   }
 }
