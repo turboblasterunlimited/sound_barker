@@ -57,7 +57,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
     }
 
     void _submitPicture() {
-      print("New picture name: ${widget.newPicture.name}");
+      // print("New picture name: ${widget.newPicture.name}");
       widget.newPicture.mouthCoordinates = dartToJsCoordinates();
       widget.newPicture.uploadPictureAndSaveToServer();
       pictures.add(widget.newPicture);
@@ -70,10 +70,10 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
     }
 
     void _submitEditedPicture() {
-      print("Edited picture name: ${widget.newPicture.name}");
-      print(
-          "Edited picture coordinates: ${widget.newPicture.mouthCoordinates}");
-      print("widget.mouthAreaSet?????: ${widget.mouthAreaSet}");
+      // print("Edited picture name: ${widget.newPicture.name}");
+      // print(
+      //     "Edited picture coordinates: ${widget.newPicture.mouthCoordinates}");
+      // print("widget.mouthAreaSet?????: ${widget.mouthAreaSet}");
 
       // Name was being edited.
       if (widget.isNamed) {

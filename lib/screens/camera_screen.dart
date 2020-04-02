@@ -42,6 +42,7 @@ class _CameraScreenState extends State<CameraScreen> {
     var outlineColor = Colors.black;
 
     return Scaffold(
+      backgroundColor: Theme.of(context).accentColor,
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(30.0),
@@ -82,7 +83,7 @@ class _CameraScreenState extends State<CameraScreen> {
           : Column(
               children: <Widget>[
                 AspectRatio(
-                  aspectRatio: 1 / 1,
+                  aspectRatio: _controller.value.aspectRatio,
                   child: CameraPreview(_controller),
                 ),
                 // Expanded(
@@ -95,6 +96,7 @@ class _CameraScreenState extends State<CameraScreen> {
                 Expanded(
                   child: Center(
                     child: FloatingActionButton(
+                      backgroundColor: Theme.of(context).primaryColor,
                       child: Icon(Icons.camera_alt),
                       onPressed: () async {
                         Picture newPicture = Picture();
