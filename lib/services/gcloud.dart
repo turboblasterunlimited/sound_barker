@@ -19,8 +19,8 @@ class Gcloud {
     return storage.bucket('song_barker_sequences');
   }
 
-  Future<String> downloadFromBucket(fileUrl, fileId, [image]) async {
-    Bucket bucket = await accessBucket();
+  Future<String> downloadFromBucket(fileUrl, fileId, {image, bucket}) async {
+    bucket ??= await accessBucket();
     String filePathBase = myAppStoragePath + '/' + fileId;
     String filePath = filePathBase;
         
@@ -31,7 +31,6 @@ class Gcloud {
       filePath += ".aac";
       if (await File(filePathBase + ".wav").exists()) return filePathBase + ".wav";
     }
-
     try { 
       await bucket.read(fileUrl).pipe(new File(filePath).openWrite());
       if (image != true) {

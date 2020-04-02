@@ -53,8 +53,29 @@ class RestAPI {
     return response.body;
   }
 
+    Future<String> updateImageOnServer(image) async {
+    http.Response response;
+    String body = json.encode({
+      'name': image.name,
+      'mouth_coordinates': image.mouthCoordinates,
+    });
+    print("Image update body: $body");
+    final url = 'http://165.227.178.14/image/${image.fileId}';
+    try {
+      response = await http.patch(
+        url,
+        body: body,
+        headers: jsonHeaders,
+      );
+    } catch (error) {
+      //print(error);
+      throw error;
+    }
+    print("Edit Image on server response body: ${response.body}");
+    return response.body;
+  }
+
   Future<String> createImageOnServer(image) async {
-    // ADD MOUTH COORDINATES WHEN READY!
     http.Response response;
     String body = json.encode({
       'uuid': image.fileId,

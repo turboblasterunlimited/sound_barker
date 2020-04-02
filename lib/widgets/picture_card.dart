@@ -4,6 +4,7 @@ import 'package:song_barker/providers/image_controller.dart';
 import 'dart:io';
 
 import '../providers/pictures.dart';
+import '../screens/confirm_picture_screen.dart';
 
 class PictureCard extends StatefulWidget {
   final int index;
@@ -42,13 +43,26 @@ class _PictureCardState extends State<PictureCard>
     super.dispose();
   }
 
-  String imageActions(String action) {
+  void imageActions(String action) {
     if (action == "DELETE") {
       animationController.reverse();
       widget.pictures.remove(widget.picture);
       imageController.loadImage(widget.pictures.all.first);
     } else if (action == "SET MOUTH") {
-    } else if (action == "RENAME") {}
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ConfirmPictureScreen(widget.picture, isNamed: true),
+        ),
+      );
+    } else if (action == "RENAME") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ConfirmPictureScreen(widget.picture, mouthAreaSet: true),
+        ),
+      );
+    }
   }
 
   pictureCard(animation) {

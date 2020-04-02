@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gcloud/storage.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:convert';
@@ -36,11 +37,13 @@ class Barks with ChangeNotifier, Gcloud, RestAPI {
   }
   // downloads the files either from all barks in memory or just the barks passed.
   Future downloadAllBarksFromBucket([List barks]) async {
+    Bucket bucket = await accessBucket();
+
     barks = barks == null ? all : barks;
     int barkCount = barks.length;
     for (var i = 0; i < barkCount; i++) {
       String filePath =
-          await downloadFromBucket(barks[i].fileUrl, barks[i].fileId, false);
+          await downloadFromBucket(barks[i].fileUrl, barks[i].fileId, image: false);
       barks[i].filePath = filePath;
     }
   }

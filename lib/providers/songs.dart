@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:gcloud/storage.dart';
 import '../services/gcloud.dart';
 import 'dart:convert';
 import 'dart:io';
@@ -47,11 +48,12 @@ class Songs with ChangeNotifier, Gcloud, RestAPI {
 
   // downloadFromBucket only downloads songs that don't already exist on the FS
   Future _downloadAllSongsFromBucket([List songs]) async {
+    Bucket bucket = await accessBucket();
     songs = songs == null ? all : songs;
     int soundCount = songs.length;
     for (var i = 0; i < soundCount; i++) {
       String filePath =
-          await downloadFromBucket(songs[i].fileUrl, songs[i].fileId, false);
+          await downloadFromBucket(songs[i].fileUrl, songs[i].fileId, image: false, bucket: bucket);
       songs[i].filePath = filePath;
     }
   }
@@ -95,7 +97,7 @@ class Song with ChangeNotifier, Gcloud, RestAPI {
     this.name = responseData["name"];
     this.fileUrl = responseData["bucket_fp"];
     this.formulaId = responseData["song_id"];
-    this.filePath = await downloadFromBucket(fileUrl, fileId, false);
+    this.filePath = await downloadFromBucket(fileUrl, fileId, image: false);
     // print("filePath for song: ${this.filePath}");
   }
 }

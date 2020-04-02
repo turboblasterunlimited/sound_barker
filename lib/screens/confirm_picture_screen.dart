@@ -6,18 +6,33 @@ import '../providers/pictures.dart';
 import '../providers/image_controller.dart';
 
 class ConfirmPictureScreen extends StatefulWidget {
-  final Picture newPicture;
-  ConfirmPictureScreen(this.newPicture);
+  Picture newPicture;
+  bool isNamed;
+  bool mouthAreaSet;
+  bool editing;
+  String title;
+  String imageName;
+
+  ConfirmPictureScreen(Picture newPicture, {isNamed, mouthAreaSet}) {
+    this.newPicture = newPicture;
+    this.editing = isNamed ?? mouthAreaSet ?? false;
+    this.isNamed = isNamed ?? false;
+    this.mouthAreaSet = mouthAreaSet ?? false;
+    if (this.editing == true) {
+      this.title =
+          this.isNamed == false ? "Rename your picture" : "Highlight the mouth";
+    } else {
+      this.title = "Name your picture";
+    }
+    this.imageName = this.newPicture.name ?? "";
+  }
+
   final Map coordinates = {
     "left": 0.0,
     "top": 0.0,
     "width": 0.0,
     "height": 0.0,
   };
-  bool mouthAreaSet = false;
-  bool isNamed = false;
-  String title = "Name your picture";
-  String imageName = "";
 
   @override
   _ConfirmPictureScreenState createState() => _ConfirmPictureScreenState();
@@ -28,6 +43,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
   Widget build(BuildContext context) {
     Pictures pictures = Provider.of<Pictures>(context, listen: false);
     ImageController imageController = Provider.of<ImageController>(context);
+    print("MOUTH AREA SET?? ${widget.mouthAreaSet}");
 
     String dartToJsCoordinates() {
       double length = MediaQuery.of(context).size.width;
@@ -40,13 +56,33 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
       return "[$left, $top], [$right, $bottom]";
     }
 
-    void _submitPicture(context) {
+    void _submitPicture() {
       print("New picture name: ${widget.newPicture.name}");
       widget.newPicture.mouthCoordinates = dartToJsCoordinates();
       widget.newPicture.uploadPictureAndSaveToServer();
       pictures.add(widget.newPicture);
       pictures.mountedPicture = widget.newPicture;
       imageController.loadImage(widget.newPicture);
+      Navigator.popUntil(
+        context,
+        ModalRoute.withName(Navigator.defaultRouteName),
+      );
+    }
+
+    void _submitEditedPicture() {
+      print("Edited picture name: ${widget.newPicture.name}");
+      print(
+          "Edited picture coordinates: ${widget.newPicture.mouthCoordinates}");
+      print("widget.mouthAreaSet?????: ${widget.mouthAreaSet}");
+
+      // Name was being edited.
+      if (widget.isNamed) {
+        widget.newPicture.mouthCoordinates = dartToJsCoordinates();
+      }
+      widget.newPicture.updateImageOnServer(widget.newPicture);
+      pictures.mountedPicture = widget.newPicture;
+      imageController.loadImage(widget.newPicture);
+
       Navigator.popUntil(
         context,
         ModalRoute.withName(Navigator.defaultRouteName),
@@ -78,11 +114,19 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
             // padding: const EdgeInsets.all(15.0),
             onPressed: () {
               setState(() {
-                if (!widget.isNamed) {
+                if (widget.editing) {
+                  Navigator.popUntil(
+                    context,
+                    ModalRoute.withName(Navigator.defaultRouteName),
+                  );
+                } else if (!widget.isNamed) {
+                  // if on first screen
                   Navigator.of(context).pop();
+                } else {
+                  // if on second screen
+                  widget.isNamed = false;
+                  widget.title = 'Name your picture';
                 }
-                widget.isNamed = false;
-                widget.title = 'Name your picture';
               });
             },
           ),
@@ -117,10 +161,16 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                           widget.imageName = newName;
                         },
                         onFieldSubmitted: (_) {
-                          // _submitNameChange(ctx);
                           setState(() {
-                            widget.title = "Highlight the mouth";
-                            widget.isNamed = true;
+                            widget.newPicture.name = widget.imageName;
+                            if (widget.editing == false) {
+                              widget.title = "Highlight the mouth";
+                              widget.isNamed = true;
+                            } else if (widget.editing == true) {
+                              _submitEditedPicture();
+                            } else {
+                              widget.title = "Looks good!";
+                            }
                           });
                         },
                       ),
@@ -130,8 +180,8 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                     visible: widget.isNamed,
                     child: GestureDetector(
                       onPanStart: (details) {
-                        print("Start X: ${details.localPosition.dx}");
-                        print("Start Y: ${details.localPosition.dy}");
+                        // print("Start X: ${details.localPosition.dx}");
+                        // print("Start Y: ${details.localPosition.dy}");
 
                         setState(() {
                           widget.coordinates["left"] = details.localPosition.dx;
@@ -139,8 +189,8 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                         });
                       },
                       onPanUpdate: (details) {
-                        print("Update X: ${details.localPosition.dx}");
-                        print("Update Y: ${details.localPosition.dy}");
+                        // print("Update X: ${details.localPosition.dx}");
+                        // print("Update Y: ${details.localPosition.dy}");
                         setState(() {
                           widget.coordinates["width"] =
                               details.localPosition.dx -
@@ -151,6 +201,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                         });
                       },
                       onPanEnd: (details) async {
+                        widget.title = "Looks good!";
                         setState(() => widget.mouthAreaSet = true);
                       },
                       child: CustomPaint(
@@ -172,7 +223,11 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                   children: <Widget>[
                     RawMaterialButton(
                       onPressed: () {
-                        _submitPicture(context);
+                        if (widget.editing) {
+                          _submitEditedPicture();
+                        } else {
+                          _submitPicture();
+                        }
                       },
                       child: Icon(
                         Icons.thumb_up,

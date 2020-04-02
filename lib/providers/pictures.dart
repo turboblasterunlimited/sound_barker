@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gcloud/storage.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:io';
@@ -18,7 +19,6 @@ class Pictures with ChangeNotifier, Gcloud, RestAPI {
   }
 
   void add(Picture picture) {
-    print("MouthCoordinates: ${picture.mouthCoordinates}");
     all.insert(0, picture);
     // notifyListeners();
   }
@@ -57,11 +57,12 @@ class Pictures with ChangeNotifier, Gcloud, RestAPI {
   }
 
   Future downloadAllImagesFromBucket([List images]) async {
+    Bucket bucket = await accessBucket();
     images = images == null ? all : images;
     int imagesCount = images.length;
     for (var i = 0; i < imagesCount; i++) {
       String filePath =
-          await downloadFromBucket(images[i].fileUrl, images[i].fileId, true);
+          await downloadFromBucket(images[i].fileUrl, images[i].fileId, image: true, bucket: bucket);
       images[i].filePath = filePath;
       // print("downloadAllImagesFromBucket: ${json.encode(images[i])}");
     }
