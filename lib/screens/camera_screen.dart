@@ -86,13 +86,6 @@ class _CameraScreenState extends State<CameraScreen> {
                   aspectRatio: _controller.value.aspectRatio,
                   child: CameraPreview(_controller),
                 ),
-                // Expanded(
-                //   flex: 1,
-                //   child: AspectRatio(
-                //     aspectRatio: _controller.value.aspectRatio,
-                //     child: CameraPreview(_controller),
-                //   ),
-                // ),
                 Expanded(
                   child: Center(
                     child: FloatingActionButton(

@@ -35,7 +35,6 @@ class _BarkSelectCardState extends State<BarkSelectCard> {
     try {
       widget.soundController.stopPlayer();
       widget.soundController.startPlayer(widget.bark.filePath);
-      widget.soundController.flutterSound.setVolume(1.0);
     } catch (e) {
       showErrorDialog(context, e);
     }

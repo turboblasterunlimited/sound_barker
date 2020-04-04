@@ -29,9 +29,6 @@ class Songs with ChangeNotifier, Gcloud, RestAPI {
     String response = await retrieveAllSongsFromServer();
     json.decode(response).forEach((serverSong) {
       if (serverSong["hidden"] == 1) return;
-      print(
-          "INDEX OF THE SONG IN LOCAL SONGS: ${all.indexWhere((song) => song.fileId == serverSong["uuid"])}");
-      print(serverSong["hidden"] == 1);
       Song song = Song(
           formulaId: serverSong["song_id"],
           name: serverSong["name"],
@@ -65,6 +62,8 @@ class Song with ChangeNotifier, Gcloud, RestAPI {
   String filePath;
   String fileId;
   String formulaId;
+  String backingTrackUrl;
+  String backingTrackPath;
 
   Song({this.filePath, this.name, this.fileUrl, this.fileId, this.formulaId});
 

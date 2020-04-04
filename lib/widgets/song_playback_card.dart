@@ -58,7 +58,7 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
     waveStreamer = WaveStreamer.performAudio(widget.song.filePath, imageController);
     Provider.of<ActiveWaveStreamer>(context, listen: false).waveStreamer = waveStreamer;
     widget.soundController.startPlayer(widget.song.filePath);
-    widget.soundController.flutterSound.setVolume(1.0);
+    // widget.soundController.startPlayer(widget.song.filePath, widget.song.backingTrackPath);
   }
 
   void playSong(context) async {

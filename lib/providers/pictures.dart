@@ -64,7 +64,6 @@ class Pictures with ChangeNotifier, Gcloud, RestAPI {
       String filePath =
           await downloadFromBucket(images[i].fileUrl, images[i].fileId, image: true, bucket: bucket);
       images[i].filePath = filePath;
-      // print("downloadAllImagesFromBucket: ${json.encode(images[i])}");
     }
   }
 }
@@ -88,7 +87,6 @@ class Picture with ChangeNotifier, RestAPI, Gcloud {
     this.fileUrl = fileUrl;
     this.fileId = fileId == null ? Uuid().v4() : fileId;
     this.creationAnimation = true;
-    print(this);
   }
 
   Future<void> uploadPictureAndSaveToServer() async {
@@ -97,7 +95,6 @@ class Picture with ChangeNotifier, RestAPI, Gcloud {
   }
 
   Future<void> crop() async {
-    print("Inside Crop...before filePath: $filePath");
     var bytes = await File(filePath).readAsBytes();
     IMG.Image src = IMG.decodeImage(bytes);
 
@@ -113,6 +110,5 @@ class Picture with ChangeNotifier, RestAPI, Gcloud {
 
     File(filePath).deleteSync();
     await File(filePath).writeAsBytes(jpg);
-    print("Inside Crop...after filePath: $filePath");
   }
 }
