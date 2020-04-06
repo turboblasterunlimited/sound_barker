@@ -32,12 +32,12 @@ class _SongListState extends State<SongList> {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5.0),
+              borderRadius: BorderRadius.circular(7.0),
               // side: BorderSide(color: Colors.red),
             ),
             elevation: 2.0,
             fillColor: Colors.white,
-            padding: const EdgeInsets.all(12.0),
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
           ),
         ),
         Consumer<SpinnerState>(builder: (ctx, spinState, _) {

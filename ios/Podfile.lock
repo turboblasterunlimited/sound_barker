@@ -12,6 +12,8 @@ PODS:
   - flutter_ffmpeg/https (0.2.10):
     - Flutter
     - mobile-ffmpeg-https (= 4.3.1)
+  - flutter_screen_recording (0.0.1):
+    - Flutter
   - flutter_sound (0.0.1):
     - Flutter
   - mobile-ffmpeg-https (4.3.1)
@@ -28,6 +30,7 @@ DEPENDENCIES:
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `Flutter`)
   - flutter_ffmpeg (from `.symlinks/plugins/flutter_ffmpeg/ios`)
+  - flutter_screen_recording (from `.symlinks/plugins/flutter_screen_recording/ios`)
   - flutter_sound (from `.symlinks/plugins/flutter_sound/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - path_provider_macos (from `.symlinks/plugins/path_provider_macos/ios`)
@@ -48,6 +51,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_ffmpeg:
     :path: ".symlinks/plugins/flutter_ffmpeg/ios"
+  flutter_screen_recording:
+    :path: ".symlinks/plugins/flutter_screen_recording/ios"
   flutter_sound:
     :path: ".symlinks/plugins/flutter_sound/ios"
   path_provider:
@@ -63,6 +68,7 @@ SPEC CHECKSUMS:
   file_picker: 408623be2125b79a4539cf703be3d4b3abe5e245
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_ffmpeg: cf0a6941ef67e88248c998cc3e34f8acb0b4e454
+  flutter_screen_recording: f56d857cef9c6338f74909a15f60b3e5dc5ffb38
   flutter_sound: 0e8163ceac1e00eb6d894e2ae4641ba726a2c479
   mobile-ffmpeg-https: c4a3c255163ddb1abc4b4dfc613c2d885f8c46eb
   path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d

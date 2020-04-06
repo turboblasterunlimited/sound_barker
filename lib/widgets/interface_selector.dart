@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 import '../widgets/song_list.dart';
 import '../widgets/bark_list.dart';
 import '../widgets/picture_grid.dart';
+import '../widgets/greeting_card_grid.dart';
+
 
 class InterfaceSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return Flexible(
       flex: 3,
       child: DefaultTabController(
-        length: 3,
+        length: 4,
         child: Column(
           children: <Widget>[
             Material(
@@ -19,6 +21,8 @@ class InterfaceSelector extends StatelessWidget {
                   Tab(text: "SOUNDS"),
                   Tab(text: "SONGS"),
                   Tab(text: "IMAGES"),
+                  Tab(text: "CARDS"),
+
                   // Tab(icon: Icon(Icons.mic), text: "SOUNDS"),
                   // Tab(icon: Icon(Icons.library_music), text: "SONGS"),
                   // Tab(icon: Icon(Icons.camera_alt), text: "IMAGES"),
@@ -31,6 +35,7 @@ class InterfaceSelector extends StatelessWidget {
                   BarkList(),
                   SongList(),
                   PictureGrid(),
+                  GreetingCardGrid(),
                 ],
               ),
             ),

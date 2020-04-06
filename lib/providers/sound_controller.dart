@@ -9,17 +9,18 @@ class SoundController with ChangeNotifier {
     if (audioPlayer.state == AudioPlayerState.PLAYING) {
       return audioPlayer.stop();
     }
-    hasBackingTrack ?? _stopBackingTrack();
+    if (hasBackingTrack == true) _stopBackingTrack();
   }
 
   Future<String> startPlayer(path, [String backingTrackPath]) async {
     if (audioPlayer.state == AudioPlayerState.STOPPED) {
       audioPlayer.stop();
     }
-    backingTrackPath ?? _startBackingTrack(backingTrackPath);
+    if (backingTrackPath != null) _startBackingTrack(backingTrackPath);
 
     // might need to set volume after starting...
     return audioPlayer.play(path, isLocal: true).toString();
+   
   }
 
   Future<String> _startBackingTrack(path) async {
