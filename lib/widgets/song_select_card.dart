@@ -1,0 +1,79 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../functions/error_dialog.dart';
+import '../providers/sound_controller.dart';
+import '../providers/songs.dart';
+import '../providers/greeting_cards.dart';
+import '../providers/spinner_state.dart';
+
+class SongSelectCard extends StatefulWidget {
+  final int index;
+  final Song song;
+  final SoundController soundController;
+  final Function setSongId;
+  final String selectedSongId;
+
+  SongSelectCard(this.index, this.song, this.soundController, this.setSongId, this.selectedSongId);
+
+  @override
+  _SongSelectCardState createState() => _SongSelectCardState();
+}
+
+class _SongSelectCardState extends State<SongSelectCard> {
+  bool isSelected;
+
+  @override
+  void initState() {
+    super.initState();
+    isSelected = widget.selectedSongId == widget.song.fileId;
+  }
+
+  void playSong() async {
+    try {
+      widget.soundController.stopPlayer();
+      widget.soundController.startPlayer(widget.song.filePath);
+    } catch (e) {
+      showErrorDialog(context, e);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    selectThis() {
+      widget.setSongId(widget.song.fileId);
+    }
+
+    return Card(
+      margin: EdgeInsets.symmetric(
+        horizontal: 5,
+        vertical: 3,
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(4),
+        child: ListTile(
+          leading: GestureDetector(
+            onTap: () {
+              selectThis();
+            },
+            child: isSelected ? Icon(Icons.check_box, color: Colors.blueAccent,) : Icon(Icons.check_box_outline_blank),
+          ),
+          title: GestureDetector(
+            onTap: () {
+              selectThis();
+            },
+            child: Text(widget.song.name),
+          ),
+          trailing: IconButton(
+            color: Colors.blue,
+            onPressed: () {
+              playSong();
+            },
+            icon: Icon(Icons.play_arrow, color: Colors.blueGrey, size: 40),
+          ),
+        ),
+      ),
+    );
+  }
+}

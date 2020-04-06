@@ -16,8 +16,8 @@ class SongList extends StatefulWidget {
 class _SongListState extends State<SongList> {
   @override
   Widget build(BuildContext context) {
-    Songs songs = Provider.of<Songs>(context, listen: false);
-    SoundController soundController = Provider.of<SoundController>(context);
+    final songs = Provider.of<Songs>(context, listen: false);
+    final soundController = Provider.of<SoundController>(context);
 
     return Column(
       children: <Widget>[

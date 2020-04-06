@@ -6,6 +6,8 @@ import 'package:flutter/rendering.dart';
 import 'package:song_barker/providers/active_wave_streamer.dart';
 import './screens/song_category_select_screen.dart';
 import './screens/main_screen.dart';
+import './screens/select_song_and_picture_screen.dart';
+
 import './providers/pictures.dart';
 import './providers/barks.dart';
 import './providers/songs.dart';
@@ -86,6 +88,8 @@ class MyApp extends StatelessWidget {
             MainScreen.routeName: (ctx) => MainScreen(),
             SongCategorySelectScreen.routeName: (ctx) =>
                 SongCategorySelectScreen(),
+                SelectSongAndPictureScreen.routeName: (ctx) =>
+                SelectSongAndPictureScreen(),
           }),
     );
   }

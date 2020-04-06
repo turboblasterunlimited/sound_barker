@@ -4,6 +4,7 @@ import 'package:song_barker/functions/app_storage_path.dart';
 
 import '../providers/greeting_cards.dart';
 import '../widgets/greeting_card_card.dart';
+import '../screens/select_song_and_picture_screen.dart';
 
 class GreetingCardGrid extends StatefulWidget {
   @override
@@ -27,7 +28,8 @@ class _GreetingCardGridState extends State<GreetingCardGrid>
           children: <Widget>[
             RawMaterialButton(
               onPressed: () {
-                // 1st CREATE CARD SCREEN
+                Navigator.pushNamed(
+                    context, SelectSongAndPictureScreen.routeName);
               },
               child: Text(
                 "CREATE CARD",

@@ -18,7 +18,8 @@ class BarkSelectScreen extends StatefulWidget {
 class _BarkSelectScreenState extends State<BarkSelectScreen> {
   @override
   Widget build(BuildContext context) {
-    Barks barks = Provider.of<Barks>(context, listen: false);
+    final barks = Provider.of<Barks>(context, listen: false);
+    final soundController = Provider.of<SoundController>(context, listen: false);
     String instructionText;
 
     if (widget.song["track_count"] == 1) {
@@ -52,11 +53,8 @@ class _BarkSelectScreenState extends State<BarkSelectScreen> {
             child: ListView.builder(
               padding: const EdgeInsets.all(10),
               itemCount: barks.all.length,
-              itemBuilder: (ctx, i) => BarkSelectCard(
-                  barks.all[i],
-                  widget.song,
-                  Provider.of<SoundController>(context, listen: false),
-                  widget.selectedBarkIds),
+              itemBuilder: (ctx, i) => BarkSelectCard(barks.all[i], widget.song,
+                  soundController, widget.selectedBarkIds),
             ),
           ),
         ],
