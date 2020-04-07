@@ -3,6 +3,9 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:flutter_sound/ios_quality.dart';
 import 'dart:async';
 import 'dart:io';
+import 'package:provider/provider.dart';
+import '../providers/image_controller.dart';
+import '../providers/pictures.dart';
 
 import './review_card_screen.dart';
 
@@ -145,17 +148,20 @@ class _RecordMessageScreenState extends State<RecordMessageScreen> {
                 Center(
                   child: GestureDetector(
                     child: Text(
-                      "Or Skip ->",
+                      "Skip ->",
                       style: TextStyle(color: Colors.white, fontSize: 40),
                     ),
                     onTap: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => ReviewCardScreen(
-                      //         widget.songId, widget.pictureId),
-                      //   ),
-                      // );
+                      final pictures = Provider.of<Pictures>(context, listen: false);
+                      final picture = pictures.findById(widget.pictureId);
+                      pictures.mountPicture(picture);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              ReviewCardScreen(widget.songId),
+                        ),
+                      );
                     },
                   ),
                 ),

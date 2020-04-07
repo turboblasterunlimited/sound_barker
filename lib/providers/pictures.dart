@@ -14,6 +14,16 @@ class Pictures with ChangeNotifier, Gcloud, RestAPI {
   List<Picture> all = [];
   Picture mountedPicture;
 
+  mountPicture(picture) {
+    this.mountedPicture = picture;
+  }
+
+  Picture findById(String id) {
+    return all.firstWhere((test) {
+      return test.fileId == id;
+    });
+  }
+
   String mountedPictureFileId() {
     return mountedPicture == null ? null : mountedPicture.fileId;
   }

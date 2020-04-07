@@ -11,6 +11,12 @@ class Songs with ChangeNotifier, Gcloud, RestAPI {
   List<Song> all = [];
   final listKey = GlobalKey<AnimatedListState>();
 
+  Song findById(String id) {
+    return all.firstWhere((test) {
+      return test.fileId == id;
+    });
+  }
+
   void addSong(song) {
     all.insert(0, song);
     if (listKey.currentState != null) listKey.currentState.insertItem(0);
