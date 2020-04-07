@@ -45,32 +45,40 @@ class _SongSelectCardState extends State<SongSelectCard> {
       widget.setSongId(widget.song.fileId);
     }
 
-    return Card(
-      margin: EdgeInsets.symmetric(
-        horizontal: 5,
-        vertical: 3,
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(4),
-        child: ListTile(
-          leading: GestureDetector(
-            onTap: () {
-              selectThis();
-            },
-            child: isSelected ? Icon(Icons.check_box, color: Colors.blueAccent,) : Icon(Icons.check_box_outline_blank),
+    return ClipRRect(
+      borderRadius: BorderRadius.all(Radius.circular(5)),
+          child: Container(
+        decoration: BoxDecoration(
+          border: isSelected ? Border.all(color: Colors.blueAccent, width: 5) : Border.all(width: 0, color: Colors.transparent),
+        ),
+        child: Card(
+          margin: EdgeInsets.symmetric(
+            horizontal: 5,
+            vertical: 3,
           ),
-          title: GestureDetector(
-            onTap: () {
-              selectThis();
-            },
-            child: Text(widget.song.name),
-          ),
-          trailing: IconButton(
-            color: Colors.blue,
-            onPressed: () {
-              playSong();
-            },
-            icon: Icon(Icons.play_arrow, color: Colors.blueGrey, size: 40),
+          child: Padding(
+            padding: EdgeInsets.all(4),
+            child: ListTile(
+              leading: GestureDetector(
+                onTap: () {
+                  selectThis();
+                },
+                child: isSelected ? Icon(Icons.check_box, color: Colors.blueAccent,) : Icon(Icons.check_box_outline_blank),
+              ),
+              title: GestureDetector(
+                onTap: () {
+                  selectThis();
+                },
+                child: Text(widget.song.name),
+              ),
+              trailing: IconButton(
+                color: Colors.blue,
+                onPressed: () {
+                  playSong();
+                },
+                icon: Icon(Icons.play_arrow, color: Colors.blueGrey, size: 40),
+              ),
+            ),
           ),
         ),
       ),

@@ -33,23 +33,26 @@ class _SelectPictureCardState extends State<SelectPictureCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        border: isSelected ? Border.all(color: Colors.blueAccent, width: 10) : Border.all(width: 0, color: Colors.transparent),
-      ),
-      child: ClipRRect(
+    return ClipRRect(
+      borderRadius: BorderRadius.all(Radius.circular(5)),
+          child: Container(
+        decoration: BoxDecoration(
+          border: isSelected ? Border.all(color: Colors.blueAccent, width: 5) : Border.all(width: 0, color: Colors.transparent),
+        ),
+        child: ClipRRect(
 
-        borderRadius: BorderRadius.circular(10),
-        child: GridTile(
-          child: GestureDetector(
-            onTap: () {
-              widget.setPictureId(widget.picture.fileId);
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Image.file(
-                File(widget.picture.filePath),
-                fit: BoxFit.cover,
+          borderRadius: BorderRadius.circular(10),
+          child: GridTile(
+            child: GestureDetector(
+              onTap: () {
+                widget.setPictureId(widget.picture.fileId);
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Image.file(
+                  File(widget.picture.filePath),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),

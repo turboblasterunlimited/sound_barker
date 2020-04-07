@@ -96,8 +96,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
     // }
 
     return Scaffold(
-      backgroundColor: Theme.of(context).accentColor,
-      // extendBodyBehindAppBar: true,
+      backgroundColor: Theme.of(context).backgroundColor,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(40.0),
         child: AppBar(
@@ -133,8 +132,6 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
 
           title: Text(widget.title),
           iconTheme: IconThemeData(color: Colors.white, size: 30),
-          backgroundColor: Theme.of(context).accentColor,
-          // elevation: 0,
         ),
       ),
       body: SingleChildScrollView(

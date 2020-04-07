@@ -7,6 +7,7 @@ import '../providers/pictures.dart';
 
 import '../widgets/song_select_card.dart';
 import '../widgets/select_picture_card.dart';
+import '../screens/record_message_screen.dart';
 
 class SelectSongAndPictureScreen extends StatefulWidget {
   static const routeName = 'select-song-and-picture-screen';
@@ -40,10 +41,10 @@ class _SelectSongAndPictureScreenState
     }
 
     return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white, size: 30),
-        backgroundColor: Theme.of(context).accentColor,
-        elevation: 0,
+       
         centerTitle: true,
         title: Text(
           "Select an image and a song",
@@ -68,6 +69,7 @@ class _SelectSongAndPictureScreenState
               ),
             ),
           ),
+          Divider(),
           Expanded(
             child: ListView.builder(
               key: UniqueKey(),
@@ -82,6 +84,41 @@ class _SelectSongAndPictureScreenState
               ),
             ),
           ),
+          // Visibility(
+          //   visible: selectedSongId != null && selectedPictureId != null,
+          AnimatedOpacity(
+            duration: Duration(milliseconds: 500),
+            opacity:
+                selectedSongId != null && selectedPictureId != null ? 1.0 : 0.0,
+            child: ButtonBar(
+              alignment: MainAxisAlignment.center,
+              children: <Widget>[
+                RawMaterialButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => RecordMessageScreen(
+                            selectedSongId, selectedPictureId),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    "Next Step",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(7.0),
+                    // side: BorderSide(color: Colors.red),
+                  ),
+                  elevation: 2.0,
+                  fillColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                ),
+              ],
+            ),
+          ),
+          // )
         ],
       ),
     );
