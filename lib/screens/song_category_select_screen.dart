@@ -2,21 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'dart:convert';
 
-import './song_select_screen.dart';
+import './song_family_select_screen.dart';
 import '../services/rest_api.dart';
 
-List<String> songCategories = [
-  "Classical",
-  "Jazz",
-  "Folk",
-  "Rock",
-  "Kids",
-  "National",
-  "Holiday"
-];
-
 class SongCategorySelectScreen extends StatefulWidget {
-  static const routeName = 'song-category-screen';
+  static const routeName = 'song-category-select-screen';
 
   @override
   _SongCategorySelectScreenState createState() =>
@@ -24,20 +14,60 @@ class SongCategorySelectScreen extends StatefulWidget {
 }
 
 class _SongCategorySelectScreenState extends State<SongCategorySelectScreen> {
+  List creatableSongs;
+
   @override
   Widget build(BuildContext context) {
+    print("CATEGORY BEING REBUILT!!");
     Future<Map> collectCreatableSongsByCategory() async {
       String serverResponse =
           await RestAPI.retrieveAllCreatableSongsFromServer();
-      List creatableSongs = json.decode(serverResponse);
-      Map<String, List<Map>> creatableSongsByCategory = {};
+      creatableSongs = json.decode(serverResponse);
+      Map<String, int> creatableSongsByCategory = {};
       creatableSongs.forEach((song) {
         if (!creatableSongsByCategory.containsKey(song["category"])) {
-          creatableSongsByCategory[song["category"]] = [];
+          creatableSongsByCategory[song["category"]] = 1;
+        } else {
+          creatableSongsByCategory[song["category"]] += 1;
         }
-        creatableSongsByCategory[song["category"]].add(song);
       });
+
+      print("RESULT!: $creatableSongsByCategory");
       return creatableSongsByCategory;
+    }
+
+    Widget songCategoryCard(
+      ctx,
+      int i,
+      String categoryName,
+      int numberOfSongFamilies,
+    ) {
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(
+            ctx,
+            MaterialPageRoute(
+              builder: (context) =>
+                  SongFamilySelectScreen(categoryName, creatableSongs),
+            ),
+          );
+        },
+        child: Card(
+          margin: EdgeInsets.symmetric(
+            horizontal: 5,
+            vertical: 3,
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(4),
+            child: ListTile(
+              leading: Icon(Icons.music_note, color: Colors.black, size: 40),
+              title: Text(categoryName ?? "Misc."),
+              // How many songs within this category
+              trailing: Text(numberOfSongFamilies.toString()),
+            ),
+          ),
+        ),
+      );
     }
 
     return Scaffold(
@@ -71,7 +101,11 @@ class _SongCategorySelectScreenState extends State<SongCategorySelectScreen> {
                   if (projectSnap.connectionState == ConnectionState.waiting &&
                       projectSnap.hasData == false) {
                     print('project snapshot data is: ${projectSnap.data}');
-                    return Center(child: SpinKitWave(color: Theme.of(context).primaryColor, size: 80,));
+                    return Center(
+                        child: SpinKitWave(
+                      color: Theme.of(context).primaryColor,
+                      size: 80,
+                    ));
                   }
                   return ListView.builder(
                     padding: const EdgeInsets.all(10),
@@ -88,32 +122,4 @@ class _SongCategorySelectScreenState extends State<SongCategorySelectScreen> {
       ),
     );
   }
-}
-
-Widget songCategoryCard(ctx, int i, String categoryName, List songs) {
-  return GestureDetector(
-    onTap: () {
-      Navigator.push(
-        ctx,
-        MaterialPageRoute(
-          builder: (context) => SongSelectScreen(categoryName, songs),
-        ),
-      );
-    },
-    child: Card(
-      margin: EdgeInsets.symmetric(
-        horizontal: 5,
-        vertical: 3,
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(4),
-        child: ListTile(
-          leading: Icon(Icons.music_note, color: Colors.black, size: 40),
-          title: Text(categoryName),
-          // How many songs within this category
-          trailing: Text(songs.length.toString()),
-        ),
-      ),
-    ),
-  );
 }

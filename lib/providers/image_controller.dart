@@ -11,17 +11,43 @@ class ImageController with ChangeNotifier {
   }
 
   void setMouth(width) async {
+    // print("SET MOUTH called!");
     webViewController.evaluateJavascript("set_mouth($width)");
   }
 
-  void loadImage(picture) async {
-    String encodingPrefix = "data:image/png;base64,";
-    String base64Image = base64.encode(File(picture.filePath).readAsBytesSync());
-    webViewController
-        .evaluateJavascript("update_texture('$encodingPrefix$base64Image')");
-    // print("Setting mouth coordinates... Which are: ${picture.mouthCoordinates}");
-    webViewController.evaluateJavascript("set_mouth_coordinates(${picture.mouthCoordinates})");
-    // print("Done!");
+  // void loadImage(picture) async {
+  //   print("load image called");
+  //   if (picture != null) {
+  //     String encodingPrefix = "data:image/png;base64,";
+  //     String base64Image =
+  //         base64.encode(File(picture.filePath).readAsBytesSync());
+  //     webViewController
+  //         .evaluateJavascript("update_texture('$encodingPrefix$base64Image')");
+  //     print(
+  //         "Setting mouth coordinates... Which are: ${picture.mouthCoordinates}");
+  //     webViewController.evaluateJavascript(
+  //         "set_mouth_coordinates(${picture.mouthCoordinates})");
+  //     print("Done!");
+  //   }
+  // }
 
+  void createDog([picture]) async {
+    print("CREATE dog called!");
+
+    if (picture != null) {
+      String encodingPrefix = "data:image/png;base64,";
+      String base64Image =
+          base64.encode(File(picture.filePath).readAsBytesSync());
+      webViewController.evaluateJavascript(
+          "set_mouth_coordinates(${picture.mouthCoordinates})");
+      // THIS NEEDS TO BE FIXED.
+      Future.delayed(Duration(milliseconds: 500)).then((_) {
+        webViewController
+            .evaluateJavascript("create_dog('$encodingPrefix$base64Image')");
+      });
+    } else {
+      webViewController.evaluateJavascript("create_dog()");
+    }
+    print("done!");
   }
 }

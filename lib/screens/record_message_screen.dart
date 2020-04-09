@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import '../providers/image_controller.dart';
 import '../providers/pictures.dart';
 
-import './review_card_screen.dart';
+import './generate_card_screen.dart';
 
 enum t_MEDIA {
   FILE,
@@ -159,7 +159,7 @@ class _RecordMessageScreenState extends State<RecordMessageScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              ReviewCardScreen(widget.songId),
+                              GenerateCardScreen(widget.songId),
                         ),
                       );
                     },

@@ -25,8 +25,9 @@ class _SingingImageState extends State<SingingImage> {
             ..mountController(c);
         },
         onPageFinished: (_) {
-          final picture = Provider.of<Pictures>(context, listen: false).mountedPicture;
-          imageController.loadImage(picture);
+          // final picture = Provider.of<Pictures>(context, listen: false).mountedPicture;
+          // imageController.loadImage(picture);
+          // imageController.createDog();
         },
         
         initialUrl: 'https://www.thedogbarksthesong.ml/sample_animation',

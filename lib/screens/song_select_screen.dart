@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import './bark_select_screen.dart';
 
 class SongSelectScreen extends StatefulWidget {
-  final categoryName;
-  final creatableSongs;
-  SongSelectScreen(this.categoryName, this.creatableSongs);
+  final songFamilyName;
+  final allSongs;
+  SongSelectScreen(this.songFamilyName, this.allSongs);
 
   @override
   _SongSelectScreenState createState() => _SongSelectScreenState();
@@ -14,6 +14,12 @@ class SongSelectScreen extends StatefulWidget {
 class _SongSelectScreenState extends State<SongSelectScreen> {
   @override
   Widget build(BuildContext context) {
+    final creatableSongs = [];
+    widget.allSongs.forEach((song) {
+      if (song["song_family"] != widget.songFamilyName) return;
+      creatableSongs.add(song);
+    });
+    print(creatableSongs);
     return Scaffold(
       // extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -22,7 +28,7 @@ class _SongSelectScreenState extends State<SongSelectScreen> {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          widget.categoryName,
+          widget.songFamilyName,
           style: TextStyle(
               fontWeight: FontWeight.bold, fontSize: 23, color: Colors.white),
         ),
@@ -31,11 +37,11 @@ class _SongSelectScreenState extends State<SongSelectScreen> {
       body: Column(
         children: <Widget>[
           Expanded(
-           child: ListView.builder(
+            child: ListView.builder(
               padding: const EdgeInsets.all(10),
-              itemCount: widget.creatableSongs.length,
+              itemCount: creatableSongs.length,
               itemBuilder: (ctx, i) =>
-                  songCategoryCard(ctx, i, widget.creatableSongs[i]),
+                  songCategoryCard(ctx, i, creatableSongs[i]),
             ),
           ),
         ],

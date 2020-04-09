@@ -35,8 +35,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
     );
     super.initState();
     renameAnimationController.forward();
-    imageController =
-        Provider.of<ImageController>(context, listen: false);
+    imageController = Provider.of<ImageController>(context, listen: false);
   }
 
   @override
@@ -47,12 +46,15 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
   }
 
   void stopAll() {
-    waveStreamer?.cancel();
-    imageController.setMouth(0);
-    widget.soundController.stopPlayer();
+    if (waveStreamer != null) {
+      waveStreamer?.cancel();
+      imageController.setMouth(0);
+      widget.soundController.stopPlayer();
+    }
   }
 
   void startAll() {
+    print(imageController);
     waveStreamer =
         WaveStreamer.performAudio(widget.bark.filePath, imageController);
     widget.soundController.startPlayer(widget.bark.filePath);
@@ -63,7 +65,8 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
       stopAll();
       startAll();
     } catch (e) {
-      showErrorDialog(context, e);
+      showErrorDialog(context, e.toString());
+      print(e);
     }
   }
 

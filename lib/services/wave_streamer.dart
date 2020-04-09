@@ -15,6 +15,7 @@ import 'dart:async';
 // int typeOfFormat = bytes.sublist(20, 22).buffer.asInt16List()[0];
 // int numberOfChannels = bytes.sublist(22, 24).buffer.asInt16List()[0];
 // int sampleRate = bytes.sublist(24, 28).buffer.asInt32List()[0];
+
 // int sampleRateByBitsPerSampleByChannels =
 //     bytes.sublist(28, 32).buffer.asInt32List()[0];
 // int bitsPerSampleByChannels = bytes.sublist(32, 34).buffer.asInt16List()[0];
@@ -55,7 +56,9 @@ import 'dart:async';
 // Int16List soundData = bytes.sublist(headerOffset).buffer.asInt16List();
 // print("Number of samples: ${soundData.length}");
 
-StreamSubscription<double> performAudio(path, imageController) {
+StreamSubscription<double> performAudio(path, imageController,
+    [Function doneStreaming]) {
+
   if (File(path).exists() == null) {
     return null;
   }
@@ -71,6 +74,7 @@ StreamSubscription<double> performAudio(path, imageController) {
       print(e);
     }, onDone: () {
       imageController.setMouth(0);
+      doneStreaming();
     });
   } catch (e) {
     print("Error: $e");
@@ -79,31 +83,31 @@ StreamSubscription<double> performAudio(path, imageController) {
 }
 
 class WaveStreamer {
-  
   // 40 milliseconds == 1/25 frames per second
   // 1764 samples per frame for a 44100 hertz sample rate
   WaveStreamer(String filePath) {
-
     int headerOffset = 44;
-
     Uint8List bytes = File(filePath).readAsBytesSync();
+    int sampleRate = bytes.sublist(24, 28).buffer.asInt32List()[0];
+    // framerate = 25
+    int sampleChunk = (sampleRate / 25).round();
     Int16List samples = bytes.sublist(headerOffset).buffer.asInt16List();
     List<int> waveSamples = samples.toList();
     double _amplitude;
     List<int> tempSubList;
-    Timer.periodic(Duration(milliseconds: 110), (t) {
-      if (waveSamples.length < 1764) {
+    Timer.periodic(Duration(milliseconds: 40), (t) {
+      if (waveSamples.length < sampleChunk) {
         _controller.close();
         return;
       }
-      tempSubList = waveSamples.sublist(0, 1763);
+      tempSubList = waveSamples.sublist(0, (sampleChunk - 1));
       // divisor number of samples in a frame of animation Xs the max possible average amplitude
-      int divisor = 1764 * 10000;
+      int divisor = sampleChunk * 10000;
       // amplitude from 0 to 1
       _amplitude = tempSubList.reduce((a, b) => a.abs() + b.abs()) / divisor;
       _amplitude = _amplitude > 1.0 ? 1.0 : _amplitude;
       _controller.sink.add(_amplitude);
-      waveSamples.removeRange(0, 1763);
+      waveSamples.removeRange(0, (sampleChunk - 1));
     });
   }
 

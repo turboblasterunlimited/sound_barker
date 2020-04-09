@@ -62,7 +62,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
       widget.newPicture.uploadPictureAndSaveToServer();
       pictures.add(widget.newPicture);
       pictures.mountedPicture = widget.newPicture;
-      imageController.loadImage(widget.newPicture);
+      imageController.createDog(widget.newPicture);
       Navigator.popUntil(
         context,
         ModalRoute.withName(Navigator.defaultRouteName),
@@ -81,7 +81,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
       }
       widget.newPicture.updateImageOnServer(widget.newPicture);
       pictures.mountedPicture = widget.newPicture;
-      imageController.loadImage(widget.newPicture);
+      imageController.createDog(widget.newPicture);
 
       Navigator.popUntil(
         context,

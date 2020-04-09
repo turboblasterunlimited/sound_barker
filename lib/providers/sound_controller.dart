@@ -13,7 +13,7 @@ class SoundController with ChangeNotifier {
   }
 
   Future<String> startPlayer(path, [String backingTrackPath]) async {
-    if (audioPlayer.state == AudioPlayerState.STOPPED) {
+    if (audioPlayer.state == AudioPlayerState.PLAYING) {
       audioPlayer.stop();
     }
     if (backingTrackPath != null) _startBackingTrack(backingTrackPath);
@@ -24,7 +24,7 @@ class SoundController with ChangeNotifier {
   }
 
   Future<String> _startBackingTrack(path) async {
-    if (backingTrack.state == AudioPlayerState.STOPPED) {
+    if (backingTrack.state == AudioPlayerState.PLAYING) {
       backingTrack.stop();
     }
     // might need to set volume after starting...

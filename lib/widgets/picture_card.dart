@@ -25,6 +25,8 @@ class _PictureCardState extends State<PictureCard>
   @override
   void initState() {
     super.initState();
+    imageController = Provider.of<ImageController>(context, listen: false);
+
     animationController =
         AnimationController(vsync: this, duration: const Duration(seconds: 1));
 
@@ -47,19 +49,21 @@ class _PictureCardState extends State<PictureCard>
     if (action == "DELETE") {
       animationController.reverse();
       widget.pictures.remove(widget.picture);
-      imageController.loadImage(widget.pictures.all.first);
+      imageController.createDog(widget.pictures.all.first);
     } else if (action == "SET MOUTH") {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ConfirmPictureScreen(widget.picture, isNamed: true),
+          builder: (context) =>
+              ConfirmPictureScreen(widget.picture, isNamed: true),
         ),
       );
     } else if (action == "RENAME") {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ConfirmPictureScreen(widget.picture, mouthAreaSet: true),
+          builder: (context) =>
+              ConfirmPictureScreen(widget.picture, mouthAreaSet: true),
         ),
       );
     }
@@ -74,7 +78,7 @@ class _PictureCardState extends State<PictureCard>
             children: <Widget>[
               GestureDetector(
                 onTap: () {
-                  imageController.loadImage(widget.picture);
+                  imageController.createDog(widget.picture);
                   widget.pictures.mountedPicture = widget.picture;
                 },
                 child: Padding(
@@ -134,7 +138,6 @@ class _PictureCardState extends State<PictureCard>
 
   @override
   Widget build(BuildContext context) {
-    imageController = Provider.of<ImageController>(context);
     Animation animation = Tween(begin: 0.0, end: 1.0).animate(
         new CurvedAnimation(parent: animationController, curve: Curves.ease));
 

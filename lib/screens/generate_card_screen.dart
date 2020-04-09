@@ -7,7 +7,10 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:flutter_sound/ios_quality.dart';
 import 'dart:async';
 import 'dart:io';
+import 'package:flutter_screen_recording/flutter_screen_recording.dart';
+import 'package:permission_handler/permission_handler.dart';
 
+import '../functions/error_dialog.dart';
 import '../providers/image_controller.dart';
 import '../providers/active_wave_streamer.dart';
 import '../providers/sound_controller.dart';
@@ -15,29 +18,36 @@ import '../providers/songs.dart';
 import '../services/wave_streamer.dart' as WaveStreamer;
 import '../functions/error_dialog.dart';
 
-
-
-
-class ReviewCardScreen extends StatefulWidget {
+class GenerateCardScreen extends StatefulWidget {
   static const routeName = 'record-message-screen';
   String songId;
 
-  ReviewCardScreen(this.songId);
+  GenerateCardScreen(this.songId);
 
   @override
-  _ReviewCardScreenState createState() => _ReviewCardScreenState();
+  _GenerateCardScreenState createState() => _GenerateCardScreenState();
 }
 
-class _ReviewCardScreenState extends State<ReviewCardScreen> {
+class _GenerateCardScreenState extends State<GenerateCardScreen> {
   bool _isCapturing = false;
   StreamSubscription<double> waveStreamer;
   ImageController imageController;
   SoundController soundController;
   Song song;
+  String cardFilePath;
+
+  requestPermissions() async {
+    Map<Permission, PermissionStatus> statuses = await [
+      Permission.photos,
+      Permission.storage,
+    ].request();
+    print(statuses[Permission.location]);
+  }
 
   @override
   void initState() {
     super.initState();
+    requestPermissions();
     SystemChrome.setEnabledSystemUIOverlays([]);
     imageController = Provider.of<ImageController>(context, listen: false);
     soundController = Provider.of<SoundController>(context, listen: false);
@@ -45,32 +55,50 @@ class _ReviewCardScreenState extends State<ReviewCardScreen> {
     song = Provider.of<Songs>(context, listen: false).findById(widget.songId);
   }
 
-    void stopAll() {
+  @override
+  void dispose() {
+    stopAll();
+    super.dispose();
+  }
+
+  void stopAll() {
     waveStreamer?.cancel();
     imageController.setMouth(0);
     soundController.stopPlayer();
   }
 
-  void startAll() {
+  Future<void> startAll() async {
     stopAll();
-    Provider.of<ActiveWaveStreamer>(context, listen: false).waveStreamer?.cancel();
-    waveStreamer = WaveStreamer.performAudio(song.filePath, imageController);
-    Provider.of<ActiveWaveStreamer>(context, listen: false).waveStreamer = waveStreamer;
+    Provider.of<ActiveWaveStreamer>(context, listen: false)
+        .waveStreamer
+        ?.cancel();
+    waveStreamer = WaveStreamer.performAudio(
+        song.filePath, imageController, doneCapturing);
+    Provider.of<ActiveWaveStreamer>(context, listen: false).waveStreamer =
+        waveStreamer;
     soundController.startPlayer(song.filePath);
     // widget.soundController.startPlayer(widget.song.filePath, widget.song.backingTrackPath);
   }
 
-  void playSong() async {
-    try {
-      // stopAll();
-      startAll();
-    } catch (e) {
-      showErrorDialog(context, e);
-    }
+  doneCapturing() async {
+    cardFilePath = await FlutterScreenRecording.stopRecordScreen;
+
+    setState(() {
+      this._isCapturing = false;
+    });
+    print("Done Capturing: $_isCapturing");
+    print("Card FilePath: $cardFilePath");
+    showErrorDialog(context, cardFilePath);
   }
 
-  _onStartScreenCapture() {
-    playSong();
+  _onStartScreenCapture() async {
+    setState(() {
+      this._isCapturing = true;
+    });
+    FlutterScreenRecording.startRecordScreen("BOBBY");
+
+    await startAll();
+    // captureScreen();
   }
 
   @override
@@ -80,9 +108,6 @@ class _ReviewCardScreenState extends State<ReviewCardScreen> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(40.0),
         child: AppBar(
-          iconTheme:
-              IconThemeData(color: Theme.of(context).accentColor, size: 30),
-          backgroundColor: Colors.transparent,
           centerTitle: true,
         ),
       ),
@@ -93,11 +118,12 @@ class _ReviewCardScreenState extends State<ReviewCardScreen> {
             child: Column(
               children: <Widget>[
                 ButtonBar(
+                  alignment: MainAxisAlignment.center,
                   children: <Widget>[
                     RawMaterialButton(
                       onPressed: _onStartScreenCapture,
                       child: Text(
-                        "Generate Card",
+                        this._isCapturing ? "Generating..." : "Generate Card",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       shape: RoundedRectangleBorder(

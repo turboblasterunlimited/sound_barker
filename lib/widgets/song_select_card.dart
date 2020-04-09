@@ -52,12 +52,12 @@ class _SongSelectCardState extends State<SongSelectCard> {
           border: isSelected ? Border.all(color: Colors.blueAccent, width: 5) : Border.all(width: 0, color: Colors.transparent),
         ),
         child: Card(
-          margin: EdgeInsets.symmetric(
-            horizontal: 5,
-            vertical: 3,
-          ),
+          // margin: EdgeInsets.symmetric(
+          //   horizontal: 5,
+          //   vertical: 3,
+          // ),
           child: Padding(
-            padding: EdgeInsets.all(4),
+            padding: EdgeInsets.all(0),
             child: ListTile(
               leading: GestureDetector(
                 onTap: () {
@@ -65,18 +65,20 @@ class _SongSelectCardState extends State<SongSelectCard> {
                 },
                 child: isSelected ? Icon(Icons.check_box, color: Colors.blueAccent,) : Icon(Icons.check_box_outline_blank),
               ),
-              title: GestureDetector(
-                onTap: () {
-                  selectThis();
-                },
-                child: Text(widget.song.name),
+              title: Center(
+                child: GestureDetector(
+                  onTap: () {
+                    selectThis();
+                  },
+                  child: Text(widget.song.name),
+                ),
               ),
               trailing: IconButton(
                 color: Colors.blue,
                 onPressed: () {
                   playSong();
                 },
-                icon: Icon(Icons.play_arrow, color: Colors.blueGrey, size: 40),
+                icon: Icon(Icons.play_arrow, color: Colors.blueGrey, size: 30),
               ),
             ),
           ),

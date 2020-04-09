@@ -9,6 +9,7 @@ import '../providers/songs.dart';
 import '../widgets/interface_selector.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/singing_image.dart';
+import '../providers/image_controller.dart';
 
 class MainScreen extends StatefulWidget {
   static const routeName = 'main-screen';
@@ -32,14 +33,23 @@ class _MainScreenState extends State<MainScreen> {
         GlobalKey<AnimatedListState>();
     var outlineColor = Theme.of(context).accentColor;
 
-    Barks barks = Provider.of<Barks>(context, listen: false);
-    Songs songs = Provider.of<Songs>(context, listen: false);
-    Pictures pictures = Provider.of<Pictures>(context, listen: false);
+    final barks = Provider.of<Barks>(context, listen: false);
+    final songs = Provider.of<Songs>(context, listen: false);
+    final pictures = Provider.of<Pictures>(context, listen: false);
+    final imageController = Provider.of<ImageController>(context, listen: false);
 
     void downloadEverything() async {
       await barks.retrieveAll();
       await songs.retrieveAll();
-      await pictures.retrieveAll();
+      await pictures.retrieveAll().then((_) {
+        // Future.delayed(Duration(seconds: 4)).then((_) {
+          // pictures.mountPicture(pictures.all.first);
+          // imageController.loadImage(pictures.mountedPicture);
+          // imageController.createDog();
+        // });
+        
+      });
+      imageController.createDog();
     }
 
     if (barks.all.isEmpty && songs.all.isEmpty && pictures.all.isEmpty) {
