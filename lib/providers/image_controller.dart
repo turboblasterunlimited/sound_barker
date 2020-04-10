@@ -38,13 +38,14 @@ class ImageController with ChangeNotifier {
       String encodingPrefix = "data:image/png;base64,";
       String base64Image =
           base64.encode(File(picture.filePath).readAsBytesSync());
-      webViewController.evaluateJavascript(
-          "set_mouth_coordinates(${picture.mouthCoordinates})");
+      
       // THIS NEEDS TO BE FIXED.
-      Future.delayed(Duration(milliseconds: 500)).then((_) {
+      Future.delayed(Duration(milliseconds: 100)).then((_) {
         webViewController
             .evaluateJavascript("create_dog('$encodingPrefix$base64Image')");
       });
+      webViewController.evaluateJavascript(
+          "set_mouth_coordinates(${picture.mouthCoordinates})");
     } else {
       webViewController.evaluateJavascript("create_dog()");
     }

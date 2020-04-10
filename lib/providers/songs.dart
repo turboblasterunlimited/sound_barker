@@ -36,6 +36,7 @@ class Songs with ChangeNotifier, Gcloud, RestAPI {
     json.decode(response).forEach((serverSong) {
       if (serverSong["hidden"] == 1) return;
       Song song = Song(
+          backingTrackUrl: serverSong["backing_track_fp"],
           formulaId: serverSong["song_id"],
           name: serverSong["name"],
           fileUrl: serverSong["bucket_fp"],
@@ -45,19 +46,32 @@ class Songs with ChangeNotifier, Gcloud, RestAPI {
         addSong(song);
       }
     });
-    
+
     // notifyListeners();
   }
 
   // downloadFromBucket only downloads songs that don't already exist on the FS
   Future _downloadAllSongsFromBucket([List songs]) async {
+    final captureBackingFileName = RegExp(r'\/([0-9a-zA-Z_ ]*.[a-zA-Z]{3})$');
+
     Bucket bucket = await accessBucket();
-    songs = songs == null ? all : songs;
+    songs ??= all;
     int soundCount = songs.length;
     for (var i = 0; i < soundCount; i++) {
-      String filePath =
-          await downloadFromBucket(songs[i].fileUrl, songs[i].fileId, image: false, bucket: bucket);
+      String filePath = await downloadFromBucket(
+          songs[i].fileUrl, songs[i].fileId,
+          bucket: bucket);
       songs[i].filePath = filePath;
+
+      if (songs[i].backingTrackUrl != null) {
+        print(songs[i].backingTrackUrl);
+        final match =
+            captureBackingFileName.firstMatch(songs[i].backingTrackUrl);
+        String backingFileName = match.group(1);
+        songs[i].backingTrackPath = await downloadFromBucket(
+            songs[i].backingTrackUrl, backingFileName,
+            backingTrack: true, bucket: bucket);
+      }
     }
   }
 }
@@ -71,7 +85,14 @@ class Song with ChangeNotifier, Gcloud, RestAPI {
   String backingTrackUrl;
   String backingTrackPath;
 
-  Song({this.filePath, this.name, this.fileUrl, this.fileId, this.formulaId});
+  Song(
+      {this.filePath,
+      this.name,
+      this.fileUrl,
+      this.fileId,
+      this.formulaId,
+      this.backingTrackUrl,
+      this.backingTrackPath});
 
   void removeFromStorage() {
     try {
@@ -98,11 +119,13 @@ class Song with ChangeNotifier, Gcloud, RestAPI {
   void retrieveSong(responseBody) async {
     //print(responseBody);
     Map responseData = json.decode(responseBody);
+    this.backingTrackUrl = responseData["backing_track_fp"];
     this.fileId = responseData["uuid"];
     this.name = responseData["name"];
     this.fileUrl = responseData["bucket_fp"];
     this.formulaId = responseData["song_id"];
-    this.filePath = await downloadFromBucket(fileUrl, fileId, image: false);
+    this.filePath = await downloadFromBucket(fileUrl, fileId);
+    this.backingTrackPath = await downloadFromBucket(fileUrl, fileId, backingTrack: true);
     // print("filePath for song: ${this.filePath}");
   }
 }

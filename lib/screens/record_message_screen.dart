@@ -49,7 +49,7 @@ class _RecordMessageScreenState extends State<RecordMessageScreen> {
   void startRecorder() async {
     try {
       this.filePath = await flutterSound.startRecorder(
-          codec: _codec, iosQuality: IosQuality.HIGH);
+          codec: _codec, iosQuality: IosQuality.MAX, sampleRate: 44100, bitRate: 192000);
       print('start message recorder: $filePath');
 
       _recorderSubscription = flutterSound.onRecorderStateChanged.listen((e) {

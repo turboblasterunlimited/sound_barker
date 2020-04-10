@@ -19,22 +19,29 @@ class Gcloud {
     return storage.bucket('song_barker_sequences');
   }
 
-  Future<String> downloadFromBucket(fileUrl, fileId, {image, bucket}) async {
+  Future<String> downloadFromBucket(fileUrl, fileId,
+      {bool image, bucket, bool backingTrack}) async {
     bucket ??= await accessBucket();
     String filePathBase = myAppStoragePath + '/' + fileId;
     String filePath = filePathBase;
-        
+
     if (image == true) {
       filePath += ".jpg";
       if (await File(filePath).exists()) return filePath;
+    } else if (backingTrack == true) {
+      if (await File(filePath).exists())
+        return filePathBase;
     } else {
       filePath += ".aac";
-      if (await File(filePathBase + ".wav").exists()) return filePathBase + ".wav";
+      if (await File(filePathBase + ".wav").exists())
+        return filePathBase + ".wav";
     }
-    try { 
+    try {
+      print("downloading: $filePath");
       await bucket.read(fileUrl).pipe(new File(filePath).openWrite());
-      if (image != true) {
-        // Makes a wav file and deletes the .aac file.
+
+      // Makes a wav file and deletes the .aac file unless it's a backingTrack or image.
+      if (image == null && backingTrack == null) {
         await _flutterFFmpeg.execute("-i $filePath $filePathBase.wav");
         File(filePath).delete();
         filePath = filePathBase + ".wav";
@@ -46,7 +53,8 @@ class Gcloud {
   }
 
   Future<String> uploadAsset(fileId, filePath, [image]) async {
-    String bucketWritePath = image == true ? "images/$fileId.jpg" : "$fileId/raw.aac";
+    String bucketWritePath =
+        image == true ? "images/$fileId.jpg" : "$fileId/raw.aac";
     var info;
     Bucket bucket = await accessBucket();
     try {

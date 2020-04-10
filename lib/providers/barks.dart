@@ -43,7 +43,7 @@ class Barks with ChangeNotifier, Gcloud, RestAPI {
     int barkCount = barks.length;
     for (var i = 0; i < barkCount; i++) {
       String filePath =
-          await downloadFromBucket(barks[i].fileUrl, barks[i].fileId, image: false);
+          await downloadFromBucket(barks[i].fileUrl, barks[i].fileId);
       barks[i].filePath = filePath;
     }
   }

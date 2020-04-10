@@ -23,22 +23,22 @@ class _BarkSelectScreenState extends State<BarkSelectScreen> {
     String instructionText;
 
     if (widget.song["track_count"] == 1) {
-      instructionText = "Pick a sound";
+      instructionText = "Pick a short sound";
     } else if (widget.selectedBarkIds.length == 0) {
-      instructionText = "Pick 1st sound";
+      instructionText = "Pick a short sound";
     } else if (widget.selectedBarkIds.length == 1) {
-      instructionText = "Pick 2nd sound";
+      instructionText = "Pick a long sound";
     } else if (widget.selectedBarkIds.length == 2) {
-      instructionText = "Pick 3rd sound";
+      instructionText = "Pick a different sound";
     } else if (widget.selectedBarkIds.length == 3) {
-      instructionText = "Pick 4th sound";
+      instructionText = "Pick another sound";
     } else if (widget.selectedBarkIds.length == 4) {
-      instructionText = "Pick 5th sound";
+      instructionText = "Pick one more sound";
     }
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white, size: 30),
-        backgroundColor: Theme.of(context).accentColor,
+        // backgroundColor: Theme.of(context).accentColor,
         elevation: 0,
         centerTitle: true,
         title: Text(

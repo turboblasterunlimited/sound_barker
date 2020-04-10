@@ -49,7 +49,7 @@ class _RecordButtonState extends State<RecordButton> {
   void startRecorder() async {
     try {
       this.filePath = await flutterSound.startRecorder(
-          codec: _codec, iosQuality: IosQuality.HIGH);
+          codec: _codec, iosQuality: IosQuality.MAX, sampleRate: 44100, bitRate: 192000);
       //print('startRecorder: $filePath');
 
       _recorderSubscription = flutterSound.onRecorderStateChanged.listen((e) {

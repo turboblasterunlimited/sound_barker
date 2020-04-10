@@ -6,6 +6,9 @@ class SoundController with ChangeNotifier {
   AudioPlayer backingTrack = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
 
   dynamic stopPlayer({bool hasBackingTrack}) {
+    // TEMPorary
+    hasBackingTrack = true;
+
     if (audioPlayer.state == AudioPlayerState.PLAYING) {
       return audioPlayer.stop();
     }
@@ -18,7 +21,6 @@ class SoundController with ChangeNotifier {
     }
     if (backingTrackPath != null) _startBackingTrack(backingTrackPath);
 
-    // might need to set volume after starting...
     return audioPlayer.play(path, isLocal: true).toString();
    
   }
@@ -27,7 +29,8 @@ class SoundController with ChangeNotifier {
     if (backingTrack.state == AudioPlayerState.PLAYING) {
       backingTrack.stop();
     }
-    // might need to set volume after starting...
+
+    print("BACKING TRACK PLAYBACK STARTED...");
     return backingTrack.play(path, isLocal: true).toString();
   }
 
