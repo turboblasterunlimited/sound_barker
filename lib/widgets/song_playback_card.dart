@@ -42,14 +42,14 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
   @override
   void dispose() {
     renameAnimationController.dispose();
-    stopAll();
+    if (waveStreamer != null) stopAll();
     super.dispose();
   }
 
   void stopAll() {
     waveStreamer?.cancel();
     imageController.setMouth(0);
-    widget.soundController.stopPlayer();
+    widget.soundController.stopPlayer(widget.song.backingTrackPath != null);
   }
 
   void startAll() {
@@ -57,8 +57,8 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
     Provider.of<ActiveWaveStreamer>(context, listen: false).waveStreamer?.cancel();
     waveStreamer = WaveStreamer.performAudio(widget.song.filePath, imageController);
     Provider.of<ActiveWaveStreamer>(context, listen: false).waveStreamer = waveStreamer;
-    widget.soundController.startPlayer(widget.song.filePath);
-    // widget.soundController.startPlayer(widget.song.filePath, widget.song.backingTrackPath);
+    // widget.soundController.startPlayer(widget.song.filePath);
+    widget.soundController.startPlayer(widget.song.filePath, widget.song.backingTrackPath);
   }
 
   void playSong(context) async {

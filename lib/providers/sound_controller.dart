@@ -5,10 +5,7 @@ class SoundController with ChangeNotifier {
   AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
   AudioPlayer backingTrack = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
 
-  dynamic stopPlayer({bool hasBackingTrack}) {
-    // TEMPorary
-    hasBackingTrack = true;
-
+  dynamic stopPlayer([bool hasBackingTrack]) {
     if (audioPlayer.state == AudioPlayerState.PLAYING) {
       return audioPlayer.stop();
     }
@@ -17,7 +14,7 @@ class SoundController with ChangeNotifier {
 
   Future<String> startPlayer(path, [String backingTrackPath]) async {
     if (audioPlayer.state == AudioPlayerState.PLAYING) {
-      audioPlayer.stop();
+      stopPlayer(backingTrackPath != null);
     }
     if (backingTrackPath != null) _startBackingTrack(backingTrackPath);
 
