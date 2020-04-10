@@ -31,7 +31,7 @@ class _SongSelectCardState extends State<SongSelectCard> {
 
   void playSong() async {
     try {
-      widget.soundController.stopPlayer();
+      widget.soundController.stopPlayer(widget.song.backingTrackPath != null);
       widget.soundController.startPlayer(widget.song.filePath, widget.song.backingTrackPath);
     } catch (e) {
       showErrorDialog(context, e);

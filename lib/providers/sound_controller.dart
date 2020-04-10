@@ -5,9 +5,11 @@ class SoundController with ChangeNotifier {
   AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
   AudioPlayer backingTrack = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
 
-  dynamic stopPlayer([bool hasBackingTrack]) {
+  void stopPlayer([bool hasBackingTrack]) {
+    print("has backing track: $hasBackingTrack");
+
     if (audioPlayer.state == AudioPlayerState.PLAYING) {
-      return audioPlayer.stop();
+      audioPlayer.stop();
     }
     if (hasBackingTrack == true) _stopBackingTrack();
   }
@@ -19,7 +21,6 @@ class SoundController with ChangeNotifier {
     if (backingTrackPath != null) _startBackingTrack(backingTrackPath);
 
     return audioPlayer.play(path, isLocal: true).toString();
-   
   }
 
   Future<String> _startBackingTrack(path) async {
@@ -31,9 +32,11 @@ class SoundController with ChangeNotifier {
     return backingTrack.play(path, isLocal: true).toString();
   }
 
-  dynamic _stopBackingTrack() {
+  void _stopBackingTrack() {
+    print("backing track stopped!");
+
     if (backingTrack.state == AudioPlayerState.PLAYING) {
-      return backingTrack.stop();
+      backingTrack.stop();
     }
   }
 }
