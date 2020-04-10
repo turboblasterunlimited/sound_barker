@@ -57,7 +57,7 @@ import 'dart:async';
 // print("Number of samples: ${soundData.length}");
 
 StreamSubscription<double> performAudio(path, imageController,
-    [Function doneStreaming]) {
+    [Function callBack]) {
 
   if (File(path).exists() == null) {
     return null;
@@ -74,7 +74,7 @@ StreamSubscription<double> performAudio(path, imageController,
       print(e);
     }, onDone: () {
       imageController.setMouth(0);
-      doneStreaming();
+      if (callBack != null) callBack();
     });
   } catch (e) {
     print("Error: $e");
