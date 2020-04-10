@@ -64,7 +64,6 @@ class Songs with ChangeNotifier, Gcloud, RestAPI {
       songs[i].filePath = filePath;
 
       if (songs[i].backingTrackUrl != null) {
-        print(songs[i].backingTrackUrl);
         final match =
             captureBackingFileName.firstMatch(songs[i].backingTrackUrl);
         String backingFileName = match.group(1);

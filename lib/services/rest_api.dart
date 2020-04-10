@@ -18,7 +18,7 @@ class RestAPI {
     //   'song_id': songId
     // });
 
-    print("create song on server req body: $body");
+    // print("create song on server req body: $body");
     final url = 'http://165.227.178.14/to_sequence';
     try {
       response = await http.post(
@@ -30,7 +30,7 @@ class RestAPI {
       //print(error);
       throw error;
     }
-    print("create Song on server response body: ${response.body}");
+    // print("create Song on server response body: ${response.body}");
     return response.body;
   }
 
@@ -46,10 +46,10 @@ class RestAPI {
         headers: jsonHeaders,
       );
     } catch (error) {
-      print(error);
+      // print(error);
       throw error;
     }
-    print("Edit bark name response body: ${response.body}");
+    // print("Edit bark name response body: ${response.body}");
     return response.body;
   }
 
@@ -59,7 +59,7 @@ class RestAPI {
       'name': image.name,
       'mouth_coordinates': image.mouthCoordinates,
     });
-    print("Image update body: $body");
+    // print("Image update body: $body");
     final url = 'http://165.227.178.14/image/${image.fileId}';
     try {
       response = await http.patch(
@@ -71,7 +71,7 @@ class RestAPI {
       //print(error);
       throw error;
     }
-    print("Edit Image on server response body: ${response.body}");
+    // print("Edit Image on server response body: ${response.body}");
     return response.body;
   }
 
@@ -83,7 +83,7 @@ class RestAPI {
       'user_id': 'dev',
       'mouth_coordinates': image.mouthCoordinates,
     });
-    print("Image upload body: $body");
+    // print("Image upload body: $body");
     final url = 'http://165.227.178.14/image';
     try {
       response = await http.post(
@@ -95,14 +95,14 @@ class RestAPI {
       //print(error);
       throw error;
     }
-    print("create Image on server response body: ${response.body}");
+    // print("create Image on server response body: ${response.body}");
     return response.body;
   }
 
   Future<String> renameBarkOnServer(bark, newName) async {
     http.Response response;
     String body = json.encode({'name': newName, "user_id": "dev"});
-    print(body);
+    // print(body);
     final url = 'http://165.227.178.14/crop/${bark.fileId}';
     try {
       response = await http.patch(
@@ -114,7 +114,7 @@ class RestAPI {
       print(error);
       throw error;
     }
-    print("Edit bark name response body: ${response.body}");
+    // print("Edit bark name response body: ${response.body}");
     return response.body;
   }
 
@@ -127,7 +127,7 @@ class RestAPI {
       print(error);
       throw error;
     }
-    print("Get all Songs response body: ${response.body}");
+    // print("Get all Songs response body: ${response.body}");
     return response.body;
   }
 
@@ -140,7 +140,7 @@ class RestAPI {
       print(error);
       throw error;
     }
-    print("Get all Images response body: ${response.body}");
+    // print("Get all Images response body: ${response.body}");
     return response.body;
   }
 
@@ -153,7 +153,7 @@ class RestAPI {
       print(error);
       throw error;
     }
-    print("Get all Creatable Songs response body: ${response.body}");
+    // print("Get all Creatable Songs response body: ${response.body}");
     return response.body;
   }
 
@@ -166,7 +166,7 @@ class RestAPI {
       print(error);
       throw error;
     }
-    print("Get all Barks response body: ${response.body}");
+    // print("Get all Barks response body: ${response.body}");
     return response.body;
   }
 
@@ -180,7 +180,7 @@ class RestAPI {
       throw error;
     }
     // print("Song Name: ${image.name}, Song ID: ${song.fileId}");
-    print("Delete picture response body: ${response.body}");
+    // print("Delete picture response body: ${response.body}");
     return response.body;
   }
 
@@ -193,8 +193,8 @@ class RestAPI {
       print("Error: $error");
       throw error;
     }
-    print("Song Name: ${song.name}, Song ID: ${song.fileId}");
-    print("Delete song response body: ${response.body}");
+    // print("Song Name: ${song.name}, Song ID: ${song.fileId}");
+    // print("Delete song response body: ${response.body}");
     return response.body;
   }
 
@@ -207,7 +207,7 @@ class RestAPI {
       //print(error);
       throw error;
     }
-    print("Delete bark response body: ${response.body}");
+    // print("Delete bark response body: ${response.body}");
     return response.body;
   }
 
@@ -218,7 +218,7 @@ class RestAPI {
       'user_id': 'dev',
       'image_id': imageId,
     });
-    print(body);
+    // print(body);
     final url = 'http://165.227.178.14/to_crops';
     try {
       response = await http.post(
@@ -230,7 +230,7 @@ class RestAPI {
       //print(error);
       throw error;
     }
-    print("split bark server response body content: ${response.body}");
+    // print("split bark server response body content: ${response.body}");
     return response.body;
   }
 }

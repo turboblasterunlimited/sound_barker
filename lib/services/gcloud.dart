@@ -40,7 +40,7 @@ class Gcloud {
       print("downloading: $filePath");
       await bucket.read(fileUrl).pipe(new File(filePath).openWrite());
 
-      // Makes a wav file and deletes the .aac file unless it's a backingTrack or image.
+      // If it's a song melody, this makes a .wav file and deletes the .aac file.
       if (image == null && backingTrack == null) {
         await _flutterFFmpeg.execute("-i $filePath $filePathBase.wav");
         File(filePath).delete();
@@ -60,9 +60,9 @@ class Gcloud {
     try {
       info =
           await File(filePath).openRead().pipe(bucket.write(bucketWritePath));
-    } catch (error) {
-      print(error);
-      return error;
+    } catch (e) {
+      print(e);
+      return e;
     }
     return info.downloadLink.toString();
   }

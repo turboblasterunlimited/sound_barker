@@ -57,7 +57,6 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
     Provider.of<ActiveWaveStreamer>(context, listen: false).waveStreamer?.cancel();
     waveStreamer = WaveStreamer.performAudio(widget.song.filePath, imageController);
     Provider.of<ActiveWaveStreamer>(context, listen: false).waveStreamer = waveStreamer;
-    // widget.soundController.startPlayer(widget.song.filePath);
     widget.soundController.startPlayer(widget.song.filePath, widget.song.backingTrackPath);
   }
 

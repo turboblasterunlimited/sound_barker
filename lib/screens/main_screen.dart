@@ -36,25 +36,19 @@ class _MainScreenState extends State<MainScreen> {
     final barks = Provider.of<Barks>(context, listen: false);
     final songs = Provider.of<Songs>(context, listen: false);
     final pictures = Provider.of<Pictures>(context, listen: false);
-    final imageController = Provider.of<ImageController>(context, listen: false);
+    ImageController imageController = Provider.of<ImageController>(context, listen: false);
 
     void downloadEverything() async {
       await barks.retrieveAll();
       await songs.retrieveAll();
-      await pictures.retrieveAll().then((_) {
-        // Future.delayed(Duration(seconds: 4)).then((_) {
-          // pictures.mountPicture(pictures.all.first);
-          // imageController.loadImage(pictures.mountedPicture);
-          // imageController.createDog();
-        // });
-        
-      });
-      imageController.createDog();
+      await pictures.retrieveAll();
     }
 
     if (barks.all.isEmpty && songs.all.isEmpty && pictures.all.isEmpty) {
       downloadEverything();
     }
+
+    imageController.createDogWhenReady();
 
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
@@ -74,8 +68,6 @@ class _MainScreenState extends State<MainScreen> {
               shape: CircleBorder(),
               elevation: 2.0,
               fillColor: Theme.of(context).accentColor,
-
-              // padding: const EdgeInsets.all(10.0),
               onPressed: () {
                 _scaffoldKey.currentState.openDrawer();
               },
@@ -83,46 +75,10 @@ class _MainScreenState extends State<MainScreen> {
           ),
           iconTheme:
               IconThemeData(color: Theme.of(context).accentColor, size: 30),
-          // backgroundColor: Theme.of(context).accentColor,
           backgroundColor: Colors.transparent,
-
           elevation: 0,
           centerTitle: true,
-          actions: <Widget>[
-            // IconButton(
-            //   icon: Icon(
-            //     OMIcons.cloudDownload,
-            //   ),
-            //   onPressed: () {
-            //     downloadEverything();
-            //   },
-            // ),
-          ],
-          // title: Text(
-          //   'Song Barker',
-          //   style: TextStyle(
-          //       fontWeight: FontWeight.bold,
-          //       fontSize: 23,
-          //       shadows: [
-          //         Shadow(
-          //             // bottomLeft
-          //             offset: Offset(-1.5, -1.5),
-          //             color: outlineColor),
-          //         Shadow(
-          //             // bottomRight
-          //             offset: Offset(1.5, -1.5),
-          //             color: outlineColor),
-          //         Shadow(
-          //             // topRight
-          //             offset: Offset(1.5, 1.5),
-          //             color: outlineColor),
-          //         Shadow(
-          //             // topLeft
-          //             offset: Offset(-1.5, 1.5),
-          //             color: outlineColor),
-          //       ],
-          //       color: Colors.white),
-          // ),
+          actions: <Widget>[],
         ),
       ),
       drawer: AppDrawer(),

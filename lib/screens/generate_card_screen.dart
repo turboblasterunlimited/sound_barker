@@ -15,6 +15,7 @@ import '../providers/image_controller.dart';
 import '../providers/active_wave_streamer.dart';
 import '../providers/sound_controller.dart';
 import '../providers/songs.dart';
+import '../providers/pictures.dart';
 import '../services/wave_streamer.dart' as WaveStreamer;
 import '../functions/error_dialog.dart';
 
@@ -35,13 +36,14 @@ class _GenerateCardScreenState extends State<GenerateCardScreen> {
   SoundController soundController;
   Song song;
   String cardFilePath;
+  Pictures pictures;
 
   requestPermissions() async {
     Map<Permission, PermissionStatus> statuses = await [
       Permission.photos,
       Permission.storage,
     ].request();
-    print(statuses[Permission.location]);
+    // print(statuses[Permission.location]);
   }
 
   @override
@@ -49,11 +51,19 @@ class _GenerateCardScreenState extends State<GenerateCardScreen> {
     super.initState();
     requestPermissions();
     SystemChrome.setEnabledSystemUIOverlays([]);
-    imageController = Provider.of<ImageController>(context, listen: false);
     soundController = Provider.of<SoundController>(context, listen: false);
     // WHEN WE ADD PERSONAL CARD MESSAGE, THIS WILL BE A LINK TO A TEMP FILE THAT WILL BE DELETED AFTER CARD IS CREATED.
     song = Provider.of<Songs>(context, listen: false).findById(widget.songId);
+    pictures = Provider.of<Pictures>(context, listen: false);
   }
+
+  // @override
+  // void didUpdateWidget(GenerateCardScreen oldWidget) async {
+  //   super.didUpdateWidget(oldWidget);
+  //   Future.delayed(Duration(seconds: 2)).then((_) {
+  //     print("ImageController: $imageController");
+  //   });
+  // }
 
   @override
   void dispose() {
@@ -76,8 +86,7 @@ class _GenerateCardScreenState extends State<GenerateCardScreen> {
         song.filePath, imageController, doneCapturing);
     Provider.of<ActiveWaveStreamer>(context, listen: false).waveStreamer =
         waveStreamer;
-    soundController.startPlayer(song.filePath);
-    // widget.soundController.startPlayer(widget.song.filePath, widget.song.backingTrackPath);
+    soundController.startPlayer(song.filePath, song.backingTrackPath);
   }
 
   doneCapturing() async {
@@ -101,8 +110,19 @@ class _GenerateCardScreenState extends State<GenerateCardScreen> {
     // captureScreen();
   }
 
+  Future<void> setImageController() async {
+    Future.delayed(Duration(seconds: 2), () {
+      imageController = Provider.of<ImageController>(context, listen: false);
+      imageController.createDogWhenReady();
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
+    imageController = Provider.of<ImageController>(context, listen: false);
+    setImageController();
+
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: PreferredSize(

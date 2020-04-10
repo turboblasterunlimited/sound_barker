@@ -24,7 +24,6 @@ class _PictureGridState extends State<PictureGrid>
   @override
   Widget build(BuildContext context) {
     Pictures pictures = Provider.of<Pictures>(context);
-    print(myAppStoragePath);
     return Column(
       children: <Widget>[
           ButtonBar(
@@ -72,7 +71,6 @@ class _PictureGridState extends State<PictureGrid>
                       builder: (context) => CameraScreen(cameras),
                     ),
                   );
-                  // print(await appStoragePath());
                 },
                 child: Icon(
                   Icons.camera_alt,

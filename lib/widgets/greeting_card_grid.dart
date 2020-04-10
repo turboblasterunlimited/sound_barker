@@ -19,7 +19,6 @@ class _GreetingCardGridState extends State<GreetingCardGrid>
   @override
   Widget build(BuildContext context) {
     GreetingCards cards = Provider.of<GreetingCards>(context);
-    print(myAppStoragePath);
     return Column(
       children: <Widget>[
         ButtonBar(

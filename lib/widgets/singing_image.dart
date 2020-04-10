@@ -21,10 +21,10 @@ class _SingingImageState extends State<SingingImage> {
       child: WebView(
         onWebViewCreated: (WebViewController c) {
           _controller.complete(c);
-          imageController = Provider.of<ImageController>(context, listen: false)
-            ..mountController(c);
+          Provider.of<ImageController>(context, listen: false).mountController(c);
         },
         onPageFinished: (_) {
+
           // final picture = Provider.of<Pictures>(context, listen: false).mountedPicture;
           // imageController.loadImage(picture);
           // imageController.createDog();

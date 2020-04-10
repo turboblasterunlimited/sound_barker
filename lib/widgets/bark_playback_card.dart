@@ -54,7 +54,6 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
   }
 
   void startAll() {
-    print(imageController);
     waveStreamer =
         WaveStreamer.performAudio(widget.bark.filePath, imageController);
     widget.soundController.startPlayer(widget.bark.filePath);
