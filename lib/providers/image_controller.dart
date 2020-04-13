@@ -38,9 +38,10 @@ class ImageController with ChangeNotifier {
     });
   }
 
+    // NEED TO FIX ISSUE OF WIDGET SCREENS REBUILDING AFTER THEY HAVE BEEN LEFT.
   createDog(picture) {
     if (picture != null) {
-      String encodingPrefix = "data:image/png;base64,";
+      String enfluttercodingPrefix = "data:image/png;base64,";
       String base64Image =
           base64.encode(File(picture.filePath).readAsBytesSync());
       

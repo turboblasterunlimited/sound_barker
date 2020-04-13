@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 class SoundController with ChangeNotifier {
-  AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
-  AudioPlayer backingTrack = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+  AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
+  AudioPlayer backingTrack = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
 
   void stopPlayer([bool hasBackingTrack]) {
     print("has backing track: $hasBackingTrack");
@@ -19,6 +19,8 @@ class SoundController with ChangeNotifier {
       stopPlayer(backingTrackPath != null);
     }
     if (backingTrackPath != null) _startBackingTrack(backingTrackPath);
+    // audioPlayer.monitorNotificationStateChanges(monitorNotificationStateHandler);
+
 
     return audioPlayer.play(path, isLocal: true).toString();
   }

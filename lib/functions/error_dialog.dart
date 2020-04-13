@@ -10,7 +10,9 @@ showErrorDialog(BuildContext context, String error) {
         actions: [
           FlatButton(
             child: Text("OK"),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
           ),
         ],
       );
