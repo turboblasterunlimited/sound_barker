@@ -68,7 +68,7 @@ StreamSubscription<double> performAudio(path, imageController,
     imageController.setMouth(0);
     waveStreamer = WaveStreamer(path).stream;
     subscription = waveStreamer.listen((_amplitude) {
-      // print('Frame amplitude: $_amplitude');
+      print('Frame amplitude: $_amplitude');
       imageController.setMouth(_amplitude);
     }, onError: (e) {
       print(e);

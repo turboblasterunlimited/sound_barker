@@ -16,8 +16,6 @@ class _SongFamilySelectScreenState extends State<SongFamilySelectScreen> {
   Map<String, int> creatableSongsByFamily = {};
   Map<String, int> getCreatableSongsByFamily() {
     if (creatableSongsByFamily.length != 0) return creatableSongsByFamily;
-        print("FAMILY BEING REBUILT!!");
-
     widget.creatableSongs.forEach((song) {
       if (song["category"] != widget.songCategoryName) return;
       if (!creatableSongsByFamily.containsKey(song["song_family"])) {

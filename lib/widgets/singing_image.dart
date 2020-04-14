@@ -22,6 +22,7 @@ class _SingingImageState extends State<SingingImage> {
         onWebViewCreated: (WebViewController c) {
           _controller.complete(c);
           Provider.of<ImageController>(context, listen: false).mountController(c);
+          
         },
         onPageFinished: (_) {
 
@@ -30,7 +31,9 @@ class _SingingImageState extends State<SingingImage> {
           // imageController.createDog();
         },
         
-        initialUrl: 'https://www.thedogbarksthesong.ml/sample_animation',
+        // initialUrl: 'https://www.thedogbarksthesong.ml/sample_animation',
+        initialUrl: 'https://www.thedogbarksthesong.ml/puppet',
+
         // initialUrl: 'http://webglreport.com/',
         // initialUrl: 'https://html5test.com/',
         javascriptMode: JavascriptMode.unrestricted,

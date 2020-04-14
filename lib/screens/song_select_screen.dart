@@ -16,7 +16,6 @@ class _SongSelectScreenState extends State<SongSelectScreen> {
   final creatableSongs = [];
   List getCreatableSongs() {
     if (creatableSongs.length != 0) return creatableSongs;
-    print("Recalculating Song Select songs...");
     widget.allSongs.forEach((song) {
       if (song["song_family"] != widget.songFamilyName) return;
       if (song["category"] != widget.songCategoryName) return;
