@@ -61,6 +61,7 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
   }
 
   void playSong(context) async {
+    print("from within playsong: ${widget.song.name}");
     try {
       // stopAll();
       startAll();
@@ -157,7 +158,6 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
 
   @override
   Widget build(BuildContext context) {
-    String songName = widget.song.name;
     return SizeTransition(
       sizeFactor: widget.animation,
       child: Card(
@@ -185,7 +185,7 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
                       style: TextStyle(fontSize: 18),
                       children: [
                         WidgetSpan(
-                          child: Text(songName,
+                          child: Text(widget.song.name ?? "Unknown",
                               style: TextStyle(fontWeight: FontWeight.bold)),
                         ),
                         WidgetSpan(

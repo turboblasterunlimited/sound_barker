@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -44,8 +45,10 @@ class _BarkSelectCardState extends State<BarkSelectCard> {
     spinnerState.loadSongs();
     String responseBody =
         await RestAPI.createSong(widget.selectedBarkIds, songId);
+    Map songData = await json.decode(responseBody);
     Song song = Song();
-    song.retrieveSong(responseBody);
+    await song.retrieveSong(songData);
+    print("ADDING SONG");
     songs.addSong(song);
     spinnerState.stopLoading();
   }
@@ -63,7 +66,7 @@ class _BarkSelectCardState extends State<BarkSelectCard> {
         child: ListTile(
           leading: IconButton(
             onPressed: () {
-              setState(() => widget.selectedBarkIds.insert(0, widget.bark.fileId));
+              setState(() => widget.selectedBarkIds.add(widget.bark.fileId));
               if (widget.creatableSong["track_count"] >
                   widget.selectedBarkIds.length) {
                 // If we need more barks for this song we select another bark.
@@ -81,6 +84,7 @@ class _BarkSelectCardState extends State<BarkSelectCard> {
                   context,
                   ModalRoute.withName(Navigator.defaultRouteName),
                 );
+                // setState((){});
               }
             },
             icon: Text(

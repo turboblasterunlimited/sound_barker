@@ -20,7 +20,7 @@ class Gcloud {
   }
 
   Future<String> downloadFromBucket(fileUrl, fileId,
-      {bool image, bucket, bool backingTrack}) async {
+      {bool image, Bucket bucket, bool backingTrack}) async {
     bucket ??= await accessBucket();
     String filePathBase = myAppStoragePath + '/' + fileId;
     String filePath = filePathBase;

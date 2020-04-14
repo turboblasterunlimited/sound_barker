@@ -66,7 +66,7 @@ class _SongFamilySelectScreenState extends State<SongFamilySelectScreen> {
   }
 }
 
-Widget songFamilyCard(ctx, int i, String familyName, int songNumber, List creatableSongs) {
+Widget songFamilyCard(ctx, int i, dynamic familyName, int songNumber, List creatableSongs) {
   return GestureDetector(
     onTap: () {
       Navigator.push(

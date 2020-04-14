@@ -39,6 +39,7 @@ class _MainScreenState extends State<MainScreen> {
     ImageController imageController = Provider.of<ImageController>(context, listen: false);
 
     void downloadEverything() async {
+      print("CALLING DOWNLOADEVERYTHING!");
       await barks.retrieveAll();
       await songs.retrieveAll();
       await pictures.retrieveAll();

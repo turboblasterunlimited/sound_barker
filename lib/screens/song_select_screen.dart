@@ -28,7 +28,7 @@ class _SongSelectScreenState extends State<SongSelectScreen> {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          widget.songFamilyName,
+          widget.songFamilyName ?? "Misc.",
           style: TextStyle(
               fontWeight: FontWeight.bold, fontSize: 23, color: Colors.white),
         ),

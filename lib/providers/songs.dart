@@ -7,6 +7,8 @@ import 'dart:io';
 
 import '../services/rest_api.dart';
 
+final captureBackingFileName = RegExp(r'\/([0-9a-zA-Z_ ]*.[a-zA-Z]{3})$');
+
 class Songs with ChangeNotifier, Gcloud, RestAPI {
   List<Song> all = [];
   final listKey = GlobalKey<AnimatedListState>();
@@ -30,49 +32,53 @@ class Songs with ChangeNotifier, Gcloud, RestAPI {
     // notifyListeners();
   }
 
-  // ALL SONGS THAT AREN'T HIDDEN UNLESS THEY EXIST
+  // ALL SONGS THAT AREN'T HIDDEN UNLESS THEY ALREADY EXIST ON THE CLIENT
   Future retrieveAll() async {
+    Bucket bucket = await accessBucket();
     String response = await retrieveAllSongsFromServer();
     json.decode(response).forEach((serverSong) {
       if (serverSong["hidden"] == 1) return;
-      Song song = Song(
-          backingTrackUrl: serverSong["backing_track_fp"],
-          formulaId: serverSong["song_id"],
-          name: serverSong["name"],
-          fileUrl: serverSong["bucket_fp"],
-          fileId: serverSong["uuid"]);
-      if (all.indexWhere((song) => song.fileId == serverSong["uuid"]) == -1) {
-        _downloadAllSongsFromBucket([song]);
-        addSong(song);
-      }
+
+      Song song = Song();
+      song.retrieveSong(serverSong, bucket);
+      addSong(song);
+
+      // Song song = Song(
+      //     backingTrackUrl: serverSong["backing_track_fp"],
+      //     formulaId: serverSong["song_id"],
+      //     name: serverSong["name"],
+      //     fileUrl: serverSong["bucket_fp"],
+      //     fileId: serverSong["uuid"]);
+      // if (all.indexWhere((song) => song.fileId == serverSong["uuid"]) == -1) {
+      //   _downloadAllSongsFromBucket([song]);
+      //   addSong(song);
+      // }
     });
 
     // notifyListeners();
   }
 
   // downloadFromBucket only downloads songs that don't already exist on the FS
-  Future _downloadAllSongsFromBucket([List songs]) async {
-    final captureBackingFileName = RegExp(r'\/([0-9a-zA-Z_ ]*.[a-zA-Z]{3})$');
+  // Future _downloadAllSongsFromBucket([List songs]) async {
+  //   Bucket bucket = await accessBucket();
+  //   songs ??= all;
+  //   int songCount = songs.length;
+  //   for (var i = 0; i < songCount; i++) {
+  //     String filePath = await downloadFromBucket(
+  //         songs[i].fileUrl, songs[i].fileId,
+  //         bucket: bucket);
+  //     songs[i].filePath = filePath;
 
-    Bucket bucket = await accessBucket();
-    songs ??= all;
-    int soundCount = songs.length;
-    for (var i = 0; i < soundCount; i++) {
-      String filePath = await downloadFromBucket(
-          songs[i].fileUrl, songs[i].fileId,
-          bucket: bucket);
-      songs[i].filePath = filePath;
-
-      if (songs[i].backingTrackUrl != null) {
-        final match =
-            captureBackingFileName.firstMatch(songs[i].backingTrackUrl);
-        String backingFileName = match.group(1);
-        songs[i].backingTrackPath = await downloadFromBucket(
-            songs[i].backingTrackUrl, backingFileName,
-            backingTrack: true, bucket: bucket);
-      }
-    }
-  }
+  //     if (songs[i].backingTrackUrl != null) {
+  //       final match =
+  //           captureBackingFileName.firstMatch(songs[i].backingTrackUrl);
+  //       String backingFileName = match.group(1);
+  //       songs[i].backingTrackPath = await downloadFromBucket(
+  //           songs[i].backingTrackUrl, backingFileName,
+  //           backingTrack: true, bucket: bucket);
+  //     }
+  //   }
+  // }
 }
 
 class Song with ChangeNotifier, Gcloud, RestAPI {
@@ -115,16 +121,24 @@ class Song with ChangeNotifier, Gcloud, RestAPI {
     notifyListeners();
   }
 
-  void retrieveSong(responseBody) async {
-    //print(responseBody);
-    Map responseData = json.decode(responseBody);
-    this.backingTrackUrl = responseData["backing_track_fp"];
-    this.fileId = responseData["uuid"];
-    this.name = responseData["name"];
-    this.fileUrl = responseData["bucket_fp"];
-    this.formulaId = responseData["song_id"];
-    this.filePath = await downloadFromBucket(fileUrl, fileId);
-    this.backingTrackPath = await downloadFromBucket(fileUrl, fileId, backingTrack: true);
-    // print("filePath for song: ${this.filePath}");
+  Future<Song> retrieveSong(Map songData, [bucket]) async {
+    //print(data);
+    bucket ??= await accessBucket();
+    this.backingTrackUrl = songData["backing_track_fp"];
+    this.fileId = songData["uuid"];
+    this.name = songData["name"];
+    this.fileUrl = songData["bucket_fp"];
+    this.formulaId = songData["song_id"];
+    this.filePath = await downloadFromBucket(fileUrl, fileId, bucket: bucket);
+
+    if (backingTrackUrl != null) {
+      final match = captureBackingFileName.firstMatch(backingTrackUrl);
+      String backingFileName = match.group(1);
+
+      this.backingTrackPath = await downloadFromBucket(
+          backingTrackUrl, backingFileName,
+          backingTrack: true);
+    }
+    return this;
   }
 }
