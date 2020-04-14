@@ -4,22 +4,30 @@ import './bark_select_screen.dart';
 
 class SongSelectScreen extends StatefulWidget {
   final songFamilyName;
+  final songCategoryName;
   final allSongs;
-  SongSelectScreen(this.songFamilyName, this.allSongs);
+  SongSelectScreen(this.songFamilyName, this.songCategoryName, this.allSongs);
 
   @override
   _SongSelectScreenState createState() => _SongSelectScreenState();
 }
 
 class _SongSelectScreenState extends State<SongSelectScreen> {
-  @override
-  Widget build(BuildContext context) {
-    final creatableSongs = [];
+  final creatableSongs = [];
+  List getCreatableSongs() {
+    if (creatableSongs.length != 0) return creatableSongs;
+    print("Recalculating Song Select songs...");
     widget.allSongs.forEach((song) {
       if (song["song_family"] != widget.songFamilyName) return;
+      if (song["category"] != widget.songCategoryName) return;
       creatableSongs.add(song);
     });
-    print("CreatableSongs $creatableSongs");
+    return creatableSongs;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    
     return Scaffold(
       // extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -39,9 +47,9 @@ class _SongSelectScreenState extends State<SongSelectScreen> {
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.all(10),
-              itemCount: creatableSongs.length,
+              itemCount: getCreatableSongs().length,
               itemBuilder: (ctx, i) =>
-                  songCategoryCard(ctx, i, creatableSongs[i]),
+                  songCategoryCard(ctx, i, getCreatableSongs()[i]),
             ),
           ),
         ],

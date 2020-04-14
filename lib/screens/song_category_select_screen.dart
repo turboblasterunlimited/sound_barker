@@ -7,7 +7,7 @@ import '../services/rest_api.dart';
 
 class SongCategorySelectScreen extends StatefulWidget {
   static const routeName = 'song-category-select-screen';
-
+  
   @override
   _SongCategorySelectScreenState createState() =>
       _SongCategorySelectScreenState();
@@ -15,15 +15,15 @@ class SongCategorySelectScreen extends StatefulWidget {
 
 class _SongCategorySelectScreenState extends State<SongCategorySelectScreen> {
   List creatableSongs;
+  Map<String, int> creatableSongsByCategory = {};
 
-  @override
-  Widget build(BuildContext context) {
-    print("CATEGORY BEING REBUILT!!");
+
     Future<Map> collectCreatableSongsByCategory() async {
+      if (creatableSongsByCategory.length != 0) return creatableSongsByCategory;
+
       String serverResponse =
           await RestAPI.retrieveAllCreatableSongsFromServer();
       creatableSongs = json.decode(serverResponse);
-      Map<String, int> creatableSongsByCategory = {};
       creatableSongs.forEach((song) {
         if (!creatableSongsByCategory.containsKey(song["category"])) {
           creatableSongsByCategory[song["category"]] = 1;
@@ -31,10 +31,11 @@ class _SongCategorySelectScreenState extends State<SongCategorySelectScreen> {
           creatableSongsByCategory[song["category"]] += 1;
         }
       });
-
-      print("RESULT!: $creatableSongsByCategory");
       return creatableSongsByCategory;
     }
+
+  @override
+  Widget build(BuildContext context) {
 
     Widget songCategoryCard(
       ctx,

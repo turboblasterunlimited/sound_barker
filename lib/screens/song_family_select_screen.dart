@@ -4,7 +4,6 @@ import './song_select_screen.dart';
 
 class SongFamilySelectScreen extends StatefulWidget {
   static const routeName = 'song-family-select-screen';
-
   final songCategoryName;
   final creatableSongs;
   SongFamilySelectScreen(this.songCategoryName, this.creatableSongs);
@@ -14,11 +13,11 @@ class SongFamilySelectScreen extends StatefulWidget {
 }
 
 class _SongFamilySelectScreenState extends State<SongFamilySelectScreen> {
-  @override
-  Widget build(BuildContext context) {
-    print("FAMILY BEING REBUILT!!");
+  Map<String, int> creatableSongsByFamily = {};
+  Map<String, int> getCreatableSongsByFamily() {
+    if (creatableSongsByFamily.length != 0) return creatableSongsByFamily;
+        print("FAMILY BEING REBUILT!!");
 
-    Map<String, int> creatableSongsByFamily = {};
     widget.creatableSongs.forEach((song) {
       if (song["category"] != widget.songCategoryName) return;
       if (!creatableSongsByFamily.containsKey(song["song_family"])) {
@@ -27,6 +26,11 @@ class _SongFamilySelectScreenState extends State<SongFamilySelectScreen> {
         creatableSongsByFamily[song["song_family"]] += 1;
       }
     });
+    return creatableSongsByFamily;
+  }
+
+  @override
+  Widget build(BuildContext context) {
 
     return Scaffold(
       // extendBodyBehindAppBar: true,
@@ -55,9 +59,14 @@ class _SongFamilySelectScreenState extends State<SongFamilySelectScreen> {
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.all(10),
-              itemCount: creatableSongsByFamily.length,
+              itemCount: getCreatableSongsByFamily().length,
               itemBuilder: (ctx, i) => songFamilyCard(
-                  ctx, i, creatableSongsByFamily.keys.toList()[i], creatableSongsByFamily.values.toList()[i], widget.creatableSongs),
+                  ctx,
+                  i,
+                  getCreatableSongsByFamily().keys.toList()[i],
+                  widget.songCategoryName,
+                  getCreatableSongsByFamily().values.toList()[i],
+                  widget.creatableSongs),
             ),
           ),
         ],
@@ -66,13 +75,15 @@ class _SongFamilySelectScreenState extends State<SongFamilySelectScreen> {
   }
 }
 
-Widget songFamilyCard(ctx, int i, dynamic familyName, int songNumber, List creatableSongs) {
+Widget songFamilyCard(ctx, int i, String familyName, String songCategoryName,
+    int songNumber, List creatableSongs) {
   return GestureDetector(
     onTap: () {
       Navigator.push(
         ctx,
         MaterialPageRoute(
-          builder: (context) => SongSelectScreen(familyName, creatableSongs),
+          builder: (context) => SongSelectScreen(
+              familyName, songCategoryName, creatableSongs),
         ),
       );
     },
