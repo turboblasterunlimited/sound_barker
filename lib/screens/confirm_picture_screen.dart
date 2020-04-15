@@ -20,18 +20,19 @@ class ConfirmPictureScreen extends StatefulWidget {
     this.mouthAreaSet = mouthAreaSet ?? false;
     if (this.editing == true) {
       this.title =
-          this.isNamed == false ? "Rename your picture" : "Highlight the mouth";
+          this.isNamed == false ? "Rename your picture" : "Mark the eyes";
     } else {
       this.title = "Name your picture";
     }
     this.imageName = this.newPicture.name ?? "";
   }
 
-  final Map coordinates = {
-    "left": 0.0,
-    "top": 0.0,
-    "width": 0.0,
-    "height": 0.0,
+  Map<String, List<double>> coordinates = {
+    // "mouthOne": [],
+    // "mouthTwo": [],
+    // "mouthThree": [],
+    "rightEye": [0.4, 0.4],
+    "leftEye": [0.6, 0.4]
   };
 
   @override
@@ -39,26 +40,43 @@ class ConfirmPictureScreen extends StatefulWidget {
 }
 
 class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
+  double screenLength;
+  Map<String, List<double>> canvasCoordinates = {};
+
+  Map<String, List<double>> getCanvasCoordinates() {
+    if (canvasCoordinates.length != 0) return canvasCoordinates;
+
+    widget.coordinates.forEach((String key, List xy) {
+      canvasCoordinates[key] = [xy[0] * screenLength, xy[1] * screenLength];
+    });
+
+    return canvasCoordinates;
+  }
+
+  bool grabbing = false;
+  Map<String, List<double>> grabPoint = {};
+
   @override
   Widget build(BuildContext context) {
+    screenLength ??= MediaQuery.of(context).size.width;
+
     Pictures pictures = Provider.of<Pictures>(context, listen: false);
     ImageController imageController = Provider.of<ImageController>(context);
-    print("MOUTH AREA SET?? ${widget.mouthAreaSet}");
+    // print("MOUTH AREA SET?? ${widget.mouthAreaSet}");
 
-    String dartToJsCoordinates() {
-      double length = MediaQuery.of(context).size.width;
-      double left = widget.coordinates["left"] / length;
-      double top = 1 - (widget.coordinates["top"] / length);
-      double right =
-          (widget.coordinates["left"] + widget.coordinates["width"]) / length;
-      double bottom = 1 -
-          (widget.coordinates["top"] + widget.coordinates["height"]) / length;
-      return "[$left, $top], [$right, $bottom]";
-    }
+    // String dartToJsCoordinates() {
+    //   double length = MediaQuery.of(context).size.width;
+    //   double left = widget.mouthCoordinates["left"] / length;
+    //   double top = 1 - (widget.mouthCoordinates["top"] / length);
+    //   double right =
+    //       (widget.mouthCoordinates["left"] + widget.mouthCoordinates["width"]) / length;
+    //   double bottom = 1 -
+    //       (widget.mouthCoordinates["top"] + widget.mouthCoordinates["height"]) / length;
+    //   return "[$left, $top], [$right, $bottom]";
+    // }
 
     void _submitPicture() {
-      // print("New picture name: ${widget.newPicture.name}");
-      widget.newPicture.mouthCoordinates = dartToJsCoordinates();
+      // widget.newPicture.mouthCoordinates = dartToJsCoordinates();
       widget.newPicture.uploadPictureAndSaveToServer();
       pictures.add(widget.newPicture);
       pictures.mountedPicture = widget.newPicture;
@@ -70,14 +88,8 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
     }
 
     void _submitEditedPicture() {
-      // print("Edited picture name: ${widget.newPicture.name}");
-      // print(
-      //     "Edited picture coordinates: ${widget.newPicture.mouthCoordinates}");
-      // print("widget.mouthAreaSet?????: ${widget.mouthAreaSet}");
-
-      // Name was being edited.
       if (widget.isNamed) {
-        widget.newPicture.mouthCoordinates = dartToJsCoordinates();
+        // widget.newPicture.mouthCoordinates = dartToJsCoordinates();
       }
       widget.newPicture.updateImageOnServer(widget.newPicture);
       pictures.mountedPicture = widget.newPicture;
@@ -89,11 +101,11 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
       );
     }
 
-    // bool invalid() {
-    //   if (widget.newPicture.name == null) return true;
-    //   if (widget.coordinates["width"] == 0.0) return true;
-    //   return false;
-    // }
+    bool _inProximity(existingXY, touchedXY) {
+      if ((existingXY[0] - touchedXY[0]).abs() < 5.0 &&
+          (existingXY[0] - touchedXY[0]).abs() < 5.0) return true;
+      return false;
+    }
 
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
@@ -129,7 +141,6 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
               });
             },
           ),
-
           title: Text(widget.title),
           iconTheme: IconThemeData(color: Colors.white, size: 30),
         ),
@@ -161,7 +172,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                           setState(() {
                             widget.newPicture.name = widget.imageName;
                             if (widget.editing == false) {
-                              widget.title = "Highlight the mouth";
+                              widget.title = "Mark the eyes";
                               widget.isNamed = true;
                             } else if (widget.editing == true) {
                               _submitEditedPicture();
@@ -177,32 +188,41 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                     visible: widget.isNamed,
                     child: GestureDetector(
                       onPanStart: (details) {
-                        // print("Start X: ${details.localPosition.dx}");
-                        // print("Start Y: ${details.localPosition.dy}");
-
-                        setState(() {
-                          widget.coordinates["left"] = details.localPosition.dx;
-                          widget.coordinates["top"] = details.localPosition.dy;
+                        print("Start X: ${details.localPosition.dx}");
+                        print("Start Y: ${details.localPosition.dy}");
+                        List touchedXY = [
+                          details.localPosition.dx,
+                          details.localPosition.dy
+                        ];
+                        getCanvasCoordinates().forEach((pointName, existingXY) {
+                          if (!_inProximity(existingXY, touchedXY)) return;
+                          setState(() {
+                            grabbing = true;
+                            grabPoint[pointName] = existingXY;
+                            print("IN PROXIMITY!!");
+                          });
                         });
                       },
                       onPanUpdate: (details) {
-                        // print("Update X: ${details.localPosition.dx}");
-                        // print("Update Y: ${details.localPosition.dy}");
+                        if (!grabbing) return;
+
                         setState(() {
-                          widget.coordinates["width"] =
-                              details.localPosition.dx -
-                                  widget.coordinates["left"];
-                          widget.coordinates["height"] =
-                              details.localPosition.dy -
-                                  widget.coordinates["top"];
+                          canvasCoordinates[grabPoint.keys.first.toString()] = [
+                            details.localPosition.dx,
+                            details.localPosition.dy
+                          ];
                         });
                       },
                       onPanEnd: (details) async {
-                        widget.title = "Looks good!";
-                        setState(() => widget.mouthAreaSet = true);
+                        if (!grabbing) return;
+                        setState(() {
+                          grabbing = false;
+                          grabPoint = {};
+                        });
+                        
                       },
                       child: CustomPaint(
-                        painter: CoordinatesMaker(widget.coordinates),
+                        painter: CoordinatesPainter(getCanvasCoordinates()),
                         child: Container(),
                       ),
                     ),
@@ -261,9 +281,9 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
   }
 }
 
-class CoordinatesMaker extends CustomPainter {
+class CoordinatesPainter extends CustomPainter {
   final coordinates;
-  CoordinatesMaker(this.coordinates) : super();
+  CoordinatesPainter(this.coordinates) : super();
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
@@ -271,10 +291,21 @@ class CoordinatesMaker extends CustomPainter {
       ..strokeWidth = 4.0
       ..color = Colors.blue;
 
-    canvas.drawRect(
-        Rect.fromLTWH(coordinates["left"], coordinates["top"],
-            coordinates["width"], coordinates["height"]),
-        paint);
+    void drawBothEyes() {
+      print("DRAWING EYES");
+      print("Coordinates: $coordinates");
+      canvas.drawCircle(
+          Offset(coordinates["rightEye"][0], coordinates["rightEye"][1]),
+          8.0,
+          paint);
+
+      canvas.drawCircle(
+          Offset(coordinates["leftEye"][0], coordinates["leftEye"][1]),
+          8.0,
+          paint);
+    }
+
+    drawBothEyes();
   }
 
   bool shouldRepaint(CustomPainter oldDeligate) => true;

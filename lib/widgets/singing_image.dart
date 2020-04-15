@@ -22,13 +22,11 @@ class _SingingImageState extends State<SingingImage> {
         onWebViewCreated: (WebViewController c) {
           _controller.complete(c);
           Provider.of<ImageController>(context, listen: false).mountController(c);
-          
+          print("WEB VIEW CREATED");
+
         },
         onPageFinished: (_) {
 
-          // final picture = Provider.of<Pictures>(context, listen: false).mountedPicture;
-          // imageController.loadImage(picture);
-          // imageController.createDog();
         },
         
         // initialUrl: 'https://www.thedogbarksthesong.ml/sample_animation',
@@ -37,9 +35,27 @@ class _SingingImageState extends State<SingingImage> {
         // initialUrl: 'http://webglreport.com/',
         // initialUrl: 'https://html5test.com/',
         javascriptMode: JavascriptMode.unrestricted,
-        // javascriptChannels: <JavascriptChannel> [
-
-        // ].toSet(),
+        javascriptChannels: Set.from([
+          JavascriptChannel(
+              name: 'Print',
+              onMessageReceived: (JavascriptMessage message) {
+                //This is where you receive message from
+                //javascript code and handle in Flutter/Dart
+                //like here, the message is just being printed
+                //in Run/LogCat window of android studio
+                print(message.message);
+                // do things depending on the message
+                if (message.message == "[puppet.js postMessage] finished init") {
+                  // here you can either set some var on the instance to ready to 
+                  // show that its ready for evaling js, or you could actually make a js
+                  // eval call.
+                }
+                if (message.message == "[puppet.js postMessage] puppet is now ready") {
+                  // same thing here, though youd want to set the instance var for puppet ready to 
+                  // false before calling create_puppet each time
+                }
+              })
+        ]),
       ),
     );
   }
