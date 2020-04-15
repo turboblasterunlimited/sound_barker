@@ -14,7 +14,8 @@ class SongSelectCard extends StatefulWidget {
   final Function setSongId;
   final String selectedSongId;
 
-  SongSelectCard(this.index, this.song, this.soundController, this.setSongId, this.selectedSongId);
+  SongSelectCard(this.index, this.song, this.soundController, this.setSongId,
+      this.selectedSongId);
 
   @override
   _SongSelectCardState createState() => _SongSelectCardState();
@@ -22,6 +23,7 @@ class SongSelectCard extends StatefulWidget {
 
 class _SongSelectCardState extends State<SongSelectCard> {
   bool isSelected;
+  bool isPlaying = false;
 
   @override
   void initState() {
@@ -29,27 +31,46 @@ class _SongSelectCardState extends State<SongSelectCard> {
     isSelected = widget.selectedSongId == widget.song.fileId;
   }
 
+  @override
+  void dispose() {
+    stopAll();
+    super.dispose();
+  }
+
+  void stopAll() {
+    widget.soundController.stopPlayer(widget.song.backingTrackPath != null);
+  }
+
   void playSong() async {
     try {
       widget.soundController.stopPlayer(widget.song.backingTrackPath != null);
-      widget.soundController.startPlayer(widget.song.filePath, widget.song.backingTrackPath);
+      int timeLeft = await widget.soundController
+          .startPlayer(widget.song.filePath, widget.song.backingTrackPath);
+      resetIsPlayingAfterDelay(timeLeft);
     } catch (e) {
       showErrorDialog(context, e);
     }
   }
 
+  void resetIsPlayingAfterDelay(int timeLeft) async {
+    Future.delayed(Duration(milliseconds: timeLeft), () {
+      if (this.mounted && isPlaying) setState(() => isPlaying = false);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-
     selectThis() {
       widget.setSongId(widget.song.fileId);
     }
 
     return ClipRRect(
       borderRadius: BorderRadius.all(Radius.circular(5)),
-          child: Container(
+      child: Container(
         decoration: BoxDecoration(
-          border: isSelected ? Border.all(color: Colors.blueAccent, width: 5) : Border.all(width: 0, color: Colors.transparent),
+          border: isSelected
+              ? Border.all(color: Colors.blueAccent, width: 5)
+              : Border.all(width: 0, color: Colors.transparent),
         ),
         child: Card(
           // margin: EdgeInsets.symmetric(
@@ -63,7 +84,12 @@ class _SongSelectCardState extends State<SongSelectCard> {
                 onTap: () {
                   selectThis();
                 },
-                child: isSelected ? Icon(Icons.check_box, color: Colors.blueAccent,) : Icon(Icons.check_box_outline_blank),
+                child: isSelected
+                    ? Icon(
+                        Icons.check_box,
+                        color: Colors.blueAccent,
+                      )
+                    : Icon(Icons.check_box_outline_blank),
               ),
               title: Center(
                 child: GestureDetector(
@@ -76,9 +102,16 @@ class _SongSelectCardState extends State<SongSelectCard> {
               trailing: IconButton(
                 color: Colors.blue,
                 onPressed: () {
-                  playSong();
+                  if (isPlaying) {
+                    setState(() => isPlaying = false);
+                    stopAll();
+                  } else {
+                    setState(() => isPlaying = true);
+                    playSong();
+                  }
                 },
-                icon: Icon(Icons.play_arrow, color: Colors.blueGrey, size: 30),
+                icon: Icon(isPlaying ? Icons.stop : Icons.play_arrow,
+                    color: Colors.blueGrey, size: 30),
               ),
             ),
           ),

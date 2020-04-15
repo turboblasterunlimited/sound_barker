@@ -14,15 +14,16 @@ class SoundController with ChangeNotifier {
     if (hasBackingTrack == true) _stopBackingTrack();
   }
 
-  Future<String> startPlayer(path, [String backingTrackPath]) async {
+  Future<int> startPlayer(path, [String backingTrackPath]) async {
     if (audioPlayer.state == AudioPlayerState.PLAYING) {
       stopPlayer(backingTrackPath != null);
     }
     if (backingTrackPath != null) _startBackingTrack(backingTrackPath);
-    // audioPlayer.monitorNotificationStateChanges(monitorNotificationStateHandler);
 
 
-    return audioPlayer.play(path, isLocal: true).toString();
+    // audioPlayer.monitorNotificationStateChanges();
+    audioPlayer.play(path, isLocal: true).toString();
+    return audioPlayer.getDuration();
   }
 
   Future<String> _startBackingTrack(path) async {

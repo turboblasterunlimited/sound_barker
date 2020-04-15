@@ -86,14 +86,15 @@ class Picture with ChangeNotifier, RestAPI, Gcloud {
   String fileId;
   String coordinates;
   bool creationAnimation;
-  
-  Picture(
-      {String name,
-      String filePath,
-      String fileUrl,
-      String fileId,
-      String coordinates =
-          "{'mouthOne': [], 'mouthTwo': [], 'mouthThree': [], 'rightEye': [0.4, 0.4], 'leftEye': [0.6, 0.4]}"}) {
+
+  Picture({
+    String name,
+    String filePath,
+    String fileUrl,
+    String fileId,
+    String coordinates =
+        '{"mouthOne": [], "mouthTwo": [], "mouthThree": [], "rightEye": [0.4, 0.4], "leftEye": [0.6, 0.4]}',
+  }) {
     this.coordinates = coordinates;
     this.name = name;
     this.filePath = filePath;

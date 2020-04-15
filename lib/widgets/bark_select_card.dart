@@ -16,8 +16,8 @@ class BarkSelectCard extends StatefulWidget {
   final SoundController soundController;
   final List selectedBarkIds;
 
-  BarkSelectCard(
-      this.bark, this.creatableSong, this.soundController, this.selectedBarkIds);
+  BarkSelectCard(this.bark, this.creatableSong, this.soundController,
+      this.selectedBarkIds);
 
   @override
   _BarkSelectCardState createState() => _BarkSelectCardState();
@@ -25,6 +25,7 @@ class BarkSelectCard extends StatefulWidget {
 
 class _BarkSelectCardState extends State<BarkSelectCard> {
   SpinnerState spinnerState;
+  bool isPlaying = false;
 
   @override
   void initState() {
@@ -33,12 +34,22 @@ class _BarkSelectCardState extends State<BarkSelectCard> {
   }
 
   void playBark() async {
+    setState(() {
+      isPlaying = true;
+    });
     try {
       widget.soundController.stopPlayer();
       widget.soundController.startPlayer(widget.bark.filePath);
     } catch (e) {
       showErrorDialog(context, e);
     }
+  }
+
+  void stopBark() {
+    setState(() {
+      isPlaying = false;
+    });
+    widget.soundController.stopPlayer();
   }
 
   void createSong(songs, songId) async {
@@ -96,9 +107,10 @@ class _BarkSelectCardState extends State<BarkSelectCard> {
           trailing: IconButton(
             color: Colors.blue,
             onPressed: () {
-              playBark();
+              isPlaying ? stopBark() : playBark();
             },
-            icon: Icon(Icons.play_arrow, color: Colors.blueGrey, size: 40),
+            icon: Icon(isPlaying ? Icons.stop : Icons.play_arrow,
+                color: Colors.black, size: 30),
           ),
         ),
       ),

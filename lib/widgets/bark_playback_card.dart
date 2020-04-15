@@ -26,6 +26,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
   AnimationController renameAnimationController;
   StreamSubscription<double> waveStreamer;
   ImageController imageController;
+  bool isPlaying = false;
 
   @override
   void initState() {
@@ -53,10 +54,18 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
     }
   }
 
-  void startAll() {
+  void startAll() async {
     waveStreamer =
         WaveStreamer.performAudio(widget.bark.filePath, imageController);
-    widget.soundController.startPlayer(widget.bark.filePath);
+    int timeLeft =
+        await widget.soundController.startPlayer(widget.bark.filePath);
+    resetIsPlayingAfterDelay(timeLeft);
+  }
+
+  void resetIsPlayingAfterDelay(int timeLeft) async {
+    Future.delayed(Duration(milliseconds: timeLeft), () {
+      if (this.mounted && isPlaying) setState(() => isPlaying = false);
+    });
   }
 
   void playBark() async {
@@ -65,7 +74,6 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
       startAll();
     } catch (e) {
       showErrorDialog(context, e.toString());
-      print(e);
     }
   }
 
@@ -170,9 +178,16 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
             leading: IconButton(
               color: Colors.blue,
               onPressed: () {
-                playBark();
+                if (isPlaying) {
+                  setState(() => isPlaying = false);
+                  stopAll();
+                } else {
+                  setState(() => isPlaying = true);
+                  playBark();
+                }
               },
-              icon: Icon(Icons.play_arrow, color: Colors.black, size: 30),
+              icon: Icon(isPlaying ? Icons.stop : Icons.play_arrow,
+                  color: Colors.black, size: 30),
             ),
             title: GestureDetector(
               onTap: () {
@@ -193,14 +208,14 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
                           child: Text(widget.bark.name,
                               style: TextStyle(fontWeight: FontWeight.bold)),
                         ),
-                        WidgetSpan(
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 2.0),
-                            child: Icon(Icons.edit,
-                                color: Colors.grey[400], size: 16),
-                          ),
-                        ),
+                        // WidgetSpan(
+                        //   child: Padding(
+                        //     padding:
+                        //         const EdgeInsets.symmetric(horizontal: 2.0),
+                        //     child: Icon(Icons.,
+                        //         color: Colors.grey[400], size: 16),
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),

@@ -27,6 +27,7 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
   ImageController imageController;
   AnimationController renameAnimationController;
   StreamSubscription<double> waveStreamer;
+  bool isPlaying = false;
 
   @override
   void initState() {
@@ -47,23 +48,37 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
   }
 
   void stopAll() {
-    waveStreamer?.cancel();
-    imageController.blink(0);
-    widget.soundController.stopPlayer(widget.song.backingTrackPath != null);
+    if (waveStreamer != null) {
+      waveStreamer?.cancel();
+      imageController.blink(0);
+      widget.soundController.stopPlayer(widget.song.backingTrackPath != null);
+    }
   }
 
-  void startAll() {
+  void startAll() async {
     stopAll();
-    Provider.of<ActiveWaveStreamer>(context, listen: false).waveStreamer?.cancel();
-    waveStreamer = WaveStreamer.performAudio(widget.song.filePath, imageController);
-    Provider.of<ActiveWaveStreamer>(context, listen: false).waveStreamer = waveStreamer;
-    widget.soundController.startPlayer(widget.song.filePath, widget.song.backingTrackPath);
+    Provider.of<ActiveWaveStreamer>(context, listen: false)
+        .waveStreamer
+        ?.cancel();
+    waveStreamer =
+        WaveStreamer.performAudio(widget.song.filePath, imageController);
+    Provider.of<ActiveWaveStreamer>(context, listen: false).waveStreamer =
+        waveStreamer;
+    int timeLeft = await widget.soundController
+        .startPlayer(widget.song.filePath, widget.song.backingTrackPath);
+    resetIsPlayingAfterDelay(timeLeft);
   }
 
-  void playSong(context) async {
+  void resetIsPlayingAfterDelay(int timeLeft) async {
+    Future.delayed(Duration(milliseconds: timeLeft), () {
+      if (this.mounted && isPlaying) setState(() => isPlaying = false);
+    });
+  }
+
+  void playSong() async {
     print("from within playsong: ${widget.song.name}");
     try {
-      // stopAll();
+      stopAll();
       startAll();
     } catch (e) {
       showErrorDialog(context, e);
@@ -171,9 +186,16 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
             leading: IconButton(
               color: Colors.blue,
               onPressed: () {
-                playSong(context);
+                if (isPlaying) {
+                  setState(() => isPlaying = false);
+                  stopAll();
+                } else {
+                  setState(() => isPlaying = true);
+                  playSong();
+                }
               },
-              icon: Icon(Icons.play_arrow, color: Colors.black, size: 30),
+              icon: Icon(isPlaying ? Icons.stop : Icons.play_arrow,
+                  color: Colors.black, size: 30),
             ),
             title: GestureDetector(
               onTap: () => renameSong(),
@@ -188,14 +210,14 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
                           child: Text(widget.song.name ?? "Unknown",
                               style: TextStyle(fontWeight: FontWeight.bold)),
                         ),
-                        WidgetSpan(
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 2.0),
-                            child: Icon(Icons.edit,
-                                color: Colors.grey[400], size: 16),
-                          ),
-                        ),
+                        // WidgetSpan(
+                        //   child: Padding(
+                        //     padding:
+                        //         const EdgeInsets.symmetric(horizontal: 2.0),
+                        //     child: Icon(Icons.edit,
+                        //         color: Colors.grey[400], size: 16),
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),

@@ -134,7 +134,7 @@ class _RecordButtonState extends State<RecordButton> {
     return RawMaterialButton(
       onPressed: onStartRecorderPressed(),
       child: Text(
-        "RECORD SOUNDS",
+        this._isRecording ? "RECORDING... TAP TO STOP": "TAP TO RECORD SOUNDS",
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
       shape: RoundedRectangleBorder(

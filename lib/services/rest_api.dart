@@ -10,9 +10,9 @@ class RestAPI {
   static Future<String> createSong(cropIds, songId) async {
     http.Response response;
     String body =
-        json.encode({'uuids': cropIds, 'user_id': 'Jeremy', 'song_id': songId.toString()});
+        json.encode({'uuids': cropIds, 'user_id': 'dev', 'song_id': songId.toString()});
+        print("create song on server req body: $body");
 
-    print("create song on server req body: $body");
     final url = 'http://165.227.178.14/to_sequence';
     try {
       response = await http.post(
@@ -24,13 +24,14 @@ class RestAPI {
       //print(error);
       throw error;
     }
-    // print("create Song on server response body: ${response.body}");
+
+    print("create Song on server response body: ${response.body}");
     return response.body;
   }
 
   Future<String> renameSongOnServer(song, newName) async {
     http.Response response;
-    String body = json.encode({'name': newName, "user_id": "Jeremy"});
+    String body = json.encode({'name': newName, "user_id": "dev"});
     //print(body);
     final url = 'http://165.227.178.14/sequence/${song.fileId}';
     try {
@@ -74,7 +75,7 @@ class RestAPI {
     String body = json.encode({
       'uuid': image.fileId,
       'name': image.name,
-      'user_id': 'Jeremy',
+      'user_id': 'dev',
       'coordinates': image.coordinates,
     });
     // print("Image upload body: $body");
@@ -95,7 +96,7 @@ class RestAPI {
 
   Future<String> renameBarkOnServer(bark, newName) async {
     http.Response response;
-    String body = json.encode({'name': newName, "user_id": "Jeremy"});
+    String body = json.encode({'name': newName, "user_id": "dev"});
     // print(body);
     final url = 'http://165.227.178.14/crop/${bark.fileId}';
     try {
@@ -114,7 +115,7 @@ class RestAPI {
 
   Future<String> retrieveAllSongsFromServer() async {
     http.Response response;
-    final url = 'http://165.227.178.14/all/sequence/Jeremy';
+    final url = 'http://165.227.178.14/all/sequence/dev';
     try {
       response = await http.get(url);
     } catch (error) {
@@ -127,7 +128,7 @@ class RestAPI {
 
   Future<String> retrieveAllImagesFromServer() async {
     http.Response response;
-    final url = 'http://165.227.178.14/all/image/Jeremy';
+    final url = 'http://165.227.178.14/all/image/dev';
     try {
       response = await http.get(url);
     } catch (error) {
@@ -153,7 +154,7 @@ class RestAPI {
 
   Future<String> retrieveAllBarksFromServer() async {
     http.Response response;
-    final url = 'http://165.227.178.14/all/crop/Jeremy';
+    final url = 'http://165.227.178.14/all/crop/dev';
     try {
       response = await http.get(url);
     } catch (error) {
@@ -209,7 +210,7 @@ class RestAPI {
     http.Response response;
     String body = json.encode({
       'uuid': fileId,
-      'user_id': 'Jeremy',
+      'user_id': 'dev',
       'image_id': imageId,
     });
     // print(body);

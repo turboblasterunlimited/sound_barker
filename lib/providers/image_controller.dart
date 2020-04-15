@@ -69,6 +69,6 @@ class ImageController with ChangeNotifier {
         webViewController.evaluateJavascript("create_puppet()");
       });
     }
-    blinkEverySecondTest();
+    // blinkEverySecondTest();
   }
 }

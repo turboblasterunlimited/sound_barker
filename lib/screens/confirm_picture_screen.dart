@@ -39,13 +39,24 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
   Map<String, List<double>> getCanvasCoordinates() {
     if (canvasCoordinates.length != 0) return canvasCoordinates;
     
-    final puppetCoordinates = json.decode(widget.newPicture.coordinates);
-    
-    puppetCoordinates.forEach((String key, List xy) {
+    // TEMPORARY CODE
+    String tempCoordinates = '{"rightEye": [0.4, 0.4], "leftEye": [0.6, 0.4]}';
+    print("TEMP COORDINATES: ${json.decode(tempCoordinates).keys.first.runtimeType}");
+    final puppetCoordinates = json.decode(tempCoordinates);
+    // END TEMPORARY CODE
+
+
+    // FUTURE CODE
+    // final puppetCoordinates = json.decode(widget.newPicture.coordinates);
+    // END FUTURE CODE
+
+    puppetCoordinates.forEach((key, xy) {
       canvasCoordinates[key] = [xy[0] * screenLength, xy[1] * screenLength];
     });
 
+    print("Canvas Coordinates: $canvasCoordinates");
     return canvasCoordinates;
+    
   }
 
   canvasToPuppetCoordinates() {
@@ -166,8 +177,9 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                           setState(() {
                             widget.newPicture.name = widget.imageName;
                             if (widget.editing == false) {
-                              widget.title = "Mark the eyes";
+                              widget.title = "Align face points";
                               widget.isNamed = true;
+                              widget.coordinatesSet = true;
                             } else if (widget.editing == true) {
                               _submitEditedPicture();
                             } else {
@@ -194,6 +206,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                           setState(() {
                             grabbing = true;
                             grabPoint[pointName] = existingXY;
+                            widget.coordinatesSet = true;
                             print("IN PROXIMITY!!");
                           });
                         });
