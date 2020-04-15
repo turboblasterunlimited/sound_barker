@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
+import 'dart:convert';
 
 import '../providers/pictures.dart';
 import '../providers/image_controller.dart';
@@ -8,16 +9,16 @@ import '../providers/image_controller.dart';
 class ConfirmPictureScreen extends StatefulWidget {
   Picture newPicture;
   bool isNamed;
-  bool mouthAreaSet;
+  bool coordinatesSet;
   bool editing;
   String title;
   String imageName;
 
-  ConfirmPictureScreen(Picture newPicture, {isNamed, mouthAreaSet}) {
+  ConfirmPictureScreen(Picture newPicture, {isNamed, coordinatesSet}) {
     this.newPicture = newPicture;
-    this.editing = isNamed ?? mouthAreaSet ?? false;
+    this.editing = isNamed ?? coordinatesSet ?? false;
     this.isNamed = isNamed ?? false;
-    this.mouthAreaSet = mouthAreaSet ?? false;
+    this.coordinatesSet = coordinatesSet ?? false;
     if (this.editing == true) {
       this.title =
           this.isNamed == false ? "Rename your picture" : "Mark the eyes";
@@ -26,14 +27,6 @@ class ConfirmPictureScreen extends StatefulWidget {
     }
     this.imageName = this.newPicture.name ?? "";
   }
-
-  Map<String, List<double>> coordinates = {
-    // "mouthOne": [],
-    // "mouthTwo": [],
-    // "mouthThree": [],
-    "rightEye": [0.4, 0.4],
-    "leftEye": [0.6, 0.4]
-  };
 
   @override
   _ConfirmPictureScreenState createState() => _ConfirmPictureScreenState();
@@ -45,12 +38,23 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
 
   Map<String, List<double>> getCanvasCoordinates() {
     if (canvasCoordinates.length != 0) return canvasCoordinates;
-
-    widget.coordinates.forEach((String key, List xy) {
+    
+    final puppetCoordinates = json.decode(widget.newPicture.coordinates);
+    
+    puppetCoordinates.forEach((String key, List xy) {
       canvasCoordinates[key] = [xy[0] * screenLength, xy[1] * screenLength];
     });
 
     return canvasCoordinates;
+  }
+
+  canvasToPuppetCoordinates() {
+    Map<String, List<double>> puppetCoordinates = {};
+    canvasCoordinates.forEach((String key, List xy) {
+      puppetCoordinates[key] = [xy[0] / screenLength, xy[1] / screenLength];
+    });
+
+    return json.encode(puppetCoordinates);
   }
 
   bool grabbing = false;
@@ -62,21 +66,9 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
 
     Pictures pictures = Provider.of<Pictures>(context, listen: false);
     ImageController imageController = Provider.of<ImageController>(context);
-    // print("MOUTH AREA SET?? ${widget.mouthAreaSet}");
-
-    // String dartToJsCoordinates() {
-    //   double length = MediaQuery.of(context).size.width;
-    //   double left = widget.mouthCoordinates["left"] / length;
-    //   double top = 1 - (widget.mouthCoordinates["top"] / length);
-    //   double right =
-    //       (widget.mouthCoordinates["left"] + widget.mouthCoordinates["width"]) / length;
-    //   double bottom = 1 -
-    //       (widget.mouthCoordinates["top"] + widget.mouthCoordinates["height"]) / length;
-    //   return "[$left, $top], [$right, $bottom]";
-    // }
 
     void _submitPicture() {
-      // widget.newPicture.mouthCoordinates = dartToJsCoordinates();
+      widget.newPicture.coordinates = canvasToPuppetCoordinates();
       widget.newPicture.uploadPictureAndSaveToServer();
       pictures.add(widget.newPicture);
       pictures.mountedPicture = widget.newPicture;
@@ -89,7 +81,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
 
     void _submitEditedPicture() {
       if (widget.isNamed) {
-        // widget.newPicture.mouthCoordinates = dartToJsCoordinates();
+        // widget.newPicture.coordinates = dartToJsCoordinates();
       }
       widget.newPicture.updateImageOnServer(widget.newPicture);
       pictures.mountedPicture = widget.newPicture;
@@ -124,6 +116,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
 
             // padding: const EdgeInsets.all(15.0),
             onPressed: () {
+              // BACK ARROW
               setState(() {
                 if (widget.editing) {
                   Navigator.popUntil(
@@ -169,6 +162,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                           widget.imageName = newName;
                         },
                         onFieldSubmitted: (_) {
+                          // NAMING
                           setState(() {
                             widget.newPicture.name = widget.imageName;
                             if (widget.editing == false) {
@@ -187,6 +181,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                   Visibility(
                     visible: widget.isNamed,
                     child: GestureDetector(
+                      // SETTING COORDINATES
                       onPanStart: (details) {
                         print("Start X: ${details.localPosition.dx}");
                         print("Start Y: ${details.localPosition.dy}");
@@ -231,7 +226,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
               ),
             ),
             Visibility(
-              visible: widget.mouthAreaSet,
+              visible: widget.coordinatesSet,
               child: SizedBox(
                 height: 200,
                 child: Row(

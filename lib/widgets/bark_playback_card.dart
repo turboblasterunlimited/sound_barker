@@ -48,7 +48,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
   void stopAll() {
     if (waveStreamer != null) {
       waveStreamer?.cancel();
-      imageController.setMouth(0);
+      imageController.blink(0);
       widget.soundController.stopPlayer();
     }
   }

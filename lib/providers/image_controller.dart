@@ -13,15 +13,21 @@ class ImageController with ChangeNotifier {
     this.webViewController = controller;
   }
 
-  void setMouth(width) async {
+  void blink(width) async {
     webViewController.evaluateJavascript("blink($width)");
   }
 
   // void setEye(rightEye, leftEye) {}
 
-  void blink() {
+  void blinkEverySecondTest() {
+    Future.delayed(Duration(seconds: 1), () {
+      Timer.periodic(Duration(seconds: 1), (_) {
+        webViewController.evaluateJavascript("blink(1)");
+      });
+    });
+
     Timer.periodic(Duration(seconds: 1), (_) {
-      webViewController.evaluateJavascript("blink(1)");
+      webViewController.evaluateJavascript("blink(0)");
     });
   }
 
@@ -58,13 +64,11 @@ class ImageController with ChangeNotifier {
         webViewController
             .evaluateJavascript("create_puppet('$encodingPrefix$base64Image')");
       });
-      // webViewController.evaluateJavascript(
-      //     "set_mouth_coordinates(${picture.mouthCoordinates})");
     } else {
       Future.delayed(Duration(milliseconds: 2000)).then((_) {
         webViewController.evaluateJavascript("create_puppet()");
       });
     }
-    blink();
+    blinkEverySecondTest();
   }
 }

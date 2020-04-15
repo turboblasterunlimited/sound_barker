@@ -48,7 +48,7 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
 
   void stopAll() {
     waveStreamer?.cancel();
-    imageController.setMouth(0);
+    imageController.blink(0);
     widget.soundController.stopPlayer(widget.song.backingTrackPath != null);
   }
 

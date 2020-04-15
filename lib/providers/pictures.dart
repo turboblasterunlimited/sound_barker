@@ -56,7 +56,7 @@ class Pictures with ChangeNotifier, Gcloud, RestAPI {
           // SERVER IS NOT PROVIDING A FILE URL ATM....
           // fileUrl: serverImage["bucket_fp"],
           fileId: serverImage["uuid"],
-          mouthCoordinates: serverImage["mouth_coordinates"]);
+          coordinates: serverImage["coordinates"]);
       if (all.indexWhere((pic) => pic.fileId == serverImage["uuid"]) == -1) {
         pic.fileUrl = "images/${pic.fileId}.jpg";
         await downloadAllImagesFromBucket([pic]);
@@ -71,8 +71,9 @@ class Pictures with ChangeNotifier, Gcloud, RestAPI {
     images = images == null ? all : images;
     int imagesCount = images.length;
     for (var i = 0; i < imagesCount; i++) {
-      String filePath =
-          await downloadFromBucket(images[i].fileUrl, images[i].fileId, image: true, bucket: bucket);
+      String filePath = await downloadFromBucket(
+          images[i].fileUrl, images[i].fileId,
+          image: true, bucket: bucket);
       images[i].filePath = filePath;
     }
   }
@@ -83,15 +84,17 @@ class Picture with ChangeNotifier, RestAPI, Gcloud {
   String fileUrl;
   String filePath;
   String fileId;
-  String mouthCoordinates;
+  String coordinates;
   bool creationAnimation;
+  
   Picture(
       {String name,
       String filePath,
       String fileUrl,
       String fileId,
-      String mouthCoordinates = "[0.452, 0.415], [0.631, 0.334]"}) {
-    this.mouthCoordinates = mouthCoordinates;
+      String coordinates =
+          "{'mouthOne': [], 'mouthTwo': [], 'mouthThree': [], 'rightEye': [0.4, 0.4], 'leftEye': [0.6, 0.4]}"}) {
+    this.coordinates = coordinates;
     this.name = name;
     this.filePath = filePath;
     this.fileUrl = fileUrl;

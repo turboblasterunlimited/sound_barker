@@ -65,15 +65,15 @@ StreamSubscription<double> performAudio(path, imageController,
   Stream<double> waveStreamer;
   StreamSubscription<double> subscription;
   try {
-    imageController.setMouth(0);
+    imageController.blink(0);
     waveStreamer = WaveStreamer(path).stream;
     subscription = waveStreamer.listen((_amplitude) {
       print('Frame amplitude: $_amplitude');
-      imageController.setMouth(_amplitude);
+      imageController.blink(_amplitude);
     }, onError: (e) {
       print(e);
     }, onDone: () {
-      imageController.setMouth(0);
+      imageController.blink(0);
       if (callBack != null) callBack();
     });
   } catch (e) {

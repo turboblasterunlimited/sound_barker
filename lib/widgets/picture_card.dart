@@ -50,7 +50,7 @@ class _PictureCardState extends State<PictureCard>
       animationController.reverse();
       widget.pictures.remove(widget.picture);
       imageController.createDog(widget.pictures.all.first);
-    } else if (action == "SET MOUTH") {
+    } else if (action == "SET FACE") {
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -63,7 +63,7 @@ class _PictureCardState extends State<PictureCard>
         context,
         MaterialPageRoute(
           builder: (context) =>
-              ConfirmPictureScreen(widget.picture, mouthAreaSet: true),
+              ConfirmPictureScreen(widget.picture, coordinatesSet: true),
         ),
       );
     }
@@ -113,8 +113,8 @@ class _PictureCardState extends State<PictureCard>
                             child: Text("Rename"),
                           ),
                           PopupMenuItem<String>(
-                            value: "SET MOUTH",
-                            child: Text("Set mouth"),
+                            value: "SET FACE",
+                            child: Text("Set face"),
                           ),
                           PopupMenuItem<String>(
                             value: "DELETE",

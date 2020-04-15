@@ -51,7 +51,7 @@ class RestAPI {
     http.Response response;
     String body = json.encode({
       'name': image.name,
-      'mouth_coordinates': image.mouthCoordinates,
+      'coordinates': image.coordinates,
     });
     // print("Image update body: $body");
     final url = 'http://165.227.178.14/image/${image.fileId}';
@@ -75,7 +75,7 @@ class RestAPI {
       'uuid': image.fileId,
       'name': image.name,
       'user_id': 'Jeremy',
-      'mouth_coordinates': image.mouthCoordinates,
+      'coordinates': image.coordinates,
     });
     // print("Image upload body: $body");
     final url = 'http://165.227.178.14/image';
