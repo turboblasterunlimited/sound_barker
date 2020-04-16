@@ -7,28 +7,35 @@ import 'package:provider/provider.dart';
 import '../providers/pictures.dart';
 
 class SingingImage extends StatefulWidget {
+  Picture picture;
+  SingingImage({this.picture});
+
   @override
   _SingingImageState createState() => _SingingImageState();
 }
 
 class _SingingImageState extends State<SingingImage> {
   Completer<WebViewController> _controller = Completer<WebViewController>();
+  WebViewController webviewController;
   ImageController imageController;
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: 1/1,
+      aspectRatio: 1 / 1,
       child: WebView(
         onWebViewCreated: (WebViewController c) {
-          _controller.complete(c);
-          Provider.of<ImageController>(context, listen: false).mountController(c);
-          print("WEB VIEW CREATED");
+          webviewController = c;
+          _controller.complete(webviewController);
+          imageController =
+              Provider.of<ImageController>(context, listen: false);
 
+          print("WEB VIEW CREATED");
         },
         onPageFinished: (_) {
-
+          print("WEB VIEW \"FINISHED\"");
+          imageController.mountController(webviewController);
         },
-        
+
         // initialUrl: 'https://www.thedogbarksthesong.ml/sample_animation',
         initialUrl: 'https://www.thedogbarksthesong.ml/puppet',
 
@@ -45,14 +52,18 @@ class _SingingImageState extends State<SingingImage> {
                 //in Run/LogCat window of android studio
                 print(message.message);
                 // do things depending on the message
-                if (message.message == "[puppet.js postMessage] finished init") {
-                  // here you can either set some var on the instance to ready to 
+                if (message.message ==
+                    "[puppet.js postMessage] finished init") {
+                  // here you can either set some var on the instance to ready to
                   // show that its ready for evaling js, or you could actually make a js
                   // eval call.
+                  imageController.createDog();
                 }
-                if (message.message == "[puppet.js postMessage] puppet is now ready") {
-                  // same thing here, though youd want to set the instance var for puppet ready to 
+                if (message.message ==
+                    "[puppet.js postMessage] puppet is now ready") {
+                  // same thing here, though youd want to set the instance var for puppet ready to
                   // false before calling create_puppet each time
+
                 }
               })
         ]),

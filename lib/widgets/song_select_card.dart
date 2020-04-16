@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../functions/error_dialog.dart';
 import '../providers/sound_controller.dart';
 import '../providers/songs.dart';
-import '../providers/greeting_cards.dart';
-import '../providers/spinner_state.dart';
+
 
 class SongSelectCard extends StatefulWidget {
   final int index;

@@ -53,7 +53,7 @@ class ImageController with ChangeNotifier {
   }
 
   // NEED TO FIX ISSUE OF WIDGET SCREENS REBUILDING AFTER THEY HAVE BEEN LEFT.
-  createDog(picture) {
+  createDog([picture]) {
     if (picture != null) {
       String encodingPrefix = "data:image/png;base64,";
       String base64Image =

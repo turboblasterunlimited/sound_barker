@@ -49,8 +49,6 @@ class _MainScreenState extends State<MainScreen> {
       downloadEverything();
     }
 
-    imageController.createDogWhenReady();
-
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       extendBodyBehindAppBar: true,
