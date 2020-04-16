@@ -19,8 +19,8 @@ class SelectSongAndPictureScreen extends StatefulWidget {
 
 class _SelectSongAndPictureScreenState
     extends State<SelectSongAndPictureScreen> {
-  String selectedPictureId;
-  String selectedSongId;
+  Picture selectedPicture;
+  Song selectedSong;
   @override
   Widget build(BuildContext context) {
     final songs = Provider.of<Songs>(context);
@@ -28,15 +28,15 @@ class _SelectSongAndPictureScreenState
     final soundController =
         Provider.of<SoundController>(context, listen: false);
 
-    void setSongId(id) {
+    void setSong(Song song) {
       setState(() {
-        selectedSongId = id;
+        selectedSong = song;
       });
     }
 
-    void setPictureId(id) {
+    void setPicture(Picture picture) {
       setState(() {
-        selectedPictureId = id;
+        selectedPicture = picture;
       });
     }
 
@@ -44,7 +44,6 @@ class _SelectSongAndPictureScreenState
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white, size: 30),
-       
         centerTitle: true,
         title: Text(
           "Select an image and a song",
@@ -59,8 +58,8 @@ class _SelectSongAndPictureScreenState
               key: UniqueKey(),
               padding: const EdgeInsets.all(10),
               itemCount: pictures.all.length,
-              itemBuilder: (ctx, i) => SelectPictureCard(i, pictures.all[i],
-                  pictures, setPictureId, selectedPictureId),
+              itemBuilder: (ctx, i) => SelectPictureCard(
+                  i, pictures.all[i], pictures, setPicture, selectedPicture?.fileId),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
                 // childAspectRatio: 3 / 2,
@@ -79,8 +78,8 @@ class _SelectSongAndPictureScreenState
                 i,
                 songs.all[i],
                 soundController,
-                setSongId,
-                selectedSongId,
+                setSong,
+                selectedSong?.fileId,
               ),
             ),
           ),
@@ -89,7 +88,7 @@ class _SelectSongAndPictureScreenState
           AnimatedOpacity(
             duration: Duration(milliseconds: 500),
             opacity:
-                selectedSongId != null && selectedPictureId != null ? 1.0 : 0.0,
+                selectedSong != null && selectedPicture != null ? 1.0 : 0.0,
             child: ButtonBar(
               alignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -98,8 +97,8 @@ class _SelectSongAndPictureScreenState
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => RecordMessageScreen(
-                            selectedSongId, selectedPictureId),
+                        builder: (context) =>
+                            RecordMessageScreen(selectedSong, selectedPicture),
                       ),
                     );
                   },

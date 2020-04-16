@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 
 class SoundController with ChangeNotifier {
   AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
   AudioPlayer backingTrack = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
+  final FlutterFFprobe _flutterFFprobe = new FlutterFFprobe();
+
 
   void stopPlayer([bool hasBackingTrack]) {
     print("has backing track: $hasBackingTrack");
@@ -23,7 +26,9 @@ class SoundController with ChangeNotifier {
 
     // audioPlayer.monitorNotificationStateChanges();
     audioPlayer.play(path, isLocal: true).toString();
-    return audioPlayer.getDuration();
+    var info = await _flutterFFprobe.getMediaInformation(path);
+    print("FFprobe info: $info");
+    return info["duration"];
   }
 
   Future<String> _startBackingTrack(path) async {

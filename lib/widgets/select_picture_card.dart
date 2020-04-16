@@ -9,9 +9,9 @@ class SelectPictureCard extends StatefulWidget {
   final int index;
   final Picture picture;
   final Pictures pictures;
-  final Function setPictureId;
+  final Function setPicture;
   final String selectedPictureId;
-  SelectPictureCard(this.index, this.picture, this.pictures, this.setPictureId, this.selectedPictureId);
+  SelectPictureCard(this.index, this.picture, this.pictures, this.setPicture, this.selectedPictureId);
 
   @override
   _SelectPictureCardState createState() => _SelectPictureCardState();
@@ -45,7 +45,7 @@ class _SelectPictureCardState extends State<SelectPictureCard> {
           child: GridTile(
             child: GestureDetector(
               onTap: () {
-                widget.setPictureId(widget.picture.fileId);
+                widget.setPicture(widget.picture);
               },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),

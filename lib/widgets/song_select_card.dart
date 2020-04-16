@@ -9,10 +9,10 @@ class SongSelectCard extends StatefulWidget {
   final int index;
   final Song song;
   final SoundController soundController;
-  final Function setSongId;
+  final Function setSong;
   final String selectedSongId;
 
-  SongSelectCard(this.index, this.song, this.soundController, this.setSongId,
+  SongSelectCard(this.index, this.song, this.soundController, this.setSong,
       this.selectedSongId);
 
   @override
@@ -59,7 +59,7 @@ class _SongSelectCardState extends State<SongSelectCard> {
   @override
   Widget build(BuildContext context) {
     selectThis() {
-      widget.setSongId(widget.song.fileId);
+      widget.setSong(widget.song);
     }
 
     return ClipRRect(

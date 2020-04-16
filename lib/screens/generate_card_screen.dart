@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import '../widgets/app_drawer.dart';
 import '../widgets/singing_image.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:flutter_sound/ios_quality.dart';
@@ -21,9 +20,10 @@ import '../functions/error_dialog.dart';
 
 class GenerateCardScreen extends StatefulWidget {
   static const routeName = 'record-message-screen';
-  String songId;
+  Song song;
+  Picture picture;
 
-  GenerateCardScreen(this.songId);
+  GenerateCardScreen(this.song, this.picture);
 
   @override
   _GenerateCardScreenState createState() => _GenerateCardScreenState();
@@ -39,7 +39,7 @@ class _GenerateCardScreenState extends State<GenerateCardScreen> {
   Pictures pictures;
 
   requestPermissions() async {
-    Map<Permission, PermissionStatus> statuses = await [
+    Map<Permission, PermissionStatus> status = await [
       Permission.photos,
       Permission.storage,
     ].request();
@@ -52,18 +52,7 @@ class _GenerateCardScreenState extends State<GenerateCardScreen> {
     requestPermissions();
     SystemChrome.setEnabledSystemUIOverlays([]);
     soundController = Provider.of<SoundController>(context, listen: false);
-    // WHEN WE ADD PERSONAL CARD MESSAGE, THIS WILL BE A LINK TO A TEMP FILE THAT WILL BE DELETED AFTER CARD IS CREATED.
-    song = Provider.of<Songs>(context, listen: false).findById(widget.songId);
-    pictures = Provider.of<Pictures>(context, listen: false);
   }
-
-  // @override
-  // void didUpdateWidget(GenerateCardScreen oldWidget) async {
-  //   super.didUpdateWidget(oldWidget);
-  //   Future.delayed(Duration(seconds: 2)).then((_) {
-  //     print("ImageController: $imageController");
-  //   });
-  // }
 
   @override
   void dispose() {
@@ -113,7 +102,6 @@ class _GenerateCardScreenState extends State<GenerateCardScreen> {
   Future<void> setImageController() async {
     Future.delayed(Duration(seconds: 2), () {
       imageController = Provider.of<ImageController>(context, listen: false);
-      imageController.createDogWhenReady();
     });
   }
 

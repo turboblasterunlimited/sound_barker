@@ -1,10 +1,8 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/services.dart';
 
 class ImageController with ChangeNotifier {
   WebViewController webViewController;
@@ -16,8 +14,6 @@ class ImageController with ChangeNotifier {
   void blink(width) async {
     webViewController.evaluateJavascript("blink($width)");
   }
-
-  // void setEye(rightEye, leftEye) {}
 
   void blinkEverySecondTest() {
     Future.delayed(Duration(seconds: 1), () {
@@ -31,27 +27,7 @@ class ImageController with ChangeNotifier {
     });
   }
 
-  // THE TIMER SHOULD ALSO CHECK FOR THE EXISTENCE OF pictures.mountedPicture and then pass it to create_dog.
-  void createDogWhenReady([picture]) {
-    String result;
-    Timer.periodic(Duration(milliseconds: 100), (timer) async {
-      try {
-        result = await webViewController.evaluateJavascript('init_ready');
-        if (result == "1") {
-          print("ITS TRUE");
-          createDog(picture);
-          timer.cancel();
-        } else {
-          print("It's not ready... YET");
-        }
-      } on PlatformException catch (e) {
-        print("Not ready.");
-      } on NoSuchMethodError {
-        print("Webview Widget not yet loaded.");
-      }
-    });
-  }
-
+  // SHOULD ALSO CHECK FOR THE EXISTENCE OF pictures.mountedPicture and then pass it to create_dog.
   // NEED TO FIX ISSUE OF WIDGET SCREENS REBUILDING AFTER THEY HAVE BEEN LEFT.
   createDog([picture]) {
     if (picture != null) {

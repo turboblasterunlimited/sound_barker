@@ -8,7 +8,7 @@ import '../providers/pictures.dart';
 
 class SingingImage extends StatefulWidget {
   Picture picture;
-  SingingImage({this.picture});
+  SingingImage([this.picture]);
 
   @override
   _SingingImageState createState() => _SingingImageState();
