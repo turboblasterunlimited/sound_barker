@@ -22,7 +22,7 @@ class _SongCategorySelectScreenState extends State<SongCategorySelectScreen> {
       if (creatableSongsByCategory.length != 0) return creatableSongsByCategory;
 
       String serverResponse =
-          await RestAPI.retrieveAllCreatableSongsFromServer();
+          await RestAPI().retrieveAllCreatableSongsFromServer();
       creatableSongs = json.decode(serverResponse);
       creatableSongs.forEach((song) {
         if (!creatableSongsByCategory.containsKey(song["category"])) {
