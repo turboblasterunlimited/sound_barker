@@ -27,7 +27,8 @@ class Barks with ChangeNotifier {
       Bark bark = Bark(
           name: serverBark["name"],
           fileUrl: serverBark["bucket_fp"],
-          fileId: serverBark["uuid"]);
+          fileId: serverBark["uuid"],
+          created:  DateTime.parse(serverBark["created"]));
       // if serverBark isn't already in in barks.all
       if (all.indexWhere(
               (bark) => bark.fileId == serverBark["uuid"].toString()) ==
@@ -57,7 +58,7 @@ class Barks with ChangeNotifier {
 
   sortBarks() {
     all.sort((bark1, bark2) {
-      return bark1.created.compareTo(bark2.created);
+      return bark2.created.compareTo(bark1.created);
     });
   }
 
