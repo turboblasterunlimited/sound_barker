@@ -71,7 +71,7 @@ class Pictures with ChangeNotifier {
   }
 
   sortImages() {
-    all.sort((image1, image2) => image1.created.compareTo(image2.created));
+    all.sort((image1, image2) => image2.created.compareTo(image1.created));
   }
 
   Future downloadAllImagesFromBucket([List images]) async {

@@ -44,7 +44,7 @@ class Songs with ChangeNotifier {
   }
 
   sortSongs() {
-    all.sort((song1, song2) => song1.created.compareTo(song2.created));
+    all.sort((song1, song2) => song2.created.compareTo(song1.created));
   }
 }
 

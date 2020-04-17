@@ -131,8 +131,8 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
     }
 
     bool _inProximity(existingXY, touchedXY) {
-      if ((existingXY[0] - touchedXY[0]).abs() < 5.0 &&
-          (existingXY[0] - touchedXY[0]).abs() < 5.0) return true;
+      if ((existingXY[0] - touchedXY[0]).abs() < 10.0 &&
+          (existingXY[0] - touchedXY[0]).abs() < 10.0) return true;
       return false;
     }
 
@@ -221,8 +221,8 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                     child: GestureDetector(
                       // SETTING COORDINATES
                       onPanStart: (details) {
-                        print("Start X: ${details.localPosition.dx}");
-                        print("Start Y: ${details.localPosition.dy}");
+                        // print("Start X: ${details.localPosition.dx}");
+                        // print("Start Y: ${details.localPosition.dy}");
                         List touchedXY = [
                           details.localPosition.dx,
                           details.localPosition.dy
@@ -329,12 +329,12 @@ class CoordinatesPainter extends CustomPainter {
       print("Coordinates: $coordinates");
       canvas.drawCircle(
           Offset(coordinates["rightEye"][0], coordinates["rightEye"][1]),
-          8.0,
+          15.0,
           paint);
 
       canvas.drawCircle(
           Offset(coordinates["leftEye"][0], coordinates["leftEye"][1]),
-          8.0,
+          15.0,
           paint);
     }
 
