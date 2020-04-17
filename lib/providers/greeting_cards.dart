@@ -28,7 +28,7 @@ class GreetingCards with ChangeNotifier {
   }
 }
 
-class GreetingCard with ChangeNotifier, RestAPI, Gcloud {
+class GreetingCard with ChangeNotifier, RestAPI {
   String name;
   String filePath;
   String fileId;

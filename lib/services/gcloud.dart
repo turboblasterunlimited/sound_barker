@@ -7,10 +7,10 @@ import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 import 'package:flutter_ffmpeg/log_level.dart';
 
 class Gcloud {
-  final FlutterFFmpegConfig _flutterFFmpegConfig = new FlutterFFmpegConfig();
-  final FlutterFFmpeg _flutterFFmpeg = new FlutterFFmpeg();
+  static final FlutterFFmpegConfig _flutterFFmpegConfig = FlutterFFmpegConfig();
+  static final FlutterFFmpeg _flutterFFmpeg = FlutterFFmpeg();
 
-  Future<Bucket> accessBucket() async {
+  static Future<Bucket> accessBucket() async {
     var credData =
         await rootBundle.loadString('credentials/gcloud_credentials.json');
     var credentials = auth.ServiceAccountCredentials.fromJson(credData);
@@ -21,7 +21,7 @@ class Gcloud {
     return storage.bucket('song_barker_sequences');
   }
 
-  Future<String> downloadFromBucket(fileUrl, fileId,
+  static Future<String> downloadFromBucket(fileUrl, fileId,
       {bool image, Bucket bucket, bool backingTrack}) async {
     bucket ??= await accessBucket();
     String filePathBase = myAppStoragePath + '/' + fileId;
@@ -43,7 +43,7 @@ class Gcloud {
 
       // If it's a song melody, this makes a .wav file and deletes the .aac file.
       if (image == null && backingTrack == null) {
-        this._flutterFFmpegConfig.setLogLevel(LogLevel.AV_LOG_WARNING);
+        _flutterFFmpegConfig.setLogLevel(LogLevel.AV_LOG_WARNING);
         await _flutterFFmpeg.execute(
             "-hide_banner -loglevel panic -i $filePath $filePathBase.wav");
         File(filePath).delete();
@@ -55,7 +55,7 @@ class Gcloud {
     return filePath;
   }
 
-  Future<String> uploadAsset(fileId, filePath, [image]) async {
+  static Future<String> uploadAsset(fileId, filePath, [image]) async {
     String bucketWritePath =
         image == true ? "images/$fileId.jpg" : "$fileId/raw.aac";
     var info;

@@ -15,9 +15,9 @@ class SingingImage extends StatefulWidget {
 }
 
 class _SingingImageState extends State<SingingImage> {
-  Completer<WebViewController> _controller = Completer<WebViewController>();
-  WebViewController webviewController;
-  ImageController imageController;
+  static Completer<WebViewController> _controller = Completer<WebViewController>();
+  static WebViewController webviewController;
+  static ImageController imageController;
   @override
   Widget build(BuildContext context) {
     return AspectRatio(

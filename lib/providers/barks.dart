@@ -8,7 +8,7 @@ import 'dart:io';
 import '../services/gcloud.dart';
 import '../services/rest_api.dart';
 
-class Barks with ChangeNotifier, Gcloud, RestAPI {
+class Barks with ChangeNotifier, RestAPI {
   List<Bark> all = [];
   final listKey = GlobalKey<AnimatedListState>();
 
@@ -42,14 +42,14 @@ class Barks with ChangeNotifier, Gcloud, RestAPI {
 
   // downloads the files either from all barks in memory or just the barks passed.
   Future downloadAllBarksFromBucket([List barks]) async {
-    Bucket bucket = await accessBucket();
+    Bucket bucket = await Gcloud.accessBucket();
 
     barks ??= null;
     int barkCount = barks.length;
     for (var i = 0; i < barkCount; i++) {
       // print(barks[i])
       String filePath =
-          await downloadFromBucket(barks[i].fileUrl, barks[i].fileId);
+          await Gcloud.downloadFromBucket(barks[i].fileUrl, barks[i].fileId);
       barks[i].filePath = filePath;
     }
     sortBarks();
@@ -73,7 +73,7 @@ class Barks with ChangeNotifier, Gcloud, RestAPI {
   }
 }
 
-class Bark with ChangeNotifier, Gcloud, RestAPI {
+class Bark with ChangeNotifier, RestAPI {
   String name;
   String fileUrl;
   String
@@ -109,7 +109,7 @@ class Bark with ChangeNotifier, Gcloud, RestAPI {
   }
 
   Future<List> uploadBarkAndRetrieveCroppedBarks(imageId) async {
-    var downloadLink = await uploadAsset(fileId, filePath, false);
+    var downloadLink = await Gcloud.uploadAsset(fileId, filePath, false);
     // downloadLink for rawBark is probably not needed.
     //print(downloadLink);
     String responseBody = await splitRawBarkOnServer(fileId, imageId);
@@ -130,6 +130,7 @@ class Bark with ChangeNotifier, Gcloud, RestAPI {
         fileUrl: cloudBarkData[i]["bucket_fp"],
         created: DateTime.parse(cloudBarkData[i]["created"]),
       ));
+
     }
     return newBarks;
   }

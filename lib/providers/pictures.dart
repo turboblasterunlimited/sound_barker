@@ -10,7 +10,7 @@ import 'dart:convert';
 import '../services/gcloud.dart';
 import '../services/rest_api.dart';
 
-class Pictures with ChangeNotifier, Gcloud, RestAPI {
+class Pictures with ChangeNotifier, RestAPI {
   List<Picture> all = [];
   Picture mountedPicture;
 
@@ -75,11 +75,11 @@ class Pictures with ChangeNotifier, Gcloud, RestAPI {
   }
 
   Future downloadAllImagesFromBucket([List images]) async {
-    Bucket bucket = await accessBucket();
+    Bucket bucket = await Gcloud.accessBucket();
     images ??= all;
     int imagesCount = images.length;
     for (var i = 0; i < imagesCount; i++) {
-      String filePath = await downloadFromBucket(
+      String filePath = await Gcloud.downloadFromBucket(
           images[i].fileUrl, images[i].fileId,
           image: true, bucket: bucket);
       images[i].filePath = filePath;
@@ -115,7 +115,7 @@ class Picture with ChangeNotifier, RestAPI, Gcloud {
   }
 
   Future<void> uploadPictureAndSaveToServer() async {
-    this.fileUrl = await uploadAsset(fileId, filePath, true);
+    this.fileUrl = await Gcloud.uploadAsset(fileId, filePath, true);
     String response = await createImageOnServer(this);
     Map body = json.decode(response);
     created = DateTime.parse(body["created"]);
