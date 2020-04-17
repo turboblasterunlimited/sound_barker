@@ -35,34 +35,59 @@ class ConfirmPictureScreen extends StatefulWidget {
 class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
   double screenLength;
   Map<String, List<double>> canvasCoordinates = {};
+  double middle;
 
   Map<String, List<double>> getCanvasCoordinates() {
     if (canvasCoordinates.length != 0) return canvasCoordinates;
-    
-    // TEMPORARY CODE
-    String tempCoordinates = '{"rightEye": [0.4, 0.4], "leftEye": [0.6, 0.4]}';
-    print("TEMP COORDINATES: ${json.decode(tempCoordinates).keys.first.runtimeType}");
-    final puppetCoordinates = json.decode(tempCoordinates);
-    // END TEMPORARY CODE
 
+    final puppetCoordinates = json.decode(widget.newPicture.coordinates);
 
-    // FUTURE CODE
-    // final puppetCoordinates = json.decode(widget.newPicture.coordinates);
-    // END FUTURE CODE
+    _puppetXtoCanvasX(x) {
+      double offset = x * middle * 2;
+      return offset + middle;
+    }
+
+    _puppetYtoCanvasY(y) {
+      double offset = y * middle * 2;
+      if (offset < 0)
+        offset = offset.abs();
+      else
+        offset = 0 - offset;
+      return offset + middle;
+    }
 
     puppetCoordinates.forEach((key, xy) {
-      canvasCoordinates[key] = [xy[0] * screenLength, xy[1] * screenLength];
+      canvasCoordinates[key] = [
+        _puppetXtoCanvasX(xy[0]),
+        _puppetYtoCanvasY(xy[1])
+      ];
     });
 
     print("Canvas Coordinates: $canvasCoordinates");
     return canvasCoordinates;
-    
   }
 
   canvasToPuppetCoordinates() {
+    _canvasXToPuppetX(x) {
+      double centered = x - middle;
+      return centered / middle / 2;
+    }
+
+    _canvasYToPuppetY(y) {
+      double centered = y - middle;
+      if (centered < 0)
+        centered = centered.abs();
+      else
+        centered = 0 - centered;
+      return centered / middle / 2;
+    }
+
     Map<String, List<double>> puppetCoordinates = {};
     canvasCoordinates.forEach((String key, List xy) {
-      puppetCoordinates[key] = [xy[0] / screenLength, xy[1] / screenLength];
+      puppetCoordinates[key] = [
+        _canvasXToPuppetX(xy[0]),
+        _canvasYToPuppetY(xy[1])
+      ];
     });
 
     return json.encode(puppetCoordinates);
@@ -74,7 +99,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
   @override
   Widget build(BuildContext context) {
     screenLength ??= MediaQuery.of(context).size.width;
-
+    middle ??= screenLength / 2;
     Pictures pictures = Provider.of<Pictures>(context, listen: false);
     ImageController imageController = Provider.of<ImageController>(context);
 
@@ -92,7 +117,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
 
     void _submitEditedPicture() {
       if (widget.isNamed) {
-        // widget.newPicture.coordinates = dartToJsCoordinates();
+        widget.newPicture.coordinates = canvasToPuppetCoordinates();
       }
       widget.newPicture.updateImageOnServer(widget.newPicture);
       pictures.mountedPicture = widget.newPicture;
@@ -227,7 +252,6 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                           grabbing = false;
                           grabPoint = {};
                         });
-                        
                       },
                       child: CustomPaint(
                         painter: CoordinatesPainter(getCanvasCoordinates()),

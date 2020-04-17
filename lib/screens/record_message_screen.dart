@@ -3,10 +3,8 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:flutter_sound/ios_quality.dart';
 import 'dart:async';
 import 'dart:io';
-import 'package:provider/provider.dart';
-import '../providers/image_controller.dart';
+import '../providers/songs.dart';
 import '../providers/pictures.dart';
-
 import './generate_card_screen.dart';
 
 enum t_MEDIA {
@@ -18,10 +16,9 @@ enum t_MEDIA {
 
 class RecordMessageScreen extends StatefulWidget {
   static const routeName = 'record-message-screen';
-  String songId;
-  String pictureId;
-
-  RecordMessageScreen(this.songId, this.pictureId);
+  Song song;
+  Picture picture;
+  RecordMessageScreen(this.song, this.picture);
 
   @override
   _RecordMessageScreenState createState() => _RecordMessageScreenState();
@@ -49,7 +46,10 @@ class _RecordMessageScreenState extends State<RecordMessageScreen> {
   void startRecorder() async {
     try {
       this.filePath = await flutterSound.startRecorder(
-          codec: _codec, iosQuality: IosQuality.MAX, sampleRate: 44100, bitRate: 192000);
+          codec: _codec,
+          iosQuality: IosQuality.MAX,
+          sampleRate: 44100,
+          bitRate: 192000);
       print('start message recorder: $filePath');
 
       _recorderSubscription = flutterSound.onRecorderStateChanged.listen((e) {
@@ -152,14 +152,11 @@ class _RecordMessageScreenState extends State<RecordMessageScreen> {
                       style: TextStyle(color: Colors.white, fontSize: 40),
                     ),
                     onTap: () {
-                      final pictures = Provider.of<Pictures>(context, listen: false);
-                      final picture = pictures.findById(widget.pictureId);
-                      pictures.mountPicture(picture);
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              GenerateCardScreen(widget.songId),
+                              GenerateCardScreen(widget.song, widget.picture),
                         ),
                       );
                     },
