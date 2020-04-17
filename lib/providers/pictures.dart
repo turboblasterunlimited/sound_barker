@@ -101,8 +101,8 @@ class Picture with ChangeNotifier, RestAPI, Gcloud {
     String filePath,
     String fileUrl,
     String fileId,
-    String coordinates =
-        '{"mouthOne": [], "mouthTwo": [], "mouthThree": [], "rightEye": [0.4, 0.4], "leftEye": [0.6, 0.4]}',
+    String coordinates = '{"rightEye": [-0.2, 0.2], "leftEye": [0.2, 0.2]}',
+        // "mouthOne": [-0.1, -0.2], "mouthTwo": [0, -0.22], "mouthThree": [0.1, -0.2], 
     DateTime created,
   }) {
     this.coordinates = coordinates;

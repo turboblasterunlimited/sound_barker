@@ -40,18 +40,10 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
   Map<String, List<double>> getCanvasCoordinates() {
     if (canvasCoordinates.length != 0) return canvasCoordinates;
 
-    // TEMPORARY CODE
-    // String tempCoordinates = '{"rightEye": [-0.2, 0.2], "leftEye": [0.2, 0.2]}';
-    // final puppetCoordinates = json.decode(tempCoordinates);
-    // END TEMPORARY CODE
-
-    // FUTURE CODE
     final puppetCoordinates = json.decode(widget.newPicture.coordinates);
-    // END FUTURE CODE
 
     _puppetXtoCanvasX(x) {
       double offset = x * middle * 2;
-      print("puppet to canvas x: ${offset + middle}");
       return offset + middle;
     }
 
@@ -61,7 +53,6 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
         offset = offset.abs();
       else
         offset = 0 - offset;
-      print("puppet to canvas y: ${offset + middle}");
       return offset + middle;
     }
 
@@ -79,7 +70,6 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
   canvasToPuppetCoordinates() {
     _canvasXToPuppetX(x) {
       double centered = x - middle;
-      print("canvas to puppet x: ${centered / middle / 2}");
       return centered / middle / 2;
     }
 
@@ -89,7 +79,6 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
         centered = centered.abs();
       else
         centered = 0 - centered;
-      print("canvas to puppet y: ${centered / middle / 2}");
       return centered / middle / 2;
     }
 
