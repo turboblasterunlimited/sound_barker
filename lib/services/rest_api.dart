@@ -9,6 +9,7 @@ class RestAPI {
 
   static Future<String> createSong(cropIds, songId) async {
     http.Response response;
+    /// "Song" on the server side means "creatable song"
     String body =
         json.encode({'uuids': cropIds, 'user_id': 'dev', 'song_id': songId.toString()});
         print("create song on server req body: $body");
@@ -52,7 +53,7 @@ class RestAPI {
     http.Response response;
     String body = json.encode({
       'name': image.name,
-      'coordinates': image.coordinates,
+      'coordinates_json': image.coordinates,
     });
     // print("Image update body: $body");
     final url = 'http://165.227.178.14/image/${image.fileId}';
@@ -76,7 +77,7 @@ class RestAPI {
       'uuid': image.fileId,
       'name': image.name,
       'user_id': 'dev',
-      'coordinates': image.coordinates,
+      'coordinates_json': image.coordinates,
     });
     // print("Image upload body: $body");
     final url = 'http://165.227.178.14/image';
@@ -225,7 +226,7 @@ class RestAPI {
       //print(error);
       throw error;
     }
-    // print("split bark server response body content: ${response.body}");
+    print("split bark server response body content: ${response.body}");
     return response.body;
   }
 }

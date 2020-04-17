@@ -27,7 +27,9 @@ class Barks with ChangeNotifier, Gcloud, RestAPI {
           fileUrl: serverBark["bucket_fp"],
           fileId: serverBark["uuid"]);
       // if serverBark isn't already in in barks.all
-      if (all.indexWhere((bark) => bark.fileId == serverBark["uuid"].toString()) == -1) {
+      if (all.indexWhere(
+              (bark) => bark.fileId == serverBark["uuid"].toString()) ==
+          -1) {
         await downloadAllBarksFromBucket([bark]);
         addBark(bark);
       }
@@ -35,6 +37,7 @@ class Barks with ChangeNotifier, Gcloud, RestAPI {
     // await downloadAllBarksFromBucket();
     notifyListeners();
   }
+
   // downloads the files either from all barks in memory or just the barks passed.
   Future downloadAllBarksFromBucket([List barks]) async {
     Bucket bucket = await accessBucket();
@@ -46,6 +49,11 @@ class Barks with ChangeNotifier, Gcloud, RestAPI {
           await downloadFromBucket(barks[i].fileUrl, barks[i].fileId);
       barks[i].filePath = filePath;
     }
+    sortBarks();
+  }
+
+  sortBarks() {
+    all.sort((bark1, bark2) => bark1.created.compareTo(bark2.created));
   }
 
   List get allBarks {
@@ -66,12 +74,19 @@ class Bark with ChangeNotifier, Gcloud, RestAPI {
   String
       filePath; // This is initially used for file upload from temp directory. Later (for cropped barks) it can be used for playback.
   String fileId;
+  DateTime created;
 
-  Bark({String name, String filePath, String fileUrl, String fileId}) {
+  Bark(
+      {String name,
+      String filePath,
+      String fileUrl,
+      String fileId,
+      DateTime created}) {
     this.name = name;
     this.filePath = filePath;
     this.fileUrl = fileUrl;
     this.fileId = fileId == null ? Uuid().v4() : fileId;
+    this.created = created;
   }
 
   Future<String> rename(newName) async {
@@ -108,6 +123,7 @@ class Bark with ChangeNotifier, Gcloud, RestAPI {
         fileId: cloudBarkData[i]["uuid"],
         name: cloudBarkData[i]["name"],
         fileUrl: cloudBarkData[i]["bucket_fp"],
+        created: DateTime.parse(cloudBarkData[i]["created"]),
       ));
     }
     return newBarks;

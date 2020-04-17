@@ -52,11 +52,14 @@ class Pictures with ChangeNotifier, Gcloud, RestAPI {
       if (serverImage["uuid"] == null) return;
 
       Picture pic = Picture(
-          name: serverImage["name"],
-          // SERVER IS NOT PROVIDING A FILE URL ATM....
-          // fileUrl: serverImage["bucket_fp"],
-          fileId: serverImage["uuid"],
-          coordinates: serverImage["coordinates"]);
+        name: serverImage["name"],
+        // SERVER IS NOT PROVIDING A FILE URL ATM....
+        // fileUrl: serverImage["bucket_fp"],
+        fileId: serverImage["uuid"],
+        coordinates: serverImage["coordinates_json"],
+        created: DateTime.parse(serverImage["created"]),
+      );
+      // THIS NEEDS ATTENTION.
       if (all.indexWhere((pic) => pic.fileId == serverImage["uuid"]) == -1) {
         pic.fileUrl = "images/${pic.fileId}.jpg";
         await downloadAllImagesFromBucket([pic]);
@@ -64,6 +67,11 @@ class Pictures with ChangeNotifier, Gcloud, RestAPI {
         notifyListeners();
       }
     });
+    sortImages();
+  }
+
+  sortImages() {
+    all.sort((image1, image2) => image1.created.compareTo(image2.created));
   }
 
   Future downloadAllImagesFromBucket([List images]) async {
@@ -86,6 +94,7 @@ class Picture with ChangeNotifier, RestAPI, Gcloud {
   String fileId;
   String coordinates;
   bool creationAnimation;
+  DateTime created;
 
   Picture({
     String name,
@@ -94,6 +103,7 @@ class Picture with ChangeNotifier, RestAPI, Gcloud {
     String fileId,
     String coordinates =
         '{"mouthOne": [], "mouthTwo": [], "mouthThree": [], "rightEye": [0.4, 0.4], "leftEye": [0.6, 0.4]}',
+    DateTime created,
   }) {
     this.coordinates = coordinates;
     this.name = name;
@@ -101,11 +111,14 @@ class Picture with ChangeNotifier, RestAPI, Gcloud {
     this.fileUrl = fileUrl;
     this.fileId = fileId == null ? Uuid().v4() : fileId;
     this.creationAnimation = true;
+    this.created = created;
   }
 
   Future<void> uploadPictureAndSaveToServer() async {
     this.fileUrl = await uploadAsset(fileId, filePath, true);
-    await createImageOnServer(this);
+    String response = await createImageOnServer(this);
+    Map body = json.decode(response);
+    created = DateTime.parse(body["created"]);
   }
 
   Future<void> crop() async {

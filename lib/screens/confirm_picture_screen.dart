@@ -40,8 +40,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
     if (canvasCoordinates.length != 0) return canvasCoordinates;
     
     // TEMPORARY CODE
-    String tempCoordinates = '{"rightEye": [0.4, 0.4], "leftEye": [0.6, 0.4]}';
-    print("TEMP COORDINATES: ${json.decode(tempCoordinates).keys.first.runtimeType}");
+    String tempCoordinates = '{"rightEye": [-0.2, 0.2], "leftEye": [0.2, 0.2]}';
     final puppetCoordinates = json.decode(tempCoordinates);
     // END TEMPORARY CODE
 
