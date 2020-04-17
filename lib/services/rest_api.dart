@@ -11,12 +11,16 @@ class RestAPI {
   static final String base_url = 'http://5e249d1f.ngrok.io/';
   //static final String base_url = 'https://thedogbarksthesong.ml/';
 
+  // this should probably come from a global scoped class instance or something
   static final String user_id = 'patrick';
 
   // pretty printing json
   JsonEncoder pretty_encoder = new JsonEncoder.withIndent('  ');
 
-  // TODO pop this in all the methods below
+  // NOTE
+  // one option is that you could refactor stuff that uses the rest api so that it
+  // just uses this request method directly, you could replace the method retrieveAllSongsFromServer
+  // with request('all/sequence/$user_id', 'get', Null) as an example
   Future<String> request (endpoint, method, body) async {
     http.Response response;
     String url = base_url + endpoint;
@@ -51,6 +55,16 @@ class RestAPI {
       print('headers: $jsonHeaders');
       throw error;
     }
+    await response;
+	// i think you want to see output when you get a 500, say
+    if (response.statusCode != 200) {
+        print('*** error with rest api call ***');
+        print('url: $url');
+        print('body: ' + pretty_encoder.convert(body));
+        print('headers: $jsonHeaders');
+        throw Exception('*** rest api returned non 200 status code ***');
+    }
+    print('[rest api response] $method $url ${response.statusCode} ${response.body}');
     return response.body;
   }
 
@@ -74,13 +88,12 @@ class RestAPI {
 
   // rest api
 
-
   Future<String> createImageOnServer(image) async {
     return request('image', 'post', {
       'uuid': image.fileId,
       'name': image.name,
       'user_id': user_id,
-      'coordinates': image.coordinates,
+      'coordinates_json': image.coordinates,
     });
   }
 
@@ -93,7 +106,7 @@ class RestAPI {
   }
 
   Future<String> retrieveAllCreatableSongsFromServer() async {
-    return request('all/song/$user_id', 'get', Null);
+    return request('all/song', 'get', Null);
   }
 
   Future<String> retrieveAllBarksFromServer() async {
@@ -109,7 +122,7 @@ class RestAPI {
   Future<String> updateImageOnServer(image) async {
     return request('image/${image.fileId}', 'patch', {
       'name': image.name,
-      'coordinates': image.coordinates,
+      'coordinates_json': image.coordinates,
     });
   }
 
