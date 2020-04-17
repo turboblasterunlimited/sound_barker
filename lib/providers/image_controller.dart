@@ -18,7 +18,7 @@ class ImageController with ChangeNotifier {
   }
 
   void blinkEverySecondTest() {
-    Future.delayed(Duration(seconds: 1), () {
+    Future.delayed(Duration(milliseconds: 500), () {
       Timer.periodic(Duration(seconds: 1), (_) {
         webViewController.evaluateJavascript("blink(1)");
       });
@@ -40,15 +40,17 @@ class ImageController with ChangeNotifier {
 
     Map coordinates = json.decode(picture.coordinates);
     List rightEye = coordinates["rightEye"];
-    List leftEye = coordinates["rightEye"];
+    List leftEye = coordinates["leftEye"];
 
     webViewController
         .evaluateJavascript("create_puppet('$encodingPrefix$base64Image')");
 
-    // Future.delayed(Duration(milliseconds: 2000)).then((_) {
-    webViewController.evaluateJavascript("set_eye('right', $rightEye)");
-    webViewController.evaluateJavascript("set_eye('left', $leftEye)");
-    // });
+    Future.delayed(Duration(milliseconds: 2000)).then((_) {
+      webViewController.evaluateJavascript("set_eye('right', ${rightEye[0]}, ${rightEye[1]})");
+      webViewController.evaluateJavascript("set_eye('left', ${leftEye[0]}, ${leftEye[1]})");
+    });
     // blinkEverySecondTest();
   }
 }
+
+// NEED TO FIX SORT ITEMS

@@ -76,7 +76,7 @@ class Pictures with ChangeNotifier, Gcloud, RestAPI {
 
   Future downloadAllImagesFromBucket([List images]) async {
     Bucket bucket = await accessBucket();
-    images = images == null ? all : images;
+    images ??= all;
     int imagesCount = images.length;
     for (var i = 0; i < imagesCount; i++) {
       String filePath = await downloadFromBucket(
@@ -109,7 +109,7 @@ class Picture with ChangeNotifier, RestAPI, Gcloud {
     this.name = name;
     this.filePath = filePath;
     this.fileUrl = fileUrl;
-    this.fileId = fileId == null ? Uuid().v4() : fileId;
+    this.fileId = fileId ??= Uuid().v4();
     this.creationAnimation = true;
     this.created = created;
   }

@@ -46,7 +46,6 @@ class Songs with ChangeNotifier, Gcloud, RestAPI {
   sortSongs() {
     all.sort((song1, song2) => song1.created.compareTo(song2.created));
   }
-
 }
 
 class Song with ChangeNotifier, Gcloud, RestAPI {
@@ -60,14 +59,23 @@ class Song with ChangeNotifier, Gcloud, RestAPI {
   DateTime created;
 
   Song(
-      {this.filePath,
-      this.name,
-      this.fileUrl,
-      this.fileId,
-      this.formulaId,
-      this.backingTrackUrl,
-      this.backingTrackPath,
-      this.created});
+      {String filePath,
+      String name,
+      String fileUrl,
+      String fileId,
+      String formulaId,
+      String backingTrackUrl,
+      String backingTrackPath,
+      DateTime created}) {
+    this.filePath = filePath;
+    this.name = name;
+    this.fileUrl = fileUrl;
+    this.fileId = fileId;
+    this.formulaId = formulaId;
+    this.backingTrackUrl = backingTrackUrl;
+    this.backingTrackPath = backingTrackPath;
+    this.created = created ??= DateTime.now();
+  }
 
   void removeFromStorage() {
     try {

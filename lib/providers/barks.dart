@@ -20,6 +20,8 @@ class Barks with ChangeNotifier, Gcloud, RestAPI {
 
   Future retrieveAll() async {
     String response = await retrieveAllBarksFromServer();
+    print("parsed all barks: $response");
+
     json.decode(response).forEach((serverBark) async {
       if (serverBark["hidden"] == 1) return;
       Bark bark = Bark(
@@ -42,9 +44,10 @@ class Barks with ChangeNotifier, Gcloud, RestAPI {
   Future downloadAllBarksFromBucket([List barks]) async {
     Bucket bucket = await accessBucket();
 
-    barks = barks == null ? all : barks;
+    barks ??= null;
     int barkCount = barks.length;
     for (var i = 0; i < barkCount; i++) {
+      // print(barks[i])
       String filePath =
           await downloadFromBucket(barks[i].fileUrl, barks[i].fileId);
       barks[i].filePath = filePath;
@@ -53,7 +56,9 @@ class Barks with ChangeNotifier, Gcloud, RestAPI {
   }
 
   sortBarks() {
-    all.sort((bark1, bark2) => bark1.created.compareTo(bark2.created));
+    all.sort((bark1, bark2) {
+      return bark1.created.compareTo(bark2.created);
+    });
   }
 
   List get allBarks {
@@ -85,8 +90,8 @@ class Bark with ChangeNotifier, Gcloud, RestAPI {
     this.name = name;
     this.filePath = filePath;
     this.fileUrl = fileUrl;
-    this.fileId = fileId == null ? Uuid().v4() : fileId;
-    this.created = created;
+    this.fileId = fileId ??= Uuid().v4();
+    this.created = created ??= DateTime.now();
   }
 
   Future<String> rename(newName) async {
@@ -114,7 +119,7 @@ class Bark with ChangeNotifier, Gcloud, RestAPI {
   }
 
   List parseCroppedBarks(response) {
-    //print(response);
+    print("parsed cropped barks: $response");
     List newBarks = [];
     List cloudBarkData = json.decode(response);
     int barkCount = cloudBarkData.length;

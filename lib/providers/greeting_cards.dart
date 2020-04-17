@@ -40,7 +40,7 @@ class GreetingCard with ChangeNotifier, RestAPI, Gcloud {
   }) {
     this.name = name;
     this.filePath = filePath;
-    this.fileId = fileId == null ? Uuid().v4() : fileId;
+    this.fileId ??= Uuid().v4();
     this.creationAnimation = true;
   }
 

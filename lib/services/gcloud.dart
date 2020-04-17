@@ -4,8 +4,10 @@ import 'package:gcloud/storage.dart';
 import 'package:googleapis_auth/auth_io.dart' as auth;
 import '../functions/app_storage_path.dart';
 import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
+import 'package:flutter_ffmpeg/log_level.dart';
 
 class Gcloud {
+  final FlutterFFmpegConfig _flutterFFmpegConfig = new FlutterFFmpegConfig();
   final FlutterFFmpeg _flutterFFmpeg = new FlutterFFmpeg();
 
   Future<Bucket> accessBucket() async {
@@ -29,8 +31,7 @@ class Gcloud {
       filePath += ".jpg";
       if (await File(filePath).exists()) return filePath;
     } else if (backingTrack == true) {
-      if (await File(filePath).exists())
-        return filePathBase;
+      if (await File(filePath).exists()) return filePathBase;
     } else {
       filePath += ".aac";
       if (await File(filePathBase + ".wav").exists())
@@ -42,7 +43,9 @@ class Gcloud {
 
       // If it's a song melody, this makes a .wav file and deletes the .aac file.
       if (image == null && backingTrack == null) {
-        await _flutterFFmpeg.execute("-i $filePath $filePathBase.wav");
+        this._flutterFFmpegConfig.setLogLevel(LogLevel.AV_LOG_WARNING);
+        await _flutterFFmpeg.execute(
+            "-hide_banner -loglevel panic -i $filePath $filePathBase.wav");
         File(filePath).delete();
         filePath = filePathBase + ".wav";
       }

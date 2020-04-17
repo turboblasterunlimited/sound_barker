@@ -1,6 +1,8 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import '../providers/barks.dart';
+
 class RestAPI {
   static final Map<String, String> jsonHeaders = {
     'Content-type': 'application/json',
@@ -9,10 +11,11 @@ class RestAPI {
 
   static Future<String> createSong(cropIds, songId) async {
     http.Response response;
+
     /// "Song" on the server side means "creatable song"
-    String body =
-        json.encode({'uuids': cropIds, 'user_id': 'dev', 'song_id': songId.toString()});
-        print("create song on server req body: $body");
+    String body = json.encode(
+        {'uuids': cropIds, 'user_id': 'dev', 'song_id': songId.toString()});
+    print("create song on server req body: $body");
 
     final url = 'http://165.227.178.14/to_sequence';
     try {
@@ -49,7 +52,7 @@ class RestAPI {
     return response.body;
   }
 
-    Future<String> updateImageOnServer(image) async {
+  Future<String> updateImageOnServer(image) async {
     http.Response response;
     String body = json.encode({
       'name': image.name,
@@ -169,6 +172,7 @@ class RestAPI {
   Future<String> deleteImageFromServer(image) async {
     http.Response response;
     final url = 'http://165.227.178.14/image/${image.fileId}';
+    print(url);
     try {
       response = await http.delete(url);
     } catch (error) {
@@ -176,13 +180,14 @@ class RestAPI {
       throw error;
     }
     // print("Song Name: ${image.name}, Song ID: ${song.fileId}");
-    // print("Delete picture response body: ${response.body}");
+    print("Delete picture response body: ${response.body}");
     return response.body;
   }
 
   Future<String> deleteSongFromServer(song) async {
     http.Response response;
     final url = 'http://165.227.178.14/sequence/${song.fileId}';
+    // print(url);
     try {
       response = await http.delete(url);
     } catch (error) {
@@ -197,13 +202,18 @@ class RestAPI {
   Future<String> deleteBarkFromServer(bark) async {
     http.Response response;
     final url = 'http://165.227.178.14/crop/${bark.fileId}';
+    print("BARK filePath: ${bark.filePath}");
+    print("BARK created: ${bark.created}");
+    print("Bark url: ${bark.fileUrl}");
+
+    print(url);
     try {
       response = await http.delete(url);
     } catch (error) {
       //print(error);
       throw error;
     }
-    // print("Delete bark response body: ${response.body}");
+    print("Delete bark response body: ${response.body}");
     return response.body;
   }
 
