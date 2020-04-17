@@ -8,7 +8,7 @@ import 'dart:io';
 import '../services/gcloud.dart';
 import '../services/rest_api.dart';
 
-class Barks with ChangeNotifier, RestAPI {
+class Barks with ChangeNotifier {
   List<Bark> all = [];
   final listKey = GlobalKey<AnimatedListState>();
 
@@ -19,7 +19,7 @@ class Barks with ChangeNotifier, RestAPI {
   }
 
   Future retrieveAll() async {
-    String response = await retrieveAllBarksFromServer();
+    String response = await RestAPI.retrieveAllBarksFromServer();
     print("parsed all barks: $response");
 
     json.decode(response).forEach((serverBark) async {
@@ -73,7 +73,7 @@ class Barks with ChangeNotifier, RestAPI {
   }
 }
 
-class Bark with ChangeNotifier, RestAPI {
+class Bark with ChangeNotifier {
   String name;
   String fileUrl;
   String
@@ -96,7 +96,7 @@ class Bark with ChangeNotifier, RestAPI {
 
   Future<String> rename(newName) async {
     try {
-      await renameBarkOnServer(this, newName);
+      await RestAPI.renameBarkOnServer(this, newName);
     } catch (e) {
       throw e;
     }
@@ -105,15 +105,13 @@ class Bark with ChangeNotifier, RestAPI {
   }
 
   Future<String> deleteFromServer() {
-    return deleteBarkFromServer(this);
+    return RestAPI.deleteBarkFromServer(this);
   }
 
   Future<List> uploadBarkAndRetrieveCroppedBarks(imageId) async {
     var downloadLink = await Gcloud.uploadAsset(fileId, filePath, false);
     // downloadLink for rawBark is probably not needed.
-    //print(downloadLink);
-    String responseBody = await splitRawBarkOnServer(fileId, imageId);
-    //print("Response body content: $responseBody");
+    String responseBody = await RestAPI.splitRawBarkOnServer(fileId, imageId);
     List newBarks = parseCroppedBarks(responseBody);
     return newBarks;
   }

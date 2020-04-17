@@ -5,6 +5,7 @@ import 'dart:convert';
 
 import '../providers/pictures.dart';
 import '../providers/image_controller.dart';
+import '../services/rest_api.dart';
 
 class ConfirmPictureScreen extends StatefulWidget {
   Picture newPicture;
@@ -119,7 +120,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
       if (widget.isNamed) {
         widget.newPicture.coordinates = canvasToPuppetCoordinates();
       }
-      widget.newPicture.updateImageOnServer(widget.newPicture);
+      RestAPI.updateImageOnServer(widget.newPicture);
       pictures.mountedPicture = widget.newPicture;
       imageController.createDog(widget.newPicture);
 

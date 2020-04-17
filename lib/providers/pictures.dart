@@ -10,7 +10,7 @@ import 'dart:convert';
 import '../services/gcloud.dart';
 import '../services/rest_api.dart';
 
-class Pictures with ChangeNotifier, RestAPI {
+class Pictures with ChangeNotifier {
   List<Picture> all = [];
   Picture mountedPicture;
 
@@ -35,7 +35,7 @@ class Pictures with ChangeNotifier, RestAPI {
 
   void remove(picture) {
     try {
-      deleteImageFromServer(picture);
+      RestAPI.deleteImageFromServer(picture);
     } catch (e) {
       print(e);
       return;
@@ -46,7 +46,7 @@ class Pictures with ChangeNotifier, RestAPI {
   }
 
   Future retrieveAll() async {
-    String response = await retrieveAllImagesFromServer();
+    String response = await RestAPI.retrieveAllImagesFromServer();
     json.decode(response).forEach((serverImage) async {
       if (serverImage["hidden"] == 1) return;
       if (serverImage["uuid"] == null) return;
@@ -87,7 +87,7 @@ class Pictures with ChangeNotifier, RestAPI {
   }
 }
 
-class Picture with ChangeNotifier, RestAPI, Gcloud {
+class Picture with ChangeNotifier, Gcloud {
   String name;
   String fileUrl;
   String filePath;
@@ -116,7 +116,7 @@ class Picture with ChangeNotifier, RestAPI, Gcloud {
 
   Future<void> uploadPictureAndSaveToServer() async {
     this.fileUrl = await Gcloud.uploadAsset(fileId, filePath, true);
-    String response = await createImageOnServer(this);
+    String response = await RestAPI.createImageOnServer(this);
     Map body = json.decode(response);
     created = DateTime.parse(body["created"]);
   }

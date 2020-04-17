@@ -9,7 +9,7 @@ import '../services/rest_api.dart';
 
 final captureBackingFileName = RegExp(r'\/([0-9a-zA-Z_ ]*.[a-zA-Z]{3})$');
 
-class Songs with ChangeNotifier, RestAPI {
+class Songs with ChangeNotifier {
   List<Song> all = [];
   final listKey = GlobalKey<AnimatedListState>();
 
@@ -25,7 +25,7 @@ class Songs with ChangeNotifier, RestAPI {
   }
 
   void removeSong(songToDelete) {
-    songToDelete.deleteFromServer();
+    RestAPI.deleteSongFromServer(songToDelete);
     all.remove(songToDelete);
     File(songToDelete.filePath).delete();
   }
@@ -33,7 +33,7 @@ class Songs with ChangeNotifier, RestAPI {
   // ALL SONGS THAT AREN'T HIDDEN UNLESS THEY ALREADY EXIST ON THE CLIENT
   Future retrieveAll() async {
     Bucket bucket = await Gcloud.accessBucket();
-    String response = await retrieveAllSongsFromServer();
+    String response = await RestAPI.retrieveAllSongsFromServer();
     json.decode(response).forEach((serverSong) {
       if (serverSong["hidden"] == 1) return;
       Song song = Song();
@@ -48,7 +48,7 @@ class Songs with ChangeNotifier, RestAPI {
   }
 }
 
-class Song with ChangeNotifier, Gcloud, RestAPI {
+class Song with ChangeNotifier {
   String name;
   String fileUrl;
   String filePath;
@@ -85,13 +85,9 @@ class Song with ChangeNotifier, Gcloud, RestAPI {
     }
   }
 
-  Future<String> deleteFromServer() {
-    return deleteSongFromServer(this);
-  }
-
   Future<void> rename(newName) async {
     try {
-      await renameSongOnServer(this, newName);
+      await RestAPI.renameSongOnServer(this, newName);
     } catch (e) {
       throw e;
     }

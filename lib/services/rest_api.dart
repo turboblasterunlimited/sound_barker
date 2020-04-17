@@ -1,7 +1,11 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import '../providers/songs.dart';
 import '../providers/barks.dart';
+import '../providers/pictures.dart';
+
+
 
 class RestAPI {
   static final Map<String, String> jsonHeaders = {
@@ -33,7 +37,7 @@ class RestAPI {
     return response.body;
   }
 
-  Future<String> renameSongOnServer(song, newName) async {
+  static Future<String> renameSongOnServer(Song song, String newName) async {
     http.Response response;
     String body = json.encode({'name': newName, "user_id": "dev"});
     //print(body);
@@ -52,7 +56,7 @@ class RestAPI {
     return response.body;
   }
 
-  Future<String> updateImageOnServer(image) async {
+  static Future<String> updateImageOnServer(Picture image) async {
     http.Response response;
     String body = json.encode({
       'name': image.name,
@@ -74,7 +78,7 @@ class RestAPI {
     return response.body;
   }
 
-  Future<String> createImageOnServer(image) async {
+  static Future<String> createImageOnServer(Picture image) async {
     http.Response response;
     String body = json.encode({
       'uuid': image.fileId,
@@ -98,7 +102,7 @@ class RestAPI {
     return response.body;
   }
 
-  Future<String> renameBarkOnServer(bark, newName) async {
+  static Future<String> renameBarkOnServer(Bark bark, newName) async {
     http.Response response;
     String body = json.encode({'name': newName, "user_id": "dev"});
     // print(body);
@@ -117,7 +121,7 @@ class RestAPI {
     return response.body;
   }
 
-  Future<String> retrieveAllSongsFromServer() async {
+  static Future<String> retrieveAllSongsFromServer() async {
     http.Response response;
     final url = 'http://165.227.178.14/all/sequence/dev';
     try {
@@ -130,7 +134,7 @@ class RestAPI {
     return response.body;
   }
 
-  Future<String> retrieveAllImagesFromServer() async {
+  static Future<String> retrieveAllImagesFromServer() async {
     http.Response response;
     final url = 'http://165.227.178.14/all/image/dev';
     try {
@@ -156,7 +160,7 @@ class RestAPI {
     return response.body;
   }
 
-  Future<String> retrieveAllBarksFromServer() async {
+  static Future<String> retrieveAllBarksFromServer() async {
     http.Response response;
     final url = 'http://165.227.178.14/all/crop/dev';
     try {
@@ -169,7 +173,7 @@ class RestAPI {
     return response.body;
   }
 
-  Future<String> deleteImageFromServer(image) async {
+  static Future<String> deleteImageFromServer(Picture image) async {
     http.Response response;
     final url = 'http://165.227.178.14/image/${image.fileId}';
     print(url);
@@ -184,7 +188,7 @@ class RestAPI {
     return response.body;
   }
 
-  Future<String> deleteSongFromServer(song) async {
+  static Future<String> deleteSongFromServer(Song song) async {
     http.Response response;
     final url = 'http://165.227.178.14/sequence/${song.fileId}';
     // print(url);
@@ -199,7 +203,7 @@ class RestAPI {
     return response.body;
   }
 
-  Future<String> deleteBarkFromServer(bark) async {
+  static Future<String> deleteBarkFromServer(Bark bark) async {
     http.Response response;
     final url = 'http://165.227.178.14/crop/${bark.fileId}';
     print("BARK filePath: ${bark.filePath}");
@@ -217,7 +221,7 @@ class RestAPI {
     return response.body;
   }
 
-  Future<String> splitRawBarkOnServer(fileId, imageId) async {
+  static Future<String> splitRawBarkOnServer(fileId, imageId) async {
     http.Response response;
     String body = json.encode({
       'uuid': fileId,
