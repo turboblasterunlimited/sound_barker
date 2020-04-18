@@ -15,50 +15,44 @@ class Barks with ChangeNotifier {
   void addBark(bark) {
     all.insert(0, bark);
     if (listKey.currentState != null) listKey.currentState.insertItem(0);
-    // notifyListeners();
   }
 
   Future retrieveAll() async {
     String response = await RestAPI.retrieveAllBarksFromServer();
-    print("parsed all barks: $response");
+    print("all barks response: $response");
+    List tempBarks = [];
 
     json.decode(response).forEach((serverBark) async {
       if (serverBark["hidden"] == 1) return;
       Bark bark = Bark(
-          name: serverBark["name"],
-          fileUrl: serverBark["bucket_fp"],
-          fileId: serverBark["uuid"]);
-      // if serverBark isn't already in in barks.all
-      if (all.indexWhere(
-              (bark) => bark.fileId == serverBark["uuid"].toString()) ==
-          -1) {
-        await downloadAllBarksFromBucket([bark]);
-        addBark(bark);
-      }
+        name: serverBark["name"],
+        fileUrl: serverBark["bucket_fp"],
+        fileId: serverBark["uuid"],
+        created: DateTime.parse(serverBark["created"]),
+      );
+      tempBarks.add(bark);
     });
-    // await downloadAllBarksFromBucket();
-    notifyListeners();
+    downloadAllBarksFromBucket();
+    tempBarks.sort((bark1, bark2) {
+      return bark1.created.compareTo(bark2.created);
+    });
+    tempBarks.forEach((bark) {
+      addBark(bark);
+    });
   }
 
   // downloads the files either from all barks in memory or just the barks passed.
   Future downloadAllBarksFromBucket([List barks]) async {
     Bucket bucket = await Gcloud.accessBucket();
-
-    barks ??= null;
+    barks ??= all;
     int barkCount = barks.length;
     for (var i = 0; i < barkCount; i++) {
       // print(barks[i])
-      String filePath =
-          await Gcloud.downloadFromBucket(barks[i].fileUrl, barks[i].fileId);
+      String filePath = await Gcloud.downloadFromBucket(
+          barks[i].fileUrl, barks[i].fileId,
+          bucket: bucket);
       barks[i].filePath = filePath;
     }
-    sortBarks();
-  }
-
-  sortBarks() {
-    all.sort((bark1, bark2) {
-      return bark1.created.compareTo(bark2.created);
-    });
   }
 
   List get allBarks {
@@ -109,8 +103,7 @@ class Bark with ChangeNotifier {
   }
 
   Future<List> uploadBarkAndRetrieveCroppedBarks(imageId) async {
-    var downloadLink = await Gcloud.uploadAsset(fileId, filePath, false);
-    // downloadLink for rawBark is probably not needed.
+    Gcloud.uploadAsset(fileId, filePath, false);
     String responseBody = await RestAPI.splitRawBarkOnServer(fileId, imageId);
     List newBarks = parseCroppedBarks(responseBody);
     return newBarks;
@@ -128,7 +121,6 @@ class Bark with ChangeNotifier {
         fileUrl: cloudBarkData[i]["bucket_fp"],
         created: DateTime.parse(cloudBarkData[i]["created"]),
       ));
-
     }
     return newBarks;
   }

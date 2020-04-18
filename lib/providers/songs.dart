@@ -74,7 +74,7 @@ class Song with ChangeNotifier {
     this.formulaId = formulaId;
     this.backingTrackUrl = backingTrackUrl;
     this.backingTrackPath = backingTrackPath;
-    this.created = created ??= DateTime.now();
+    this.created = created;
   }
 
   void removeFromStorage() {
