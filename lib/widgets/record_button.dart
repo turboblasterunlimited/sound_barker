@@ -6,6 +6,7 @@ import 'dart:async';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:intl/date_symbol_data_local.dart';
 import 'dart:io';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../providers/barks.dart';
 import '../providers/pictures.dart';
@@ -38,18 +39,20 @@ class _RecordButtonState extends State<RecordButton> {
   @override
   void initState() {
     super.initState();
-    flutterSound = new FlutterSound();
+    flutterSound = FlutterSound();
     flutterSound.setSubscriptionDuration(0.01);
     flutterSound.setDbPeakLevelUpdate(0.8);
     flutterSound.setDbLevelEnabled(true);
     initializeDateFormatting();
-    spinnerState = Provider.of<SpinnerState>(context, listen: false);
   }
 
   void startRecorder() async {
     try {
       this.filePath = await flutterSound.startRecorder(
-          codec: _codec, iosQuality: IosQuality.MAX, sampleRate: 44100, bitRate: 192000);
+          codec: _codec,
+          iosQuality: IosQuality.MAX,
+          sampleRate: 44100,
+          bitRate: 192000);
       //print('startRecorder: $filePath');
 
       _recorderSubscription = flutterSound.onRecorderStateChanged.listen((e) {
@@ -131,12 +134,21 @@ class _RecordButtonState extends State<RecordButton> {
 
   @override
   Widget build(BuildContext context) {
+    spinnerState = Provider.of<SpinnerState>(context, listen: true);
+
     return RawMaterialButton(
-      onPressed: onStartRecorderPressed(),
-      child: Text(
-        this._isRecording ? "RECORDING... TAP TO STOP": "TAP TO RECORD SOUNDS",
-        style: TextStyle(fontWeight: FontWeight.bold),
-      ),
+      onPressed: spinnerState.barksLoading ? null : onStartRecorderPressed(),
+      child: spinnerState.barksLoading
+          ? SpinKitWave(
+              color: Theme.of(context).primaryColor,
+              size: 20,
+            )
+          : Text(
+              this._isRecording
+                  ? "RECORDING... TAP TO STOP"
+                  : "TAP TO RECORD SOUNDS",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(7.0),
         // side: BorderSide(color: Colors.red),

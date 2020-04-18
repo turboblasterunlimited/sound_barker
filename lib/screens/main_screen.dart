@@ -39,7 +39,6 @@ class _MainScreenState extends State<MainScreen> {
     ImageController imageController = Provider.of<ImageController>(context, listen: false);
 
     void downloadEverything() async {
-      print("CALLING DOWNLOADEVERYTHING!");
       await barks.retrieveAll();
       await songs.retrieveAll();
       await pictures.retrieveAll();
@@ -52,6 +51,7 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       extendBodyBehindAppBar: true,
+      resizeToAvoidBottomPadding: false,
       key: _scaffoldKey,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(30.0),
