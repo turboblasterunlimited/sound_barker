@@ -32,7 +32,7 @@ class Barks with ChangeNotifier {
       );
       tempBarks.add(bark);
     });
-    downloadAllBarksFromBucket();
+    downloadAllBarksFromBucket(tempBarks);
     tempBarks.sort((bark1, bark2) {
       return bark1.created.compareTo(bark2.created);
     });
@@ -47,7 +47,6 @@ class Barks with ChangeNotifier {
     barks ??= all;
     int barkCount = barks.length;
     for (var i = 0; i < barkCount; i++) {
-      // print(barks[i])
       String filePath = await Gcloud.downloadFromBucket(
           barks[i].fileUrl, barks[i].fileId,
           bucket: bucket);
