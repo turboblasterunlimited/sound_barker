@@ -30,7 +30,6 @@ class Pictures with ChangeNotifier {
 
   void add(Picture picture) {
     all.insert(0, picture);
-    // notifyListeners();
   }
 
   void remove(picture) {
@@ -46,6 +45,7 @@ class Pictures with ChangeNotifier {
   }
 
   Future retrieveAll() async {
+    List tempPics = [];
     String response = await RestAPI.retrieveAllImagesFromServer();
     json.decode(response).forEach((serverImage) async {
       if (serverImage["hidden"] == 1) return;
@@ -59,19 +59,17 @@ class Pictures with ChangeNotifier {
         coordinates: serverImage["coordinates_json"],
         created: DateTime.parse(serverImage["created"]),
       );
-      // THIS NEEDS ATTENTION.
-      if (all.indexWhere((pic) => pic.fileId == serverImage["uuid"]) == -1) {
-        pic.fileUrl = "images/${pic.fileId}.jpg";
-        await downloadAllImagesFromBucket([pic]);
-        add(pic);
-        notifyListeners();
-      }
+      pic.fileUrl = "images/${pic.fileId}.jpg";
+      tempPics.add(pic);
     });
-    sortImages();
-  }
-
-  sortImages() {
-    all.sort((image1, image2) => image2.created.compareTo(image1.created));
+    await downloadAllImagesFromBucket(tempPics);
+    tempPics.sort((bark1, bark2) {
+      return bark1.created.compareTo(bark2.created);
+    });
+    tempPics.forEach((pic) {
+      add(pic);
+    });
+    notifyListeners();
   }
 
   Future downloadAllImagesFromBucket([List images]) async {
@@ -102,7 +100,7 @@ class Picture with ChangeNotifier, Gcloud {
     String fileUrl,
     String fileId,
     String coordinates = '{"rightEye": [-0.2, 0.2], "leftEye": [0.2, 0.2]}',
-        // "mouthOne": [-0.1, -0.2], "mouthTwo": [0, -0.22], "mouthThree": [0.1, -0.2], 
+    // "mouthOne": [-0.1, -0.2], "mouthTwo": [0, -0.22], "mouthThree": [0.1, -0.2],
     DateTime created,
   }) {
     this.coordinates = coordinates;
