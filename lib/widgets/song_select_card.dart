@@ -30,26 +30,22 @@ class _SongSelectCardState extends State<SongSelectCard> {
 
   @override
   void dispose() {
-    stopAll();
+    widget.soundController.stopPlayer();
     super.dispose();
   }
 
-  void stopAll() {
-    widget.soundController.stopPlayer();
-  }
-
   Function stopPlayerCallBack() {
-    return () => setState(() {
-          isPlaying = false;
-          stopAll();
-        });
+    return () {
+      widget.soundController.stopPlayer();
+      if (mounted) setState(() => isPlaying = false);
+    };
   }
 
   void playSong() async {
     try {
       widget.soundController.stopPlayer();
-      await widget.soundController
-          .startPlayer(widget.song.filePath, stopPlayerCallBack(), widget.song.backingTrackPath);
+      await widget.soundController.startPlayer(widget.song.filePath,
+          stopPlayerCallBack(), widget.song.backingTrackPath);
     } catch (e) {
       showErrorDialog(context, e);
     }
@@ -100,11 +96,12 @@ class _SongSelectCardState extends State<SongSelectCard> {
                 color: Colors.blue,
                 onPressed: () {
                   if (isPlaying) {
-                    setState(() => isPlaying = false);
-                    stopAll();
+                    widget.soundController.stopPlayer();
                   } else {
-                    setState(() => isPlaying = true);
                     playSong();
+                    Future.delayed(Duration(milliseconds: 50), () {
+                      setState(() => isPlaying = true);
+                    });
                   }
                 },
                 icon: Icon(isPlaying ? Icons.stop : Icons.play_arrow,

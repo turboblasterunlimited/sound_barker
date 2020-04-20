@@ -107,7 +107,7 @@ class _BarkSelectCardState extends State<BarkSelectCard> {
           trailing: IconButton(
             color: Colors.blue,
             onPressed: () {
-              isPlaying ? stopBark() : playBark();
+              playBark();
             },
             icon: Icon(Icons.play_arrow,
                 color: Colors.black, size: 30),

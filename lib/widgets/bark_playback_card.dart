@@ -47,17 +47,15 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
   }
 
   void stopAll() {
-    if (waveStreamer != null) {
-      waveStreamer?.cancel();
-      imageController.blink(0);
-      widget.soundController.stopPlayer();
-    }
+    waveStreamer?.cancel();
+    imageController.blink(0);
+    widget.soundController.stopPlayer();
   }
 
   void startAll() async {
     waveStreamer =
         WaveStreamer.performAudio(widget.bark.filePath, imageController);
-        await widget.soundController.startPlayer(widget.bark.filePath);
+    await widget.soundController.startPlayer(widget.bark.filePath);
   }
 
   void playBark() async {
@@ -170,16 +168,9 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
             leading: IconButton(
               color: Colors.blue,
               onPressed: () {
-                if (isPlaying) {
-                  setState(() => isPlaying = false);
-                  stopAll();
-                } else {
-                  setState(() => isPlaying = true);
-                  playBark();
-                }
+                playBark();
               },
-              icon: Icon(isPlaying ? Icons.stop : Icons.play_arrow,
-                  color: Colors.black, size: 30),
+              icon: Icon(Icons.play_arrow, color: Colors.black, size: 30),
             ),
             title: GestureDetector(
               onTap: () {

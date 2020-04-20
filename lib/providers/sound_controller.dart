@@ -21,11 +21,13 @@ class SoundController with ChangeNotifier {
 
     // audioPlayer.monitorNotificationStateChanges();
     audioPlayer.play(path, isLocal: true);
-    audioPlayer.onPlayerStateChanged.listen((playerState) =>
-        {if (playerState == AudioPlayerState.STOPPED) callback()});
-    audioPlayer.onPlayerCompletion.listen((event) {
-      callback();
-    });
+    if (callback != null) {
+      audioPlayer.onPlayerStateChanged.listen((playerState) =>
+          {if (playerState == AudioPlayerState.STOPPED) callback()});
+      audioPlayer.onPlayerCompletion.listen((event) {
+        callback();
+      });
+    }
   }
 
   Future<String> _startBackingTrack(path) async {
@@ -38,7 +40,6 @@ class SoundController with ChangeNotifier {
   }
 
   void _stopBackingTrack() {
-    print("backing track stopped!");
     if (backingTrack.state == AudioPlayerState.PLAYING) {
       backingTrack.stop();
     }

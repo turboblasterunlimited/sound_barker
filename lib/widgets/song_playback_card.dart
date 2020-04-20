@@ -49,11 +49,9 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
   }
 
   void stopAll() {
-    if (waveStreamer != null) {
-      waveStreamer?.cancel();
-      imageController.blink(0);
-      widget.soundController.stopPlayer();
-    }
+    waveStreamer?.cancel();
+    imageController.blink(0);
+    widget.soundController.stopPlayer();
   }
 
   Function stopPlayerCallBack() {
@@ -65,19 +63,16 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
 
   void startAll() async {
     stopAll();
-    Provider.of<ActiveWaveStreamer>(context, listen: false)
-        .waveStreamer
-        ?.cancel();
+    Provider.of<ActiveWaveStreamer>(context, listen: false).waveStreamer?.cancel();
     waveStreamer =
         WaveStreamer.performAudio(widget.song.filePath, imageController);
     Provider.of<ActiveWaveStreamer>(context, listen: false).waveStreamer =
         waveStreamer;
-    await widget.soundController
-        .startPlayer(widget.song.filePath, stopPlayerCallBack(), widget.song.backingTrackPath);
+    await widget.soundController.startPlayer(widget.song.filePath,
+        stopPlayerCallBack(), widget.song.backingTrackPath);
   }
 
   void playSong() async {
-    print("from within playsong: ${widget.song.name}");
     try {
       stopAll();
       startAll();
