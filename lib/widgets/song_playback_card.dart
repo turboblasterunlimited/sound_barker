@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
@@ -51,8 +52,15 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
     if (waveStreamer != null) {
       waveStreamer?.cancel();
       imageController.blink(0);
-      widget.soundController.stopPlayer(widget.song.backingTrackPath != null);
+      widget.soundController.stopPlayer();
     }
+  }
+
+  Function stopPlayerCallBack() {
+    return () {
+      stopAll();
+      if (mounted) setState(() => isPlaying = false);
+    };
   }
 
   void startAll() async {
@@ -64,15 +72,8 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
         WaveStreamer.performAudio(widget.song.filePath, imageController);
     Provider.of<ActiveWaveStreamer>(context, listen: false).waveStreamer =
         waveStreamer;
-    int timeLeft = await widget.soundController
-        .startPlayer(widget.song.filePath, widget.song.backingTrackPath);
-    resetIsPlayingAfterDelay(timeLeft);
-  }
-
-  void resetIsPlayingAfterDelay(int timeLeft) async {
-    Future.delayed(Duration(milliseconds: timeLeft), () {
-      if (this.mounted && isPlaying) setState(() => isPlaying = false);
-    });
+    await widget.soundController
+        .startPlayer(widget.song.filePath, stopPlayerCallBack(), widget.song.backingTrackPath);
   }
 
   void playSong() async {
@@ -187,11 +188,12 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
               color: Colors.blue,
               onPressed: () {
                 if (isPlaying) {
-                  setState(() => isPlaying = false);
                   stopAll();
                 } else {
-                  setState(() => isPlaying = true);
                   playSong();
+                  Future.delayed(Duration(milliseconds: 50), () {
+                    setState(() => isPlaying = true);
+                  });
                 }
               },
               icon: Icon(isPlaying ? Icons.stop : Icons.play_arrow,

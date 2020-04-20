@@ -4,7 +4,6 @@ import '../functions/error_dialog.dart';
 import '../providers/sound_controller.dart';
 import '../providers/songs.dart';
 
-
 class SongSelectCard extends StatefulWidget {
   final int index;
   final Song song;
@@ -36,24 +35,24 @@ class _SongSelectCardState extends State<SongSelectCard> {
   }
 
   void stopAll() {
-    widget.soundController.stopPlayer(widget.song.backingTrackPath != null);
+    widget.soundController.stopPlayer();
+  }
+
+  Function stopPlayerCallBack() {
+    return () => setState(() {
+          isPlaying = false;
+          stopAll();
+        });
   }
 
   void playSong() async {
     try {
-      widget.soundController.stopPlayer(widget.song.backingTrackPath != null);
-      int timeLeft = await widget.soundController
-          .startPlayer(widget.song.filePath, widget.song.backingTrackPath);
-      resetIsPlayingAfterDelay(timeLeft);
+      widget.soundController.stopPlayer();
+      await widget.soundController
+          .startPlayer(widget.song.filePath, stopPlayerCallBack(), widget.song.backingTrackPath);
     } catch (e) {
       showErrorDialog(context, e);
     }
-  }
-
-  void resetIsPlayingAfterDelay(int timeLeft) async {
-    Future.delayed(Duration(milliseconds: timeLeft), () {
-      if (this.mounted && isPlaying) setState(() => isPlaying = false);
-    });
   }
 
   @override

@@ -57,15 +57,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
   void startAll() async {
     waveStreamer =
         WaveStreamer.performAudio(widget.bark.filePath, imageController);
-    int timeLeft =
         await widget.soundController.startPlayer(widget.bark.filePath);
-    resetIsPlayingAfterDelay(timeLeft);
-  }
-
-  void resetIsPlayingAfterDelay(int timeLeft) async {
-    Future.delayed(Duration(milliseconds: timeLeft), () {
-      if (this.mounted && isPlaying) setState(() => isPlaying = false);
-    });
   }
 
   void playBark() async {

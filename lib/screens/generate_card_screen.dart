@@ -37,6 +37,7 @@ class _GenerateCardScreenState extends State<GenerateCardScreen> {
   Song song;
   String cardFilePath;
   Pictures pictures;
+  bool isPlaying;
 
   requestPermissions() async {
     Map<Permission, PermissionStatus> status = await [
@@ -66,6 +67,13 @@ class _GenerateCardScreenState extends State<GenerateCardScreen> {
     soundController.stopPlayer();
   }
 
+  Function stopPlayerCallBack() {
+    return () => setState(() {
+          isPlaying = false;
+          stopAll();
+        });
+  }
+
   Future<void> startAll() async {
     stopAll();
     Provider.of<ActiveWaveStreamer>(context, listen: false)
@@ -75,7 +83,7 @@ class _GenerateCardScreenState extends State<GenerateCardScreen> {
         song.filePath, imageController, doneCapturing);
     Provider.of<ActiveWaveStreamer>(context, listen: false).waveStreamer =
         waveStreamer;
-    soundController.startPlayer(song.filePath, song.backingTrackPath);
+    soundController.startPlayer(song.filePath, stopPlayerCallBack(), song.backingTrackPath);
   }
 
   doneCapturing() async {
@@ -104,7 +112,6 @@ class _GenerateCardScreenState extends State<GenerateCardScreen> {
       imageController = Provider.of<ImageController>(context, listen: false);
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
