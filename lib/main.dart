@@ -4,6 +4,7 @@ import 'package:song_barker/functions/app_storage_path.dart';
 import 'package:flutter/rendering.dart';
 
 import 'package:song_barker/providers/active_wave_streamer.dart';
+import 'package:song_barker/providers/tab_list_scroll_controller.dart';
 import './screens/song_category_select_screen.dart';
 import './screens/main_screen.dart';
 import './screens/select_song_and_picture_screen.dart';
@@ -67,6 +68,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider.value(
           value: SpinnerState(),
+        ),
+        ChangeNotifierProvider.value(
+          value: TabListScrollController(),
         ),
       ],
       child: MaterialApp(

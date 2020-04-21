@@ -5,8 +5,9 @@ import 'package:song_barker/functions/app_storage_path.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:io';
 import 'package:path/path.dart';
-import 'package:song_barker/screens/confirm_picture_screen.dart';
 
+import 'package:song_barker/providers/tab_list_scroll_controller.dart';
+import 'package:song_barker/screens/confirm_picture_screen.dart';
 import '../providers/pictures.dart';
 import '../screens/camera_screen.dart';
 import '../widgets/picture_card.dart';
@@ -89,6 +90,7 @@ class _PictureGridState extends State<PictureGrid>
           ),
         Expanded(
           child: GridView.builder(
+            controller: Provider.of<TabListScrollController>(context).controller,
             padding: const EdgeInsets.all(10),
             itemCount: pictures.all.length,
             itemBuilder: (ctx, i) => ChangeNotifierProvider.value(

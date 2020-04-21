@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import 'package:song_barker/providers/tab_list_scroll_controller.dart';
 import '../widgets/song_list.dart';
 import '../widgets/bark_list.dart';
 import '../widgets/picture_grid.dart';
@@ -10,12 +12,14 @@ class InterfaceSelector extends StatelessWidget {
     return DraggableScrollableSheet(
       initialChildSize: 0.5,
       minChildSize: 0.5,
-      maxChildSize: 0.9,
+      maxChildSize: 0.7,
       builder: (context, scrollController) {
+        Provider.of<TabListScrollController>(context, listen: false)
+            .setController(scrollController);
         return SingleChildScrollView(
           controller: scrollController,
           child: Container(
-            height: 500,
+            height: MediaQuery.of(context).size.longestSide * .7,
             color: Theme.of(context).primaryColor,
             child: DefaultTabController(
               length: 4,

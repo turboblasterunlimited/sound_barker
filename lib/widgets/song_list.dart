@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:song_barker/providers/tab_list_scroll_controller.dart';
 import 'package:song_barker/screens/song_category_select_screen.dart';
 import '../providers/sound_controller.dart';
 import 'package:song_barker/widgets/song_playback_card.dart';
@@ -8,12 +9,8 @@ import '../providers/songs.dart';
 import '../providers/spinner_state.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-class SongList extends StatefulWidget {
-  @override
-  _SongListState createState() => _SongListState();
-}
+class SongList extends StatelessWidget {
 
-class _SongListState extends State<SongList> {
   @override
   Widget build(BuildContext context) {
     final songs = Provider.of<Songs>(context, listen: false);
@@ -45,21 +42,22 @@ class _SongListState extends State<SongList> {
             visible: spinState.songLoading,
             // visible: true,
             child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 2),
-                  child: Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: SpinKitWave(
-                        color: Theme.of(context).primaryColor,
-                        size: 20,
-                      ),
-                    ),
+              padding: const EdgeInsets.symmetric(horizontal: 2),
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: SpinKitWave(
+                    color: Theme.of(context).primaryColor,
+                    size: 20,
                   ),
                 ),
+              ),
+            ),
           );
         }),
         Expanded(
           child: AnimatedList(
+            controller: Provider.of<TabListScrollController>(context).controller,
             key: songs.listKey,
             initialItemCount: songs.all.length,
             padding: const EdgeInsets.all(10),
