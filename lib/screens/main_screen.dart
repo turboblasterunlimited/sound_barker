@@ -36,7 +36,8 @@ class _MainScreenState extends State<MainScreen> {
     final barks = Provider.of<Barks>(context, listen: false);
     final songs = Provider.of<Songs>(context, listen: false);
     final pictures = Provider.of<Pictures>(context, listen: false);
-    ImageController imageController = Provider.of<ImageController>(context, listen: false);
+    ImageController imageController =
+        Provider.of<ImageController>(context, listen: false);
 
     void downloadEverything() async {
       await barks.retrieveAll();
@@ -81,11 +82,20 @@ class _MainScreenState extends State<MainScreen> {
         ),
       ),
       drawer: AppDrawer(),
-      body: Column(
-        children: <Widget>[
-          SingingImage(),
-          InterfaceSelector(),
-        ],
+      body: Container(
+        child: Stack(
+          children: <Widget>[
+            Positioned(
+              child: SingingImage(),
+            ),
+            Positioned(
+              child: Align(
+                // alignment: FractionalOffset.bottomCenter,
+                child: InterfaceSelector(),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
