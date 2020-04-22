@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:song_barker/providers/tab_list_scroll_controller.dart';
 
 import '../providers/sound_controller.dart';
 import '../providers/barks.dart';
@@ -14,22 +15,25 @@ class BarkPlaybackCard extends StatefulWidget {
   final Barks barks;
   final SoundController soundController;
   final Animation<double> animation;
-  BarkPlaybackCard(
-      this.index, this.bark, this.barks, this.soundController, this.animation);
+  BarkPlaybackCard(this.index, this.bark, this.barks, this.soundController,
+      this.animation);
 
   @override
   _BarkPlaybackCardState createState() => _BarkPlaybackCardState();
 }
 
 class _BarkPlaybackCardState extends State<BarkPlaybackCard>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+  bool get wantKeepAlive => true;
   AnimationController renameAnimationController;
   StreamSubscription<double> waveStreamer;
   ImageController imageController;
   bool isPlaying = false;
+  TabListScrollController tabListScrollController;
 
   @override
   void initState() {
+    tabListScrollController = Provider.of<TabListScrollController>(context, listen: false);
     renameAnimationController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 500),
@@ -153,6 +157,18 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
     );
   }
 
+ void handleTabScroll() {
+    if (tabListScrollController.tabExtent == 0.7) {
+      var position = tabListScrollController.scrollController.position.pixels;
+      position += 125;
+      DraggableScrollableActuator.reset(context);
+      Future.delayed(Duration(milliseconds: 100)).then((_) {
+        tabListScrollController.scrollController.jumpTo(position);
+      });
+      tabListScrollController.updateTabExtent(0.5);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizeTransition(
@@ -169,6 +185,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
               color: Colors.blue,
               onPressed: () {
                 playBark();
+                handleTabScroll();
               },
               icon: Icon(Icons.play_arrow, color: Colors.black, size: 30),
             ),
@@ -191,14 +208,6 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
                           child: Text(widget.bark.name,
                               style: TextStyle(fontWeight: FontWeight.bold)),
                         ),
-                        // WidgetSpan(
-                        //   child: Padding(
-                        //     padding:
-                        //         const EdgeInsets.symmetric(horizontal: 2.0),
-                        //     child: Icon(Icons.,
-                        //         color: Colors.grey[400], size: 16),
-                        //   ),
-                        // ),
                       ],
                     ),
                   ),

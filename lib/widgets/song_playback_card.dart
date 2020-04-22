@@ -1,6 +1,6 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:song_barker/providers/tab_list_scroll_controller.dart';
 import 'dart:async';
 
 import '../providers/sound_controller.dart';
@@ -25,10 +25,13 @@ class SongPlaybackCard extends StatefulWidget {
 
 class _SongPlaybackCardState extends State<SongPlaybackCard>
     with TickerProviderStateMixin {
+  //   AutomaticKeepAliveClientMixin {
+  // bool get wantKeepAlive => true;
   ImageController imageController;
   AnimationController renameAnimationController;
   StreamSubscription<double> waveStreamer;
   bool isPlaying = false;
+  TabListScrollController tabListScrollController;
 
   @override
   void initState() {
@@ -36,9 +39,10 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
       vsync: this,
       duration: Duration(milliseconds: 500),
     );
-    super.initState();
     renameAnimationController.forward();
     imageController = Provider.of<ImageController>(context, listen: false);
+    tabListScrollController = Provider.of<TabListScrollController>(context, listen: false);
+    super.initState();
   }
 
   @override
@@ -63,7 +67,9 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
 
   void startAll() async {
     stopAll();
-    Provider.of<ActiveWaveStreamer>(context, listen: false).waveStreamer?.cancel();
+    Provider.of<ActiveWaveStreamer>(context, listen: false)
+        .waveStreamer
+        ?.cancel();
     waveStreamer =
         WaveStreamer.performAudio(widget.song.filePath, imageController);
     Provider.of<ActiveWaveStreamer>(context, listen: false).waveStreamer =
@@ -72,7 +78,7 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
         stopPlayerCallBack(), widget.song.backingTrackPath);
   }
 
-  void playSong() async {
+  void playSong(context) async {
     try {
       stopAll();
       startAll();
@@ -167,6 +173,18 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
     );
   }
 
+  void handleTabScroll() {
+    if (tabListScrollController.tabExtent == 0.7) {
+      var position = tabListScrollController.scrollController.position.pixels;
+      position += 125;
+      DraggableScrollableActuator.reset(context);
+      Future.delayed(Duration(milliseconds: 100)).then((_) {
+        tabListScrollController.scrollController.jumpTo(position);
+      });
+      tabListScrollController.updateTabExtent(0.5);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizeTransition(
@@ -185,10 +203,11 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
                 if (isPlaying) {
                   stopAll();
                 } else {
-                  playSong();
+                  playSong(context);
                   Future.delayed(Duration(milliseconds: 50), () {
                     setState(() => isPlaying = true);
                   });
+                  handleTabScroll();
                 }
               },
               icon: Icon(isPlaying ? Icons.stop : Icons.play_arrow,

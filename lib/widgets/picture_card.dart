@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:song_barker/providers/image_controller.dart';
+import 'package:song_barker/providers/tab_list_scroll_controller.dart';
 import 'dart:io';
 
 import '../providers/pictures.dart';
@@ -21,10 +22,12 @@ class _PictureCardState extends State<PictureCard>
     with TickerProviderStateMixin {
   ImageController imageController;
   AnimationController animationController;
+  TabListScrollController tabListScrollController;
 
   @override
   void initState() {
     super.initState();
+    tabListScrollController = Provider.of<TabListScrollController>(context, listen: false);
     imageController = Provider.of<ImageController>(context, listen: false);
 
     animationController =
@@ -80,6 +83,7 @@ class _PictureCardState extends State<PictureCard>
                 onTap: () {
                   imageController.createDog(widget.picture);
                   widget.pictures.mountedPicture = widget.picture;
+                  handleTabScroll();
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -134,6 +138,18 @@ class _PictureCardState extends State<PictureCard>
         ),
       ),
     );
+  }
+
+  void handleTabScroll() {
+    if (tabListScrollController.tabExtent == 0.7) {
+      var position = tabListScrollController.scrollController.position.pixels;
+      position += 125;
+      DraggableScrollableActuator.reset(context);
+      Future.delayed(Duration(milliseconds: 100)).then((_) {
+        tabListScrollController.scrollController.jumpTo(position);
+      });
+      tabListScrollController.updateTabExtent(0.5);
+    }
   }
 
   @override

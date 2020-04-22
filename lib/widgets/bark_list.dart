@@ -8,7 +8,12 @@ import '../widgets/record_button.dart';
 import '../providers/barks.dart';
 import '../providers/sound_controller.dart';
 
-class BarkList extends StatelessWidget {
+class BarkList extends StatefulWidget {
+  @override
+  BarkListState createState() => BarkListState();
+}
+
+class BarkListState extends State<BarkList> {
   @override
   Widget build(BuildContext context) {
     final SoundController soundController =
@@ -25,7 +30,9 @@ class BarkList extends StatelessWidget {
         ),
         Expanded(
           child: AnimatedList(
-            controller: Provider.of<TabListScrollController>(context).controller,
+            controller:
+                Provider.of<TabListScrollController>(context, listen: false)
+                    .scrollController,
             key: barks.listKey,
             initialItemCount: barks.all.length,
             // padding: const EdgeInsets.all(0),
