@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
 import 'dart:convert';
+import 'dart:math';
 
 import '../providers/pictures.dart';
 import '../providers/image_controller.dart';
@@ -43,8 +44,25 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
 
     final puppetCoordinates = json.decode(widget.newPicture.coordinates);
 
-    if (puppetCoordinates["mouth"] == null)
+    if (puppetCoordinates["mouth"] == null) {
       puppetCoordinates["mouth"] = [0.0, 0.0];
+    }
+
+    if (puppetCoordinates["headTop"] == null) {
+      puppetCoordinates["headTop"] = [0.0, .3];
+    }
+
+    if (puppetCoordinates["headRight"] == null) {
+      puppetCoordinates["headRight"] = [0.3, .0];
+    }
+
+    if (puppetCoordinates["headBottom"] == null) {
+      puppetCoordinates["headBottom"] = [0.0, -.3];
+    }
+
+    if (puppetCoordinates["headLeft"] == null) {
+      puppetCoordinates["headLeft"] = [-0.3, .0];
+    }
 
     _puppetXtoCanvasX(x) {
       double offset = x * middle * 2;
@@ -324,7 +342,7 @@ class CoordinatesPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 4.0
+      ..strokeWidth = 7.0
       ..color = Colors.blue;
 
     void drawBothEyes() {
@@ -353,8 +371,39 @@ class CoordinatesPainter extends CustomPainter {
           paint);
     }
 
+    void drawHeadPoints() {
+      canvas.drawCircle(
+          Offset(coordinates["headTop"][0], coordinates["headTop"][1]),
+          7.0,
+          paint);
+
+      canvas.drawCircle(
+          Offset(coordinates["headRight"][0], coordinates["headRight"][1]),
+          7.0,
+          paint);
+
+      canvas.drawCircle(
+          Offset(coordinates["headBottom"][0], coordinates["headBottom"][1]),
+          7.0,
+          paint);
+
+      canvas.drawCircle(
+          Offset(coordinates["headLeft"][0], coordinates["headLeft"][1]),
+          7.0,
+          paint);
+
+      // Draw oval around head
+      Path path = Path();
+      path.addArc(
+          Rect.fromLTRB(coordinates["headLeft"][0], coordinates["headTop"][1],
+              coordinates["headRight"][0], coordinates["headBottom"][1]),
+          pi,
+          2 * pi);
+      canvas.drawPath(path, paint);
+    }
     drawBothEyes();
     drawMouth();
+    drawHeadPoints();
   }
 
   bool shouldRepaint(CustomPainter oldDeligate) => true;
