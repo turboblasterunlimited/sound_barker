@@ -43,6 +43,9 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
 
     final puppetCoordinates = json.decode(widget.newPicture.coordinates);
 
+    if (puppetCoordinates["mouth"] == null)
+      puppetCoordinates["mouth"] = [0.0, 0.0];
+
     _puppetXtoCanvasX(x) {
       double offset = x * middle * 2;
       return offset + middle;
@@ -338,7 +341,20 @@ class CoordinatesPainter extends CustomPainter {
           paint);
     }
 
+    void drawMouth() {
+      canvas.drawRRect(
+          RRect.fromRectAndRadius(
+              Rect.fromCenter(
+                  center:
+                      Offset(coordinates["mouth"][0], coordinates["mouth"][1]),
+                  height: 20.0,
+                  width: 70.0),
+              Radius.circular(10.0)),
+          paint);
+    }
+
     drawBothEyes();
+    drawMouth();
   }
 
   bool shouldRepaint(CustomPainter oldDeligate) => true;
