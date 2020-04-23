@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/pictures.dart';
 
+double singingImageHeight;
 class SingingImage extends StatefulWidget {
   Picture picture;
   SingingImage([this.picture]);
@@ -18,8 +19,10 @@ class _SingingImageState extends State<SingingImage> {
   static Completer<WebViewController> _controller = Completer<WebViewController>();
   static WebViewController webviewController;
   static ImageController imageController;
+
   @override
   Widget build(BuildContext context) {
+    singingImageHeight = MediaQuery.of(context).size.longestSide;
     return AspectRatio(
       aspectRatio: 1 / 1,
       child: WebView(

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:snapping_sheet/snapping_sheet.dart';
 import 'package:song_barker/providers/tab_list_scroll_controller.dart';
+import 'package:song_barker/widgets/singing_image.dart';
 import '../widgets/song_list.dart';
 import '../widgets/bark_list.dart';
 import '../widgets/picture_grid.dart';
@@ -14,17 +14,23 @@ class InterfaceSelector extends StatefulWidget {
 }
 
 class InterfaceSelectorState extends State<InterfaceSelector> {
-  double initialChildSize = 0.5;
-  double minChildSize = 0.5;
-  double maxChildSize = 0.7;
-  double extent = 0.5;
+  
+  double initialChildSize;
+  double minChildSize;
+  double maxChildSize = 0.8;
+  double extent;
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
+    extent = (screenHeight - screenWidth) / screenHeight;
+    initialChildSize = extent;
+    minChildSize = extent;
+
     return NotificationListener<DraggableScrollableNotification>(
       onNotification: (notification) {
         Provider.of<TabListScrollController>(context, listen: false).updateTabExtent(notification.extent);
-        print("Notification extent: ${notification.extent}");
       },
       child: DraggableScrollableActuator(
         child: DraggableScrollableSheet(
@@ -36,7 +42,6 @@ class InterfaceSelectorState extends State<InterfaceSelector> {
                 .setScrollController(scrollController);
             
             return Container(
-              height: MediaQuery.of(context).size.longestSide * .7,
               color: Theme.of(ctx).primaryColor,
               child: DefaultTabController(
                 length: 4,
