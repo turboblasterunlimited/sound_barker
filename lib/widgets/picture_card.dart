@@ -141,9 +141,9 @@ class _PictureCardState extends State<PictureCard>
   }
 
   void handleTabScroll() {
-    if (tabListScrollController.tabExtent == 0.7) {
+    if (tabListScrollController.tabExtent == 0.8) {
       var position = tabListScrollController.scrollController.position.pixels;
-      position += 125;
+      position += 250;
       DraggableScrollableActuator.reset(context);
       Future.delayed(Duration(milliseconds: 100)).then((_) {
         tabListScrollController.scrollController.jumpTo(position);
