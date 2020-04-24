@@ -63,7 +63,7 @@ class _GenerateCardScreenState extends State<GenerateCardScreen> {
 
   void stopAll() {
     waveStreamer?.cancel();
-    imageController.blink(0);
+    imageController.mouthOpen(0);
     soundController.stopPlayer();
   }
 

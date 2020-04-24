@@ -13,8 +13,10 @@ class ImageController with ChangeNotifier {
     this.webViewController = controller;
   }
 
-  void blink(width) async {
-    webViewController.evaluateJavascript("blink($width)");
+  void mouthOpen(width) async {
+    print("Mouth Open Called: ${width}");
+    webViewController.evaluateJavascript("mouth_open($width)");
+    webViewController.evaluateJavascript("mouth_open($width)");
   }
 
   void blinkEverySecondTest() {
@@ -32,38 +34,46 @@ class ImageController with ChangeNotifier {
   // SHOULD ALSO CHECK FOR THE EXISTENCE OF pictures.mountedPicture and then pass it to create_dog.
   // NEED TO FIX ISSUE OF WIDGET SCREENS REBUILDING AFTER THEY HAVE BEEN LEFT.
   createDog([Picture picture]) {
-    if (picture == null)
+    // if ("1" != webViewController.evaluateJavascript("init_ready")) {
+    //   print("Recursive Calling createDog");
+    //   Future.delayed(Duration(milliseconds: 200), () => createDog());
+    //   return;
+    // }
+    if (picture == null) {
       return webViewController.evaluateJavascript("create_puppet()");
+    } else {
+      webViewController
+          .evaluateJavascript("create_puppet('${_base64Image(picture)}')");
+      setFace(json.decode(picture.coordinates));
+    }
 
+    webViewController.evaluateJavascript("animate()");
+    // blinkEverySecondTest();
+  }
+
+  _base64Image(picture) {
     String encodingPrefix = "data:image/png;base64,";
     String base64Image =
         base64.encode(File(picture.filePath).readAsBytesSync());
-
-    webViewController
-        .evaluateJavascript("create_puppet('$encodingPrefix$base64Image')");
-
-    Map coordinates = json.decode(picture.coordinates);
-    setFace(coordinates);
-
-    // blinkEverySecondTest();
+    return '$encodingPrefix$base64Image';
   }
 
   setFace(coordinates) {
     Future.delayed(Duration(milliseconds: 1000)).then((_) {
       webViewController.evaluateJavascript(
-          "set_position('rightEyePosition', ${coordinates.rightEye[0]}, ${coordinates.rightEye[1]})");
+          "set_position('rightEyePosition', ${coordinates['rightEye'][0]}, ${coordinates['rightEye'][1]})");
       webViewController.evaluateJavascript(
-          "set_position('leftEyePosition', ${coordinates.leftEye[0]}, ${coordinates.leftEye[1]})");
+          "set_position('leftEyePosition', ${coordinates['leftEye'][0]}, ${coordinates['leftEye'][1]})");
       webViewController.evaluateJavascript(
-          "set_position('mouthPosition', ${coordinates.mouth[0]}, ${coordinates.mouth[1]})");
+          "set_position('mouthPosition', ${coordinates['mouth'][0]}, ${coordinates['mouth'][1]})");
       webViewController.evaluateJavascript(
-          "set_position('headTop', ${coordinates.headTop[0]}, ${coordinates.headTop[1]})");
+          "set_position('headTop', ${coordinates['headTop'][0]}, ${coordinates['headTop'][1]})");
       webViewController.evaluateJavascript(
-          "set_position('headRight', ${coordinates.headRight[0]}, ${coordinates.headRight[1]})");
+          "set_position('headRight', ${coordinates['headRight'][0]}, ${coordinates['headRight'][1]})");
       webViewController.evaluateJavascript(
-          "set_position('headBottom', ${coordinates.headBottom[0]}, ${coordinates.headBottom[1]})");
+          "set_position('headBottom', ${coordinates['headBottom'][0]}, ${coordinates['headBottom'][1]})");
       webViewController.evaluateJavascript(
-          "set_position('headLeft', ${coordinates.headLeft[0]}, ${coordinates.headLeft[1]})");
+          "set_position('headLeft', ${coordinates['headLeft'][0]}, ${coordinates['headLeft'][1]})");
     });
   }
 }
