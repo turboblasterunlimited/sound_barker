@@ -34,21 +34,17 @@ class ImageController with ChangeNotifier {
   // SHOULD ALSO CHECK FOR THE EXISTENCE OF pictures.mountedPicture and then pass it to create_dog.
   // NEED TO FIX ISSUE OF WIDGET SCREENS REBUILDING AFTER THEY HAVE BEEN LEFT.
   createDog([Picture picture]) {
-    // if ("1" != webViewController.evaluateJavascript("init_ready")) {
-    //   print("Recursive Calling createDog");
-    //   Future.delayed(Duration(milliseconds: 200), () => createDog());
-    //   return;
-    // }
-    if (picture == null) {
+    if (picture == null)
       return webViewController.evaluateJavascript("create_puppet()");
-    } else {
-      webViewController
-          .evaluateJavascript("create_puppet('${_base64Image(picture)}')");
-      setFace(json.decode(picture.coordinates));
-    }
 
-    webViewController.evaluateJavascript("animate()");
+    webViewController
+        .evaluateJavascript("create_puppet('${_base64Image(picture)}')");
+    setFace(json.decode(picture.coordinates));
     // blinkEverySecondTest();
+  }
+
+  void animate() {
+    webViewController.evaluateJavascript("animate()");
   }
 
   _base64Image(picture) {

@@ -69,7 +69,7 @@ class _SingingImageState extends State<SingingImage> {
                     "[puppet.js postMessage] puppet is now ready") {
                   // same thing here, though youd want to set the instance var for puppet ready to
                   // false before calling create_puppet each time
-
+                  imageController.animate();
                 }
               })
         ]),
