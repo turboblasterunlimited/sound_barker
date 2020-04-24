@@ -157,6 +157,11 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
       return false;
     }
 
+    void magnifyPixels(x, y) {
+      // getPixel(x, y);
+
+    }
+
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: PreferredSize(
@@ -259,6 +264,8 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                         });
                       },
                       onPanUpdate: (details) {
+                        magnifyPixels(
+                            details.localPosition.dx, details.localPosition.dy);
                         if (!grabbing) return;
 
                         setState(() {
@@ -401,6 +408,7 @@ class CoordinatesPainter extends CustomPainter {
           2 * pi);
       canvas.drawPath(path, paint);
     }
+
     drawBothEyes();
     drawMouth();
     drawHeadPoints();

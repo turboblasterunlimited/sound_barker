@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../providers/pictures.dart';
 
 double singingImageHeight;
+
 class SingingImage extends StatefulWidget {
   Picture picture;
   SingingImage([this.picture]);
@@ -16,7 +17,8 @@ class SingingImage extends StatefulWidget {
 }
 
 class _SingingImageState extends State<SingingImage> {
-  static Completer<WebViewController> _controller = Completer<WebViewController>();
+  static Completer<WebViewController> _controller =
+      Completer<WebViewController>();
   static WebViewController webviewController;
   static ImageController imageController;
 
@@ -40,7 +42,8 @@ class _SingingImageState extends State<SingingImage> {
         },
 
         // initialUrl: 'https://www.thedogbarksthesong.ml/sample_animation',
-        initialUrl: 'https://www.thedogbarksthesong.ml/puppet',
+        // initialUrl: 'https://www.thedogbarksthesong.ml/puppet',
+        initialUrl: "https://thedogbarksthesong.ml/puppet_001/puppet.html",
 
         // initialUrl: 'http://webglreport.com/',
         // initialUrl: 'https://html5test.com/',

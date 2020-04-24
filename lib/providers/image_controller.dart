@@ -32,25 +32,38 @@ class ImageController with ChangeNotifier {
   // SHOULD ALSO CHECK FOR THE EXISTENCE OF pictures.mountedPicture and then pass it to create_dog.
   // NEED TO FIX ISSUE OF WIDGET SCREENS REBUILDING AFTER THEY HAVE BEEN LEFT.
   createDog([Picture picture]) {
-    if (picture == null) return webViewController.evaluateJavascript("create_puppet()");
+    if (picture == null)
+      return webViewController.evaluateJavascript("create_puppet()");
 
     String encodingPrefix = "data:image/png;base64,";
     String base64Image =
         base64.encode(File(picture.filePath).readAsBytesSync());
 
-    Map coordinates = json.decode(picture.coordinates);
-    List rightEye = coordinates["rightEye"];
-    List leftEye = coordinates["leftEye"];
-
     webViewController
         .evaluateJavascript("create_puppet('$encodingPrefix$base64Image')");
 
-    Future.delayed(Duration(milliseconds: 2000)).then((_) {
-      webViewController.evaluateJavascript("set_eye('right', ${rightEye[0]}, ${rightEye[1]})");
-      webViewController.evaluateJavascript("set_eye('left', ${leftEye[0]}, ${leftEye[1]})");
-    });
+    Map coordinates = json.decode(picture.coordinates);
+    setFace(coordinates);
+
     // blinkEverySecondTest();
   }
-}
 
-// NEED TO FIX SORT ITEMS
+  setFace(coordinates) {
+    Future.delayed(Duration(milliseconds: 1000)).then((_) {
+      webViewController.evaluateJavascript(
+          "set_position('rightEyePosition', ${coordinates.rightEye[0]}, ${coordinates.rightEye[1]})");
+      webViewController.evaluateJavascript(
+          "set_position('leftEyePosition', ${coordinates.leftEye[0]}, ${coordinates.leftEye[1]})");
+      webViewController.evaluateJavascript(
+          "set_position('mouthPosition', ${coordinates.mouth[0]}, ${coordinates.mouth[1]})");
+      webViewController.evaluateJavascript(
+          "set_position('headTop', ${coordinates.headTop[0]}, ${coordinates.headTop[1]})");
+      webViewController.evaluateJavascript(
+          "set_position('headRight', ${coordinates.headRight[0]}, ${coordinates.headRight[1]})");
+      webViewController.evaluateJavascript(
+          "set_position('headBottom', ${coordinates.headBottom[0]}, ${coordinates.headBottom[1]})");
+      webViewController.evaluateJavascript(
+          "set_position('headLeft', ${coordinates.headLeft[0]}, ${coordinates.headLeft[1]})");
+    });
+  }
+}
