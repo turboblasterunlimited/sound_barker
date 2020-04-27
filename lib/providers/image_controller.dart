@@ -17,6 +17,10 @@ class ImageController with ChangeNotifier {
     webViewController.evaluateJavascript("mouth_open($width)");
   }
 
+  void mouthTrackSound(List<double> amplitudes) {
+    webViewController.evaluateJavascript("mouth_track_sound($amplitudes)");
+  }
+
   void randomGesture(num) {
     if (num == 100) webViewController.evaluateJavascript("left_brow_raise()");
     if (num == 200) webViewController.evaluateJavascript("right_brow_raise()");

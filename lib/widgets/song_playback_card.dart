@@ -9,6 +9,7 @@ import '../functions/error_dialog.dart';
 import '../providers/image_controller.dart';
 import '../services/wave_streamer.dart' as WaveStreamer;
 import '../providers/active_wave_streamer.dart';
+import '../services/amplitude_extractor.dart';
 
 class SongPlaybackCard extends StatefulWidget {
   final int index;
@@ -67,13 +68,16 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
 
   void startAll() async {
     stopAll();
-    Provider.of<ActiveWaveStreamer>(context, listen: false)
-        .waveStreamer
-        ?.cancel();
-    waveStreamer =
-        WaveStreamer.performAudio(widget.song.filePath, imageController);
-    Provider.of<ActiveWaveStreamer>(context, listen: false).waveStreamer =
-        waveStreamer;
+    // Provider.of<ActiveWaveStreamer>(context, listen: false)
+    //     .waveStreamer
+    //     ?.cancel();
+    // waveStreamer =
+    //     WaveStreamer.performAudio(widget.song.filePath, imageController);
+    // Provider.of<ActiveWaveStreamer>(context, listen: false).waveStreamer =
+    //     waveStreamer;
+    var amplitudes = AmplitudeExtractor.extract(widget.song.filePath);
+    print("Amplitudes: ${amplitudes}");
+    Provider.of<ImageController>(context, listen: false).mouthTrackSound(amplitudes);
     await widget.soundController.startPlayer(widget.song.filePath,
         stopPlayerCallBack(), widget.song.backingTrackPath);
   }
