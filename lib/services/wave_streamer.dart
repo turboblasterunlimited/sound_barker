@@ -1,22 +1,25 @@
 import 'dart:typed_data';
 import 'dart:io';
 import 'dart:async';
+import 'dart:math';
 
-StreamSubscription<double> performAudio(path, imageController,
-    [Function callBack]) {
-
+StreamSubscription<double> performAudio(path, imageController, [Function callBack]) {
   if (File(path).exists() == null) {
     return null;
   }
+  var random = Random.secure();
+  int randomNum = 0;
   Stream<double> waveStreamer;
   StreamSubscription<double> subscription;
   try {
     imageController.mouthOpen(0);
     waveStreamer = WaveStreamer(path).stream;
     subscription = waveStreamer.listen((_amplitude) {
-      // print('Frame amplitude: $_amplitude');
       imageController.mouthOpen(_amplitude);
-      // imageController.
+      randomNum = random.nextInt(700);
+      if (randomNum % 100 == 0) {
+        imageController.randomGesture(randomNum);
+      }
     }, onError: (e) {
       print(e);
     }, onDone: () {
@@ -62,7 +65,6 @@ class WaveStreamer {
 
   Stream<double> get stream => _controller.stream;
 }
-
 
 // NOTES FOR EXTRACTING WAV HEADER DATA
 // int headerOffset = 44;

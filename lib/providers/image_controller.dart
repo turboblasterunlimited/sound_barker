@@ -13,23 +13,32 @@ class ImageController with ChangeNotifier {
     this.webViewController = controller;
   }
 
-  void mouthOpen(width) async {
-    print("Mouth Open Called: ${width}");
-    webViewController.evaluateJavascript("mouth_open($width)");
+  void mouthOpen(width) {
     webViewController.evaluateJavascript("mouth_open($width)");
   }
 
-  void blinkEverySecondTest() {
-    Future.delayed(Duration(milliseconds: 500), () {
-      Timer.periodic(Duration(seconds: 1), (_) {
-        webViewController.evaluateJavascript("blink(1)");
-      });
-    });
-
-    Timer.periodic(Duration(seconds: 1), (_) {
-      webViewController.evaluateJavascript("blink(0)");
-    });
+  void randomGesture(num) {
+    if (num == 100) webViewController.evaluateJavascript("left_brow_raise()");
+    if (num == 200) webViewController.evaluateJavascript("right_brow_raise()");
+    if (num == 300) webViewController.evaluateJavascript("left_brow_furrow()");
+    if (num == 400) webViewController.evaluateJavascript("right_brow_furrow()");
+    if (num == 500) webViewController.evaluateJavascript("left_blink_quick()");
+    if (num == 600) webViewController.evaluateJavascript("left_blink_slow()");
+    if (num == 700) webViewController.evaluateJavascript("right_blink_quick()");
+    if (num == 0) webViewController.evaluateJavascript("right_blink_slow()");
   }
+
+  // void blinkEverySecondTest() {
+  //   Future.delayed(Duration(milliseconds: 500), () {
+  //     Timer.periodic(Duration(seconds: 1), (_) {
+  //       webViewController.evaluateJavascript("blink(1)");
+  //     });
+  //   });
+
+  //   Timer.periodic(Duration(seconds: 1), (_) {
+  //     webViewController.evaluateJavascript("blink(0)");
+  //   });
+  // }
 
   // SHOULD ALSO CHECK FOR THE EXISTENCE OF pictures.mountedPicture and then pass it to create_dog.
   // NEED TO FIX ISSUE OF WIDGET SCREENS REBUILDING AFTER THEY HAVE BEEN LEFT.
