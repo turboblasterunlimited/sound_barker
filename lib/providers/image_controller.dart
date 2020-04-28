@@ -69,7 +69,7 @@ class ImageController with ChangeNotifier {
   }
 
   setFace(coordinates) {
-    Future.delayed(Duration(milliseconds: 1000)).then((_) {
+    Future.delayed(Duration(milliseconds: 2000)).then((_) {
       webViewController.evaluateJavascript(
           "set_position('rightEyePosition', ${coordinates['rightEye'][0]}, ${coordinates['rightEye'][1]})");
       webViewController.evaluateJavascript(

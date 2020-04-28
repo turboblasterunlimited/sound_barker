@@ -27,7 +27,7 @@ class _SingingImageState extends State<SingingImage> {
       child: WebView(
         onWebViewCreated: (WebViewController c) {
           webviewController = c;
-          _controller.complete(webviewController);
+          // _controller.complete(webviewController);
           imageController =
               Provider.of<ImageController>(context, listen: false);
 
@@ -60,7 +60,7 @@ class _SingingImageState extends State<SingingImage> {
                   // here you can either set some var on the instance to ready to
                   // show that its ready for evaling js, or you could actually make a js
                   // eval call.
-                  imageController.createDog();
+                  imageController.createDog(widget.picture);
                 }
                 if (message.message ==
                     "[puppet.js postMessage] puppet is now ready") {

@@ -34,7 +34,6 @@ class _GenerateCardScreenState extends State<GenerateCardScreen> {
   StreamSubscription<double> waveStreamer;
   ImageController imageController;
   SoundController soundController;
-  Song song;
   String cardFilePath;
   Pictures pictures;
   bool isPlaying;
@@ -80,10 +79,10 @@ class _GenerateCardScreenState extends State<GenerateCardScreen> {
         .waveStreamer
         ?.cancel();
     waveStreamer = WaveStreamer.performAudio(
-        song.filePath, imageController, doneCapturing);
+        widget.song.filePath, imageController, doneCapturing);
     Provider.of<ActiveWaveStreamer>(context, listen: false).waveStreamer =
         waveStreamer;
-    soundController.startPlayer(song.filePath, stopPlayerCallBack(), song.backingTrackPath);
+    soundController.startPlayer(widget.song.filePath, stopPlayerCallBack(), widget.song.backingTrackPath);
   }
 
   doneCapturing() async {
@@ -128,7 +127,7 @@ class _GenerateCardScreenState extends State<GenerateCardScreen> {
       ),
       body: Column(
         children: <Widget>[
-          SingingImage(),
+          SingingImage(widget.picture),
           Expanded(
             child: Column(
               children: <Widget>[
