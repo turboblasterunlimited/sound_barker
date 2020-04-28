@@ -23,7 +23,9 @@ class InterfaceSelectorState extends State<InterfaceSelector> {
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
-    extent = (screenHeight - screenWidth) / screenHeight;
+    double bottomPadding = MediaQuery.of(context).padding.bottom;
+    double topPadding = MediaQuery.of(context).padding.top;
+    extent = (screenHeight - screenWidth + bottomPadding + topPadding) / (screenHeight + bottomPadding + topPadding);
     initialChildSize = extent;
     minChildSize = extent;
 

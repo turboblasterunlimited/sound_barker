@@ -375,6 +375,10 @@ class CoordinatesPainter extends CustomPainter {
     }
 
     void drawMouth() {
+      canvas.drawCircle(
+          Offset(coordinates["mouth"][0], coordinates["mouth"][1]),
+          1.0,
+          paint);
       canvas.drawRRect(
           RRect.fromRectAndRadius(
               Rect.fromCenter(
