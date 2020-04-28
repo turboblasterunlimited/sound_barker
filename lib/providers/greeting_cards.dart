@@ -4,10 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'dart:io';
 import 'dart:math';
 import 'package:image/image.dart' as IMG;
-import 'dart:convert';
-
-import '../services/gcloud.dart';
-import '../services/rest_api.dart';
 
 class GreetingCards with ChangeNotifier {
   List<GreetingCard> all = [];

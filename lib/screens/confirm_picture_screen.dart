@@ -23,7 +23,7 @@ class ConfirmPictureScreen extends StatefulWidget {
     this.coordinatesSet = coordinatesSet ?? false;
     if (this.editing == true) {
       this.title =
-          this.isNamed == false ? "Rename your picture" : "Mark the eyes";
+          this.isNamed == false ? "Rename your picture" : "Position the face";
     } else {
       this.title = "Name your picture";
     }
@@ -153,7 +153,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
 
     bool _inProximity(existingXY, touchedXY) {
       if ((existingXY[0] - touchedXY[0]).abs() < 10.0 &&
-          (existingXY[0] - touchedXY[0]).abs() < 10.0) return true;
+          (existingXY[1] - touchedXY[1]).abs() < 10.0) return true;
       return false;
     }
 
@@ -353,8 +353,6 @@ class CoordinatesPainter extends CustomPainter {
       ..color = Colors.blue;
 
     void drawBothEyes() {
-      print("DRAWING EYES");
-      print("Coordinates: $coordinates");
       canvas.drawCircle(
           Offset(coordinates["rightEye"][0], coordinates["rightEye"][1]),
           15.0,
@@ -363,6 +361,16 @@ class CoordinatesPainter extends CustomPainter {
       canvas.drawCircle(
           Offset(coordinates["leftEye"][0], coordinates["leftEye"][1]),
           15.0,
+          paint);
+      
+      canvas.drawCircle(
+          Offset(coordinates["rightEye"][0], coordinates["rightEye"][1]),
+          1.0,
+          paint);
+
+      canvas.drawCircle(
+          Offset(coordinates["leftEye"][0], coordinates["leftEye"][1]),
+          1.0,
           paint);
     }
 

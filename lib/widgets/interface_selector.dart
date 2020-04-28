@@ -14,7 +14,6 @@ class InterfaceSelector extends StatefulWidget {
 }
 
 class InterfaceSelectorState extends State<InterfaceSelector> {
-  
   double initialChildSize;
   double minChildSize;
   double maxChildSize = 0.8;
