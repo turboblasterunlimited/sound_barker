@@ -107,9 +107,11 @@ packages:
   flutter_screen_recording:
     dependency: "direct main"
     description:
-      name: flutter_screen_recording
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: master
+      resolved-ref: "1ad5d7f3f58737bb06c85d75624069de13a95c52"
+      url: "https://github.com/handofthecode/flutter_screen_recording"
+    source: git
     version: "1.0.4"
   flutter_sound:
     dependency: "direct main"

@@ -159,7 +159,6 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
 
     void magnifyPixels(x, y) {
       // getPixel(x, y);
-
     }
 
     return Scaffold(
@@ -167,6 +166,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(40.0),
         child: AppBar(
+          centerTitle: true,
           leading: RawMaterialButton(
             child: Icon(
               Icons.arrow_back,
@@ -362,7 +362,7 @@ class CoordinatesPainter extends CustomPainter {
           Offset(coordinates["leftEye"][0], coordinates["leftEye"][1]),
           15.0,
           paint);
-      
+
       canvas.drawCircle(
           Offset(coordinates["rightEye"][0], coordinates["rightEye"][1]),
           1.0,
@@ -376,9 +376,7 @@ class CoordinatesPainter extends CustomPainter {
 
     void drawMouth() {
       canvas.drawCircle(
-          Offset(coordinates["mouth"][0], coordinates["mouth"][1]),
-          1.0,
-          paint);
+          Offset(coordinates["mouth"][0], coordinates["mouth"][1]), 1.0, paint);
       canvas.drawRRect(
           RRect.fromRectAndRadius(
               Rect.fromCenter(

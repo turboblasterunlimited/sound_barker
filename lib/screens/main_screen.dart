@@ -57,6 +57,12 @@ class _MainScreenState extends State<MainScreen> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(30.0),
         child: AppBar(
+          iconTheme:
+              IconThemeData(color: Theme.of(context).accentColor, size: 30),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          centerTitle: true,
+          actions: <Widget>[],
           leading: Padding(
             padding: const EdgeInsets.only(top: 5),
             child: RawMaterialButton(
@@ -73,12 +79,7 @@ class _MainScreenState extends State<MainScreen> {
               },
             ),
           ),
-          iconTheme:
-              IconThemeData(color: Theme.of(context).accentColor, size: 30),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          centerTitle: true,
-          actions: <Widget>[],
+          
         ),
       ),
       drawer: AppDrawer(),
@@ -90,7 +91,6 @@ class _MainScreenState extends State<MainScreen> {
             ),
             Positioned(
               child: Align(
-                // alignment: FractionalOffset.bottomCenter,
                 child: InterfaceSelector(),
               ),
             )

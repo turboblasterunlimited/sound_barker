@@ -35,7 +35,10 @@ dependencies:
   outline_material_icons: ^0.1.1
   file_picker: ^1.4.3+2
   audioplayers: ^0.14.2
-  flutter_screen_recording: ^1.0.4
+  flutter_screen_recording:
+    git:
+      url: https://github.com/handofthecode/flutter_screen_recording
+      ref: master
   permission_handler: ^5.0.0
   # snapping_sheet: ^2.0.0
 
