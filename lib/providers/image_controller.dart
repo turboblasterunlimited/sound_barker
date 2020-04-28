@@ -15,17 +15,22 @@ class ImageController with ChangeNotifier {
 
   void mouthOpen(width) {
     webViewController.evaluateJavascript("mouth_open($width)");
+    webViewController.evaluateJavascript("blink(${0 - width})");
+  }
+
+  void mouthTrackSound(List<double> amplitudes) {
+    webViewController.evaluateJavascript("mouth_track_sound($amplitudes)");
   }
 
   void randomGesture(num) {
-    if (num == 100) webViewController.evaluateJavascript("left_brow_raise()");
-    if (num == 200) webViewController.evaluateJavascript("right_brow_raise()");
-    if (num == 300) webViewController.evaluateJavascript("left_brow_furrow()");
-    if (num == 400) webViewController.evaluateJavascript("right_brow_furrow()");
-    if (num == 500) webViewController.evaluateJavascript("left_blink_quick()");
-    if (num == 600) webViewController.evaluateJavascript("left_blink_slow()");
-    if (num == 700) webViewController.evaluateJavascript("right_blink_quick()");
-    if (num == 0) webViewController.evaluateJavascript("right_blink_slow()");
+    if (num == 0) webViewController.evaluateJavascript("left_brow_raise()");
+    if (num == 100) webViewController.evaluateJavascript("right_brow_raise()");
+    if (num == 200) webViewController.evaluateJavascript("left_brow_furrow()");
+    if (num == 300) webViewController.evaluateJavascript("right_brow_furrow()");
+    // if (num == 500) webViewController.evaluateJavascript("left_blink_quick()");
+    // if (num == 600) webViewController.evaluateJavascript("left_blink_slow()");
+    // if (num == 700) webViewController.evaluateJavascript("right_blink_quick()");
+    // if (num == 0) webViewController.evaluateJavascript("right_blink_slow()");
   }
 
   // void blinkEverySecondTest() {

@@ -3,7 +3,6 @@ import 'package:flutter_sound/ios_quality.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'dart:async';
-import 'package:intl/intl.dart' show DateFormat;
 import 'package:intl/date_symbol_data_local.dart';
 import 'dart:io';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -23,27 +22,18 @@ class _RecordButtonState extends State<RecordButton> {
   String filePath;
   bool _isRecording = false;
   StreamSubscription _recorderSubscription;
-  StreamSubscription _dbPeakSubscription;
-  StreamSubscription _playerSubscription;
   FlutterSound flutterSound;
   SpinnerState spinnerState;
-
-  // String _recorderTxt = '00:00:00';
-  // String _playerTxt = '00:00:00';
-  // double _dbLevel;
-
-  double sliderCurrentPosition = 0.0;
   double maxDuration = 1.0;
   t_CODEC _codec = t_CODEC.CODEC_AAC;
+  Timer _recordingTimer;
 
   @override
   void initState() {
     super.initState();
     flutterSound = FlutterSound();
     flutterSound.setSubscriptionDuration(0.01);
-    flutterSound.setDbPeakLevelUpdate(0.8);
-    flutterSound.setDbLevelEnabled(true);
-    initializeDateFormatting();
+
   }
 
   void startRecorder() async {
@@ -53,23 +43,8 @@ class _RecordButtonState extends State<RecordButton> {
           iosQuality: IosQuality.MAX,
           sampleRate: 44100,
           bitRate: 192000);
-      //print('startRecorder: $filePath');
-
-      _recorderSubscription = flutterSound.onRecorderStateChanged.listen((e) {
-        DateTime date = new DateTime.fromMillisecondsSinceEpoch(
-            e.currentPosition.toInt(),
-            isUtc: true);
-        String txt = DateFormat('mm:ss:SS', 'en_GB').format(date);
-
-        // setState(() {
-        //   this._recorderTxt = txt.substring(0, 8);
-        // });
-      });
-      _dbPeakSubscription =
-          flutterSound.onRecorderDbPeakChanged.listen((value) {
-        // setState(() {
-        //   this._dbLevel = value;
-        // });
+      _recordingTimer = Timer(Duration(seconds: 10), () {
+        stopRecorder();
       });
 
       this.setState(() {
@@ -83,6 +58,7 @@ class _RecordButtonState extends State<RecordButton> {
   }
 
   void stopRecorder() async {
+    _recordingTimer.cancel();
     spinnerState.loadBarks();
     setState(() {
       this._isRecording = false;
@@ -93,10 +69,6 @@ class _RecordButtonState extends State<RecordButton> {
       if (_recorderSubscription != null) {
         _recorderSubscription.cancel();
         _recorderSubscription = null;
-      }
-      if (_dbPeakSubscription != null) {
-        _dbPeakSubscription.cancel();
-        _dbPeakSubscription = null;
       }
     } catch (err) {
       print('stopRecorder error: $err');

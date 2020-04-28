@@ -16,7 +16,7 @@ StreamSubscription<double> performAudio(path, imageController, [Function callBac
     waveStreamer = WaveStreamer(path).stream;
     subscription = waveStreamer.listen((_amplitude) {
       imageController.mouthOpen(_amplitude);
-      randomNum = random.nextInt(700);
+      randomNum = random.nextInt(300);
       if (randomNum % 100 == 0) {
         imageController.randomGesture(randomNum);
       }
@@ -39,13 +39,13 @@ class WaveStreamer {
     int headerOffset = 44;
     Uint8List bytes = File(filePath).readAsBytesSync();
     int sampleRate = bytes.sublist(24, 28).buffer.asInt32List()[0];
-    // framerate = 25
-    int sampleChunk = (sampleRate / 25).round();
+    double frameRate = 25;
+    int sampleChunk = (sampleRate / frameRate).round();
     Int16List samples = bytes.sublist(headerOffset).buffer.asInt16List();
     List<int> waveSamples = samples.toList();
     double _amplitude;
     List<int> tempSubList;
-    Timer.periodic(Duration(milliseconds: 40), (t) {
+    Timer.periodic(Duration(microseconds: (1000000/frameRate).round()), (t) {
       if (waveSamples.length < sampleChunk) {
         _controller.close();
         return;
