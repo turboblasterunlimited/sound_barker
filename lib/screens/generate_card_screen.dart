@@ -111,8 +111,8 @@ class _GenerateCardScreenState extends State<GenerateCardScreen> {
     setState(() {
       this._isCapturing = true;
     });
-    print("Storage Path within Flutter: $myAppStoragePath");
-    FlutterScreenRecording.startRecordScreen(widget.picture.name, myAppStoragePath.toString());
+    // print("Storage Path within Flutter: $myAppStoragePath");
+    FlutterScreenRecording.startRecordScreen(widget.picture.name);
 
     await startAll();
     // captureScreen();
