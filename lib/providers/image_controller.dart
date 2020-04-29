@@ -15,7 +15,7 @@ class ImageController with ChangeNotifier {
 
   void mouthOpen(width) {
     webViewController.evaluateJavascript("mouth_open($width)");
-    webViewController.evaluateJavascript("blink(${0 - width})");
+    if (width > 0.5) webViewController.evaluateJavascript("blink(${0.5 - width})");
   }
 
   void mouthTrackSound(List<double> amplitudes) {

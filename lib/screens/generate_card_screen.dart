@@ -9,6 +9,7 @@ import 'dart:io';
 import 'package:flutter_screen_recording/flutter_screen_recording.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../functions/app_storage_path.dart';
 import '../functions/error_dialog.dart';
 import '../providers/image_controller.dart';
 import '../providers/active_wave_streamer.dart';
@@ -17,6 +18,8 @@ import '../providers/songs.dart';
 import '../providers/pictures.dart';
 import '../services/wave_streamer.dart' as WaveStreamer;
 import '../functions/error_dialog.dart';
+import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
+import 'package:flutter_ffmpeg/log_level.dart';
 
 class GenerateCardScreen extends StatefulWidget {
   static const routeName = 'record-message-screen';
@@ -37,6 +40,9 @@ class _GenerateCardScreenState extends State<GenerateCardScreen> {
   String cardFilePath;
   Pictures pictures;
   bool isPlaying;
+  static final FlutterFFmpegConfig _flutterFFmpegConfig = FlutterFFmpegConfig();
+  static final FlutterFFmpeg _flutterFFmpeg = FlutterFFmpeg();
+
 
   requestPermissions() async {
     Map<Permission, PermissionStatus> status = await [
@@ -93,6 +99,11 @@ class _GenerateCardScreenState extends State<GenerateCardScreen> {
     });
     print("Done Capturing: $_isCapturing");
     print("Card FilePath: $cardFilePath");
+    // await _flutterFFmpeg.execute(
+    //         "-hide_banner -loglevel panic -i $filePath $filePathBase.wav");
+
+    // ffmpeg -i in.mp4 -filter:v "crop=out_w:out_h:x:y" out.mp4
+
     showErrorDialog(context, cardFilePath);
   }
 
@@ -100,7 +111,8 @@ class _GenerateCardScreenState extends State<GenerateCardScreen> {
     setState(() {
       this._isCapturing = true;
     });
-    FlutterScreenRecording.startRecordScreen("BOBBY");
+    print("Storage Path within Flutter: $myAppStoragePath");
+    FlutterScreenRecording.startRecordScreen(widget.picture.name, myAppStoragePath.toString());
 
     await startAll();
     // captureScreen();
