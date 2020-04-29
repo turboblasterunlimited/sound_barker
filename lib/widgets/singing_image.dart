@@ -15,10 +15,16 @@ class SingingImage extends StatefulWidget {
 }
 
 class _SingingImageState extends State<SingingImage> {
-  static Completer<WebViewController> _controller =
-      Completer<WebViewController>();
+  // static Completer<WebViewController> _controller =
+  //     Completer<WebViewController>();
   static WebViewController webviewController;
   static ImageController imageController;
+  Timer randomGesture;
+
+  void dispose() {
+    randomGesture.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +73,8 @@ class _SingingImageState extends State<SingingImage> {
                   // same thing here, though youd want to set the instance var for puppet ready to
                   // false before calling create_puppet each time
                   imageController.animate();
+                  if (randomGesture != null) randomGesture.cancel();
+                  randomGesture = imageController.randomGesture();
                 }
               })
         ]),

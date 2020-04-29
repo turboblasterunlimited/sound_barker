@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:convert';
@@ -15,22 +16,35 @@ class ImageController with ChangeNotifier {
 
   void mouthOpen(width) {
     webViewController.evaluateJavascript("mouth_open($width)");
-    if (width > 0.5) webViewController.evaluateJavascript("blink(${0.5 - width})");
   }
 
   void mouthTrackSound(List<double> amplitudes) {
     webViewController.evaluateJavascript("mouth_track_sound($amplitudes)");
   }
 
-  void randomGesture(num) {
-    if (num == 0) webViewController.evaluateJavascript("left_brow_raise()");
-    if (num == 100) webViewController.evaluateJavascript("right_brow_raise()");
-    if (num == 200) webViewController.evaluateJavascript("left_brow_furrow()");
-    if (num == 300) webViewController.evaluateJavascript("right_brow_furrow()");
-    // if (num == 500) webViewController.evaluateJavascript("left_blink_quick()");
-    // if (num == 600) webViewController.evaluateJavascript("left_blink_slow()");
-    // if (num == 700) webViewController.evaluateJavascript("right_blink_quick()");
-    // if (num == 0) webViewController.evaluateJavascript("right_blink_slow()");
+  Timer randomGesture() {
+    int rNum;
+    var random = Random.secure();
+    var timer = Timer.periodic(Duration(milliseconds: 900), (timer) {
+      rNum = random.nextInt(20);
+      if (rNum == 0) webViewController.evaluateJavascript("left_brow_raise()");
+      if (rNum == 1) webViewController.evaluateJavascript("right_brow_raise()");
+      if (rNum == 2) webViewController.evaluateJavascript("left_brow_furrow()");
+      if (rNum == 3) webViewController.evaluateJavascript("right_brow_furrow()");
+      if (rNum == 4 || rNum == 5 || rNum == 6) {
+        webViewController.evaluateJavascript("left_blink_quick()");
+        webViewController.evaluateJavascript("right_blink_quick()");
+      }
+      if (rNum == 7) {
+        webViewController.evaluateJavascript("left_blink_slow()");
+        webViewController.evaluateJavascript("right_blink_slow()");
+      }
+      if (rNum == 8) webViewController.evaluateJavascript("right_blink_quick()");
+      if (rNum == 9) webViewController.evaluateJavascript("right_blink_slow()");
+      if (rNum == 10) webViewController.evaluateJavascript("right_blink_quick()");
+      if (rNum == 11) webViewController.evaluateJavascript("right_blink_slow()");
+    });
+    return timer;
   }
 
   // void blinkEverySecondTest() {

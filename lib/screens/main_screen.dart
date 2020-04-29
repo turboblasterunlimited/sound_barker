@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:outline_material_icons/outline_material_icons.dart';
 
 import '../providers/pictures.dart';
 import '../providers/barks.dart';
@@ -9,7 +8,6 @@ import '../providers/songs.dart';
 import '../widgets/interface_selector.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/singing_image.dart';
-import '../providers/image_controller.dart';
 
 class MainScreen extends StatefulWidget {
   static const routeName = 'main-screen';
@@ -36,8 +34,6 @@ class _MainScreenState extends State<MainScreen> {
     final barks = Provider.of<Barks>(context, listen: false);
     final songs = Provider.of<Songs>(context, listen: false);
     final pictures = Provider.of<Pictures>(context, listen: false);
-    ImageController imageController =
-        Provider.of<ImageController>(context, listen: false);
 
     void downloadEverything() async {
       await barks.retrieveAll();

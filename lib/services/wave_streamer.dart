@@ -1,14 +1,12 @@
 import 'dart:typed_data';
 import 'dart:io';
 import 'dart:async';
-import 'dart:math';
 
-StreamSubscription<double> performAudio(path, imageController, [Function callBack]) {
+StreamSubscription<double> performAudio(path, imageController,
+    [Function callBack]) {
   if (File(path).exists() == null) {
     return null;
   }
-  var random = Random.secure();
-  int randomNum = 0;
   Stream<double> waveStreamer;
   StreamSubscription<double> subscription;
   try {
@@ -16,10 +14,6 @@ StreamSubscription<double> performAudio(path, imageController, [Function callBac
     waveStreamer = WaveStreamer(path).stream;
     subscription = waveStreamer.listen((_amplitude) {
       imageController.mouthOpen(_amplitude);
-      randomNum = random.nextInt(300);
-      if (randomNum % 100 == 0) {
-        imageController.randomGesture(randomNum);
-      }
     }, onError: (e) {
       print(e);
     }, onDone: () {
@@ -45,7 +39,7 @@ class WaveStreamer {
     List<int> waveSamples = samples.toList();
     double _amplitude;
     List<int> tempSubList;
-    Timer.periodic(Duration(microseconds: (1000000/frameRate).round()), (t) {
+    Timer.periodic(Duration(microseconds: (1000000 / frameRate).round()), (t) {
       if (waveSamples.length < sampleChunk) {
         _controller.close();
         return;
