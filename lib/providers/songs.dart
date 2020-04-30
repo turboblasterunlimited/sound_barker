@@ -5,7 +5,11 @@ import '../services/gcloud.dart';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:csv/csv.dart';
+import '../services/ffmpeg.dart';
+import '../functions/app_storage_path.dart';
 import '../services/rest_api.dart';
+import '../services/amplitude_extractor.dart';
 
 final captureBackingFileName = RegExp(r'\/([0-9a-zA-Z_ ]*.[a-zA-Z]{3})$');
 
@@ -60,8 +64,8 @@ class Song with ChangeNotifier {
   String fileId;
   String formulaId;
   String backingTrackUrl;
-  String backingTrackPath;
   DateTime created;
+  String amplitudesPath;
 
   Song(
       {String filePath,
@@ -70,16 +74,16 @@ class Song with ChangeNotifier {
       String fileId,
       String formulaId,
       String backingTrackUrl,
-      String backingTrackPath,
-      DateTime created}) {
+      DateTime created,
+      String amplitudesPath}) {
     this.filePath = filePath;
     this.name = name;
     this.fileUrl = fileUrl;
     this.fileId = fileId;
     this.formulaId = formulaId;
     this.backingTrackUrl = backingTrackUrl;
-    this.backingTrackPath = backingTrackPath;
     this.created = created;
+    this.amplitudesPath = amplitudesPath;
   }
 
   void removeFromStorage() {
@@ -100,8 +104,19 @@ class Song with ChangeNotifier {
     notifyListeners();
   }
 
+  createAmplitudeFile(filePathBase) async {
+    await FFMpeg.converter
+        .execute("-hide_banner -loglevel panic -i $filePath $filePathBase.wav");
+    final amplitudes = AmplitudeExtractor.extract("$filePathBase.wav");
+    File("$filePathBase.wav").delete();
+    final csvAmplitudes = const ListToCsvConverter().convert([amplitudes]);
+    File file = File("$filePathBase.csv");
+    file.writeAsStringSync(csvAmplitudes);
+    return file.path;
+  }
+
   Future<Song> retrieveSong(Map songData, [bucket]) async {
-    //print(data);
+    String filePathBase = myAppStoragePath + '/' + fileId;
     bucket ??= await Gcloud.accessBucket();
     this.backingTrackUrl = songData["backing_track_fp"];
     this.fileId = songData["uuid"];
@@ -109,15 +124,25 @@ class Song with ChangeNotifier {
     this.fileUrl = songData["bucket_fp"];
     this.formulaId = songData["song_id"];
     this.created = DateTime.parse(songData["created"]);
-    this.filePath =
-        await Gcloud.downloadFromBucket(fileUrl, fileId, bucket: bucket);
-    if (backingTrackUrl != null) {
-      final match = captureBackingFileName.firstMatch(backingTrackUrl);
-      String backingFileName = match.group(1);
 
-      this.backingTrackPath = await Gcloud.downloadFromBucket(
-          backingTrackUrl, backingFileName,
-          backingTrack: true);
+    if (File(filePathBase + '.csv').exists() != null &&
+        File(filePathBase + '.aac').exists() != null) {
+      this.filePath = filePathBase + '.aac';
+      this.amplitudesPath = filePathBase + '.csv';
+      return this;
+    }
+    this.filePath = await Gcloud.downloadFromBucket(fileUrl, fileId + '.aac',
+        bucket: bucket);
+    this.amplitudesPath = createAmplitudeFile(filePathBase);
+    // Download backing track
+    if (backingTrackUrl != null) {
+      String backingTrackPath = await Gcloud.downloadFromBucket(
+          backingTrackUrl, filePathBase + "backing",
+          bucket: bucket);
+      // merge backing track and melody, delete backing track
+      await FFMpeg.converter.execute(
+          "-i $filePath -i $backingTrackPath -filter_complex amix=inputs=2:duration=first:dropout_transition=3 $filePath");
+      File(backingTrackPath).delete();
     }
     return this;
   }

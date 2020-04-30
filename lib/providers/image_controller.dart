@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:convert';
 import 'dart:io';
+import 'package:csv/csv.dart';
 
 import '../providers/pictures.dart';
 
@@ -14,18 +15,29 @@ class ImageController with ChangeNotifier {
     this.webViewController = controller;
   }
 
+  void stopAnimation() {
+    this.webViewController.evaluateJavascript("stop_all_animations()");
+    webViewController.evaluateJavascript("mouth_open(0)");
+  }
+
+  // Probably Depricated
   void mouthOpen(width) {
     webViewController.evaluateJavascript("mouth_open($width)");
   }
 
-  void mouthTrackSound(List<double> amplitudes) {
-    webViewController.evaluateJavascript("mouth_track_sound($amplitudes)");
+  void mouthTrackSound(String amplitudesFilePath) async {
+    final input = new File(amplitudesFilePath).openRead();
+    final amplitudes = await input
+        .transform(utf8.decoder)
+        .transform(new CsvToListConverter())
+        .toList();
+    webViewController.evaluateJavascript("mouth_track_sound(${amplitudes[0]})");
   }
 
   Timer randomGesture() {
     int rNum;
     var random = Random.secure();
-    var timer = Timer.periodic(Duration(milliseconds: 900), (timer) {
+    var timer = Timer.periodic(Duration(milliseconds: 1100), (timer) {
       rNum = random.nextInt(40);
 
       if (rNum <= 3) webViewController.evaluateJavascript("left_brow_raise()");
@@ -49,24 +61,11 @@ class ImageController with ChangeNotifier {
         webViewController.evaluateJavascript("right_blink_slow()");
       if (rNum == 21)
         webViewController.evaluateJavascript("left_blink_quick()");
-      if (rNum == 22)
-        webViewController.evaluateJavascript("left_blink_slow()");
+      if (rNum == 22) webViewController.evaluateJavascript("left_blink_slow()");
     });
     return timer;
   }
-
-  // void blinkEverySecondTest() {
-  //   Future.delayed(Duration(milliseconds: 500), () {
-  //     Timer.periodic(Duration(seconds: 1), (_) {
-  //       webViewController.evaluateJavascript("blink(1)");
-  //     });
-  //   });
-
-  //   Timer.periodic(Duration(seconds: 1), (_) {
-  //     webViewController.evaluateJavascript("blink(0)");
-  //   });
-  // }
-
+  
   // SHOULD ALSO CHECK FOR THE EXISTENCE OF pictures.mountedPicture and then pass it to create_dog.
   // NEED TO FIX ISSUE OF WIDGET SCREENS REBUILDING AFTER THEY HAVE BEEN LEFT.
   createDog([Picture picture]) {

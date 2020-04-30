@@ -52,13 +52,12 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
 
   void stopAll() {
     waveStreamer?.cancel();
-    imageController.mouthOpen(0);
+    imageController.stopAnimation();
     widget.soundController.stopPlayer();
   }
 
   void startAll() async {
-    waveStreamer =
-        WaveStreamer.performAudio(widget.bark.filePath, imageController);
+    imageController.mouthTrackSound(widget.bark.amplitudesPath);
     await widget.soundController.startPlayer(widget.bark.filePath);
   }
 

@@ -85,7 +85,7 @@ class _GenerateCardScreenState extends State<GenerateCardScreen> {
         widget.song.filePath, imageController, doneCapturing);
     Provider.of<ActiveWaveStreamer>(context, listen: false).waveStreamer =
         waveStreamer;
-    soundController.startPlayer(widget.song.filePath, stopPlayerCallBack(), widget.song.backingTrackPath);
+    soundController.startPlayer(widget.song.filePath, stopPlayerCallBack());
   }
 
   doneCapturing() async {

@@ -78,8 +78,8 @@ class Pictures with ChangeNotifier {
     int imagesCount = images.length;
     for (var i = 0; i < imagesCount; i++) {
       String filePath = await Gcloud.downloadFromBucket(
-          images[i].fileUrl, images[i].fileId,
-          image: true, bucket: bucket);
+          images[i].fileUrl, images[i].fileId + '.jpg',
+          bucket: bucket);
       images[i].filePath = filePath;
     }
   }
@@ -99,7 +99,8 @@ class Picture with ChangeNotifier, Gcloud {
     String filePath,
     String fileUrl,
     String fileId,
-    String coordinates = '{"mouth": [0.0, 0.0], "leftEye": [-0.2, 0.2], "rightEye": [0.2, 0.2]}',
+    String coordinates =
+        '{"mouth": [0.0, 0.0], "leftEye": [-0.2, 0.2], "rightEye": [0.2, 0.2]}',
     DateTime created,
   }) {
     this.coordinates = coordinates;

@@ -41,6 +41,7 @@ dependencies:
       url: https://github.com/handofthecode/flutter_screen_recording
       ref: master
   permission_handler: ^5.0.0
+  csv: ^4.0.3
   # snapping_sheet: ^2.0.0
 
   # The following adds the Cupertino Icons font to your application.

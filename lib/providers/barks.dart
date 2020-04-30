@@ -1,5 +1,9 @@
+import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:gcloud/storage.dart';
+import 'package:song_barker/functions/app_storage_path.dart';
+import 'package:song_barker/services/amplitude_extractor.dart';
+import 'package:song_barker/services/ffmpeg.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:convert';
@@ -41,6 +45,17 @@ class Barks with ChangeNotifier {
     });
   }
 
+  createAmplitudeFile(filePath, filePathBase) async {
+    await FFMpeg.converter
+        .execute("-hide_banner -loglevel panic -i $filePath $filePathBase.wav");
+    final amplitudes = AmplitudeExtractor.extract("$filePathBase.wav");
+    File("$filePathBase.wav").delete();
+    final csvAmplitudes = const ListToCsvConverter().convert([amplitudes]);
+    File file = File("$filePathBase.csv");
+    file.writeAsStringSync(csvAmplitudes);
+    return file.path;
+  }
+
   // downloads the files either from all barks in memory or just the barks passed.
   Future downloadAllBarksFromBucket([List barks]) async {
     Bucket bucket = await Gcloud.accessBucket();
@@ -48,9 +63,11 @@ class Barks with ChangeNotifier {
     int barkCount = barks.length;
     for (var i = 0; i < barkCount; i++) {
       String filePath = await Gcloud.downloadFromBucket(
-          barks[i].fileUrl, barks[i].fileId,
+          barks[i].fileUrl, barks[i].fileId + ".aac",
           bucket: bucket);
       barks[i].filePath = filePath;
+      String filePathBase = myAppStoragePath + '/' + barks[i].fileId;
+      barks[i].amplitudePath = createAmplitudeFile(filePath, filePathBase);
     }
   }
 
@@ -69,25 +86,29 @@ class Barks with ChangeNotifier {
 class Bark with ChangeNotifier {
   String name;
   String fileUrl;
-  String
-      filePath; // This is initially used for file upload from temp directory. Later (for cropped barks) it can be used for playback.
+  // filePath is initially used for file upload from temp directory. Later (for cropped barks) it can be used for playback.
+  String filePath;
   String fileId;
   DateTime created;
+  String amplitudesPath;
 
-  Bark(
-      {String name,
-      String filePath,
-      String fileUrl,
-      String fileId,
-      DateTime created}) {
+  Bark({
+    String name,
+    String filePath,
+    String fileUrl,
+    String fileId,
+    DateTime created,
+    String amplitudesPath,
+  }) {
     this.name = name;
     this.filePath = filePath;
     this.fileUrl = fileUrl;
     this.fileId = fileId ??= Uuid().v4();
     this.created = created ??= DateTime.now();
+    this.amplitudesPath = amplitudesPath;
   }
 
-  Future<String> rename(newName) async {
+  Future<void> rename(newName) async {
     try {
       await RestAPI.renameBarkOnServer(this, newName);
     } catch (e) {

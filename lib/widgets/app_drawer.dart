@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:song_barker/functions/app_storage_path.dart';
 
 import '../screens/main_screen.dart';
 
@@ -40,14 +43,15 @@ class AppDrawer extends StatelessWidget {
                   },
                 ),
                 Divider(),
-                // ListTile(
-                //     leading: Icon(Icons.pets),
-                //     title: Text('Make Songs'),
-                //     onTap: () {
-                //       Navigator.of(context)
-                //           .pushReplacementNamed(MakeSongsScreen.routeName);
-                //     }),
-                // Divider(),
+                ListTile(
+                  leading: Icon(Icons.delete),
+                  title: Text('Delete just files'),
+                  onTap: () {
+                    final dir = Directory(myAppStoragePath);
+                    dir.deleteSync(recursive: true);
+                  },
+                ),
+                Divider(),
               ],
             ),
           ),

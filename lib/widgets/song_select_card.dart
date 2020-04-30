@@ -45,7 +45,7 @@ class _SongSelectCardState extends State<SongSelectCard> {
     try {
       widget.soundController.stopPlayer();
       await widget.soundController.startPlayer(widget.song.filePath,
-          stopPlayerCallBack(), widget.song.backingTrackPath);
+          stopPlayerCallBack());
     } catch (e) {
       showErrorDialog(context, e);
     }

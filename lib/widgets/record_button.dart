@@ -24,7 +24,6 @@ class _RecordButtonState extends State<RecordButton> {
   FlutterSoundRecorder flutterSound;
   SpinnerState spinnerState;
   double maxDuration = 1.0;
-  // t_CODEC _codec = t_CODEC.CODEC_AAC;
   Timer _recordingTimer;
 
   @override

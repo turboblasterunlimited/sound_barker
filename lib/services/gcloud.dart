@@ -3,13 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:gcloud/storage.dart';
 import 'package:googleapis_auth/auth_io.dart' as auth;
 import '../functions/app_storage_path.dart';
-import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
-import 'package:flutter_ffmpeg/log_level.dart';
 
 class Gcloud {
-  static final FlutterFFmpegConfig _flutterFFmpegConfig = FlutterFFmpegConfig();
-  static final FlutterFFmpeg _flutterFFmpeg = FlutterFFmpeg();
-
   static Future<Bucket> accessBucket() async {
     var credData =
         await rootBundle.loadString('credentials/gcloud_credentials.json');
@@ -21,34 +16,13 @@ class Gcloud {
     return storage.bucket('song_barker_sequences');
   }
 
-  static Future<String> downloadFromBucket(fileUrl, fileId,
-      {bool image, Bucket bucket, bool backingTrack}) async {
+  static Future<String> downloadFromBucket(fileUrl, fileName,
+      {Bucket bucket}) async {
     bucket ??= await accessBucket();
-    String filePathBase = myAppStoragePath + '/' + fileId;
-    String filePath = filePathBase;
-
-    if (image == true) {
-      filePath += ".jpg";
-      if (await File(filePath).exists()) return filePath;
-    } else if (backingTrack == true) {
-      if (await File(filePath).exists()) return filePathBase;
-    } else {
-      filePath += ".aac";
-      if (await File(filePathBase + ".wav").exists())
-        return filePathBase + ".wav";
-    }
+    String filePath = myAppStoragePath + '/' + fileName;
     try {
       print("downloading: $filePath");
       await bucket.read(fileUrl).pipe(new File(filePath).openWrite());
-
-      // If it's a song melody, this makes a .wav file and deletes the .aac file.
-      if (image == null && backingTrack == null) {
-        _flutterFFmpegConfig.setLogLevel(LogLevel.AV_LOG_WARNING);
-        await _flutterFFmpeg.execute(
-            "-hide_banner -loglevel panic -i $filePath $filePathBase.wav");
-        File(filePath).delete();
-        filePath = filePathBase + ".wav";
-      }
     } catch (e) {
       print(e);
     }

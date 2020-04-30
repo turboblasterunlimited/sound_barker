@@ -7,8 +7,6 @@ import '../providers/sound_controller.dart';
 import '../providers/songs.dart';
 import '../functions/error_dialog.dart';
 import '../providers/image_controller.dart';
-import '../services/wave_streamer.dart' as WaveStreamer;
-import '../providers/active_wave_streamer.dart';
 
 class SongPlaybackCard extends StatefulWidget {
   final int index;
@@ -54,7 +52,7 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
 
   void stopAll() {
     waveStreamer?.cancel();
-    imageController.mouthOpen(0);
+    imageController.stopAnimation();
     widget.soundController.stopPlayer();
   }
 
@@ -67,15 +65,10 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
 
   void startAll() async {
     stopAll();
-    Provider.of<ActiveWaveStreamer>(context, listen: false)
-        .waveStreamer
-        ?.cancel();
-    waveStreamer =
-        WaveStreamer.performAudio(widget.song.filePath, imageController);
-    Provider.of<ActiveWaveStreamer>(context, listen: false).waveStreamer =
-        waveStreamer;
+    imageController.mouthTrackSound(widget.song.amplitudesPath);
     await widget.soundController.startPlayer(widget.song.filePath,
-        stopPlayerCallBack(), widget.song.backingTrackPath);
+        stopPlayerCallBack());
+    print("song playback file path: ${widget.song.filePath}");
   }
 
   void playSong(context) async {
