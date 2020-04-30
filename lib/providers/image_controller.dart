@@ -26,23 +26,31 @@ class ImageController with ChangeNotifier {
     int rNum;
     var random = Random.secure();
     var timer = Timer.periodic(Duration(milliseconds: 900), (timer) {
-      rNum = random.nextInt(20);
-      if (rNum == 0) webViewController.evaluateJavascript("left_brow_raise()");
-      if (rNum == 1) webViewController.evaluateJavascript("right_brow_raise()");
-      if (rNum == 2) webViewController.evaluateJavascript("left_brow_furrow()");
-      if (rNum == 3) webViewController.evaluateJavascript("right_brow_furrow()");
-      if (rNum == 4 || rNum == 5 || rNum == 6) {
+      rNum = random.nextInt(40);
+
+      if (rNum <= 3) webViewController.evaluateJavascript("left_brow_raise()");
+      if (rNum <= 6 && rNum > 3)
+        webViewController.evaluateJavascript("right_brow_raise()");
+      if (rNum <= 9 && rNum > 6)
+        webViewController.evaluateJavascript("left_brow_furrow()");
+      if (rNum <= 12 && rNum > 9)
+        webViewController.evaluateJavascript("right_brow_furrow()");
+      if (rNum <= 15 && rNum > 12) {
         webViewController.evaluateJavascript("left_blink_quick()");
         webViewController.evaluateJavascript("right_blink_quick()");
       }
-      if (rNum == 7) {
+      if (rNum <= 18 && rNum > 15) {
         webViewController.evaluateJavascript("left_blink_slow()");
         webViewController.evaluateJavascript("right_blink_slow()");
       }
-      if (rNum == 8) webViewController.evaluateJavascript("right_blink_quick()");
-      if (rNum == 9) webViewController.evaluateJavascript("right_blink_slow()");
-      if (rNum == 10) webViewController.evaluateJavascript("right_blink_quick()");
-      if (rNum == 11) webViewController.evaluateJavascript("right_blink_slow()");
+      if (rNum == 19)
+        webViewController.evaluateJavascript("right_blink_quick()");
+      if (rNum == 20)
+        webViewController.evaluateJavascript("right_blink_slow()");
+      if (rNum == 21)
+        webViewController.evaluateJavascript("left_blink_quick()");
+      if (rNum == 22)
+        webViewController.evaluateJavascript("left_blink_slow()");
     });
     return timer;
   }
