@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../widgets/singing_image.dart';
-import 'package:flutter_sound/flutter_sound.dart';
-import 'package:flutter_sound/ios_quality.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter_screen_recording/flutter_screen_recording.dart';
@@ -49,7 +47,6 @@ class _GenerateCardScreenState extends State<GenerateCardScreen> {
       Permission.photos,
       Permission.storage,
     ].request();
-    // print(statuses[Permission.location]);
   }
 
   @override
@@ -114,22 +111,19 @@ class _GenerateCardScreenState extends State<GenerateCardScreen> {
     // print("Storage Path within Flutter: $myAppStoragePath");
     FlutterScreenRecording.startRecordScreen(widget.picture.name);
     // FlutterScreenRecording.startRecordScreen(widget.picture.name, myAppStoragePath.toString());
-
-
     await startAll();
-    // captureScreen();
   }
 
-  Future<void> setImageController() async {
-    Future.delayed(Duration(seconds: 2), () {
-      imageController = Provider.of<ImageController>(context, listen: false);
-    });
-  }
+  // Future<void> setImageController() async {
+  //   Future.delayed(Duration(seconds: 2), () {
+  //     imageController = Provider.of<ImageController>(context, listen: false);
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
-    imageController = Provider.of<ImageController>(context, listen: false);
-    setImageController();
+    // imageController = Provider.of<ImageController>(context, listen: false);
+    // setImageController();
 
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,

@@ -113,13 +113,13 @@ packages:
       url: "https://github.com/handofthecode/flutter_screen_recording"
     source: git
     version: "1.0.4"
-  flutter_sound:
+  flutter_sound_lite:
     dependency: "direct main"
     description:
-      name: flutter_sound
+      name: flutter_sound_lite
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.1"
+    version: "4.0.3+1"
   flutter_spinkit:
     dependency: "direct main"
     description:

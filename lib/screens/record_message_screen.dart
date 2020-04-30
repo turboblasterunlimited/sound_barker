@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sound/flutter_sound.dart';
-import 'package:flutter_sound/ios_quality.dart';
+import 'package:flutter_sound_lite/flutter_sound_recorder.dart';
+import 'package:flutter_sound_lite/ios_quality.dart';
 import 'dart:async';
 import 'dart:io';
 import '../providers/songs.dart';
@@ -30,14 +30,11 @@ class _RecordMessageScreenState extends State<RecordMessageScreen> {
   StreamSubscription _recorderSubscription;
   StreamSubscription _dbPeakSubscription;
   StreamSubscription _playerSubscription;
-  FlutterSound flutterSound;
-
-  t_CODEC _codec = t_CODEC.CODEC_AAC;
-
+  FlutterSoundRecorder flutterSound;
   @override
   void initState() {
     super.initState();
-    flutterSound = new FlutterSound();
+    flutterSound = FlutterSoundRecorder();
     flutterSound.setSubscriptionDuration(0.01);
     flutterSound.setDbPeakLevelUpdate(0.8);
     flutterSound.setDbLevelEnabled(true);
@@ -46,7 +43,6 @@ class _RecordMessageScreenState extends State<RecordMessageScreen> {
   void startRecorder() async {
     try {
       this.filePath = await flutterSound.startRecorder(
-          codec: _codec,
           iosQuality: IosQuality.MAX,
           sampleRate: 44100,
           bitRate: 192000);
@@ -95,13 +91,10 @@ class _RecordMessageScreenState extends State<RecordMessageScreen> {
   }
 
   onStartRecorderPressed() {
-    if (flutterSound.audioState == t_AUDIO_STATE.IS_RECORDING)
-      return stopRecorder;
-
-    return flutterSound.audioState == t_AUDIO_STATE.IS_STOPPED
-        ? startRecorder
-        : null;
+    if (flutterSound.isRecording) return stopRecorder;
+    return startRecorder;
   }
+
 
   @override
   Widget build(BuildContext context) {

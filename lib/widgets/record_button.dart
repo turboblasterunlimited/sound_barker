@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sound/ios_quality.dart';
+import 'package:flutter_sound_lite/ios_quality.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_sound/flutter_sound.dart';
+import 'package:flutter_sound_lite/flutter_sound_recorder.dart';
+
 import 'dart:async';
-import 'package:intl/date_symbol_data_local.dart';
 import 'dart:io';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
@@ -21,25 +21,21 @@ class RecordButton extends StatefulWidget {
 class _RecordButtonState extends State<RecordButton> {
   String filePath;
   bool _isRecording = false;
-  StreamSubscription _recorderSubscription;
-  FlutterSound flutterSound;
+  FlutterSoundRecorder flutterSound;
   SpinnerState spinnerState;
   double maxDuration = 1.0;
-  t_CODEC _codec = t_CODEC.CODEC_AAC;
+  // t_CODEC _codec = t_CODEC.CODEC_AAC;
   Timer _recordingTimer;
 
   @override
   void initState() {
     super.initState();
-    flutterSound = FlutterSound();
-    flutterSound.setSubscriptionDuration(0.01);
-
+    flutterSound = FlutterSoundRecorder();
   }
 
   void startRecorder() async {
     try {
       this.filePath = await flutterSound.startRecorder(
-          codec: _codec,
           iosQuality: IosQuality.MAX,
           sampleRate: 44100,
           bitRate: 192000);
@@ -63,13 +59,8 @@ class _RecordButtonState extends State<RecordButton> {
     setState(() {
       this._isRecording = false;
     });
-
     try {
       await flutterSound.stopRecorder();
-      if (_recorderSubscription != null) {
-        _recorderSubscription.cancel();
-        _recorderSubscription = null;
-      }
     } catch (err) {
       print('stopRecorder error: $err');
     }
@@ -96,12 +87,8 @@ class _RecordButtonState extends State<RecordButton> {
   }
 
   onStartRecorderPressed() {
-    if (flutterSound.audioState == t_AUDIO_STATE.IS_RECORDING)
-      return stopRecorder;
-
-    return flutterSound.audioState == t_AUDIO_STATE.IS_STOPPED
-        ? startRecorder
-        : null;
+    if (flutterSound.isRecording) return stopRecorder;
+    return startRecorder;
   }
 
   @override
