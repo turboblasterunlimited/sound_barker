@@ -129,7 +129,7 @@ class Song with ChangeNotifier {
     this.created = DateTime.parse(songData["created"]);
     String filePathBase = myAppStoragePath + '/' + fileId;
 
-    if (await _setIfFilesExist(filePathBase)) return this;
+    if (_setIfFilesExist(filePathBase)) return this;
 
     _generateAmplitudeFile(bucket, filePathBase);
     if (backingTrackUrl != null) {
@@ -141,9 +141,9 @@ class Song with ChangeNotifier {
     return this;
   }
 
-  Future<bool> _setIfFilesExist(filePathBase) async {
-    if (await File(filePathBase + '.csv').exists() &&
-        await File(filePathBase + '.aac').exists()) {
+  bool _setIfFilesExist(filePathBase) {
+    if (File(filePathBase + '.csv').existsSync() &&
+        File(filePathBase + '.aac').existsSync()) {
       this.filePath = filePathBase + '.aac';
       this.amplitudesPath = filePathBase + '.csv';
       return true;
@@ -159,12 +159,9 @@ class Song with ChangeNotifier {
 
   void _mergeTracks(backingTrackPath, filePathBase) async {
     String tempMelodyFilePath = filePathBase + "temp.aac";
-    await File(this.filePath).rename(tempMelodyFilePath);
-    FFMpeg.converter.execute(
-        "ffmpeg -i $backingTrackPath -i $tempMelodyFilePath -filter_complex amix=inputs=2:duration=longest $filePath");
-    Future.delayed(Duration(seconds: 10), () {
-      File(backingTrackPath).delete();
-      File(tempMelodyFilePath).delete();
-    });
+    await FFMpeg.converter.execute(
+        "-i $backingTrackPath -i ${this.filePath} -filter_complex amix=inputs=2:duration=longest $tempMelodyFilePath");
+    File(tempMelodyFilePath).renameSync(this.filePath);
+    File(backingTrackUrl).deleteSync();
   }
 }
