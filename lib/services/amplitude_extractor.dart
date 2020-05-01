@@ -1,8 +1,10 @@
 import 'dart:typed_data';
 import 'dart:io';
+import 'dart:async';
 
 class AmplitudeExtractor {
   static List<double> extract(String filePath) {
+    print("start extraction");
     List<double> result = [];
     // 40 milliseconds == 1/25 frames per second
     // 1764 samples per frame for a 44100 hertz sample rate
@@ -25,6 +27,7 @@ class AmplitudeExtractor {
       result.add(_amplitude);
       waveSamples.removeRange(0, (sampleChunk - 1));
     }
+    print("end extraction");
     return result;
   }
 }

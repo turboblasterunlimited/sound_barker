@@ -7,7 +7,6 @@ import '../providers/sound_controller.dart';
 import '../providers/barks.dart';
 import '../providers/image_controller.dart';
 import '../functions/error_dialog.dart';
-import '../services/wave_streamer.dart' as WaveStreamer;
 
 class BarkPlaybackCard extends StatefulWidget {
   final int index;
@@ -15,16 +14,17 @@ class BarkPlaybackCard extends StatefulWidget {
   final Barks barks;
   final SoundController soundController;
   final Animation<double> animation;
-  BarkPlaybackCard(this.index, this.bark, this.barks, this.soundController,
-      this.animation);
+  BarkPlaybackCard(
+      this.index, this.bark, this.barks, this.soundController, this.animation);
 
   @override
   _BarkPlaybackCardState createState() => _BarkPlaybackCardState();
 }
 
 class _BarkPlaybackCardState extends State<BarkPlaybackCard>
-    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
-  bool get wantKeepAlive => true;
+    with TickerProviderStateMixin {
+  //   AutomaticKeepAliveClientMixin {
+  // bool get wantKeepAlive => true;
   AnimationController renameAnimationController;
   StreamSubscription<double> waveStreamer;
   ImageController imageController;
@@ -33,7 +33,8 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
 
   @override
   void initState() {
-    tabListScrollController = Provider.of<TabListScrollController>(context, listen: false);
+    tabListScrollController =
+        Provider.of<TabListScrollController>(context, listen: false);
     renameAnimationController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 500),
@@ -57,6 +58,9 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
   }
 
   void startAll() async {
+    print("bark amplitudespath: ${widget.bark.amplitudesPath}");
+    print("bark filepath: ${widget.bark.filePath}");
+
     imageController.mouthTrackSound(widget.bark.amplitudesPath);
     await widget.soundController.startPlayer(widget.bark.filePath);
   }
@@ -156,7 +160,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
     );
   }
 
- void handleTabScroll() {
+  void handleTabScroll() {
     if (tabListScrollController.tabExtent == 0.8) {
       var position = tabListScrollController.scrollController.position.pixels;
       position += 250;

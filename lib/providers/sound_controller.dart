@@ -3,12 +3,10 @@ import 'package:audioplayers/audioplayers.dart';
 
 class SoundController with ChangeNotifier {
   AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
-  AudioPlayer backingTrack = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
 
   void stopPlayer() {
     if (audioPlayer.state == AudioPlayerState.PLAYING) {
       audioPlayer.stop();
-      _stopBackingTrack();
     }
   }
 
@@ -17,7 +15,6 @@ class SoundController with ChangeNotifier {
     if (audioPlayer.state == AudioPlayerState.PLAYING) {
       stopPlayer();
     }
-    if (backingTrackPath != null) _startBackingTrack(backingTrackPath);
 
     // audioPlayer.monitorNotificationStateChanges();
     audioPlayer.play(path, isLocal: true);
@@ -30,18 +27,4 @@ class SoundController with ChangeNotifier {
     }
   }
 
-  Future<String> _startBackingTrack(path) async {
-    if (backingTrack.state == AudioPlayerState.PLAYING) {
-      backingTrack.stop();
-    }
-
-    print("BACKING TRACK PLAYBACK STARTED...");
-    return backingTrack.play(path, isLocal: true).toString();
-  }
-
-  void _stopBackingTrack() {
-    if (backingTrack.state == AudioPlayerState.PLAYING) {
-      backingTrack.stop();
-    }
-  }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gcloud/storage.dart';
+import 'package:song_barker/functions/app_storage_path.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:io';
@@ -77,10 +78,11 @@ class Pictures with ChangeNotifier {
     images ??= all;
     int imagesCount = images.length;
     for (var i = 0; i < imagesCount; i++) {
-      String filePath = await Gcloud.downloadFromBucket(
-          images[i].fileUrl, images[i].fileId + '.jpg',
-          bucket: bucket);
+      String fileName = images[i].fileId + '.jpg';
+      String filePath = myAppStoragePath + '/' + fileName;
       images[i].filePath = filePath;
+      if (!await File(filePath).exists())
+        Gcloud.downloadFromBucket(images[i].fileUrl, fileName, bucket: bucket);
     }
   }
 }

@@ -21,8 +21,7 @@ class Gcloud {
     bucket ??= await accessBucket();
     String filePath = myAppStoragePath + '/' + fileName;
     try {
-      print("downloading: $filePath");
-      await bucket.read(fileUrl).pipe(new File(filePath).openWrite());
+      await bucket.read(fileUrl).pipe(File(filePath).openWrite());
     } catch (e) {
       print(e);
     }

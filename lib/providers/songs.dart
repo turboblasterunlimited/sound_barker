@@ -36,18 +36,21 @@ class Songs with ChangeNotifier {
 
   // ALL SONGS THAT AREN'T HIDDEN UNLESS THEY ALREADY EXIST ON THE CLIENT
   Future retrieveAll() async {
+    print("retrieve all songs check point");
     List tempSongs = [];
     Bucket bucket = await Gcloud.accessBucket();
     String response = await RestAPI.retrieveAllSongsFromServer();
     print("retriveallsongresponse: $response");
-    json.decode(response).forEach((serverSong) {
-      if (serverSong["hidden"] == 1) return;
-      Song song = Song();
-      song.retrieveSong(serverSong, bucket);
-      print("this was created: ${song.created}");
+    List<dynamic> serverSongs = await json.decode(response);
+
+    for (Map<String, dynamic> serverSong in serverSongs) {
+      if (serverSong["hidden"] == 1) continue;
+      final song = await Song().retrieveSong(serverSong, bucket);
       tempSongs.add(song);
-    });
-    print("tempSongs: $tempSongs");
+      print("song created: ${song.created}");
+    }
+
+    print("tempSongs finished: $tempSongs");
     tempSongs.sort((song1, song2) {
       return song1.created.compareTo(song2.created);
     });
@@ -116,7 +119,7 @@ class Song with ChangeNotifier {
   }
 
   Future<Song> retrieveSong(Map songData, [bucket]) async {
-    String filePathBase = myAppStoragePath + '/' + fileId;
+    print("retrieving song: $songData");
     bucket ??= await Gcloud.accessBucket();
     this.backingTrackUrl = songData["backing_track_fp"];
     this.fileId = songData["uuid"];
@@ -124,26 +127,44 @@ class Song with ChangeNotifier {
     this.fileUrl = songData["bucket_fp"];
     this.formulaId = songData["song_id"];
     this.created = DateTime.parse(songData["created"]);
+    String filePathBase = myAppStoragePath + '/' + fileId;
 
-    if (File(filePathBase + '.csv').exists() != null &&
-        File(filePathBase + '.aac').exists() != null) {
-      this.filePath = filePathBase + '.aac';
-      this.amplitudesPath = filePathBase + '.csv';
-      return this;
-    }
-    this.filePath = await Gcloud.downloadFromBucket(fileUrl, fileId + '.aac',
-        bucket: bucket);
-    this.amplitudesPath = createAmplitudeFile(filePathBase);
-    // Download backing track
+    if (await _setIfFilesExist(filePathBase)) return this;
+
+    _generateAmplitudeFile(bucket, filePathBase);
     if (backingTrackUrl != null) {
       String backingTrackPath = await Gcloud.downloadFromBucket(
-          backingTrackUrl, filePathBase + "backing",
+          backingTrackUrl, fileId + "backing.aac",
           bucket: bucket);
-      // merge backing track and melody, delete backing track
-      await FFMpeg.converter.execute(
-          "-i $filePath -i $backingTrackPath -filter_complex amix=inputs=2:duration=first:dropout_transition=3 $filePath");
-      File(backingTrackPath).delete();
+      _mergeTracks(backingTrackPath, filePathBase);
     }
     return this;
+  }
+
+  Future<bool> _setIfFilesExist(filePathBase) async {
+    if (await File(filePathBase + '.csv').exists() &&
+        await File(filePathBase + '.aac').exists()) {
+      this.filePath = filePathBase + '.aac';
+      this.amplitudesPath = filePathBase + '.csv';
+      return true;
+    }
+    return false;
+  }
+
+  void _generateAmplitudeFile(bucket, filePathBase) async {
+    this.filePath = await Gcloud.downloadFromBucket(fileUrl, fileId + '.aac',
+        bucket: bucket);
+    this.amplitudesPath = await createAmplitudeFile(filePathBase);
+  }
+
+  void _mergeTracks(backingTrackPath, filePathBase) async {
+    String tempMelodyFilePath = filePathBase + "temp.aac";
+    await File(this.filePath).rename(tempMelodyFilePath);
+    FFMpeg.converter.execute(
+        "ffmpeg -i $backingTrackPath -i $tempMelodyFilePath -filter_complex amix=inputs=2:duration=longest $filePath");
+    Future.delayed(Duration(seconds: 10), () {
+      File(backingTrackPath).delete();
+      File(tempMelodyFilePath).delete();
+    });
   }
 }

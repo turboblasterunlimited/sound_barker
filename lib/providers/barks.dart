@@ -45,9 +45,9 @@ class Barks with ChangeNotifier {
     });
   }
 
-  createAmplitudeFile(filePath, filePathBase) async {
+  Future<String> createAmplitudeFile(filePathBase) async {
     await FFMpeg.converter
-        .execute("-hide_banner -loglevel panic -i $filePath $filePathBase.wav");
+        .execute("-hide_banner -loglevel panic -i $filePathBase.aac $filePathBase.wav");
     final amplitudes = AmplitudeExtractor.extract("$filePathBase.wav");
     File("$filePathBase.wav").delete();
     final csvAmplitudes = const ListToCsvConverter().convert([amplitudes]);
@@ -62,12 +62,15 @@ class Barks with ChangeNotifier {
     barks ??= all;
     int barkCount = barks.length;
     for (var i = 0; i < barkCount; i++) {
-      String filePath = await Gcloud.downloadFromBucket(
+      String filePathBase = myAppStoragePath + '/' + barks[i].fileId;
+      if (!await File(filePathBase + '.aac').exists()) {
+        await Gcloud.downloadFromBucket(
           barks[i].fileUrl, barks[i].fileId + ".aac",
           bucket: bucket);
-      barks[i].filePath = filePath;
-      String filePathBase = myAppStoragePath + '/' + barks[i].fileId;
-      barks[i].amplitudePath = createAmplitudeFile(filePath, filePathBase);
+      }
+      barks[i].filePath = filePathBase + '.aac';
+      barks[i].amplitudesPath =
+          await createAmplitudeFile(filePathBase);
     }
   }
 
