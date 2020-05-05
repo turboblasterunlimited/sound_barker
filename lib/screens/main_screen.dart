@@ -63,7 +63,7 @@ class _MainScreenState extends State<MainScreen> {
               padding: const EdgeInsets.only(top: 5),
               child: RawMaterialButton(
                 child: Icon(
-                  Icons.mail_outline,
+                  Icons.card_giftcard,
                   color: Colors.white,
                   size: 30,
                 ),
