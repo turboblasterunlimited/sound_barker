@@ -10,6 +10,7 @@ import '../providers/pictures.dart';
 
 class ImageController with ChangeNotifier {
   WebViewController webViewController;
+  Map coordinates;
 
   void mountController(controller) {
     this.webViewController = controller;
@@ -17,7 +18,6 @@ class ImageController with ChangeNotifier {
 
   void stopAnimation() {
     this.webViewController.evaluateJavascript("stop_all_animations()");
-    webViewController.evaluateJavascript("mouth_open(0)");
   }
 
   // Probably Depricated
@@ -65,7 +65,7 @@ class ImageController with ChangeNotifier {
     });
     return timer;
   }
-  
+
   // SHOULD ALSO CHECK FOR THE EXISTENCE OF pictures.mountedPicture and then pass it to create_dog.
   // NEED TO FIX ISSUE OF WIDGET SCREENS REBUILDING AFTER THEY HAVE BEEN LEFT.
   createDog([Picture picture]) {
@@ -74,8 +74,8 @@ class ImageController with ChangeNotifier {
 
     webViewController
         .evaluateJavascript("create_puppet('${_base64Image(picture)}')");
-    setFace(json.decode(picture.coordinates));
-    // blinkEverySecondTest();
+
+    this.coordinates = json.decode(picture.coordinates);
   }
 
   void animate() {
@@ -89,22 +89,20 @@ class ImageController with ChangeNotifier {
     return '$encodingPrefix$base64Image';
   }
 
-  setFace(coordinates) {
-    Future.delayed(Duration(milliseconds: 2000)).then((_) {
-      webViewController.evaluateJavascript(
-          "set_position('rightEyePosition', ${coordinates['rightEye'][0]}, ${coordinates['rightEye'][1]})");
-      webViewController.evaluateJavascript(
-          "set_position('leftEyePosition', ${coordinates['leftEye'][0]}, ${coordinates['leftEye'][1]})");
-      webViewController.evaluateJavascript(
-          "set_position('mouthPosition', ${coordinates['mouth'][0]}, ${coordinates['mouth'][1]})");
-      webViewController.evaluateJavascript(
-          "set_position('headTop', ${coordinates['headTop'][0]}, ${coordinates['headTop'][1]})");
-      webViewController.evaluateJavascript(
-          "set_position('headRight', ${coordinates['headRight'][0]}, ${coordinates['headRight'][1]})");
-      webViewController.evaluateJavascript(
-          "set_position('headBottom', ${coordinates['headBottom'][0]}, ${coordinates['headBottom'][1]})");
-      webViewController.evaluateJavascript(
-          "set_position('headLeft', ${coordinates['headLeft'][0]}, ${coordinates['headLeft'][1]})");
-    });
+  setFace() {
+    webViewController.evaluateJavascript(
+        "set_position('rightEyePosition', ${coordinates['rightEye'][0]}, ${coordinates['rightEye'][1]})");
+    webViewController.evaluateJavascript(
+        "set_position('leftEyePosition', ${coordinates['leftEye'][0]}, ${coordinates['leftEye'][1]})");
+    webViewController.evaluateJavascript(
+        "set_position('mouthPosition', ${coordinates['mouth'][0]}, ${coordinates['mouth'][1]})");
+    webViewController.evaluateJavascript(
+        "set_position('headTop', ${coordinates['headTop'][0]}, ${coordinates['headTop'][1]})");
+    webViewController.evaluateJavascript(
+        "set_position('headRight', ${coordinates['headRight'][0]}, ${coordinates['headRight'][1]})");
+    webViewController.evaluateJavascript(
+        "set_position('headBottom', ${coordinates['headBottom'][0]}, ${coordinates['headBottom'][1]})");
+    webViewController.evaluateJavascript(
+        "set_position('headLeft', ${coordinates['headLeft'][0]}, ${coordinates['headLeft'][1]})");
   }
 }

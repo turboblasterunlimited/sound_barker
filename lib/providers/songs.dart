@@ -131,7 +131,7 @@ class Song with ChangeNotifier {
 
     if (_setIfFilesExist(filePathBase)) return this;
 
-    _generateAmplitudeFile(bucket, filePathBase);
+    _getMelodyAndGenerateAmplitudeFile(bucket, filePathBase);
     if (backingTrackUrl != null) {
       String backingTrackPath = await Gcloud.downloadFromBucket(
           backingTrackUrl, fileId + "backing.aac",
@@ -151,7 +151,7 @@ class Song with ChangeNotifier {
     return false;
   }
 
-  void _generateAmplitudeFile(bucket, filePathBase) async {
+  void _getMelodyAndGenerateAmplitudeFile(bucket, filePathBase) async {
     this.filePath = await Gcloud.downloadFromBucket(fileUrl, fileId + '.aac',
         bucket: bucket);
     this.amplitudesPath = await createAmplitudeFile(filePathBase);

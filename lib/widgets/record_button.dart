@@ -104,7 +104,7 @@ class _RecordButtonState extends State<RecordButton> {
           : Text(
               this._isRecording
                   ? "RECORDING... TAP TO STOP"
-                  : "TAP TO RECORD SOUNDS",
+                  : "TAP TO RECORD BARKS",
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
       shape: RoundedRectangleBorder(

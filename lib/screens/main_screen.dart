@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:song_barker/widgets/picture_grid.dart';
 
 import '../providers/pictures.dart';
 import '../providers/barks.dart';
@@ -8,6 +9,7 @@ import '../providers/songs.dart';
 import '../widgets/interface_selector.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/singing_image.dart';
+import '../screens/select_song_and_picture_screen.dart';
 
 class MainScreen extends StatefulWidget {
   static const routeName = 'main-screen';
@@ -17,7 +19,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -27,8 +29,7 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<AnimatedListState> _listKey =
-        GlobalKey<AnimatedListState>();
+    
     var outlineColor = Theme.of(context).accentColor;
 
     final barks = Provider.of<Barks>(context, listen: false);
@@ -49,7 +50,7 @@ class _MainScreenState extends State<MainScreen> {
       backgroundColor: Theme.of(context).primaryColor,
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomPadding: false,
-      key: _scaffoldKey,
+      key: scaffoldKey,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(30.0),
         child: AppBar(
@@ -58,7 +59,25 @@ class _MainScreenState extends State<MainScreen> {
           backgroundColor: Colors.transparent,
           elevation: 0,
           centerTitle: true,
-          actions: <Widget>[],
+          actions: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(top: 5),
+              child: RawMaterialButton(
+                child: Icon(
+                  Icons.card_giftcard,
+                  color: Colors.white,
+                  size: 20,
+                ),
+                shape: CircleBorder(),
+                elevation: 2.0,
+                fillColor: Theme.of(context).accentColor,
+                onPressed: () {
+                  Navigator.pushNamed(
+                      context, SelectSongAndPictureScreen.routeName);
+                },
+              ),
+            ),
+          ],
           leading: Padding(
             padding: const EdgeInsets.only(top: 5),
             child: RawMaterialButton(
@@ -71,14 +90,14 @@ class _MainScreenState extends State<MainScreen> {
               elevation: 2.0,
               fillColor: Theme.of(context).accentColor,
               onPressed: () {
-                _scaffoldKey.currentState.openDrawer();
+                scaffoldKey.currentState.openDrawer();
               },
             ),
           ),
-          
         ),
       ),
       drawer: AppDrawer(),
+      endDrawer: PictureGrid(),
       body: Container(
         child: Stack(
           children: <Widget>[

@@ -4,8 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:song_barker/providers/tab_list_scroll_controller.dart';
 import '../widgets/song_list.dart';
 import '../widgets/bark_list.dart';
-import '../widgets/picture_grid.dart';
-import '../widgets/greeting_card_grid.dart';
 
 class InterfaceSelector extends StatefulWidget {
   @override
@@ -44,7 +42,7 @@ class InterfaceSelectorState extends State<InterfaceSelector> {
             return Container(
               color: Theme.of(ctx).primaryColor,
               child: DefaultTabController(
-                length: 4,
+                length: 2,
                 child: Column(
                   children: <Widget>[
                     // MaterialButton(
@@ -56,10 +54,8 @@ class InterfaceSelectorState extends State<InterfaceSelector> {
                       color: Theme.of(ctx).accentColor,
                       child: TabBar(
                         tabs: [
-                          Tab(text: "SOUNDS"),
+                          Tab(text: "BARKS"),
                           Tab(text: "SONGS"),
-                          Tab(text: "IMAGES"),
-                          Tab(text: "CARDS"),
                         ],
                       ),
                     ),
@@ -68,8 +64,6 @@ class InterfaceSelectorState extends State<InterfaceSelector> {
                         children: [
                           BarkList(),
                           SongList(),
-                          PictureGrid(),
-                          GreetingCardGrid(),
                         ],
                       ),
                     ),
