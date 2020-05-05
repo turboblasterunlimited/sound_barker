@@ -27,7 +27,8 @@ class _PictureCardState extends State<PictureCard>
   @override
   void initState() {
     super.initState();
-    tabListScrollController = Provider.of<TabListScrollController>(context, listen: false);
+    tabListScrollController =
+        Provider.of<TabListScrollController>(context, listen: false);
     imageController = Provider.of<ImageController>(context, listen: false);
 
     animationController =

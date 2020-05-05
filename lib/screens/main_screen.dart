@@ -29,7 +29,6 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    
     var outlineColor = Theme.of(context).accentColor;
 
     final barks = Provider.of<Barks>(context, listen: false);
@@ -52,7 +51,7 @@ class _MainScreenState extends State<MainScreen> {
       resizeToAvoidBottomPadding: false,
       key: scaffoldKey,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(30.0),
+        preferredSize: Size.fromHeight(60.0),
         child: AppBar(
           iconTheme:
               IconThemeData(color: Theme.of(context).accentColor, size: 30),
@@ -64,13 +63,13 @@ class _MainScreenState extends State<MainScreen> {
               padding: const EdgeInsets.only(top: 5),
               child: RawMaterialButton(
                 child: Icon(
-                  Icons.card_giftcard,
+                  Icons.mail_outline,
                   color: Colors.white,
-                  size: 20,
+                  size: 30,
                 ),
                 shape: CircleBorder(),
                 elevation: 2.0,
-                fillColor: Theme.of(context).accentColor,
+                // fillColor: Theme.of(context).accentColor,
                 onPressed: () {
                   Navigator.pushNamed(
                       context, SelectSongAndPictureScreen.routeName);
@@ -84,11 +83,11 @@ class _MainScreenState extends State<MainScreen> {
               child: Icon(
                 Icons.menu,
                 color: Colors.white,
-                size: 20,
+                size: 30,
               ),
               shape: CircleBorder(),
               elevation: 2.0,
-              fillColor: Theme.of(context).accentColor,
+              // fillColor: Theme.of(context).accentColor,
               onPressed: () {
                 scaffoldKey.currentState.openDrawer();
               },

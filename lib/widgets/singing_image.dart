@@ -5,7 +5,6 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/pictures.dart';
-import '../screens/select_song_and_picture_screen.dart';
 
 class SingingImage extends StatefulWidget {
   Picture picture;
@@ -34,6 +33,7 @@ class _SingingImageState extends State<SingingImage> {
       child: Stack(
         children: <Widget>[
           WebView(
+            gestureRecognizers: null,
             onWebViewCreated: (WebViewController c) {
               webviewController = c;
               // _controller.complete(webviewController);

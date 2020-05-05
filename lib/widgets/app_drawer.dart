@@ -43,15 +43,6 @@ class AppDrawer extends StatelessWidget {
                   },
                 ),
                 Divider(),
-                ListTile(
-                  leading: Icon(Icons.delete),
-                  title: Text('Delete just files'),
-                  onTap: () {
-                    final dir = Directory(myAppStoragePath);
-                    dir.deleteSync(recursive: true);
-                  },
-                ),
-                Divider(),
               ],
             ),
           ),

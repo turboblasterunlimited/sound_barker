@@ -125,7 +125,12 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
     await showDialog<Null>(
       context: context,
       builder: (ctx) => SimpleDialog(
-        title: Text('Rename Sound'),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        title: Center(
+          child: Text('Rename Bark'),
+        ),
         contentPadding: EdgeInsets.all(10),
         titlePadding: EdgeInsets.all(10),
         children: <Widget>[
@@ -145,12 +150,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
             },
           ),
           FlatButton(
-              child: Text("NEVERMIND"),
-              onPressed: () {
-                Navigator.of(ctx).pop();
-              }),
-          FlatButton(
-            child: Text('RENAME'),
+            child: Text('OK'),
             onPressed: () {
               _submitNameChange(ctx);
             },

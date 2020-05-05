@@ -39,7 +39,8 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
     );
     renameAnimationController.forward();
     imageController = Provider.of<ImageController>(context, listen: false);
-    tabListScrollController = Provider.of<TabListScrollController>(context, listen: false);
+    tabListScrollController =
+        Provider.of<TabListScrollController>(context, listen: false);
     super.initState();
   }
 
@@ -66,8 +67,8 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
   void startAll() async {
     stopAll();
     imageController.mouthTrackSound(widget.song.amplitudesPath);
-    await widget.soundController.startPlayer(widget.song.filePath,
-        stopPlayerCallBack());
+    await widget.soundController
+        .startPlayer(widget.song.filePath, stopPlayerCallBack());
     print("song playback file path: ${widget.song.filePath}");
   }
 
@@ -131,7 +132,10 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
     await showDialog<Null>(
       context: context,
       builder: (ctx) => SimpleDialog(
-        title: Text('Rename Song'),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        title: Center(child: Text('Rename Song')),
         contentPadding: EdgeInsets.all(10),
         titlePadding: EdgeInsets.all(10),
         children: <Widget>[
@@ -151,12 +155,7 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
             },
           ),
           FlatButton(
-              child: Text("NEVERMIND"),
-              onPressed: () {
-                Navigator.of(ctx).pop();
-              }),
-          FlatButton(
-            child: Text('RENAME'),
+            child: Text('OK'),
             onPressed: () {
               _submitNameChange(ctx);
             },

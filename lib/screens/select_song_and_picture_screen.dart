@@ -46,7 +46,7 @@ class _SelectSongAndPictureScreenState
         iconTheme: IconThemeData(color: Colors.white, size: 30),
         centerTitle: true,
         title: Text(
-          "Select Image and song",
+          "Create a card",
           style: TextStyle(
               fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white),
         ),
