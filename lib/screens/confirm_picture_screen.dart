@@ -12,6 +12,8 @@ import '../providers/pictures.dart';
 import '../providers/image_controller.dart';
 import '../services/rest_api.dart';
 
+int magOffset = 60;
+
 class ConfirmPictureScreen extends StatefulWidget {
   Picture newPicture;
   bool isNamed;
@@ -39,10 +41,11 @@ class ConfirmPictureScreen extends StatefulWidget {
 }
 
 class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
-  double screenLength;
+  double canvasLength;
   Map<String, List<double>> canvasCoordinates = {};
   double middle;
   IMG.Image imageData;
+  // Canvas pixels
   List<double> touchedXY;
   ui.Image magnifiedImage;
 
@@ -133,8 +136,8 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
 
   @override
   Widget build(BuildContext context) {
-    screenLength ??= MediaQuery.of(context).size.width;
-    middle ??= screenLength / 2;
+    canvasLength ??= MediaQuery.of(context).size.width;
+    middle ??= canvasLength / 2;
     Pictures pictures = Provider.of<Pictures>(context, listen: false);
     ImageController imageController = Provider.of<ImageController>(context);
 
@@ -171,18 +174,22 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
     }
 
     void magnifyPixels(double x, double y) async {
-      int offsetX = (x / screenLength * 800).round();
-      int offsetY = (y / screenLength * 800).round();
+      int offsetX = (x / canvasLength * 800).round();
+      int offsetY = (y / canvasLength * 800).round();
 
-      var cropSize = 75;
+      var cropSize = magOffset * 2;
 
-      IMG.Image cropped =
-          IMG.copyCrop(imageData, offsetX, offsetY, cropSize, cropSize);
+      IMG.Image cropped = IMG.copyCrop(
+        imageData,
+        offsetX - magOffset,
+        offsetY - magOffset,
+        cropSize,
+        cropSize,
+      );
 
       List<int> croppedData =
-          IMG.encodePng(IMG.copyResize(cropped, width: 100));
+          IMG.encodePng(IMG.copyResize(cropped, width: magOffset * 2));
 
-      print("Cropped Data: $croppedData");
       ui.Codec codec = await ui.instantiateImageCodec(croppedData);
       ui.FrameInfo fi = await codec.getNextFrame();
       setState(() => magnifiedImage = fi.image);
@@ -278,6 +285,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                           details.localPosition.dx,
                           details.localPosition.dy
                         ];
+                        print("touched XY $touchedXY");
                         getCanvasCoordinates().forEach((pointName, existingXY) {
                           if (!_inProximity(existingXY, touchedXY)) return;
                           setState(() {
@@ -286,8 +294,6 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                             grabPoint[pointName] = existingXY;
                             widget.coordinatesSet = true;
                             print("IN PROXIMITY!!");
-                            magnifyPixels(details.localPosition.dx,
-                                details.localPosition.dy);
                           });
                         });
                       },
@@ -314,8 +320,8 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                         });
                       },
                       child: CustomPaint(
-                        painter: CoordinatesPainter(
-                            getCanvasCoordinates(), magnifiedImage, touchedXY),
+                        painter: CoordinatesPainter(getCanvasCoordinates(),
+                            magnifiedImage, touchedXY, grabbing, canvasLength),
                         child: Container(),
                       ),
                     ),
@@ -378,21 +384,11 @@ class CoordinatesPainter extends CustomPainter {
   final coordinates;
   final ui.Image magnifiedImage;
   final touchedXY;
-  CoordinatesPainter(this.coordinates, this.magnifiedImage, this.touchedXY)
+  final grabbing;
+  final canvasLength;
+  CoordinatesPainter(
+      this.coordinates, this.magnifiedImage, this.touchedXY, this.grabbing, this.canvasLength)
       : super();
-  void paintMagnifier(Canvas canvas, Size size) {
-    // final paintMagnifier = Paint()
-    //   ..style = PaintingStyle.stroke
-    //   ..strokeWidth = 7.0
-    //   ..color = Colors.black;
-
-    // void drawMagnifierBorder() {
-    //   canvas.drawCircle(
-    //       Offset(coordinates["rightEye"][0], coordinates["rightEye"][1]),
-    //       40.0,
-    //       paintMagnifier);
-    // }
-  }
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -403,68 +399,68 @@ class CoordinatesPainter extends CustomPainter {
 
     void drawBothEyes() {
       canvas.drawCircle(
-          Offset(coordinates["rightEye"][0], coordinates["rightEye"][1]),
-          15.0,
-          paint);
+        Offset(coordinates["rightEye"][0], coordinates["rightEye"][1]),
+        15.0,
+        paint,
+      );
 
       canvas.drawCircle(
-          Offset(coordinates["leftEye"][0], coordinates["leftEye"][1]),
-          15.0,
-          paint);
+        Offset(coordinates["leftEye"][0], coordinates["leftEye"][1]),
+        15.0,
+        paint,
+      );
 
       canvas.drawCircle(
-          Offset(coordinates["rightEye"][0], coordinates["rightEye"][1]),
-          1.0,
-          paint);
+        Offset(coordinates["rightEye"][0], coordinates["rightEye"][1]),
+        1.0,
+        paint,
+      );
 
       canvas.drawCircle(
-          Offset(coordinates["leftEye"][0], coordinates["leftEye"][1]),
-          1.0,
-          paint);
+        Offset(coordinates["leftEye"][0], coordinates["leftEye"][1]),
+        1.0,
+        paint,
+      );
     }
 
     void drawMouth() {
       canvas.drawCircle(
           Offset(coordinates["mouth"][0], coordinates["mouth"][1]), 1.0, paint);
-      canvas.drawRRect(
-          RRect.fromRectAndRadius(
-              Rect.fromCenter(
-                  center:
-                      Offset(coordinates["mouth"][0], coordinates["mouth"][1]),
-                  height: 20.0,
-                  width: 70.0),
-              Radius.circular(10.0)),
-          paint);
     }
 
     void drawHeadPoints() {
       canvas.drawCircle(
-          Offset(coordinates["headTop"][0], coordinates["headTop"][1]),
-          7.0,
-          paint);
+        Offset(coordinates["headTop"][0], coordinates["headTop"][1]),
+        7.0,
+        paint,
+      );
 
       canvas.drawCircle(
-          Offset(coordinates["headRight"][0], coordinates["headRight"][1]),
-          7.0,
-          paint);
+        Offset(coordinates["headRight"][0], coordinates["headRight"][1]),
+        7.0,
+        paint,
+      );
 
       canvas.drawCircle(
-          Offset(coordinates["headBottom"][0], coordinates["headBottom"][1]),
-          7.0,
-          paint);
+        Offset(coordinates["headBottom"][0], coordinates["headBottom"][1]),
+        7.0,
+        paint,
+      );
 
       canvas.drawCircle(
-          Offset(coordinates["headLeft"][0], coordinates["headLeft"][1]),
-          7.0,
-          paint);
+        Offset(coordinates["headLeft"][0], coordinates["headLeft"][1]),
+        7.0,
+        paint,
+      );
 
       // Draw oval around head
       Path path = Path();
       path.addArc(
-          Rect.fromLTRB(coordinates["headLeft"][0], coordinates["headTop"][1],
-              coordinates["headRight"][0], coordinates["headBottom"][1]),
-          pi,
-          2 * pi);
+        Rect.fromLTRB(coordinates["headLeft"][0], coordinates["headTop"][1],
+            coordinates["headRight"][0], coordinates["headBottom"][1]),
+        pi,
+        2 * pi,
+      );
       canvas.drawPath(path, paint);
     }
 
@@ -472,16 +468,33 @@ class CoordinatesPainter extends CustomPainter {
     drawMouth();
     drawHeadPoints();
 
-    if (magnifiedImage == null) return;
+    if (magnifiedImage == null || grabbing == false) return;
 
     // Zoom Feature
+
+    double magnifiedY = touchedXY[1] - 80;
+    if (60 > magnifiedY) magnifiedY = 60;
+
+    double magnifiedX = touchedXY[0];
+    if (60 > magnifiedX) magnifiedX = 60;
+    if (canvasLength - 60 < magnifiedX) magnifiedX = canvasLength - 60;
+
     paintImage(
-        canvas: canvas,
-        image: magnifiedImage,
-        rect: Rect.fromCenter(
-            center: Offset(touchedXY[0] + 50, touchedXY[1]),
-            height: 75.0,
-            width: 75.0));
+      canvas: canvas,
+      image: magnifiedImage,
+      rect: Rect.fromCenter(
+        center: Offset(magnifiedX, magnifiedY),
+        height: 120.0,
+        width: 120.0,
+      ),
+    );
+
+    // Zoom Pointer
+    canvas.drawCircle(
+      Offset(magnifiedX, magnifiedY),
+      7.0,
+      paint,
+    );
   }
 
   bool shouldRepaint(CustomPainter oldDeligate) => true;
