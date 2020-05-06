@@ -1,8 +1,12 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'dart:math';
+import 'package:image/image.dart' as IMG;
+import 'package:flutter/painting.dart';
+import 'dart:ui' as ui;
 
 import '../providers/pictures.dart';
 import '../providers/image_controller.dart';
@@ -38,6 +42,15 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
   double screenLength;
   Map<String, List<double>> canvasCoordinates = {};
   double middle;
+  IMG.Image imageData;
+  List<double> touchedXY;
+  ui.Image magnifiedImage;
+
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    imageData =
+        IMG.decodeImage(File(widget.newPicture.filePath).readAsBytesSync());
+  }
 
   Map<String, List<double>> getCanvasCoordinates() {
     if (canvasCoordinates.length != 0) return canvasCoordinates;
@@ -157,8 +170,22 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
       return false;
     }
 
-    void magnifyPixels(x, y) {
-      // getPixel(x, y);
+    void magnifyPixels(double x, double y) async {
+      int offsetX = (x / screenLength * 800).round();
+      int offsetY = (y / screenLength * 800).round();
+
+      var cropSize = 75;
+
+      IMG.Image cropped =
+          IMG.copyCrop(imageData, offsetX, offsetY, cropSize, cropSize);
+
+      List<int> croppedData =
+          IMG.encodePng(IMG.copyResize(cropped, width: 100));
+
+      print("Cropped Data: $croppedData");
+      ui.Codec codec = await ui.instantiateImageCodec(croppedData);
+      ui.FrameInfo fi = await codec.getNextFrame();
+      setState(() => magnifiedImage = fi.image);
     }
 
     return Scaffold(
@@ -246,33 +273,37 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                     visible: widget.isNamed,
                     child: GestureDetector(
                       // SETTING COORDINATES
-                      onPanStart: (details) {
-                        // print("Start X: ${details.localPosition.dx}");
-                        // print("Start Y: ${details.localPosition.dy}");
-                        List touchedXY = [
+                      onPanStart: (details) async {
+                        touchedXY = [
                           details.localPosition.dx,
                           details.localPosition.dy
                         ];
                         getCanvasCoordinates().forEach((pointName, existingXY) {
                           if (!_inProximity(existingXY, touchedXY)) return;
                           setState(() {
+                            touchedXY = touchedXY;
                             grabbing = true;
                             grabPoint[pointName] = existingXY;
                             widget.coordinatesSet = true;
                             print("IN PROXIMITY!!");
+                            magnifyPixels(details.localPosition.dx,
+                                details.localPosition.dy);
                           });
                         });
                       },
                       onPanUpdate: (details) {
-                        magnifyPixels(
-                            details.localPosition.dx, details.localPosition.dy);
                         if (!grabbing) return;
 
+                        magnifyPixels(
+                            details.localPosition.dx, details.localPosition.dy);
+
                         setState(() {
-                          canvasCoordinates[grabPoint.keys.first.toString()] = [
+                          touchedXY = [
                             details.localPosition.dx,
                             details.localPosition.dy
                           ];
+                          canvasCoordinates[grabPoint.keys.first.toString()] =
+                              touchedXY;
                         });
                       },
                       onPanEnd: (details) async {
@@ -283,7 +314,8 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                         });
                       },
                       child: CustomPaint(
-                        painter: CoordinatesPainter(getCanvasCoordinates()),
+                        painter: CoordinatesPainter(
+                            getCanvasCoordinates(), magnifiedImage, touchedXY),
                         child: Container(),
                       ),
                     ),
@@ -344,7 +376,24 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
 
 class CoordinatesPainter extends CustomPainter {
   final coordinates;
-  CoordinatesPainter(this.coordinates) : super();
+  final ui.Image magnifiedImage;
+  final touchedXY;
+  CoordinatesPainter(this.coordinates, this.magnifiedImage, this.touchedXY)
+      : super();
+  void paintMagnifier(Canvas canvas, Size size) {
+    // final paintMagnifier = Paint()
+    //   ..style = PaintingStyle.stroke
+    //   ..strokeWidth = 7.0
+    //   ..color = Colors.black;
+
+    // void drawMagnifierBorder() {
+    //   canvas.drawCircle(
+    //       Offset(coordinates["rightEye"][0], coordinates["rightEye"][1]),
+    //       40.0,
+    //       paintMagnifier);
+    // }
+  }
+
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
@@ -422,6 +471,17 @@ class CoordinatesPainter extends CustomPainter {
     drawBothEyes();
     drawMouth();
     drawHeadPoints();
+
+    if (magnifiedImage == null) return;
+
+    // Zoom Feature
+    paintImage(
+        canvas: canvas,
+        image: magnifiedImage,
+        rect: Rect.fromCenter(
+            center: Offset(touchedXY[0] + 50, touchedXY[1]),
+            height: 75.0,
+            width: 75.0));
   }
 
   bool shouldRepaint(CustomPainter oldDeligate) => true;
