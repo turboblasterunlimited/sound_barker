@@ -13,6 +13,7 @@ import '../providers/image_controller.dart';
 import '../services/rest_api.dart';
 
 int magOffset = 60;
+int imageSize = 400;
 
 class ConfirmPictureScreen extends StatefulWidget {
   Picture newPicture;
@@ -45,14 +46,17 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
   Map<String, List<double>> canvasCoordinates = {};
   double middle;
   IMG.Image imageData;
+  // Uint8List imageDataBytes;
   // Canvas pixels
   List<double> touchedXY;
   ui.Image magnifiedImage;
+  bool everyOtherFrame = true;
 
   void didChangeDependencies() {
     super.didChangeDependencies();
     imageData =
         IMG.decodeImage(File(widget.newPicture.filePath).readAsBytesSync());
+    imageData = IMG.copyResize(imageData, width: imageSize);
   }
 
   Map<String, List<double>> getCanvasCoordinates() {
@@ -174,10 +178,12 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
     }
 
     void magnifyPixels(double x, double y) async {
-      int offsetX = (x / canvasLength * 800).round();
-      int offsetY = (y / canvasLength * 800).round();
+      int offsetX = (x / canvasLength * imageSize).round();
+      int offsetY = (y / canvasLength * imageSize).round();
 
       var cropSize = magOffset * 2;
+
+      // print("Start: ${DateTime.now()}");
 
       IMG.Image cropped = IMG.copyCrop(
         imageData,
@@ -187,12 +193,11 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
         cropSize,
       );
 
-      List<int> croppedData =
-          IMG.encodePng(IMG.copyResize(cropped, width: magOffset * 2));
-
-      ui.Codec codec = await ui.instantiateImageCodec(croppedData);
+      ui.Codec codec =
+          await ui.instantiateImageCodec(IMG.encodePng(cropped));
       ui.FrameInfo fi = await codec.getNextFrame();
       setState(() => magnifiedImage = fi.image);
+      // print("End: ${DateTime.now()}");
     }
 
     return Scaffold(
@@ -300,9 +305,6 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                       onPanUpdate: (details) {
                         if (!grabbing) return;
 
-                        magnifyPixels(
-                            details.localPosition.dx, details.localPosition.dy);
-
                         setState(() {
                           touchedXY = [
                             details.localPosition.dx,
@@ -310,7 +312,12 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                           ];
                           canvasCoordinates[grabPoint.keys.first.toString()] =
                               touchedXY;
+                          everyOtherFrame = !everyOtherFrame;
                         });
+
+                        if (everyOtherFrame)
+                          magnifyPixels(details.localPosition.dx,
+                              details.localPosition.dy);
                       },
                       onPanEnd: (details) async {
                         if (!grabbing) return;
@@ -386,15 +393,16 @@ class CoordinatesPainter extends CustomPainter {
   final touchedXY;
   final grabbing;
   final canvasLength;
-  CoordinatesPainter(
-      this.coordinates, this.magnifiedImage, this.touchedXY, this.grabbing, this.canvasLength)
+
+  CoordinatesPainter(this.coordinates, this.magnifiedImage, this.touchedXY,
+      this.grabbing, this.canvasLength)
       : super();
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 7.0
+      ..strokeWidth = 4.0
       ..color = Colors.blue;
 
     void drawBothEyes() {
@@ -468,10 +476,8 @@ class CoordinatesPainter extends CustomPainter {
     drawMouth();
     drawHeadPoints();
 
-    if (magnifiedImage == null || grabbing == false) return;
-
     // Zoom Feature
-
+    if (magnifiedImage == null || grabbing == false) return;
     double magnifiedY = touchedXY[1] - 80;
     if (60 > magnifiedY) magnifiedY = 60;
 
@@ -492,10 +498,21 @@ class CoordinatesPainter extends CustomPainter {
     // Zoom Pointer
     canvas.drawCircle(
       Offset(magnifiedX, magnifiedY),
-      7.0,
+      4.0,
       paint,
     );
   }
 
   bool shouldRepaint(CustomPainter oldDeligate) => true;
 }
+
+
+      // int cropWidth = 120;
+      // int cropHeight = 120;
+      // List<int> croppedImage = [];
+      // List<int> tempList;
+      // for (int i = offsetY * imageSize * 3 + offsetX * 3; croppedImage.length <= cropWidth * cropHeight *3 ; i + imageSize * 3) {
+      //   tempList = imageDataBytes.sublist(i, i + cropWidth * 3);
+      //   croppedImage.addAll(tempList);
+      //   print(croppedImage);
+      // }
