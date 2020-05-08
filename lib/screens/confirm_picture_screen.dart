@@ -15,7 +15,7 @@ import '../services/rest_api.dart';
 double canvasLength;
 double imageSizeDifference;
 
-int magOffset = 60;
+double magOffset = 80;
 int magImageSize = 550;
 
 class ConfirmPictureScreen extends StatefulWidget {
@@ -62,6 +62,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
     imageDataBytes =
         IMG.encodePng(IMG.copyResize(imageData, width: magImageSize));
     imageSizeDifference = magImageSize - canvasLength;
+    print("imageSizeDifference: $imageSizeDifference");
   }
 
   Map<String, List<double>> getCanvasCoordinates() {
@@ -182,6 +183,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
 
     double magImageYCompensator() {
       double posY = touchedXY[1] / canvasLength * imageSizeDifference;
+      posY -= imageSizeDifference - magOffset;
       // Need compensation logic here.
       return posY;
     }
@@ -388,22 +390,30 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
 }
 
 class MagnifiedImage extends CustomClipper<Rect> {
-  final x;
-  final y;
+  final canvasX;
+  final canvasY;
 
-  MagnifiedImage(this.x, this.y);
+  MagnifiedImage(this.canvasX, this.canvasY);
+
+  double get getPostY {
+    double pos;
+    // Compensation logic for static clipper at top of screen commented out until working.
+    // if (canvasY < magOffset) {
+    //   return (magOffset) + (canvasY / canvasLength * imageSizeDifference);
+    // }
+    pos = canvasY + (canvasY / canvasLength * imageSizeDifference);
+    return pos;
+  }
   @override
   Rect getClip(Size size) {
-    double posX = x + (x / canvasLength * imageSizeDifference);
-    double posY = y + (y / canvasLength * imageSizeDifference);
-    posY = posY < 400 ? 400 : posY;
+    double posX = canvasX + (canvasX / canvasLength * imageSizeDifference);
     Rect rect = Rect.fromCenter(
         center: Offset(
           posX,
-          posY,
+          getPostY,
         ),
-        width: 200,
-        height: 200);
+        width: magOffset * 1.8,
+        height: magOffset * 1.8);
     // Rect.fromCenter(center: Offset(200, 200), width: 200, height: 200);
 
     return rect;
@@ -424,12 +434,18 @@ class MagnifyingTargetPainter extends CustomPainter {
       ..strokeWidth = 4.0
       ..color = Colors.blue;
 
+    double posY = touchedXY[1];
+    // Compensation logic for static clipper marker at top of screen commented out until working.
+    // posY = posY < magOffset
+    //     ? magOffset
+    //     : posY;
+
     canvas.drawCircle(
       Offset(
         touchedXY[0],
-        touchedXY[1] - 80,
+        posY - magOffset,
       ),
-      1.0,
+      4.0,
       paint,
     );
   }
