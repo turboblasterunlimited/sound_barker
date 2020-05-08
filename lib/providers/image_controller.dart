@@ -39,7 +39,6 @@ class ImageController with ChangeNotifier {
     var random = Random.secure();
     var timer = Timer.periodic(Duration(milliseconds: 1100), (timer) {
       rNum = random.nextInt(40);
-
       if (rNum <= 3) webViewController.evaluateJavascript("left_brow_raise()");
       if (rNum <= 6 && rNum > 3)
         webViewController.evaluateJavascript("right_brow_raise()");
@@ -76,6 +75,10 @@ class ImageController with ChangeNotifier {
         .evaluateJavascript("create_puppet('${_base64Image(picture)}')");
 
     this.coordinates = json.decode(picture.coordinates);
+
+    Future.delayed(Duration(seconds: 1), () {
+      setFace();
+    });
   }
 
   void animate() {
@@ -96,6 +99,10 @@ class ImageController with ChangeNotifier {
         "set_position('leftEyePosition', ${coordinates['leftEye'][0]}, ${coordinates['leftEye'][1]})");
     webViewController.evaluateJavascript(
         "set_position('mouthPosition', ${coordinates['mouth'][0]}, ${coordinates['mouth'][1]})");
+    webViewController.evaluateJavascript(
+        "set_position('mouthRight', ${coordinates['mouthRight'][0]}, ${coordinates['mouthRight'][1]})");
+    webViewController.evaluateJavascript(
+        "set_position('mouthLeft', ${coordinates['mouthLeft'][0]}, ${coordinates['mouthLeft'][1]})");
     webViewController.evaluateJavascript(
         "set_position('headTop', ${coordinates['headTop'][0]}, ${coordinates['headTop'][1]})");
     webViewController.evaluateJavascript(

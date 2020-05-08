@@ -33,7 +33,7 @@ class ConfirmPictureScreen extends StatefulWidget {
     this.coordinatesSet = coordinatesSet ?? false;
     if (this.editing == true) {
       this.title =
-          this.isNamed == false ? "Rename your picture" : "Position the face";
+          this.isNamed == false ? "Rename your picture" : "Set the face";
     } else {
       this.title = "Name your picture";
     }
@@ -72,6 +72,14 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
 
     if (puppetCoordinates["mouth"] == null) {
       puppetCoordinates["mouth"] = [0.0, 0.0];
+    }
+
+    if (puppetCoordinates["mouthLeft"] == null) {
+      puppetCoordinates["mouthLeft"] = [-0.1, 0.0];
+    }
+
+    if (puppetCoordinates["mouthRight"] == null) {
+      puppetCoordinates["mouthRight"] = [0.1, 0.0];
     }
 
     if (puppetCoordinates["headTop"] == null) {
@@ -404,6 +412,7 @@ class MagnifiedImage extends CustomClipper<Rect> {
     pos = canvasY + (canvasY / canvasLength * imageSizeDifference);
     return pos;
   }
+
   @override
   Rect getClip(Size size) {
     double posX = canvasX + (canvasX / canvasLength * imageSizeDifference);
@@ -414,8 +423,6 @@ class MagnifiedImage extends CustomClipper<Rect> {
         ),
         width: magOffset * 1.8,
         height: magOffset * 1.8);
-    // Rect.fromCenter(center: Offset(200, 200), width: 200, height: 200);
-
     return rect;
   }
 
@@ -500,11 +507,34 @@ class CoordinatesPainter extends CustomPainter {
       );
     }
 
+    // MOUTH
     void drawMouth() {
       canvas.drawCircle(
-          Offset(coordinates["mouth"][0], coordinates["mouth"][1]), 1.0, paint);
+          Offset(coordinates["mouth"][0], coordinates["mouth"][1]), 3.0, paint);
+
+      canvas.drawCircle(
+          Offset(coordinates["mouthLeft"][0], coordinates["mouthLeft"][1]),
+          2.0,
+          paint);
+
+      canvas.drawCircle(
+          Offset(coordinates["mouthRight"][0], coordinates["mouthRight"][1]),
+          2.0,
+          paint);
+
+      // connect mouth
+
+      canvas.drawLine(
+          Offset(coordinates["mouth"][0], coordinates["mouth"][1]),
+          Offset(coordinates["mouthLeft"][0], coordinates["mouthLeft"][1]),
+          paint);
+      canvas.drawLine(
+          Offset(coordinates["mouth"][0], coordinates["mouth"][1]),
+          Offset(coordinates["mouthRight"][0], coordinates["mouthRight"][1]),
+          paint);
     }
 
+    // HEAD
     void drawHeadPoints() {
       canvas.drawCircle(
         Offset(coordinates["headTop"][0], coordinates["headTop"][1]),

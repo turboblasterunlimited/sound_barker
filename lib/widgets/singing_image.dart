@@ -34,6 +34,7 @@ class _SingingImageState extends State<SingingImage> {
         children: <Widget>[
           WebView(
             gestureRecognizers: null,
+
             onWebViewCreated: (WebViewController c) {
               webviewController = c;
               // _controller.complete(webviewController);
@@ -76,13 +77,20 @@ class _SingingImageState extends State<SingingImage> {
                       // same thing here, though youd want to set the instance var for puppet ready to
                       // false before calling create_puppet each time
                       imageController.animate();
+                      Future.delayed(Duration(seconds: 3), () {
+                        // imageController.setFace();
+                      if (randomGesture != null) randomGesture.cancel();
+                      randomGesture = imageController.randomGesture();
+                      });
                     }
                     if (message.message ==
                         "[puppet.js postMessage] create_puppet finished") {
-                      // call set face
-                      imageController.setFace();
+                      print("call set face");
+                      Future.delayed(Duration(seconds: 3), () {
+                        // imageController.setFace();
                       if (randomGesture != null) randomGesture.cancel();
                       randomGesture = imageController.randomGesture();
+                      });
                     }
                   })
             ]),
