@@ -12,8 +12,11 @@ import '../providers/pictures.dart';
 import '../providers/image_controller.dart';
 import '../services/rest_api.dart';
 
+double canvasLength;
+double imageSizeDifference;
+
 int magOffset = 60;
-int imageSize = 400;
+int magImageSize = 550;
 
 class ConfirmPictureScreen extends StatefulWidget {
   Picture newPicture;
@@ -42,21 +45,23 @@ class ConfirmPictureScreen extends StatefulWidget {
 }
 
 class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
-  double canvasLength;
   Map<String, List<double>> canvasCoordinates = {};
   double middle;
   IMG.Image imageData;
-  // Uint8List imageDataBytes;
+  Uint8List imageDataBytes;
   // Canvas pixels
-  List<double> touchedXY;
+  List<double> touchedXY = [0.0, 0.0];
   ui.Image magnifiedImage;
-  bool everyOtherFrame = true;
 
   void didChangeDependencies() {
+    canvasLength ??= MediaQuery.of(context).size.width;
+    middle ??= canvasLength / 2;
     super.didChangeDependencies();
     imageData =
         IMG.decodeImage(File(widget.newPicture.filePath).readAsBytesSync());
-    imageData = IMG.copyResize(imageData, width: imageSize);
+    imageDataBytes =
+        IMG.encodePng(IMG.copyResize(imageData, width: magImageSize));
+    imageSizeDifference = magImageSize - canvasLength;
   }
 
   Map<String, List<double>> getCanvasCoordinates() {
@@ -140,8 +145,6 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
 
   @override
   Widget build(BuildContext context) {
-    canvasLength ??= MediaQuery.of(context).size.width;
-    middle ??= canvasLength / 2;
     Pictures pictures = Provider.of<Pictures>(context, listen: false);
     ImageController imageController = Provider.of<ImageController>(context);
 
@@ -177,29 +180,13 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
       return false;
     }
 
-    void magnifyPixels(double x, double y) async {
-      int offsetX = (x / canvasLength * imageSize).round();
-      int offsetY = (y / canvasLength * imageSize).round();
-
-      var cropSize = magOffset * 2;
-
-      // print("Start: ${DateTime.now()}");
-
-      IMG.Image cropped = IMG.copyCrop(
-        imageData,
-        offsetX - magOffset,
-        offsetY - magOffset,
-        cropSize,
-        cropSize,
-      );
-
-      ui.Codec codec =
-          await ui.instantiateImageCodec(IMG.encodePng(cropped));
-      ui.FrameInfo fi = await codec.getNextFrame();
-      setState(() => magnifiedImage = fi.image);
-      // print("End: ${DateTime.now()}");
+    double magImageYCompensator() {
+      double posY = touchedXY[1] / canvasLength * imageSizeDifference;
+      // Need compensation logic here.
+      return posY;
     }
 
+    print(touchedXY);
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: PreferredSize(
@@ -212,11 +199,6 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
               color: Colors.white,
               size: 22,
             ),
-            // shape: CircleBorder(),
-            // elevation: 2.0,
-            // fillColor: Theme.of(context).accentColor,
-
-            // padding: const EdgeInsets.all(15.0),
             onPressed: () {
               // BACK ARROW
               setState(() {
@@ -312,12 +294,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                           ];
                           canvasCoordinates[grabPoint.keys.first.toString()] =
                               touchedXY;
-                          everyOtherFrame = !everyOtherFrame;
                         });
-
-                        if (everyOtherFrame)
-                          magnifyPixels(details.localPosition.dx,
-                              details.localPosition.dy);
                       },
                       onPanEnd: (details) async {
                         if (!grabbing) return;
@@ -328,9 +305,32 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                       },
                       child: CustomPaint(
                         painter: CoordinatesPainter(getCanvasCoordinates(),
-                            magnifiedImage, touchedXY, grabbing, canvasLength),
+                            magnifiedImage, touchedXY, grabbing),
                         child: Container(),
                       ),
+                    ),
+                  ),
+                  // Magnifying glass
+                  Visibility(
+                    visible: widget.isNamed && grabbing,
+                    child: Stack(
+                      children: <Widget>[
+                        Positioned(
+                          left: 0 -
+                              (touchedXY[0] /
+                                  canvasLength *
+                                  imageSizeDifference),
+                          bottom: magImageYCompensator(),
+                          child: ClipOval(
+                              clipper:
+                                  MagnifiedImage(touchedXY[0], touchedXY[1]),
+                              child: Image.memory(imageDataBytes)),
+                        ),
+                        CustomPaint(
+                          painter: MagnifyingTargetPainter(touchedXY),
+                          child: Container(),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -387,15 +387,65 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
   }
 }
 
+class MagnifiedImage extends CustomClipper<Rect> {
+  final x;
+  final y;
+
+  MagnifiedImage(this.x, this.y);
+  @override
+  Rect getClip(Size size) {
+    double posX = x + (x / canvasLength * imageSizeDifference);
+    double posY = y + (y / canvasLength * imageSizeDifference);
+    posY = posY < 400 ? 400 : posY;
+    Rect rect = Rect.fromCenter(
+        center: Offset(
+          posX,
+          posY,
+        ),
+        width: 200,
+        height: 200);
+    // Rect.fromCenter(center: Offset(200, 200), width: 200, height: 200);
+
+    return rect;
+  }
+
+  @override
+  bool shouldReclip(oldClipper) => true;
+}
+
+class MagnifyingTargetPainter extends CustomPainter {
+  final touchedXY;
+  MagnifyingTargetPainter(this.touchedXY);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 4.0
+      ..color = Colors.blue;
+
+    canvas.drawCircle(
+      Offset(
+        touchedXY[0],
+        touchedXY[1] - 80,
+      ),
+      1.0,
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDeligate) => true;
+}
+
 class CoordinatesPainter extends CustomPainter {
   final coordinates;
   final ui.Image magnifiedImage;
   final touchedXY;
   final grabbing;
-  final canvasLength;
 
-  CoordinatesPainter(this.coordinates, this.magnifiedImage, this.touchedXY,
-      this.grabbing, this.canvasLength)
+  CoordinatesPainter(
+      this.coordinates, this.magnifiedImage, this.touchedXY, this.grabbing)
       : super();
 
   @override
@@ -425,7 +475,10 @@ class CoordinatesPainter extends CustomPainter {
       );
 
       canvas.drawCircle(
-        Offset(coordinates["leftEye"][0], coordinates["leftEye"][1]),
+        Offset(
+          coordinates["leftEye"][0],
+          coordinates["leftEye"][1],
+        ),
         1.0,
         paint,
       );
@@ -475,44 +528,7 @@ class CoordinatesPainter extends CustomPainter {
     drawBothEyes();
     drawMouth();
     drawHeadPoints();
-
-    // Zoom Feature
-    if (magnifiedImage == null || grabbing == false) return;
-    double magnifiedY = touchedXY[1] - 80;
-    if (60 > magnifiedY) magnifiedY = 60;
-
-    double magnifiedX = touchedXY[0];
-    if (60 > magnifiedX) magnifiedX = 60;
-    if (canvasLength - 60 < magnifiedX) magnifiedX = canvasLength - 60;
-
-    paintImage(
-      canvas: canvas,
-      image: magnifiedImage,
-      rect: Rect.fromCenter(
-        center: Offset(magnifiedX, magnifiedY),
-        height: 120.0,
-        width: 120.0,
-      ),
-    );
-
-    // Zoom Pointer
-    canvas.drawCircle(
-      Offset(magnifiedX, magnifiedY),
-      4.0,
-      paint,
-    );
   }
 
   bool shouldRepaint(CustomPainter oldDeligate) => true;
 }
-
-
-      // int cropWidth = 120;
-      // int cropHeight = 120;
-      // List<int> croppedImage = [];
-      // List<int> tempList;
-      // for (int i = offsetY * imageSize * 3 + offsetX * 3; croppedImage.length <= cropWidth * cropHeight *3 ; i + imageSize * 3) {
-      //   tempList = imageDataBytes.sublist(i, i + cropWidth * 3);
-      //   croppedImage.addAll(tempList);
-      //   print(croppedImage);
-      // }
