@@ -12,10 +12,11 @@ PODS:
   - flutter_ffmpeg/https (0.2.10):
     - Flutter
     - mobile-ffmpeg-https (= 4.3.1)
-  - flutter_screen_recording (0.0.1):
-    - Flutter
   - flutter_sound_lite (0.0.1):
     - Flutter
+  - image_cropper (0.0.2):
+    - Flutter
+    - TOCropViewController (~> 2.5.2)
   - mobile-ffmpeg-https (4.3.1)
   - path_provider (0.0.1):
     - Flutter
@@ -23,6 +24,7 @@ PODS:
     - Flutter
   - "permission_handler (5.0.0+hotfix.3)":
     - Flutter
+  - TOCropViewController (2.5.2)
   - webview_flutter (0.0.1):
     - Flutter
 
@@ -32,8 +34,8 @@ DEPENDENCIES:
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `Flutter`)
   - flutter_ffmpeg (from `.symlinks/plugins/flutter_ffmpeg/ios`)
-  - flutter_screen_recording (from `.symlinks/plugins/flutter_screen_recording/ios`)
   - flutter_sound_lite (from `.symlinks/plugins/flutter_sound_lite/ios`)
+  - image_cropper (from `.symlinks/plugins/image_cropper/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - path_provider_macos (from `.symlinks/plugins/path_provider_macos/ios`)
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
@@ -42,6 +44,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - mobile-ffmpeg-https
+    - TOCropViewController
 
 EXTERNAL SOURCES:
   audioplayers:
@@ -54,10 +57,10 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_ffmpeg:
     :path: ".symlinks/plugins/flutter_ffmpeg/ios"
-  flutter_screen_recording:
-    :path: ".symlinks/plugins/flutter_screen_recording/ios"
   flutter_sound_lite:
     :path: ".symlinks/plugins/flutter_sound_lite/ios"
+  image_cropper:
+    :path: ".symlinks/plugins/image_cropper/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
   path_provider_macos:
@@ -73,12 +76,13 @@ SPEC CHECKSUMS:
   file_picker: 408623be2125b79a4539cf703be3d4b3abe5e245
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_ffmpeg: cf0a6941ef67e88248c998cc3e34f8acb0b4e454
-  flutter_screen_recording: f56d857cef9c6338f74909a15f60b3e5dc5ffb38
   flutter_sound_lite: ecee5ce6a88ed5644973fcd91da583464387ede2
+  image_cropper: 3c16d7651730ffe85897f5a1c4e2547e6b54989a
   mobile-ffmpeg-https: c4a3c255163ddb1abc4b4dfc613c2d885f8c46eb
   path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
   path_provider_macos: f760a3c5b04357c380e2fddb6f9db6f3015897e0
   permission_handler: 4a985b5448897c27fdeadde84f7452520c0e6c58
+  TOCropViewController: e9da34f484aedd4e5d5a8ab230ba217cfe16c729
   webview_flutter: bec7599de6bfbe8008a739aa3ebd7b364ea9d0cd
 
 PODFILE CHECKSUM: 1774ba9200e7f588b300bb9ccceca801a424cbeb

@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:path/path.dart' show join;
 import 'package:song_barker/functions/app_storage_path.dart';
 
+import '../functions/cropper.dart';
 import 'confirm_picture_screen.dart';
 import '../providers/pictures.dart';
 
@@ -101,7 +104,8 @@ class _CameraScreenState extends State<CameraScreen> {
                           print("SAVEing TempIMAGE TO $filePath");
                           await _controller.takePicture(filePath);
                           newPicture.filePath = filePath;
-                          await newPicture.crop();
+                          // await newPicture.crop();
+                          await cropImage(newPicture, Theme.of(context).accentColor, Colors.white);
                           Navigator.push(
                             context,
                             MaterialPageRoute(

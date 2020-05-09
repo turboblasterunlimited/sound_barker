@@ -111,15 +111,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.10"
-  flutter_screen_recording:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: master
-      resolved-ref: "1ad5d7f3f58737bb06c85d75624069de13a95c52"
-      url: "https://github.com/handofthecode/flutter_screen_recording"
-    source: git
-    version: "1.0.4"
   flutter_sound_lite:
     dependency: "direct main"
     description:
@@ -193,6 +184,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.12"
+  image_cropper:
+    dependency: "direct main"
+    description:
+      name: image_cropper
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.2.1"
   intl:
     dependency: "direct main"
     description:
@@ -264,7 +262,7 @@ packages:
     source: hosted
     version: "1.8.0+1"
   permission_handler:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: permission_handler
       url: "https://pub.dartlang.org"

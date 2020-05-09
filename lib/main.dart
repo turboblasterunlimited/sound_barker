@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:song_barker/functions/app_storage_path.dart';
 import 'package:flutter/rendering.dart';
@@ -17,15 +18,22 @@ import './providers/sound_controller.dart';
 import './providers/spinner_state.dart';
 import './providers/greeting_cards.dart';
 
-
-
-void main() async {
-  // debugPaintSizeEnabled = true;
-
-  runApp(MyApp());
-  appStoragePath();
-
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {
+    runApp(MyApp());
+    appStoragePath();
+  });
 }
+
+// void main() async {
+//   // debugPaintSizeEnabled = true;
+
+//   runApp(MyApp());
+//   appStoragePath();
+
+// }
 
 class MyApp extends StatelessWidget {
   Map<int, Color> color = {
@@ -95,7 +103,7 @@ class MyApp extends StatelessWidget {
             MainScreen.routeName: (ctx) => MainScreen(),
             SongCategorySelectScreen.routeName: (ctx) =>
                 SongCategorySelectScreen(),
-                SelectSongAndPictureScreen.routeName: (ctx) =>
+            SelectSongAndPictureScreen.routeName: (ctx) =>
                 SelectSongAndPictureScreen(),
           }),
     );

@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../widgets/singing_image.dart';
 import 'dart:async';
 import 'dart:io';
-import 'package:flutter_screen_recording/flutter_screen_recording.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../functions/app_storage_path.dart';
@@ -89,7 +88,7 @@ class _GenerateCardScreenState extends State<GenerateCardScreen> {
   }
 
   doneCapturing() async {
-    cardFilePath = await FlutterScreenRecording.stopRecordScreen;
+    // write code here
 
     setState(() {
       this._isCapturing = false;
@@ -108,22 +107,13 @@ class _GenerateCardScreenState extends State<GenerateCardScreen> {
     setState(() {
       this._isCapturing = true;
     });
-    // print("Storage Path within Flutter: $myAppStoragePath");
-    FlutterScreenRecording.startRecordScreen(widget.picture.name);
-    // FlutterScreenRecording.startRecordScreen(widget.picture.name, myAppStoragePath.toString());
     await startAll();
   }
 
-  // Future<void> setImageController() async {
-  //   Future.delayed(Duration(seconds: 2), () {
-  //     imageController = Provider.of<ImageController>(context, listen: false);
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
-    // imageController = Provider.of<ImageController>(context, listen: false);
-    // setImageController();
+
 
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,

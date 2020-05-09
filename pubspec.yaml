@@ -33,15 +33,11 @@ dependencies:
   flutter_spinkit: ^4.1.2
   camera: ^0.5.7+4
   outline_material_icons: ^0.1.1
-  file_picker: ^1.4.3+2
   audioplayers: ^0.14.2
-  flutter_screen_recording:
-    # path: ../flutter_screen_recording
-    git:
-      url: https://github.com/handofthecode/flutter_screen_recording
-      ref: master
-  permission_handler: ^5.0.0
   csv: ^4.0.3
+  file_picker: ^1.4.3+2
+  image_cropper: ^1.2.1
+  
   # snapping_sheet: ^2.0.0
 
   # The following adds the Cupertino Icons font to your application.

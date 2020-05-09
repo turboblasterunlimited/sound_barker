@@ -6,7 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'dart:io';
 import 'package:path/path.dart';
 
-import 'package:song_barker/providers/tab_list_scroll_controller.dart';
+import '../functions/cropper.dart';
 import 'package:song_barker/screens/confirm_picture_screen.dart';
 import '../providers/pictures.dart';
 import '../screens/camera_screen.dart';
@@ -50,7 +50,9 @@ class PictureGrid extends StatelessWidget {
                         );
                         await file.copy(newFilePath);
                         newPicture.filePath = newFilePath;
-                        await newPicture.crop();
+                        // await newPicture.crop();
+                        await cropImage(newPicture,
+                            Theme.of(context).accentColor, Colors.white);
 
                         Navigator.push(
                           context,

@@ -50,7 +50,7 @@ class _SingingImageState extends State<SingingImage> {
 
             // initialUrl: 'https://www.thedogbarksthesong.ml/sample_animation',
             // initialUrl: 'https://www.thedogbarksthesong.ml/puppet',
-            initialUrl: "https://thedogbarksthesong.ml/puppet_001/puppet.html",
+            initialUrl: "https://thedogbarksthesong.ml/puppet_002/puppet.html",
 
             // initialUrl: 'http://webglreport.com/',
             // initialUrl: 'https://html5test.com/',
