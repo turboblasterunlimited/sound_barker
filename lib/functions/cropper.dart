@@ -10,12 +10,13 @@ Future<void> cropImage(newPicture, toolbarColor, widgetColor) async {
         toolbarColor: toolbarColor,
         toolbarWidgetColor: widgetColor,
         initAspectRatio: CropAspectRatioPreset.square,
-        lockAspectRatio: false),
+        lockAspectRatio: true),
     iosUiSettings: IOSUiSettings(
+      aspectRatioLockDimensionSwapEnabled: true,
       title: 'Now crop it!',
     ),
   );
   // Replace old file
   File(newPicture.filePath).deleteSync();
-  newFile.copy(newPicture.filePath);
+  newFile.copySync(newPicture.filePath);
 }
