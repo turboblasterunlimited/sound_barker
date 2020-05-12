@@ -11,6 +11,7 @@ import '../providers/pictures.dart';
 class ImageController with ChangeNotifier {
   WebViewController webViewController;
   Map coordinates;
+  Timer randomGestureTimer;
 
   void mountController(controller) {
     this.webViewController = controller;
@@ -35,9 +36,10 @@ class ImageController with ChangeNotifier {
   }
 
   Timer randomGesture() {
+    randomGestureTimer.cancel();
     int rNum;
     var random = Random.secure();
-    var timer = Timer.periodic(Duration(milliseconds: 1100), (timer) {
+    randomGestureTimer = Timer.periodic(Duration(milliseconds: 1100), (timer) {
       rNum = random.nextInt(40);
       if (rNum <= 3) webViewController.evaluateJavascript("left_brow_raise()");
       if (rNum <= 6 && rNum > 3)
@@ -62,7 +64,7 @@ class ImageController with ChangeNotifier {
         webViewController.evaluateJavascript("left_blink_quick()");
       if (rNum == 22) webViewController.evaluateJavascript("left_blink_slow()");
     });
-    return timer;
+    return randomGestureTimer;
   }
 
   // SHOULD ALSO CHECK FOR THE EXISTENCE OF pictures.mountedPicture and then pass it to create_dog.

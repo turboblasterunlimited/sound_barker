@@ -42,6 +42,8 @@ class _RecordMessageScreenState extends State<RecordMessageScreen> {
   bool _isRecording = false;
   String filePath;
   bool messageExists = false;
+  double messageSpeed = 50;
+  double messagePitch = 50;
 
   @override
   void initState() {
@@ -150,8 +152,8 @@ class _RecordMessageScreenState extends State<RecordMessageScreen> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          'Record a personal message?',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          'Add a personal message?',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
       ),
       body: Column(
@@ -162,69 +164,114 @@ class _RecordMessageScreenState extends State<RecordMessageScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                ButtonBar(
+                Column(
                   children: <Widget>[
-                    Ink(
-                      height: 80,
-                      width: 80,
-                      decoration: ShapeDecoration(
-                        color: _isRecording ? Colors.redAccent : Colors.white,
-                        shape: CircleBorder(),
-                      ),
-                      child: IconButton(
-                        color: Colors.black38,
-                        icon: Icon(Icons.mic),
-                        iconSize: 50,
-                        onPressed: onStartRecorderPressed(),
-                      ),
-                    ),
-                    Ink(
-                      height: 80,
-                      width: 80,
-                      decoration: ShapeDecoration(
-                        color: (_isRecording || !messageExists)
-                            ? Colors.grey[350]
-                            : Colors.blue,
-                        shape: CircleBorder(),
-                      ),
-                      child: IconButton(
-                        disabledColor: Colors.grey,
-                        color: messageExists ? Colors.black38 : Colors.grey,
-                        icon: _isPlaying
-                            ? Icon(Icons.stop)
-                            : Icon(Icons.play_arrow),
-                        iconSize: 50,
-                        onPressed: _isRecording || !messageExists
-                            ? null
-                            : handlePlayStopButton,
+                    Padding(padding: EdgeInsets.only(top: 10),),
+                    Text("Pitch",
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                    RotatedBox(
+                      quarterTurns: 3,
+                      child: Slider(
+                        value: messagePitch,
+                        min: 0,
+                        max: 100,
+                        activeColor: Colors.blue,
+                        inactiveColor: Colors.grey,
+                        onChanged: (value) {
+                          setState(() {
+                            messagePitch = value;
+                          });
+                        },
                       ),
                     ),
                   ],
                 ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Center(
-                  child: GestureDetector(
-                    child: Text(
-                      "Or Skip ->",
-                      style: TextStyle(color: Colors.white, fontSize: 40),
+                Column(
+                  children: <Widget>[
+                    Expanded(
+                      child: ButtonBar(
+                        children: <Widget>[
+                          Ink(
+                            height: 80,
+                            width: 80,
+                            decoration: ShapeDecoration(
+                              color: _isRecording
+                                  ? Colors.redAccent
+                                  : Colors.white,
+                              shape: CircleBorder(),
+                            ),
+                            child: IconButton(
+                              color: Colors.black38,
+                              icon: Icon(Icons.mic),
+                              iconSize: 50,
+                              onPressed: onStartRecorderPressed(),
+                            ),
+                          ),
+                          Ink(
+                            height: 80,
+                            width: 80,
+                            decoration: ShapeDecoration(
+                              color: (_isRecording || !messageExists)
+                                  ? Colors.grey[350]
+                                  : Colors.blue,
+                              shape: CircleBorder(),
+                            ),
+                            child: IconButton(
+                              disabledColor: Colors.grey,
+                              color:
+                                  messageExists ? Colors.black38 : Colors.grey,
+                              icon: _isPlaying
+                                  ? Icon(Icons.stop)
+                                  : Icon(Icons.play_arrow),
+                              iconSize: 50,
+                              onPressed: _isRecording || !messageExists
+                                  ? null
+                                  : handlePlayStopButton,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              GenerateCardScreen(widget.song, widget.picture),
+                    Center(
+                      child: GestureDetector(
+                        child: Text(
+                          "Or Skip ->",
+                          style: TextStyle(color: Colors.white, fontSize: 40),
                         ),
-                      );
-                    },
-                  ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => GenerateCardScreen(
+                                  widget.song, widget.picture),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                Column(
+                  children: <Widget>[
+                    Padding(padding: EdgeInsets.only(top: 10),),
+                    Text("Speed",
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                    RotatedBox(
+                      quarterTurns: 3,
+                      child: Slider(
+                        value: messageSpeed,
+                        min: 0,
+                        max: 100,
+                        activeColor: Colors.blue,
+                        inactiveColor: Colors.grey,
+                        onChanged: (value) {
+                          setState(() {
+                            messageSpeed = value;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
