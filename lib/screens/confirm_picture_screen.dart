@@ -35,7 +35,7 @@ class ConfirmPictureScreen extends StatefulWidget {
       this.title =
           this.isNamed == false ? "Rename your picture" : "Set the face";
     } else {
-      this.title = "Name your picture";
+      this.title = "Name it!";
     }
     this.imageName = this.newPicture.name ?? "";
   }

@@ -11,7 +11,7 @@ class SoundController with ChangeNotifier {
   }
 
   Future<void> startPlayer(path,
-      [Function callback, String backingTrackPath]) async {
+      [Function callback]) async {
     if (audioPlayer.state == AudioPlayerState.PLAYING) {
       stopPlayer();
     }

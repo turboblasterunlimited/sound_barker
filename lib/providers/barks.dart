@@ -1,6 +1,7 @@
 import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:gcloud/storage.dart';
+import 'package:song_barker/functions/amplitude_file_generator.dart';
 import 'package:song_barker/functions/app_storage_path.dart';
 import 'package:song_barker/services/amplitude_extractor.dart';
 import 'package:song_barker/services/ffmpeg.dart';
@@ -45,16 +46,16 @@ class Barks with ChangeNotifier {
     });
   }
 
-  Future<String> createAmplitudeFile(filePathBase) async {
-    await FFMpeg.converter
-        .execute("-hide_banner -loglevel panic -i $filePathBase.aac $filePathBase.wav");
-    final amplitudes = AmplitudeExtractor.extract("$filePathBase.wav");
-    File("$filePathBase.wav").delete();
-    final csvAmplitudes = const ListToCsvConverter().convert([amplitudes]);
-    File file = File("$filePathBase.csv");
-    file.writeAsStringSync(csvAmplitudes);
-    return file.path;
-  }
+  // Future<String> createAmplitudeFile(filePath, filePathBase) async {
+  //   await FFMpeg.converter
+  //       .execute("-hide_banner -loglevel panic -i $filePathBase.aac $filePathBase.wav");
+  //   final amplitudes = AmplitudeExtractor.extract("$filePathBase.wav");
+  //   File("$filePathBase.wav").delete();
+  //   final csvAmplitudes = const ListToCsvConverter().convert([amplitudes]);
+  //   File file = File("$filePathBase.csv");
+  //   file.writeAsStringSync(csvAmplitudes);
+  //   return file.path;
+  // }
 
   // downloads the files either from all barks in memory or just the barks passed.
   Future downloadAllBarksFromBucket([List barks]) async {
@@ -70,7 +71,7 @@ class Barks with ChangeNotifier {
       }
       barks[i].filePath = filePathBase + '.aac';
       barks[i].amplitudesPath =
-          await createAmplitudeFile(filePathBase);
+          await createAmplitudeFile(barks[i].filePath, filePathBase);
     }
   }
 

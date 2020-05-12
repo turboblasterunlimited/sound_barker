@@ -27,18 +27,17 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
   // bool get wantKeepAlive => true;
   ImageController imageController;
   AnimationController renameAnimationController;
-  StreamSubscription<double> waveStreamer;
   bool isPlaying = false;
   TabListScrollController tabListScrollController;
 
   @override
   void initState() {
+    imageController = Provider.of<ImageController>(context, listen: false);
     renameAnimationController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 500),
     );
     renameAnimationController.forward();
-    imageController = Provider.of<ImageController>(context, listen: false);
     tabListScrollController =
         Provider.of<TabListScrollController>(context, listen: false);
     super.initState();
@@ -47,12 +46,10 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
   @override
   void dispose() {
     renameAnimationController.dispose();
-    if (waveStreamer != null) stopAll();
     super.dispose();
   }
 
   void stopAll() {
-    waveStreamer?.cancel();
     imageController.stopAnimation();
     widget.soundController.stopPlayer();
   }
@@ -140,6 +137,7 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
         titlePadding: EdgeInsets.all(10),
         children: <Widget>[
           TextFormField(
+            autofocus: true,
             initialValue: widget.song.name,
             onChanged: (name) {
               widget.song.name = name;

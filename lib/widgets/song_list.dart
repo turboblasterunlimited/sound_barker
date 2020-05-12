@@ -30,7 +30,7 @@ class _SongListState extends State<SongList> {
               Navigator.pushNamed(context, SongCategorySelectScreen.routeName);
             },
             child: Text(
-              "CREATE NEW SONG",
+              "TAP TO CREATE SONG",
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             shape: RoundedRectangleBorder(

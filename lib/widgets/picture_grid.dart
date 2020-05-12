@@ -30,6 +30,7 @@ class PictureGrid extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 AppBar(
+                  centerTitle: true,
                   backgroundColor: Theme.of(context).accentColor,
                   title: Text('Pictures'),
                   automaticallyImplyLeading: false,

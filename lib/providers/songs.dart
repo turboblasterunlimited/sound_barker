@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:gcloud/storage.dart';
+import 'package:song_barker/functions/amplitude_file_generator.dart';
 import '../services/gcloud.dart';
 import 'dart:convert';
 import 'dart:io';
@@ -9,7 +10,7 @@ import 'package:csv/csv.dart';
 import '../services/ffmpeg.dart';
 import '../functions/app_storage_path.dart';
 import '../services/rest_api.dart';
-import '../services/amplitude_extractor.dart';
+import '../functions/amplitude_file_generator.dart';
 
 final captureBackingFileName = RegExp(r'\/([0-9a-zA-Z_ ]*.[a-zA-Z]{3})$');
 
@@ -107,16 +108,16 @@ class Song with ChangeNotifier {
     notifyListeners();
   }
 
-  createAmplitudeFile(filePathBase) async {
-    await FFMpeg.converter
-        .execute("-hide_banner -loglevel panic -i $filePath $filePathBase.wav");
-    final amplitudes = AmplitudeExtractor.extract("$filePathBase.wav");
-    File("$filePathBase.wav").delete();
-    final csvAmplitudes = const ListToCsvConverter().convert([amplitudes]);
-    File file = File("$filePathBase.csv");
-    file.writeAsStringSync(csvAmplitudes);
-    return file.path;
-  }
+  // createAmplitudeFile(filePathBase) async {
+  //   await FFMpeg.converter
+  //       .execute("-hide_banner -loglevel panic -i $filePath $filePathBase.wav");
+  //   final amplitudes = AmplitudeExtractor.extract("$filePathBase.wav");
+  //   File("$filePathBase.wav").delete();
+  //   final csvAmplitudes = const ListToCsvConverter().convert([amplitudes]);
+  //   File file = File("$filePathBase.csv");
+  //   file.writeAsStringSync(csvAmplitudes);
+  //   return file.path;
+  // }
 
   Future<Song> retrieveSong(Map songData, [bucket]) async {
     print("retrieving song: $songData");
@@ -154,7 +155,7 @@ class Song with ChangeNotifier {
   void _getMelodyAndGenerateAmplitudeFile(bucket, filePathBase) async {
     this.filePath = await Gcloud.downloadFromBucket(fileUrl, fileId + '.aac',
         bucket: bucket);
-    this.amplitudesPath = await createAmplitudeFile(filePathBase);
+    this.amplitudesPath = await createAmplitudeFile(this.filePath, filePathBase);
   }
 
   void _mergeTracks(backingTrackPath, filePathBase) async {

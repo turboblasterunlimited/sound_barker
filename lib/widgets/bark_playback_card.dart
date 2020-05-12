@@ -135,6 +135,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
         titlePadding: EdgeInsets.all(10),
         children: <Widget>[
           TextFormField(
+            autofocus: true,
             initialValue: widget.bark.name,
             onChanged: (newName) {
               widget.bark.name = newName;
