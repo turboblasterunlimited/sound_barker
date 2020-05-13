@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sound_lite/flutter_sound_recorder.dart';
 import 'package:flutter_sound_lite/ios_quality.dart';
 import 'package:provider/provider.dart';
+import 'package:song_barker/functions/app_storage_path.dart';
 import 'package:song_barker/providers/image_controller.dart';
+import 'package:song_barker/services/amplitude_extractor.dart';
+import 'package:song_barker/services/ffmpeg.dart';
 import 'package:song_barker/widgets/singing_image.dart';
 import 'dart:async';
 import 'dart:io';
@@ -38,12 +41,19 @@ class _RecordMessageScreenState extends State<RecordMessageScreen> {
   ImageController imageController;
   SoundController soundController;
   bool _isPlaying = false;
-  String amplitudePath;
   bool _isRecording = false;
+  bool _messageExists = false;
+  bool _hasShifted = false;
+  String amplitudePath;
   String filePath;
-  bool messageExists = false;
-  double messageSpeed = 50;
-  double messagePitch = 50;
+  String alteredAmplitudePath;
+  String alteredFilePath = myAppStoragePath + "/tempFile.aac";
+  // 0 & 200
+  double messageSpeed = 100;
+  double messagePitch = 100;
+  // -1 & 1
+  double pitchCompensation = 0;
+  double speedCompensation = 0;
 
   @override
   void initState() {
@@ -62,9 +72,13 @@ class _RecordMessageScreenState extends State<RecordMessageScreen> {
   }
 
   void startRecorder() async {
-    if (messageExists) {
+    if (_messageExists) {
       File(filePath).deleteSync();
       File(amplitudePath).deleteSync();
+    }
+    if (File(alteredFilePath).existsSync()) {
+      File(alteredFilePath).deleteSync();
+      File(alteredAmplitudePath).deleteSync();
     }
     try {
       this.filePath = await flutterSound.startRecorder(
@@ -81,6 +95,7 @@ class _RecordMessageScreenState extends State<RecordMessageScreen> {
 
       this.setState(() {
         this._isRecording = true;
+        this._hasShifted = false;
       });
     } catch (err) {
       setState(() {
@@ -92,7 +107,7 @@ class _RecordMessageScreenState extends State<RecordMessageScreen> {
   void stopRecorder() async {
     setState(() {
       this._isRecording = false;
-      this.messageExists = true;
+      this._messageExists = true;
     });
 
     try {
@@ -137,12 +152,26 @@ class _RecordMessageScreenState extends State<RecordMessageScreen> {
     stopPlayback();
     imageController.mouthTrackSound(amplitudeFile);
     await soundController.startPlayer(audioFile, stopPlayerCallBack());
-    print("song playback file path: ${audioFile}");
+    print("song playback file path: $audioFile");
   }
 
   void handlePlayStopButton() {
-    _isPlaying ? stopPlayback() : startPlayback(filePath, amplitudePath);
+    _isPlaying
+        ? stopPlayback()
+        : _hasShifted
+            ? startPlayback(alteredFilePath, alteredAmplitudePath)
+            : startPlayback(filePath, amplitudePath);
     setState(() => _isPlaying = !_isPlaying);
+  }
+
+  void generateAlteredAudioFiles() async {
+    pitchCompensation = 1 - (messageSpeed / 100);
+    double pitchChange = (messagePitch / 100) - pitchCompensation;
+    speedCompensation = 1 - (messagePitch / 100);
+    double speedChange = (messageSpeed / 100) - speedCompensation;
+    await FFMpeg.converter.execute(
+        '-i $filePath -filter:a "asetrate=44100*$pitchChange,aresample=44100,atempo=$speedChange" -vn $alteredFilePath');
+    await createAmplitudeFile(alteredFilePath);
   }
 
   @override
@@ -166,21 +195,29 @@ class _RecordMessageScreenState extends State<RecordMessageScreen> {
               children: <Widget>[
                 Column(
                   children: <Widget>[
-                    Padding(padding: EdgeInsets.only(top: 10),),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10),
+                    ),
                     Text("Pitch",
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold)),
                     RotatedBox(
                       quarterTurns: 3,
                       child: Slider(
                         value: messagePitch,
                         min: 0,
-                        max: 100,
+                        max: 200,
                         activeColor: Colors.blue,
                         inactiveColor: Colors.grey,
                         onChanged: (value) {
                           setState(() {
                             messagePitch = value;
+                            _hasShifted = true;
                           });
+                        },
+                        onChangeEnd: (value) async {
+                          setState(() => messagePitch = value);
+                          generateAlteredAudioFiles();
                         },
                       ),
                     ),
@@ -211,7 +248,7 @@ class _RecordMessageScreenState extends State<RecordMessageScreen> {
                             height: 80,
                             width: 80,
                             decoration: ShapeDecoration(
-                              color: (_isRecording || !messageExists)
+                              color: (_isRecording || !_messageExists)
                                   ? Colors.grey[350]
                                   : Colors.blue,
                               shape: CircleBorder(),
@@ -219,12 +256,12 @@ class _RecordMessageScreenState extends State<RecordMessageScreen> {
                             child: IconButton(
                               disabledColor: Colors.grey,
                               color:
-                                  messageExists ? Colors.black38 : Colors.grey,
+                                  _messageExists ? Colors.black38 : Colors.grey,
                               icon: _isPlaying
                                   ? Icon(Icons.stop)
                                   : Icon(Icons.play_arrow),
                               iconSize: 50,
-                              onPressed: _isRecording || !messageExists
+                              onPressed: _isRecording || !_messageExists
                                   ? null
                                   : handlePlayStopButton,
                             ),
@@ -253,21 +290,23 @@ class _RecordMessageScreenState extends State<RecordMessageScreen> {
                 ),
                 Column(
                   children: <Widget>[
-                    Padding(padding: EdgeInsets.only(top: 10),),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10),
+                    ),
                     Text("Speed",
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold)),
                     RotatedBox(
                       quarterTurns: 3,
                       child: Slider(
                         value: messageSpeed,
                         min: 0,
-                        max: 100,
+                        max: 200,
                         activeColor: Colors.blue,
                         inactiveColor: Colors.grey,
-                        onChanged: (value) {
-                          setState(() {
-                            messageSpeed = value;
-                          });
+                        onChanged: (value) async {
+                          setState(() => messageSpeed = value);
+                          generateAlteredAudioFiles();
                         },
                       ),
                     ),

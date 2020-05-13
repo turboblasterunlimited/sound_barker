@@ -5,6 +5,7 @@ import 'package:song_barker/services/ffmpeg.dart';
 
 createAmplitudeFile(filePath, [filePathBase]) async {
   filePathBase ??= filePath.substring(0, filePath.length - 4);
+  print("inside createamplitudefile $filePath, $filePathBase");
   await FFMpeg.converter
       .execute("-hide_banner -loglevel panic -i $filePath $filePathBase.wav");
   final amplitudes = AmplitudeExtractor.extract("$filePathBase.wav");
