@@ -44,8 +44,8 @@ class _RecordMessageScreenState extends State<RecordMessageScreen> {
   bool _isRecording = false;
   bool _messageExists = false;
   bool _hasShifted = false;
-  String amplitudePath = myAppStoragePath + "/tempAmpFile.aac";
-  String filePath = myAppStoragePath + "/tempFile.aac";
+  String amplitudePath = "";
+  String filePath = "";
   String alteredAmplitudePath = "";
   String alteredFilePath = myAppStoragePath + "/tempFileAltered.aac";
   // 0 to 200
@@ -303,6 +303,12 @@ class _RecordMessageScreenState extends State<RecordMessageScreen> {
                         activeColor: Colors.blue,
                         inactiveColor: Colors.grey,
                         onChanged: (value) async {
+                          setState(() {
+                            messageSpeed = value;
+                            _hasShifted = true;
+                          });
+                        },
+                        onChangeEnd: (value) {
                           setState(() => messageSpeed = value);
                           generateAlteredAudioFiles();
                         },
