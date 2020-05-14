@@ -44,14 +44,14 @@ class _RecordMessageScreenState extends State<RecordMessageScreen> {
   bool _isRecording = false;
   bool _messageExists = false;
   bool _hasShifted = false;
-  String amplitudePath;
-  String filePath;
-  String alteredAmplitudePath;
-  String alteredFilePath = myAppStoragePath + "/tempFile.aac";
-  // 0 & 200
+  String amplitudePath = myAppStoragePath + "/tempAmpFile.aac";
+  String filePath = myAppStoragePath + "/tempFile.aac";
+  String alteredAmplitudePath = "";
+  String alteredFilePath = myAppStoragePath + "/tempFileAltered.aac";
+  // 0 to 200
   double messageSpeed = 100;
   double messagePitch = 100;
-  // -1 & 1
+  // -1 to 1
   double pitchCompensation = 0;
   double speedCompensation = 0;
 
@@ -127,10 +127,6 @@ class _RecordMessageScreenState extends State<RecordMessageScreen> {
     amplitudePath = await createAmplitudeFile(filePath);
   }
 
-  Future<bool> fileExists(String path) async {
-    return await File(path).exists();
-  }
-
   onStartRecorderPressed() {
     if (flutterSound.isRecording) return stopRecorder;
     return startRecorder;
@@ -165,13 +161,15 @@ class _RecordMessageScreenState extends State<RecordMessageScreen> {
   }
 
   void generateAlteredAudioFiles() async {
+    if (File(alteredFilePath).existsSync()) File(alteredFilePath).deleteSync();
+    if (File(alteredAmplitudePath).existsSync()) File(alteredAmplitudePath).deleteSync();
     pitchCompensation = 1 - (messageSpeed / 100);
     double pitchChange = (messagePitch / 100) - pitchCompensation;
     speedCompensation = 1 - (messagePitch / 100);
     double speedChange = (messageSpeed / 100) - speedCompensation;
     await FFMpeg.converter.execute(
         '-i $filePath -filter:a "asetrate=44100*$pitchChange,aresample=44100,atempo=$speedChange" -vn $alteredFilePath');
-    await createAmplitudeFile(alteredFilePath);
+    alteredAmplitudePath = await createAmplitudeFile(alteredFilePath);
   }
 
   @override
