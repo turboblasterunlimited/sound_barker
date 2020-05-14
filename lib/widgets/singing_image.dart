@@ -20,9 +20,10 @@ class _SingingImageState extends State<SingingImage> {
   static WebViewController webviewController;
   static ImageController imageController;
   Timer randomGesture;
+  bool firstInit = true;
 
   void dispose() {
-    randomGesture.cancel();
+    if (randomGesture != null) randomGesture.cancel();
     super.dispose();
   }
 
@@ -34,7 +35,6 @@ class _SingingImageState extends State<SingingImage> {
         children: <Widget>[
           WebView(
             gestureRecognizers: null,
-
             onWebViewCreated: (WebViewController c) {
               webviewController = c;
               // _controller.complete(webviewController);
@@ -47,16 +47,11 @@ class _SingingImageState extends State<SingingImage> {
               print("WEB VIEW \"FINISHED\"");
               imageController.mountController(webviewController);
             },
-
-            // initialUrl: 'https://www.thedogbarksthesong.ml/sample_animation',
-            // initialUrl: 'https://www.thedogbarksthesong.ml/puppet',
             initialUrl: "https://thedogbarksthesong.ml/puppet_002/puppet.html",
-
-            // initialUrl: 'http://webglreport.com/',
-            // initialUrl: 'https://html5test.com/',
             javascriptMode: JavascriptMode.unrestricted,
-            javascriptChannels: Set.from([
-              JavascriptChannel(
+            javascriptChannels: Set.from(
+              [
+                JavascriptChannel(
                   name: 'Print',
                   onMessageReceived: (JavascriptMessage message) {
                     //This is where you receive message from
@@ -73,27 +68,18 @@ class _SingingImageState extends State<SingingImage> {
                       imageController.createDog(widget.picture);
                     }
                     if (message.message ==
-                        "[puppet.js postMessage] puppet is now ready") {
-                      // same thing here, though youd want to set the instance var for puppet ready to
-                      // false before calling create_puppet each time
-                      imageController.animate();
-                      Future.delayed(Duration(seconds: 3), () {
-                        // imageController.setFace();
-                      if (randomGesture != null) randomGesture.cancel();
-                      randomGesture = imageController.randomGesture();
-                      });
-                    }
-                    if (message.message ==
                         "[puppet.js postMessage] create_puppet finished") {
-                      print("call set face");
+                      if (!firstInit) imageController.setFace();
+                      setState(() => firstInit = false);
                       Future.delayed(Duration(seconds: 3), () {
-                        // imageController.setFace();
-                      if (randomGesture != null) randomGesture.cancel();
-                      randomGesture = imageController.randomGesture();
+                        if (randomGesture != null) randomGesture.cancel();
+                        randomGesture = imageController.randomGesture();
                       });
                     }
-                  })
-            ]),
+                  },
+                )
+              ],
+            ),
           ),
           Stack(children: <Widget>[
             GestureDetector(
