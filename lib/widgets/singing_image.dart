@@ -20,7 +20,6 @@ class _SingingImageState extends State<SingingImage> {
   static WebViewController webviewController;
   static ImageController imageController;
   Timer randomGesture;
-  bool firstInit = true;
 
   void dispose() {
     if (randomGesture != null) randomGesture.cancel();
@@ -69,8 +68,7 @@ class _SingingImageState extends State<SingingImage> {
                     }
                     if (message.message ==
                         "[puppet.js postMessage] create_puppet finished") {
-                      if (!firstInit) imageController.setFace();
-                      setState(() => firstInit = false);
+                      if (widget.picture != null) imageController.setFace();
                       Future.delayed(Duration(seconds: 3), () {
                         if (randomGesture != null) randomGesture.cancel();
                         randomGesture = imageController.randomGesture();
