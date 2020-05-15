@@ -84,7 +84,7 @@ class _PictureCardState extends State<PictureCard>
                 onTap: () {
                   imageController.createDog(widget.picture);
                   widget.pictures.mountedPicture = widget.picture;
-                  handleTabScroll();
+                  Navigator.pop(context);
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),

@@ -67,25 +67,25 @@ class ImageController with ChangeNotifier {
 
   // SHOULD ALSO CHECK FOR THE EXISTENCE OF pictures.mountedPicture and then pass it to create_dog.
   // NEED TO FIX ISSUE OF WIDGET SCREENS REBUILDING AFTER THEY HAVE BEEN LEFT.
-  createDog([Picture picture]) {
+  dynamic createDog([Picture picture]) {
     if (picture == null)
       return webViewController.evaluateJavascript("create_puppet()");
+
     webViewController
         .evaluateJavascript("create_puppet('${_base64Image(picture)}')");
     this.coordinates = json.decode(picture.coordinates);
-    // setFace();
+    setFace();
   }
 
-  _base64Image(picture) {
+  String _base64Image(picture) {
     String encodingPrefix = "data:image/png;base64,";
     String base64Image =
         base64.encode(File(picture.filePath).readAsBytesSync());
     return '$encodingPrefix$base64Image';
   }
 
-  setFace() {
+  void setFace() {
     print("setting face");
-    try {
       webViewController.evaluateJavascript(
           "set_position('rightEyePosition', ${coordinates['rightEye'][0]}, ${coordinates['rightEye'][1]})");
       webViewController.evaluateJavascript(
@@ -104,9 +104,6 @@ class ImageController with ChangeNotifier {
           "set_position('headBottom', ${coordinates['headBottom'][0]}, ${coordinates['headBottom'][1]})");
       webViewController.evaluateJavascript(
           "set_position('headLeft', ${coordinates['headLeft'][0]}, ${coordinates['headLeft'][1]})");
-    } catch (e) {
-      print("Error: $e");
-    }
     print("done setting face");
   }
 }

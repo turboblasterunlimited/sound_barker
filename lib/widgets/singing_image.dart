@@ -46,6 +46,8 @@ class _SingingImageState extends State<SingingImage> {
               print("WEB VIEW \"FINISHED\"");
               imageController.mountController(webviewController);
             },
+            // initialUrl: "https://www.google.com",
+
             initialUrl: "https://thedogbarksthesong.ml/puppet_002/puppet.html",
             javascriptMode: JavascriptMode.unrestricted,
             javascriptChannels: Set.from(
@@ -68,7 +70,6 @@ class _SingingImageState extends State<SingingImage> {
                     }
                     if (message.message ==
                         "[puppet.js postMessage] create_puppet finished") {
-                      if (widget.picture != null) imageController.setFace();
                       Future.delayed(Duration(seconds: 3), () {
                         if (randomGesture != null) randomGesture.cancel();
                         randomGesture = imageController.randomGesture();
@@ -81,9 +82,9 @@ class _SingingImageState extends State<SingingImage> {
           ),
           Stack(children: <Widget>[
             GestureDetector(
-              onVerticalDragStart: (details) {
-                Scaffold.of(context).openEndDrawer();
-              },
+              // onVerticalDragStart: (details) {
+              //   Scaffold.of(context).openEndDrawer();
+              // },
               onHorizontalDragStart: (details) {
                 Scaffold.of(context).openEndDrawer();
               },
