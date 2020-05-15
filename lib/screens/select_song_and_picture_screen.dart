@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:song_barker/providers/sound_controller.dart';
+import 'package:song_barker/screens/card_creator_screen.dart';
 import '../providers/songs.dart';
 import '../providers/pictures.dart';
 
 import '../widgets/song_select_card.dart';
 import '../widgets/select_picture_card.dart';
-import '../screens/record_message_screen.dart';
 
 class SelectSongAndPictureScreen extends StatefulWidget {
   static const routeName = 'select-song-and-picture-screen';
@@ -98,7 +98,7 @@ class _SelectSongAndPictureScreenState
                       context,
                       MaterialPageRoute(
                         builder: (context) =>
-                            RecordMessageScreen(selectedSong, selectedPicture),
+                            CardCreatorScreen(selectedSong, selectedPicture),
                       ),
                     );
                   },
