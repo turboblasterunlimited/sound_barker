@@ -48,6 +48,7 @@ class _RecordMessageScreenState extends State<RecordMessageScreen> {
   String filePath = "";
   String alteredAmplitudePath = "";
   String alteredFilePath = myAppStoragePath + "/tempFileAltered.aac";
+
   // 0 to 200
   double messageSpeed = 100;
   double messagePitch = 100;
@@ -71,15 +72,14 @@ class _RecordMessageScreenState extends State<RecordMessageScreen> {
     super.dispose();
   }
 
+  void _deleteEverything() {
+    if (File(filePath).existsSync()) File(filePath).deleteSync();
+    if (File(amplitudePath).existsSync()) File(amplitudePath).deleteSync();
+    if (File(alteredFilePath).existsSync()) File(alteredFilePath).deleteSync();
+    if (File(alteredAmplitudePath).existsSync()) File(alteredAmplitudePath).deleteSync();
+  }
   void startRecorder() async {
-    if (_messageExists) {
-      File(filePath).deleteSync();
-      File(amplitudePath).deleteSync();
-    }
-    if (File(alteredFilePath).existsSync()) {
-      File(alteredFilePath).deleteSync();
-      File(alteredAmplitudePath).deleteSync();
-    }
+    _deleteEverything();
     try {
       this.filePath = await flutterSound.startRecorder(
           iosQuality: IosQuality.MAX, sampleRate: 44100, bitRate: 192000);
@@ -123,7 +123,7 @@ class _RecordMessageScreenState extends State<RecordMessageScreen> {
     } catch (err) {
       print('stopRecorder error: $err');
     }
-
+    // await _trimSilence();
     amplitudePath = await createAmplitudeFile(filePath);
   }
 
@@ -167,9 +167,25 @@ class _RecordMessageScreenState extends State<RecordMessageScreen> {
     double pitchChange = (messagePitch / 100) - pitchCompensation;
     speedCompensation = 1 - (messagePitch / 100);
     double speedChange = (messageSpeed / 100) - speedCompensation;
+
     await FFMpeg.converter.execute(
         '-i $filePath -filter:a "asetrate=44100*$pitchChange,aresample=44100,atempo=$speedChange" -vn $alteredFilePath');
     alteredAmplitudePath = await createAmplitudeFile(alteredFilePath);
+  }
+
+  _trimSilence() async {
+    Map info = await FFMpeg.probe.getMediaInformation(filePath);
+    print("info on alteredFilepath: ${await FFMpeg.probe.getMediaInformation(filePath)}");
+
+    String duration = info["duration"].toString();
+    print("Duration: $duration");
+    await FFMpeg.converter.execute(
+      '-i $filePath -filter:a "silenceremove=start_periods=1:start_duration=1:start_threshold=0dB:detection=peak,aformat=dblp,areverse,silenceremove=start_periods=1:start_duration=1:start_threshold=0dB:detection=peak,aformat=dblp,areverse" $alteredFilePath');
+        // '-i $filePath -filter:a "silenceremove=start_periods=1:start_duration=0:start_threshold=0dB:detection=peak:stop_periods=0:stop_duration=0:stop_threshold=0dB:detection=peak:stop_silence=0" $alteredFilePath');
+    File(filePath).deleteSync();
+    File(alteredFilePath).renameSync(filePath);
+    print("Altered filepath exists: ${File(alteredFilePath).existsSync()}");
+    print("filepath exists: ${File(filePath).existsSync()}");
   }
 
   @override
