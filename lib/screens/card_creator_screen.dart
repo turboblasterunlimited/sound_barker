@@ -58,6 +58,7 @@ class _CardCreatorScreenState extends State<CardCreatorScreen> {
               child: Column(),
             ),
             // child: CardFinalizer(),
+            
           ),
         ],
       ),
