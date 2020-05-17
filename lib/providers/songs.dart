@@ -51,7 +51,6 @@ class Songs with ChangeNotifier {
       print("song created: ${song.created}");
     }
 
-    print("tempSongs finished: $tempSongs");
     tempSongs.sort((song1, song2) {
       return song1.created.compareTo(song2.created);
     });
@@ -163,6 +162,10 @@ class Song with ChangeNotifier {
     await FFMpeg.converter.execute(
         "-i $backingTrackPath -i ${this.filePath} -filter_complex amix=inputs=2:duration=longest $tempMelodyFilePath");
     File(tempMelodyFilePath).renameSync(this.filePath);
-    File(backingTrackUrl).deleteSync();
+    try {
+      File(backingTrackUrl).deleteSync();
+    } catch(e) {
+      print(e);
+    }
   }
 }

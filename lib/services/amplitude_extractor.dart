@@ -27,6 +27,8 @@ class AmplitudeExtractor {
       result.add(_amplitude > 1.0 ? 1.0 : _amplitude);
       i += (sampleChunk - 1);
     }
+    // Close the mouth
+    result.add(0);
     return result;
   }
 }

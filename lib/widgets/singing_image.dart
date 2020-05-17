@@ -82,9 +82,10 @@ class _SingingImageState extends State<SingingImage> {
           ),
           Stack(children: <Widget>[
             GestureDetector(
-              // onVerticalDragStart: (details) {
-              //   Scaffold.of(context).openEndDrawer();
-              // },
+              onVerticalDragStart: (details) {
+                return null;
+                // Scaffold.of(context).openEndDrawer();
+              },
               onHorizontalDragStart: (details) {
                 Scaffold.of(context).openEndDrawer();
               },

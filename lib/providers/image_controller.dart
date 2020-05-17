@@ -70,7 +70,6 @@ class ImageController with ChangeNotifier {
   dynamic createDog([Picture picture]) {
     if (picture == null)
       return webViewController.evaluateJavascript("create_puppet()");
-
     webViewController
         .evaluateJavascript("create_puppet('${_base64Image(picture)}')");
     this.coordinates = json.decode(picture.coordinates);
