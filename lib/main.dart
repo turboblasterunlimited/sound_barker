@@ -9,6 +9,7 @@ import 'package:song_barker/providers/tab_list_scroll_controller.dart';
 import './screens/song_category_select_screen.dart';
 import './screens/main_screen.dart';
 import './screens/select_song_and_picture_screen.dart';
+import './screens/auth_screen.dart';
 
 import './providers/pictures.dart';
 import './providers/barks.dart';
@@ -98,7 +99,8 @@ class MyApp extends StatelessWidget {
               buttonColor: Colors.amber[200],
             ),
           ),
-          home: MainScreen(),
+          // home: MainScreen(),
+          home: AuthenticationScreen(),
           routes: {
             MainScreen.routeName: (ctx) => MainScreen(),
             SongCategorySelectScreen.routeName: (ctx) =>
