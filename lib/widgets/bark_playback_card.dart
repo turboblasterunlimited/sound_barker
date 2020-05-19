@@ -30,6 +30,8 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
   ImageController imageController;
   bool isPlaying = false;
   TabListScrollController tabListScrollController;
+  final _controller = TextEditingController();
+  String tempName;
 
   @override
   void initState() {
@@ -110,15 +112,18 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
   }
 
   void renameBark() async {
+    _controller.text = widget.bark.name;
+    _controller.selection = TextSelection(
+      baseOffset: 0,
+      extentOffset: widget.bark.name.length,
+    );
     void _submitNameChange(ctx) async {
-      try {
-        widget.bark.rename(widget.bark.name);
-      } catch (e) {
-        showErrorDialog(context, e);
-      }
+      widget.bark.rename(tempName);
       Navigator.of(ctx).pop();
       await renameAnimationController.reverse();
-      setState(() {});
+      setState(() {
+        widget.bark.name = tempName;
+      });
       renameAnimationController.forward();
     }
 
@@ -135,10 +140,10 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
         titlePadding: EdgeInsets.all(10),
         children: <Widget>[
           TextFormField(
+            controller: _controller,
             autofocus: true,
-            initialValue: widget.bark.name,
             onChanged: (newName) {
-              widget.bark.name = newName;
+              setState(() => tempName = newName);
             },
             onFieldSubmitted: (_) {
               _submitNameChange(ctx);
