@@ -29,6 +29,8 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
   AnimationController renameAnimationController;
   bool isPlaying = false;
   TabListScrollController tabListScrollController;
+  final _controller = TextEditingController();
+  String tempName;
 
   @override
   void initState() {
@@ -37,10 +39,10 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
       vsync: this,
       duration: Duration(milliseconds: 500),
     );
+    super.initState();
     renameAnimationController.forward();
     tabListScrollController =
         Provider.of<TabListScrollController>(context, listen: false);
-    super.initState();
   }
 
   @override
@@ -114,15 +116,16 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
   }
 
   void renameSong() async {
+    _controller.text = widget.song.name;
+    _controller.selection = TextSelection(
+      baseOffset: 0,
+      extentOffset: widget.song.name.length,
+    );
     void _submitNameChange(ctx) async {
-      try {
-        widget.song.rename(widget.song.name);
-      } catch (e) {
-        showErrorDialog(context, e);
-      }
+      widget.song.rename(tempName);
       Navigator.of(ctx).pop();
       await renameAnimationController.reverse();
-      setState(() {});
+      setState(() => widget.song.name = tempName);
       renameAnimationController.forward();
     }
 
@@ -137,10 +140,10 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
         titlePadding: EdgeInsets.all(10),
         children: <Widget>[
           TextFormField(
+            controller: _controller,
             autofocus: true,
-            initialValue: widget.song.name,
-            onChanged: (name) {
-              widget.song.name = name;
+            onChanged: (newName) {
+              setState(() => tempName = newName);
             },
             onFieldSubmitted: (_) {
               _submitNameChange(ctx);
@@ -177,6 +180,7 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
 
   @override
   Widget build(BuildContext context) {
+    print("Song name: ${widget.song.name}");
     return SizeTransition(
       sizeFactor: widget.animation,
       child: Card(

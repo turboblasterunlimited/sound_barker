@@ -26,7 +26,6 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
   //   AutomaticKeepAliveClientMixin {
   // bool get wantKeepAlive => true;
   AnimationController renameAnimationController;
-  StreamSubscription<double> waveStreamer;
   ImageController imageController;
   bool isPlaying = false;
   TabListScrollController tabListScrollController;
@@ -54,7 +53,6 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
   }
 
   void stopAll() {
-    waveStreamer?.cancel();
     imageController.stopAnimation();
     widget.soundController.stopPlayer();
   }
@@ -199,13 +197,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
               icon: Icon(Icons.play_arrow, color: Colors.black, size: 30),
             ),
             title: GestureDetector(
-              onTap: () {
-                try {
-                  renameBark();
-                } catch (e) {
-                  showErrorDialog(context, e);
-                }
-              },
+              onTap: () => renameBark(),
               child: Center(
                 child: FadeTransition(
                   opacity: renameAnimationController,
