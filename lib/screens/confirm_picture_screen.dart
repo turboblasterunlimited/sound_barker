@@ -196,7 +196,16 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
       return posY;
     }
 
-    print(touchedXY);
+    void switchEyes() {
+      if (canvasCoordinates["rightEye"][0] < canvasCoordinates["leftEye"][0]) {
+        var temp = canvasCoordinates["rightEye"];
+        setState(() {
+          this.canvasCoordinates["rightEye"] = canvasCoordinates["leftEye"];
+          this.canvasCoordinates["leftEye"] = temp;
+        });
+      }
+    }
+
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: PreferredSize(
@@ -282,7 +291,6 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                           details.localPosition.dx,
                           details.localPosition.dy
                         ];
-                        print("touched XY $touchedXY");
                         getCanvasCoordinates().forEach((pointName, existingXY) {
                           if (!_inProximity(existingXY, touchedXY)) return;
                           setState(() {
@@ -302,12 +310,14 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                             details.localPosition.dx,
                             details.localPosition.dy
                           ];
+                          // The coordinate points are modified here
                           canvasCoordinates[grabPoint.keys.first.toString()] =
                               touchedXY;
                         });
                       },
                       onPanEnd: (details) async {
                         if (!grabbing) return;
+                        switchEyes();
                         setState(() {
                           grabbing = false;
                           grabPoint = {};
