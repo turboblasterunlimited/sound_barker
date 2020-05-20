@@ -21,9 +21,8 @@ class _SongCategorySelectScreenState extends State<SongCategorySelectScreen> {
     Future<Map> collectCreatableSongsByCategory() async {
       if (creatableSongsByCategory.length != 0) return creatableSongsByCategory;
 
-      String serverResponse =
+      List creatableSongs =
           await RestAPI.retrieveAllCreatableSongsFromServer();
-      creatableSongs = json.decode(serverResponse);
       creatableSongs.forEach((song) {
         if (!creatableSongsByCategory.containsKey(song["category"])) {
           creatableSongsByCategory[song["category"]] = 1;

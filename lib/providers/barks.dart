@@ -23,11 +23,11 @@ class Barks with ChangeNotifier {
   }
 
   Future retrieveAll() async {
-    String response = await RestAPI.retrieveAllBarksFromServer();
-    print("all barks response: $response");
+    List barks = await RestAPI.retrieveAllBarksFromServer();
+    print("all barks response: $barks");
     List tempBarks = [];
 
-    json.decode(response).forEach((serverBark) async {
+    barks.forEach((serverBark) async {
       if (serverBark["hidden"] == 1) return;
       Bark bark = Bark(
         name: serverBark["name"],
@@ -122,21 +122,19 @@ class Bark with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<String> deleteFromServer() {
-    return RestAPI.deleteBarkFromServer(this);
+  void deleteFromServer() {
+    RestAPI.deleteBarkFromServer(this);
   }
 
   Future<List> uploadBarkAndRetrieveCroppedBarks(imageId) async {
     await Gcloud.uploadAsset(fileId, filePath, false);
-    String responseBody = await RestAPI.splitRawBarkOnServer(fileId, imageId);
+    List responseBody = await RestAPI.splitRawBarkOnServer(fileId, imageId);
     List newBarks = parseCroppedBarks(responseBody);
     return newBarks;
   }
 
-  List parseCroppedBarks(response) {
-    print("parsed cropped barks: $response");
+  List parseCroppedBarks(List cloudBarkData) {
     List newBarks = [];
-    List cloudBarkData = json.decode(response);
     int barkCount = cloudBarkData.length;
     for (var i = 0; i < barkCount; i++) {
       newBarks.add(Bark(

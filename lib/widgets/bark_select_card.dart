@@ -54,9 +54,8 @@ class _BarkSelectCardState extends State<BarkSelectCard> {
 
   void createSong(songs, songId) async {
     spinnerState.loadSongs();
-    String responseBody =
+    Map songData =
         await RestAPI.createSong(widget.selectedBarkIds, songId);
-    Map songData = await json.decode(responseBody);
     Song song = Song();
     await song.retrieveSong(songData);
     print("ADDING SONG");

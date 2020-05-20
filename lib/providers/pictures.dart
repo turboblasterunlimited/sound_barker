@@ -47,8 +47,8 @@ class Pictures with ChangeNotifier {
 
   Future retrieveAll() async {
     List tempPics = [];
-    String response = await RestAPI.retrieveAllImagesFromServer();
-    json.decode(response).forEach((serverImage) async {
+    List response = await RestAPI.retrieveAllImagesFromServer();
+    response.forEach((serverImage) async {
       if (serverImage["hidden"] == 1) return;
       if (serverImage["uuid"] == null) return;
 
@@ -116,8 +116,7 @@ class Picture with ChangeNotifier, Gcloud {
 
   Future<void> uploadPictureAndSaveToServer() async {
     this.fileUrl = await Gcloud.uploadAsset(fileId, filePath, true);
-    String response = await RestAPI.createImageOnServer(this);
-    Map body = json.decode(response);
+    Map body = await RestAPI.createImageOnServer(this);
     created = DateTime.parse(body["created"]);
   }
 

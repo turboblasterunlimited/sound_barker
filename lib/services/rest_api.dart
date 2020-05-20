@@ -6,7 +6,7 @@ import '../providers/barks.dart';
 import '../providers/pictures.dart';
 
 class RestAPI {
-  static Future<String> createSong(cropIds, songId) async {
+  static Future<Map> createSong(cropIds, songId) async {
     /// "Song" on the server side means "creatable song"
     Map body = {'uuids': cropIds, 'song_id': songId.toString()};
     print("create song on server req body: $body");
@@ -19,7 +19,7 @@ class RestAPI {
     return response.data;
   }
 
-  static Future<String> renameSongOnServer(Song song, String newName) async {
+  static void renameSongOnServer(Song song, String newName) async {
     Map body = {'name': newName};
     print(body);
     final url = 'http://165.227.178.14/sequence/${song.fileId}';
@@ -28,10 +28,9 @@ class RestAPI {
       data: body,
     );
     print("Edit bark name response body: ${response.data}");
-    return response.data;
   }
 
-  static Future<String> updateImageOnServer(Picture image) async {
+  static void updateImageOnServer(Picture image) async {
     Map body = {
       'name': image.name,
       'coordinates_json': image.coordinates,
@@ -43,10 +42,9 @@ class RestAPI {
       data: body,
     );
     print("Edit Image on server response body: ${response.data}");
-    return response.data;
   }
 
-  static Future<String> createImageOnServer(Picture image) async {
+  static Future<Map> createImageOnServer(Picture image) async {
     Map body = {
       'uuid': image.fileId,
       'name': image.name,
@@ -62,7 +60,7 @@ class RestAPI {
     return response.data;
   }
 
-  static Future<String> renameBarkOnServer(Bark bark, newName) async {
+  static void renameBarkOnServer(Bark bark, newName) async {
     Map body = {'name': newName};
     print(body);
     final url = 'http://165.227.178.14/crop/${bark.fileId}';
@@ -70,12 +68,10 @@ class RestAPI {
       url,
       data: body,
     );
-
     print("Edit bark name response body: ${response.data}");
-    return response.data;
   }
 
-  static Future<String> retrieveAllSongsFromServer() async {
+  static Future<List> retrieveAllSongsFromServer() async {
     final url = 'http://165.227.178.14/all/sequence';
     print(url);
     final response = await HttpController.dio.get(url);
@@ -83,7 +79,7 @@ class RestAPI {
     return response.data;
   }
 
-  static Future<String> retrieveAllImagesFromServer() async {
+  static Future<List> retrieveAllImagesFromServer() async {
     final url = 'http://165.227.178.14/all/image';
     print("retrieveAllImages req url: $url");
     final response = await HttpController.dio.get(url);
@@ -91,7 +87,7 @@ class RestAPI {
     return response.data;
   }
 
-  static Future<String> retrieveAllCreatableSongsFromServer() async {
+  static Future<List> retrieveAllCreatableSongsFromServer() async {
     final url = 'http://165.227.178.14/all/song';
     print("retrieveAllCreatableSongs req url: $url");
     final response = await HttpController.dio.get(url);
@@ -99,7 +95,7 @@ class RestAPI {
     return response.data;
   }
 
-  static Future<String> retrieveAllBarksFromServer() async {
+  static Future<List<dynamic>> retrieveAllBarksFromServer() async {
     final url = 'http://165.227.178.14/all/crop';
     print("retrieveAllBarks req url: $url");
     final response = await HttpController.dio.get(url);
@@ -107,32 +103,28 @@ class RestAPI {
     return response.data;
   }
 
-  static Future<String> deleteImageFromServer(Picture image) async {
+  static void deleteImageFromServer(Picture image) async {
     final url = 'http://165.227.178.14/image/${image.fileId}';
     print("DeleteImageFromServer req url: $url");
     final response = await HttpController.dio.delete(url);
-    // print("Song Name: ${image.name}, Song ID: ${song.fileId}");
     print("Delete picture response body: ${response.data}");
-    return response.data;
   }
 
-  static Future<String> deleteSongFromServer(Song song) async {
+  static void deleteSongFromServer(Song song) async {
     final url = 'http://165.227.178.14/sequence/${song.fileId}';
     print("deleteSongFromServer req url: $url");
     final response = await HttpController.dio.delete(url);
     print("Delete song response body: ${response.data}");
-    return response.data;
   }
 
-  static Future<String> deleteBarkFromServer(Bark bark) async {
+  static deleteBarkFromServer(Bark bark) async {
     final url = 'http://165.227.178.14/crop/${bark.fileId}';
     print("deleteBarkFromServer req url: $url");
     final response = await HttpController.dio.delete(url);
     print("Delete bark response body: ${response.data}");
-    return response.data;
   }
 
-  static Future<String> splitRawBarkOnServer(fileId, imageId) async {
+  static Future<List> splitRawBarkOnServer(fileId, imageId) async {
     Map body = {
       'uuid': fileId,
       'image_id': imageId,

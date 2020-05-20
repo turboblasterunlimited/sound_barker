@@ -40,9 +40,8 @@ class Songs with ChangeNotifier {
     print("retrieve all songs check point");
     List tempSongs = [];
     Bucket bucket = await Gcloud.accessBucket();
-    String response = await RestAPI.retrieveAllSongsFromServer();
-    print("retriveallsongresponse: $response");
-    List<dynamic> serverSongs = await json.decode(response);
+    List serverSongs = await RestAPI.retrieveAllSongsFromServer();
+    print("retriveallsongresponse: $serverSongs");
 
     for (Map<String, dynamic> serverSong in serverSongs) {
       if (serverSong["hidden"] == 1) continue;
