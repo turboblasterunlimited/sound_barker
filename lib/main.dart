@@ -1,4 +1,3 @@
-import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -11,7 +10,7 @@ import 'package:song_barker/services/http_controller.dart';
 import './screens/song_category_select_screen.dart';
 import './screens/main_screen.dart';
 import './screens/select_song_and_picture_screen.dart';
-import './screens/auth_screen.dart';
+import './screens/authentication_screen.dart';
 
 import './providers/pictures.dart';
 import './providers/barks.dart';
@@ -25,9 +24,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-  runApp(MyApp());
   await appStoragePath();
   HttpController();
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {

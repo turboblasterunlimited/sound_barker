@@ -7,7 +7,7 @@ class HttpController {
   static Dio dio;
   static dynamic cookieJar;
   HttpController() {
-    BaseOptions options = new BaseOptions(contentType: Headers.jsonContentType);
+    BaseOptions options = BaseOptions(contentType: Headers.jsonContentType);
     dio = Dio(options);
     cookieJar = PersistCookieJar(dir: myAppStoragePath + "/.cookies/");
     HttpController.dio.interceptors.add(CookieManager(HttpController.cookieJar));

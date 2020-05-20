@@ -33,15 +33,28 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     }
   }
 
-  Future<String> handleAuthentication() async {
+  Future<bool> checkIfSignedIn() async {
+    var response =
+        await HttpController.dio.get('http://165.227.178.14/is-logged-in');
+    return response.data["logged_in"];
+  }
+
+  void navigateNext() {
+    Navigator.of(context).pushNamed(MainScreen.routeName);
+  }
+
+  void handleAuthentication() async {
+    if (await checkIfSignedIn()) {
+      navigateNext();
+      return;
+    }
     var token = await authenticate(clientId, ['email', 'openid', 'profile']);
     var response = await HttpController.dio.post(
       'http://165.227.178.14/openid-token/$platform',
-      data: json.encode(token),
-      options: Options(contentType: Headers.jsonContentType),
+      data: token,
     );
     if (response.data["success"]) {
-      Navigator.of(context).pushNamed(MainScreen.routeName);
+      navigateNext();
     } else {
       setState(() {
         authError = true;
@@ -56,6 +69,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     super.initState();
     handleAuthentication();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -79,8 +93,25 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
           Visibility(
             visible: authError,
             child: Expanded(
-              child: Center(
-                child: Text("Error!!!\n\n$errorString"),
+              child: Column(
+                children: <Widget>[
+                  RawMaterialButton(
+                    onPressed: handleAuthentication,
+                    child: Column(
+                      children: <Widget>[
+                        Icon(
+                          Icons.swap_horizontal_circle,
+                          color: Colors.black38,
+                          size: 30,
+                        ),
+                        Text("Try again"),
+                      ],
+                    ),
+                  ),
+                  Center(
+                    child: Text("Error!!!\n\n$errorString"),
+                  ),
+                ],
               ),
             ),
           ),
