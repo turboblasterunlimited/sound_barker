@@ -14,8 +14,7 @@ class RestAPI {
   static Future<String> createSong(cropIds, songId) async {
     http.Response response;
     /// "Song" on the server side means "creatable song"
-    String body = json.encode(
-        {'uuids': cropIds, 'user_id': 'dev', 'song_id': songId.toString()});
+    String body = json.encode({'uuids': cropIds, 'song_id': songId.toString()});
     print("create song on server req body: $body");
     final url = 'http://165.227.178.14/to_sequence';
     response = await http.post(
@@ -29,7 +28,7 @@ class RestAPI {
 
   static Future<String> renameSongOnServer(Song song, String newName) async {
     http.Response response;
-    String body = json.encode({'name': newName, "user_id": "dev"});
+    String body = json.encode({'name': newName});
     print(body);
     final url = 'http://165.227.178.14/sequence/${song.fileId}';
     response = await http.patch(
@@ -63,7 +62,6 @@ class RestAPI {
     String body = json.encode({
       'uuid': image.fileId,
       'name': image.name,
-      'user_id': 'dev',
       'coordinates_json': image.coordinates,
     });
     print("Image upload body: $body");
@@ -79,7 +77,7 @@ class RestAPI {
 
   static Future<String> renameBarkOnServer(Bark bark, newName) async {
     http.Response response;
-    String body = json.encode({'name': newName, "user_id": "dev"});
+    String body = json.encode({'name': newName });
     print(body);
     final url = 'http://165.227.178.14/crop/${bark.fileId}';
     response = await http.patch(
@@ -160,7 +158,6 @@ class RestAPI {
     http.Response response;
     String body = json.encode({
       'uuid': fileId,
-      'user_id': 'dev',
       'image_id': imageId,
     });
     print("splitRawBark req body $body");
