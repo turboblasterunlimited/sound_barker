@@ -42,6 +42,7 @@ dependencies:
   dio: ^3.0.9
   cookie_jar: ^1.0.1
   dio_cookie_manager: ^1.0.0
+  flutter_auth_buttons:
   # snapping_sheet: ^2.0.0
 
   # The following adds the Cupertino Icons font to your application.

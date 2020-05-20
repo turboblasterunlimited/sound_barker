@@ -1,6 +1,7 @@
 import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:song_barker/screens/main_screen.dart';
 import 'package:song_barker/services/http_controller.dart';
@@ -42,10 +43,6 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   }
 
   void handleAuthentication() async {
-    if (await checkIfSignedIn()) {
-      navigateNext();
-      return;
-    }
     var token = await authenticate(clientId, ['email', 'openid', 'profile']);
     var response = await HttpController.dio.post(
       'http://165.227.178.14/openid-token/$platform',
@@ -65,9 +62,14 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   void initState() {
     setPlatformClientId();
     super.initState();
-    handleAuthentication();
   }
 
+  @override
+  void didChangeDependencies() async {
+    if (await checkIfSignedIn()) {
+      navigateNext();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +78,56 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomPadding: false,
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
+          Expanded(
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(top: 50),
+                ),
+                Text(
+                  "K9 Karaoke",
+                  style: TextStyle(
+                    fontSize: 30,
+                  ),
+                ),
+                // TextField(
+                //   obscureText: true,
+                //   decoration: InputDecoration(
+                //     filled: true,
+                //     fillColor: Colors.white,
+                //     border: OutlineInputBorder(),
+                //     labelText: 'Email',
+                //   ),
+                // ),
+                // TextField(
+                //   obscureText: true,
+                //   decoration: InputDecoration(
+                //     filled: true,
+                //     fillColor: Colors.white,
+                //     border: OutlineInputBorder(),
+                //     labelText: 'Password',
+                //   ),
+                // ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Column(
+              children: <Widget>[
+                GoogleSignInButton(
+                  onPressed: () {
+                    handleAuthentication();
+                  },
+                ),
+                // FacebookSignInButton(
+                //   onPressed: null,
+                // ),
+              ],
+            ),
+          ),
           Visibility(
             visible: !authError,
             child: Expanded(
