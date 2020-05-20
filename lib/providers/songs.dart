@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:gcloud/storage.dart';
-import 'package:song_barker/functions/amplitude_file_generator.dart';
 import '../services/gcloud.dart';
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:csv/csv.dart';
-import '../services/ffmpeg.dart';
-import '../functions/app_storage_path.dart';
+import '../tools/ffmpeg.dart';
+import '../tools/app_storage_path.dart';
 import '../services/rest_api.dart';
-import '../functions/amplitude_file_generator.dart';
+import '../tools/amplitude_extractor.dart';
 
 final captureBackingFileName = RegExp(r'\/([0-9a-zA-Z_ ]*.[a-zA-Z]{3})$');
 
@@ -153,7 +150,7 @@ class Song with ChangeNotifier {
   void _getMelodyAndGenerateAmplitudeFile(bucket, filePathBase) async {
     this.filePath = await Gcloud.downloadFromBucket(fileUrl, fileId + '.aac',
         bucket: bucket);
-    this.amplitudesPath = await createAmplitudeFile(this.filePath, filePathBase);
+    this.amplitudesPath = await AmplitudeExtractor.createAmplitudeFile(this.filePath, filePathBase);
   }
 
   void _mergeTracks(backingTrackPath, filePathBase) async {

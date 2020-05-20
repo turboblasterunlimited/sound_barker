@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../functions/error_dialog.dart';
+import '../widgets/error_dialog.dart';
 import '../providers/sound_controller.dart';
 import '../providers/songs.dart';
 

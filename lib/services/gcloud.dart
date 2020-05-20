@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:gcloud/storage.dart';
 import 'package:googleapis_auth/auth_io.dart' as auth;
-import '../functions/app_storage_path.dart';
+import '../tools/app_storage_path.dart';
 
 class Gcloud {
   static Future<Bucket> accessBucket() async {

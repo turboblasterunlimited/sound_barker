@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:camera/camera.dart';
-import 'package:song_barker/functions/app_storage_path.dart';
+import 'package:song_barker/tools/app_storage_path.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:io';
 import 'package:path/path.dart';
 
-import '../functions/cropper.dart';
+import '../tools/cropper.dart';
 import 'package:song_barker/screens/confirm_picture_screen.dart';
 import '../providers/pictures.dart';
 import '../screens/camera_screen.dart';

@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../functions/error_dialog.dart';
+import './error_dialog.dart';
 import '../providers/sound_controller.dart';
 import '../providers/barks.dart';
 import '../providers/songs.dart';

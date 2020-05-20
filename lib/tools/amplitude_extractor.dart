@@ -1,5 +1,7 @@
 import 'dart:typed_data';
 import 'dart:io';
+import 'package:csv/csv.dart';
+import 'package:song_barker/tools/ffmpeg.dart';
 
 class AmplitudeExtractor {
   static List<double> extract(String filePath) {
@@ -30,5 +32,18 @@ class AmplitudeExtractor {
     // Close the mouth
     result.add(0);
     return result;
+  }
+
+  static Future<String> createAmplitudeFile(filePath, [filePathBase]) async {
+    filePathBase ??= filePath.substring(0, filePath.length - 4);
+    await FFMpeg.converter
+        .execute("-hide_banner -loglevel panic -i $filePath $filePathBase.wav");
+    print("filePathBase.wav exists: ${File('$filePathBase.wav').existsSync()}");
+    final amplitudes = extract("$filePathBase.wav");
+    final csvAmplitudes = const ListToCsvConverter().convert([amplitudes]);
+    File file = File("$filePathBase.csv");
+    await File("$filePathBase.wav").delete();
+    file.writeAsStringSync(csvAmplitudes);
+    return file.path;
   }
 }

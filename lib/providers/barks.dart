@@ -1,13 +1,9 @@
-import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:gcloud/storage.dart';
-import 'package:song_barker/functions/amplitude_file_generator.dart';
-import 'package:song_barker/functions/app_storage_path.dart';
-import 'package:song_barker/services/amplitude_extractor.dart';
-import 'package:song_barker/services/ffmpeg.dart';
+import 'package:song_barker/tools/amplitude_extractor.dart';
+import 'package:song_barker/tools/app_storage_path.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/foundation.dart';
-import 'dart:convert';
 import 'dart:io';
 
 import '../services/gcloud.dart';
@@ -71,7 +67,7 @@ class Barks with ChangeNotifier {
       }
       barks[i].filePath = filePathBase + '.aac';
       barks[i].amplitudesPath =
-          await createAmplitudeFile(barks[i].filePath, filePathBase);
+          await AmplitudeExtractor.createAmplitudeFile(barks[i].filePath, filePathBase);
     }
   }
 

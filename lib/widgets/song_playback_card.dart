@@ -5,7 +5,7 @@ import 'dart:async';
 
 import '../providers/sound_controller.dart';
 import '../providers/songs.dart';
-import '../functions/error_dialog.dart';
+import '../widgets/error_dialog.dart';
 import '../providers/image_controller.dart';
 
 class SongPlaybackCard extends StatefulWidget {

@@ -6,7 +6,7 @@ import 'package:song_barker/providers/tab_list_scroll_controller.dart';
 import '../providers/sound_controller.dart';
 import '../providers/barks.dart';
 import '../providers/image_controller.dart';
-import '../functions/error_dialog.dart';
+import './error_dialog.dart';
 
 class BarkPlaybackCard extends StatefulWidget {
   final int index;

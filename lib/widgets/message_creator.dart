@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sound_lite/flutter_sound_recorder.dart';
 import 'package:flutter_sound_lite/ios_quality.dart';
 import 'package:provider/provider.dart';
-import 'package:song_barker/functions/app_storage_path.dart';
+import 'package:song_barker/tools/app_storage_path.dart';
 import 'package:song_barker/providers/image_controller.dart';
-import 'package:song_barker/services/amplitude_extractor.dart';
-import 'package:song_barker/services/ffmpeg.dart';
+import 'package:song_barker/tools/amplitude_extractor.dart';
+import 'package:song_barker/tools/ffmpeg.dart';
 import 'dart:async';
 import 'dart:io';
 
 import '../providers/sound_controller.dart';
-import '../functions/amplitude_file_generator.dart';
+import '../tools/amplitude_extractor.dart';
 
 class MessageCreator extends StatefulWidget {
   final updateMessageFilePathCallback;
@@ -114,7 +114,7 @@ class MessageCreatorState extends State<MessageCreator> {
       print('stopRecorder error: $err');
     }
     // await _trimSilence();
-    amplitudePath = await createAmplitudeFile(filePath);
+    amplitudePath = await AmplitudeExtractor.createAmplitudeFile(filePath);
   }
 
   onStartRecorderPressed() {
@@ -161,7 +161,7 @@ class MessageCreatorState extends State<MessageCreator> {
 
     await FFMpeg.converter.execute(
         '-i $filePath -filter:a "asetrate=44100*$pitchChange,aresample=44100,atempo=$speedChange" -vn $alteredFilePath');
-    alteredAmplitudePath = await createAmplitudeFile(alteredFilePath);
+    alteredAmplitudePath = await AmplitudeExtractor.createAmplitudeFile(alteredFilePath);
   }
 
   _trimSilence() async {
