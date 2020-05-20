@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import '../services/http_controller.dart';
 import '../providers/songs.dart';
 import '../providers/barks.dart';
@@ -11,10 +9,18 @@ class RestAPI {
     Map body = {'uuids': cropIds, 'song_id': songId.toString()};
     print("create song on server req body: $body");
     final url = 'http://165.227.178.14/to_sequence';
-    final response = await HttpController.dio.post(
-      url,
-      data: body,
-    );
+    var response;
+    try {
+      response = await HttpController.dio.post(
+        url,
+        data: body,
+      );
+    } catch (e) {
+      print("Split RAw bark error message: ${e.message}");
+      print(e.response.headers);
+      print(e.response.data);
+      print(e.response.request);
+    }
     print("create Song on server response body: ${response.data}");
     return response.data;
   }

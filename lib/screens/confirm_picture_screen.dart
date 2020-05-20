@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:image/image.dart' as IMG;
 import 'package:flutter/painting.dart';
+import 'package:song_barker/screens/main_screen.dart';
 import 'dart:ui' as ui;
 
 import '../providers/pictures.dart';
@@ -165,7 +166,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
       imageController.createDog(widget.newPicture);
       Navigator.popUntil(
         context,
-        ModalRoute.withName(Navigator.defaultRouteName),
+        ModalRoute.withName(MainScreen.routeName),
       );
     }
 
@@ -179,7 +180,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
 
       Navigator.popUntil(
         context,
-        ModalRoute.withName(Navigator.defaultRouteName),
+        ModalRoute.withName(MainScreen.routeName),
       );
     }
 
@@ -224,7 +225,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                 if (widget.editing) {
                   Navigator.popUntil(
                     context,
-                    ModalRoute.withName(Navigator.defaultRouteName),
+                    ModalRoute.withName(MainScreen.routeName),
                   );
                 } else if (!widget.isNamed) {
                   // if on first screen

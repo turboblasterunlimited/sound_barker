@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:song_barker/screens/main_screen.dart';
 
 import './error_dialog.dart';
 import '../providers/sound_controller.dart';
@@ -54,8 +55,7 @@ class _BarkSelectCardState extends State<BarkSelectCard> {
 
   void createSong(songs, songId) async {
     spinnerState.loadSongs();
-    Map songData =
-        await RestAPI.createSong(widget.selectedBarkIds, songId);
+    Map songData = await RestAPI.createSong(widget.selectedBarkIds, songId);
     Song song = Song();
     await song.retrieveSong(songData);
     print("ADDING SONG");
@@ -92,7 +92,7 @@ class _BarkSelectCardState extends State<BarkSelectCard> {
                 createSong(songs, widget.creatableSong["id"]);
                 Navigator.popUntil(
                   context,
-                  ModalRoute.withName(Navigator.defaultRouteName),
+                  ModalRoute.withName(MainScreen.routeName),
                 );
                 // setState((){});
               }
@@ -108,8 +108,7 @@ class _BarkSelectCardState extends State<BarkSelectCard> {
             onPressed: () {
               playBark();
             },
-            icon: Icon(Icons.play_arrow,
-                color: Colors.black, size: 30),
+            icon: Icon(Icons.play_arrow, color: Colors.black, size: 30),
           ),
         ),
       ),

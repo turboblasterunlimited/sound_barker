@@ -27,7 +27,7 @@ class AppDrawer extends StatelessWidget {
                   onTap: () {
                     Navigator.popUntil(
                       context,
-                      ModalRoute.withName(Navigator.defaultRouteName),
+                      ModalRoute.withName(MainScreen.routeName),
                     );
                   },
                 ),
@@ -38,7 +38,7 @@ class AppDrawer extends StatelessWidget {
                   onTap: () {
                     Navigator.popUntil(
                       context,
-                      ModalRoute.withName(Navigator.defaultRouteName),
+                      ModalRoute.withName(MainScreen.routeName),
                     );
                   },
                 ),
