@@ -4,9 +4,11 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:song_barker/functions/app_storage_path.dart';
 
 class HttpController {
-  static final dio = Dio();
+  static Dio dio;
   static dynamic cookieJar;
   HttpController() {
+    BaseOptions options = new BaseOptions(contentType: Headers.jsonContentType);
+    dio = Dio(options);
     cookieJar = PersistCookieJar(dir: myAppStoragePath + "/.cookies/");
     HttpController.dio.interceptors.add(CookieManager(HttpController.cookieJar));
   }
