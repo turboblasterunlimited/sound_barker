@@ -20,9 +20,11 @@ class _SongCategorySelectScreenState extends State<SongCategorySelectScreen> {
 
     Future<Map> collectCreatableSongsByCategory() async {
       if (creatableSongsByCategory.length != 0) return creatableSongsByCategory;
-
-      List creatableSongs =
+      print("building creatable songs");
+      creatableSongs =
           await RestAPI.retrieveAllCreatableSongsFromServer();
+      print("creatable songs retrieved: $creatableSongs");
+
       creatableSongs.forEach((song) {
         if (!creatableSongsByCategory.containsKey(song["category"])) {
           creatableSongsByCategory[song["category"]] = 1;
@@ -30,6 +32,7 @@ class _SongCategorySelectScreenState extends State<SongCategorySelectScreen> {
           creatableSongsByCategory[song["category"]] += 1;
         }
       });
+      print("done building: $creatableSongsByCategory");
       return creatableSongsByCategory;
     }
 
