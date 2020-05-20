@@ -1,19 +1,14 @@
 import 'dart:convert';
-import '../services/http_controller.dart';
 
+import '../services/http_controller.dart';
 import '../providers/songs.dart';
 import '../providers/barks.dart';
 import '../providers/pictures.dart';
 
 class RestAPI {
-  // static final Map<String, String> jsonHeaders = {
-  //   'Content-type': 'application/json',
-  //   'Accept': 'application/json',
-  // };
-
   static Future<String> createSong(cropIds, songId) async {
     /// "Song" on the server side means "creatable song"
-    String body = json.encode({'uuids': cropIds, 'song_id': songId.toString()});
+    Map body = {'uuids': cropIds, 'song_id': songId.toString()};
     print("create song on server req body: $body");
     final url = 'http://165.227.178.14/to_sequence';
     final response = await HttpController.dio.post(
@@ -25,7 +20,7 @@ class RestAPI {
   }
 
   static Future<String> renameSongOnServer(Song song, String newName) async {
-    String body = json.encode({'name': newName});
+    Map body = {'name': newName};
     print(body);
     final url = 'http://165.227.178.14/sequence/${song.fileId}';
     final response = await HttpController.dio.patch(
@@ -37,10 +32,10 @@ class RestAPI {
   }
 
   static Future<String> updateImageOnServer(Picture image) async {
-    String body = json.encode({
+    Map body = {
       'name': image.name,
       'coordinates_json': image.coordinates,
-    });
+    };
     print("Image update body: $body");
     final url = 'http://165.227.178.14/image/${image.fileId}';
     final response = await HttpController.dio.patch(
@@ -52,11 +47,11 @@ class RestAPI {
   }
 
   static Future<String> createImageOnServer(Picture image) async {
-    String body = json.encode({
+    Map body = {
       'uuid': image.fileId,
       'name': image.name,
       'coordinates_json': image.coordinates,
-    });
+    };
     print("Image upload body: $body");
     final url = 'http://165.227.178.14/image';
     final response = await HttpController.dio.post(
@@ -68,7 +63,7 @@ class RestAPI {
   }
 
   static Future<String> renameBarkOnServer(Bark bark, newName) async {
-    String body = json.encode({'name': newName});
+    Map body = {'name': newName};
     print(body);
     final url = 'http://165.227.178.14/crop/${bark.fileId}';
     final response = await HttpController.dio.patch(
@@ -81,7 +76,7 @@ class RestAPI {
   }
 
   static Future<String> retrieveAllSongsFromServer() async {
-    final url = 'http://165.227.178.14/all/sequence/dev';
+    final url = 'http://165.227.178.14/all/sequence';
     print(url);
     final response = await HttpController.dio.get(url);
     print("Get all Songs response body: ${response.data}");
@@ -89,7 +84,7 @@ class RestAPI {
   }
 
   static Future<String> retrieveAllImagesFromServer() async {
-    final url = 'http://165.227.178.14/all/image/dev';
+    final url = 'http://165.227.178.14/all/image';
     print("retrieveAllImages req url: $url");
     final response = await HttpController.dio.get(url);
     print("Get all Images response body: ${response.data}");
@@ -105,7 +100,7 @@ class RestAPI {
   }
 
   static Future<String> retrieveAllBarksFromServer() async {
-    final url = 'http://165.227.178.14/all/crop/dev';
+    final url = 'http://165.227.178.14/all/crop';
     print("retrieveAllBarks req url: $url");
     final response = await HttpController.dio.get(url);
     print("Get all Barks response body: ${response.data}");
@@ -138,17 +133,23 @@ class RestAPI {
   }
 
   static Future<String> splitRawBarkOnServer(fileId, imageId) async {
-    String body = json.encode({
+    Map body = {
       'uuid': fileId,
       'image_id': imageId,
-    });
+    };
     print("splitRawBark req body $body");
     final url = 'http://165.227.178.14/to_crops';
-    final response = await HttpController.dio.post(
-      url,
-      data: body,
-    );
-    print("split bark server response body content: ${response.data}");
+    var response;
+    try {
+      response = await HttpController.dio.post(
+        url,
+        data: body,
+      );
+    } catch (e) {
+      print("Split RAw bark error message: ${e.message}");
+      print(e.response.headers);
+    }
+    print("split bark server response body content: ${response}");
     return response.data;
   }
 }
