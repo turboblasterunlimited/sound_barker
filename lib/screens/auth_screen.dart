@@ -1,11 +1,12 @@
 import 'dart:convert';
 import 'dart:io' show Platform;
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:song_barker/screens/main_screen.dart';
+import 'package:song_barker/services/http_controller.dart';
 import '../functions/authenticate_user.dart';
-import 'package:http/http.dart' as http;
 
 class AuthenticationScreen extends StatefulWidget {
   AuthenticationScreen();
@@ -34,20 +35,17 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
 
   Future<String> handleAuthentication() async {
     var token = await authenticate(clientId, ['email', 'openid', 'profile']);
-    var response = await http.post(
-        'http://165.227.178.14/openid-token/$platform',
-        body: json.encode(token),
-        headers: {
-          'Content-type': 'application/json',
-          'Accept': 'application/json',
-        });
-    Map responseMap = json.decode(response.body);
-    if (responseMap["success"]) {
+    var response = await HttpController.dio.post(
+      'http://165.227.178.14/openid-token/$platform',
+      data: json.encode(token),
+      options: Options(contentType: Headers.jsonContentType),
+    );
+    if (response.data["success"]) {
       Navigator.of(context).pushNamed(MainScreen.routeName);
     } else {
       setState(() {
         authError = true;
-        errorString = responseMap["error"];
+        errorString = response.data["error"];
       });
     }
   }

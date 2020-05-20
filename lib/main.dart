@@ -1,3 +1,4 @@
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/rendering.dart';
 
 import 'package:song_barker/providers/active_wave_streamer.dart';
 import 'package:song_barker/providers/tab_list_scroll_controller.dart';
+import 'package:song_barker/services/http_controller.dart';
 import './screens/song_category_select_screen.dart';
 import './screens/main_screen.dart';
 import './screens/select_song_and_picture_screen.dart';
@@ -19,22 +21,14 @@ import './providers/sound_controller.dart';
 import './providers/spinner_state.dart';
 import './providers/greeting_cards.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {
-    runApp(MyApp());
-    appStoragePath();
-  });
+  await SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  runApp(MyApp());
+  await appStoragePath();
+  HttpController();
 }
-
-// void main() async {
-//   // debugPaintSizeEnabled = true;
-
-//   runApp(MyApp());
-//   appStoragePath();
-
-// }
 
 class MyApp extends StatelessWidget {
   Map<int, Color> color = {
