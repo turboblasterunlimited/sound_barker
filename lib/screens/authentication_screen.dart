@@ -1,9 +1,9 @@
 import 'dart:io' show Platform;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:song_barker/screens/main_screen.dart';
+
 import 'package:song_barker/services/http_controller.dart';
 import '../services/authenticate_user.dart';
 
@@ -17,8 +17,7 @@ class AuthenticationScreen extends StatefulWidget {
 class _AuthenticationScreenState extends State<AuthenticationScreen> {
   String clientId;
   String platform;
-  bool authError = false;
-  String errorString;
+  bool loading = true;
 
   void setPlatformClientId() {
     if (Platform.isAndroid) {
@@ -42,7 +41,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     Navigator.of(context).pushNamed(MainScreen.routeName);
   }
 
-  void handleAuthentication() async {
+  void handleAuthentication(context) async {
+    setState(() => loading = true);
     var token = await authenticate(clientId, ['email', 'openid', 'profile']);
     var response = await HttpController.dio.post(
       'http://165.227.178.14/openid-token/$platform',
@@ -52,8 +52,13 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       navigateNext();
     } else {
       setState(() {
-        authError = true;
-        errorString = response.data["error"];
+        loading = false;
+        Scaffold.of(context).showSnackBar(
+          SnackBar(
+            content:
+                Text("The following error occured: ${response.data["error"]}"),
+          ),
+        );
       });
     }
   }
@@ -66,105 +71,86 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
 
   @override
   void didChangeDependencies() async {
+    super.didChangeDependencies();
     if (await checkIfSignedIn()) {
       navigateNext();
     }
+    setState(() => loading = false);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
-      extendBodyBehindAppBar: true,
       resizeToAvoidBottomPadding: false,
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Expanded(
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(top: 50),
+      appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.white, size: 30),
+        backgroundColor: Theme.of(context).accentColor,
+        elevation: 0,
+        centerTitle: true,
+        title: Text(
+          "K9 Karaoke",
+          style: TextStyle(
+              fontWeight: FontWeight.bold, fontSize: 23, color: Colors.white),
+        ),
+      ),
+      body: Builder(
+        builder: (ctx) => Column(
+          children: <Widget>[
+            // Padding(
+            //   padding: EdgeInsets.only(top: 50),
+            // ),
+            // TextField(
+            //   obscureText: true,
+            //   decoration: InputDecoration(
+            //     filled: true,
+            //     fillColor: Colors.white,
+            //     border: OutlineInputBorder(),
+            //     labelText: 'Email',
+            //   ),
+            // ),
+            // TextField(
+            //   obscureText: true,
+            //   decoration: InputDecoration(
+            //     filled: true,
+            //     fillColor: Colors.white,
+            //     border: OutlineInputBorder(),
+            //     labelText: 'Password',
+            //   ),
+            // ),
+
+            Visibility(
+              visible: !loading,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 100.0),
+                child: Column(
+                  children: <Widget>[
+                    Center(
+                      child: GoogleSignInButton(
+                        onPressed: () {
+                          handleAuthentication(ctx);
+                        },
+                      ),
+                    ),
+                    // FacebookSignInButton(
+                    //   onPressed: null,
+                    // ),
+                  ],
                 ),
-                Text(
-                  "K9 Karaoke",
-                  style: TextStyle(
-                    fontSize: 30,
-                  ),
-                ),
-                // TextField(
-                //   obscureText: true,
-                //   decoration: InputDecoration(
-                //     filled: true,
-                //     fillColor: Colors.white,
-                //     border: OutlineInputBorder(),
-                //     labelText: 'Email',
-                //   ),
-                // ),
-                // TextField(
-                //   obscureText: true,
-                //   decoration: InputDecoration(
-                //     filled: true,
-                //     fillColor: Colors.white,
-                //     border: OutlineInputBorder(),
-                //     labelText: 'Password',
-                //   ),
-                // ),
-              ],
+              ),
             ),
-          ),
-          Expanded(
-            child: Column(
-              children: <Widget>[
-                GoogleSignInButton(
-                  onPressed: () {
-                    handleAuthentication();
-                  },
-                ),
-                // FacebookSignInButton(
-                //   onPressed: null,
-                // ),
-              ],
-            ),
-          ),
-          Visibility(
-            visible: !authError,
-            child: Expanded(
+            Visibility(
+              visible: loading,
               child: Center(
                 child: SpinKitWave(
-                  color: Theme.of(context).primaryColor,
-                  size: 80,
+                  // color: Theme.of(context).primaryColor,
+                  color: Colors.white,
+                  size: 100,
                 ),
               ),
             ),
-          ),
-          Visibility(
-            visible: authError,
-            child: Expanded(
-              child: Column(
-                children: <Widget>[
-                  RawMaterialButton(
-                    onPressed: handleAuthentication,
-                    child: Column(
-                      children: <Widget>[
-                        Icon(
-                          Icons.swap_horizontal_circle,
-                          color: Colors.black38,
-                          size: 30,
-                        ),
-                        Text("Try again"),
-                      ],
-                    ),
-                  ),
-                  Center(
-                    child: Text("Error!!!\n\n$errorString"),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
