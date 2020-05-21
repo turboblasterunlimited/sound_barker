@@ -85,6 +85,11 @@ class Song with ChangeNotifier {
     this.amplitudesPath = amplitudesPath;
   }
 
+  String get getName {
+    if (name == "") return "Unnamed";
+    return name;
+  }
+
   void removeFromStorage() {
     try {
       File(filePath).deleteSync(recursive: false);
@@ -150,7 +155,8 @@ class Song with ChangeNotifier {
   void _getMelodyAndGenerateAmplitudeFile(bucket, filePathBase) async {
     this.filePath = await Gcloud.downloadFromBucket(fileUrl, fileId + '.aac',
         bucket: bucket);
-    this.amplitudesPath = await AmplitudeExtractor.createAmplitudeFile(this.filePath, filePathBase);
+    this.amplitudesPath = await AmplitudeExtractor.createAmplitudeFile(
+        this.filePath, filePathBase);
   }
 
   void _mergeTracks(backingTrackPath, filePathBase) async {
@@ -160,7 +166,7 @@ class Song with ChangeNotifier {
     File(tempMelodyFilePath).renameSync(this.filePath);
     try {
       File(backingTrackUrl).deleteSync();
-    } catch(e) {
+    } catch (e) {
       print(e);
     }
   }

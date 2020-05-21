@@ -89,7 +89,7 @@ class _SongSelectCardState extends State<SongSelectCard> {
                   onTap: () {
                     selectThis();
                   },
-                  child: Text(widget.song.name),
+                  child: Text(widget.song.getName),
                 ),
               ),
               trailing: IconButton(

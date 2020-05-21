@@ -209,9 +209,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
                           children: [
                             WidgetSpan(
                               child: Text(
-                                  widget.bark.name == ""
-                                      ? "Unnamed"
-                                      : widget.bark.name,
+                                  widget.bark.getName,
                                   style:
                                       TextStyle(fontWeight: FontWeight.bold)),
                             ),

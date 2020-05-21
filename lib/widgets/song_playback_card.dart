@@ -85,7 +85,7 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text('Are you sure?'),
-        content: Text('Are you sure you want to delete ${widget.song.name}?'),
+        content: Text('Are you sure you want to delete ${widget.song.getName}?'),
         actions: <Widget>[
           FlatButton(
               child: Text("No, Don't delete it."),
@@ -180,7 +180,6 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
 
   @override
   Widget build(BuildContext context) {
-    print("Song name: ${widget.song.name}");
     return SizeTransition(
       sizeFactor: widget.animation,
       child: Card(
@@ -219,7 +218,7 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
                           style: TextStyle(fontSize: 18),
                           children: [
                             WidgetSpan(
-                              child: Text(widget.song.name == "" ? "Unnamed": widget.song.name,
+                              child: Text(widget.song.getName,
                                   style:
                                       TextStyle(fontWeight: FontWeight.bold)),
                             ),

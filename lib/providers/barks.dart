@@ -108,6 +108,11 @@ class Bark with ChangeNotifier {
     this.amplitudesPath = amplitudesPath;
   }
 
+  String get getName {
+    if (name == "") return "Unnamed";
+    return name;
+  }
+
   Future<void> rename(newName) async {
     try {
       await RestAPI.renameBarkOnServer(this, newName);
