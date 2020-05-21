@@ -210,27 +210,33 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
             title: GestureDetector(
               onTap: () => renameSong(),
               child: Center(
-                child: FadeTransition(
-                  opacity: renameAnimationController,
-                  child: RichText(
-                    text: TextSpan(
-                      style: TextStyle(fontSize: 18),
-                      children: [
-                        WidgetSpan(
-                          child: Text(widget.song.name ?? "Unknown",
-                              style: TextStyle(fontWeight: FontWeight.bold)),
+                child: Stack(
+                  children: <Widget>[
+                    FadeTransition(
+                      opacity: renameAnimationController,
+                      child: RichText(
+                        text: TextSpan(
+                          style: TextStyle(fontSize: 18),
+                          children: [
+                            WidgetSpan(
+                              child: Text(widget.song.name == "" ? "Unnamed": widget.song.name,
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                            ),
+                            // WidgetSpan(
+                            //   child: Padding(
+                            //     padding:
+                            //         const EdgeInsets.symmetric(horizontal: 2.0),
+                            //     child: Icon(Icons.edit,
+                            //         color: Colors.grey[400], size: 16),
+                            //   ),
+                            // ),
+                          ],
                         ),
-                        // WidgetSpan(
-                        //   child: Padding(
-                        //     padding:
-                        //         const EdgeInsets.symmetric(horizontal: 2.0),
-                        //     child: Icon(Icons.edit,
-                        //         color: Colors.grey[400], size: 16),
-                        //   ),
-                        // ),
-                      ],
+                      ),
                     ),
-                  ),
+                    Text("                  "),
+                  ],
                 ),
               ),
             ),
