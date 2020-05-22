@@ -84,7 +84,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
     }
 
     if (puppetCoordinates["headTop"] == null) {
-      puppetCoordinates["headTop"] = [0.0, .3];
+      puppetCoordinates["headTop"] = [0.0, .4];
     }
 
     if (puppetCoordinates["headRight"] == null) {
@@ -92,7 +92,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
     }
 
     if (puppetCoordinates["headBottom"] == null) {
-      puppetCoordinates["headBottom"] = [0.0, -.3];
+      puppetCoordinates["headBottom"] = [0.0, -.4];
     }
 
     if (puppetCoordinates["headLeft"] == null) {
@@ -164,7 +164,6 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
       pictures.add(widget.newPicture);
       pictures.mountedPicture = widget.newPicture;
       imageController.createDog(widget.newPicture);
-      // NEED TO INSTANTIATE THE WEBVIEW
       Navigator.popUntil(
         context,
         ModalRoute.withName(MainScreen.routeName),
