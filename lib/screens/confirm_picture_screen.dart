@@ -57,7 +57,6 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
   List<double> mouthLeftStartingPosition = [0.0, 0.0];
   List<double> mouthRightStartingPosition = [0.0, 0.0];
 
-
   void didChangeDependencies() {
     canvasLength ??= MediaQuery.of(context).size.width;
     middle ??= canvasLength / 2;
@@ -220,11 +219,15 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
       double deltaY = canvasCoordinates["mouth"][1] - mouthStartingPosition[1];
 
       setState(() {
-        canvasCoordinates["mouthLeft"][0] = mouthLeftStartingPosition[0] + deltaX;
-        canvasCoordinates["mouthLeft"][1] = mouthLeftStartingPosition[1] + deltaY;
+        canvasCoordinates["mouthLeft"][0] =
+            mouthLeftStartingPosition[0] + deltaX;
+        canvasCoordinates["mouthLeft"][1] =
+            mouthLeftStartingPosition[1] + deltaY;
 
-        canvasCoordinates["mouthRight"][0] = mouthRightStartingPosition[0] + deltaX;
-        canvasCoordinates["mouthRight"][1] = mouthRightStartingPosition[1] + deltaY;
+        canvasCoordinates["mouthRight"][0] =
+            mouthRightStartingPosition[0] + deltaX;
+        canvasCoordinates["mouthRight"][1] =
+            mouthRightStartingPosition[1] + deltaY;
       });
     }
 
@@ -324,14 +327,16 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                             print("IN PROXIMITY!!");
                             if (pointName == "mouth")
                               mouthStartingPosition = existingXY;
-                              mouthLeftStartingPosition = List.from(canvasCoordinates["mouthLeft"]);
-                              mouthRightStartingPosition = List.from(canvasCoordinates["mouthRight"]);
+                            mouthLeftStartingPosition =
+                                List.from(canvasCoordinates["mouthLeft"]);
+                            mouthRightStartingPosition =
+                                List.from(canvasCoordinates["mouthRight"]);
                           });
                         });
                       },
                       onPanUpdate: (details) {
                         if (!grabbing) return;
-                        String pointName = grabPoint.keys.first.toString();
+                        String pointName = grabPoint.keys.first;
 
                         setState(() {
                           touchedXY = [
@@ -376,7 +381,8 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                               child: Image.memory(imageDataBytes)),
                         ),
                         CustomPaint(
-                          painter: MagnifyingTargetPainter(touchedXY),
+                          painter: MagnifyingTargetPainter(
+                              touchedXY, grabPoint.keys),
                           child: Container(),
                         ),
                       ],
@@ -471,7 +477,10 @@ class MagnifiedImage extends CustomClipper<Rect> {
 
 class MagnifyingTargetPainter extends CustomPainter {
   final touchedXY;
-  MagnifyingTargetPainter(this.touchedXY);
+  final grabPoint;
+  MagnifyingTargetPainter(this.touchedXY, this.grabPoint);
+
+
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -493,6 +502,24 @@ class MagnifyingTargetPainter extends CustomPainter {
       ),
       4.0,
       paint,
+    );
+
+    if (grabPoint.length == 0) return;
+
+    final TextPainter textPainter = TextPainter(
+        text: TextSpan(
+          text: grabPoint.first,
+          style: TextStyle(fontFamily: 'lato'),
+        ),
+        textAlign: TextAlign.center,
+        textDirection: TextDirection.ltr)
+      ..layout(maxWidth: size.width - 12.0 - 12.0);
+    textPainter.paint(
+      canvas,
+      Offset(
+        touchedXY[0] - 40,
+        posY - magOffset + 20,
+      ),
     );
   }
 
