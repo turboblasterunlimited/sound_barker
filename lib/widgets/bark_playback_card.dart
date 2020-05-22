@@ -180,25 +180,25 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
   Widget build(BuildContext context) {
     return SizeTransition(
       sizeFactor: widget.animation,
-      child: Card(
-        margin: EdgeInsets.symmetric(
-          horizontal: 5,
-          vertical: 3,
-        ),
-        child: Padding(
-          padding: EdgeInsets.all(0),
-          child: ListTile(
-            leading: IconButton(
-              color: Colors.blue,
-              onPressed: () {
-                playBark();
-                handleTabScroll();
-              },
-              icon: Icon(Icons.play_arrow, color: Colors.black, size: 30),
-            ),
-            title: GestureDetector(
-              onTap: () => renameBark(),
-              child: Center(
+      child: GestureDetector(
+        onTap: () => renameBark(),
+        child: Card(
+          margin: EdgeInsets.symmetric(
+            horizontal: 5,
+            vertical: 3,
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(0),
+            child: ListTile(
+              leading: IconButton(
+                color: Colors.blue,
+                onPressed: () {
+                  playBark();
+                  handleTabScroll();
+                },
+                icon: Icon(Icons.play_arrow, color: Colors.black, size: 30),
+              ),
+              title: Center(
                 child: FadeTransition(
                   opacity: renameAnimationController,
                   child: RichText(
@@ -214,14 +214,14 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
                   ),
                 ),
               ),
-            ),
 
-            // subtitle: Text(pet.name),
-            trailing: IconButton(
-              onPressed: () {
-                deleteBark();
-              },
-              icon: Icon(Icons.delete, color: Colors.redAccent, size: 30),
+              // subtitle: Text(pet.name),
+              trailing: IconButton(
+                onPressed: () {
+                  deleteBark();
+                },
+                icon: Icon(Icons.delete, color: Colors.redAccent, size: 30),
+              ),
             ),
           ),
         ),
