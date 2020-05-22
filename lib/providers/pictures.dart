@@ -102,8 +102,7 @@ class Picture with ChangeNotifier, Gcloud {
     String filePath,
     String fileUrl,
     String fileId,
-    String coordinates =
-        '{"mouth": [0.0, 0.0], "leftEye": [-0.2, 0.2], "rightEye": [0.2, 0.2]}',
+    String coordinates,
     DateTime created,
   }) {
     this.coordinates = coordinates;

@@ -66,38 +66,45 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
     print("imageSizeDifference: $imageSizeDifference");
   }
 
-  Map<String, List<double>> getCanvasCoordinates() {
+  Map<String, List<double>> setMissingCoordinatesToDefault(
+      Map<String, List<double>> puppetCoordinates) {
+    if (puppetCoordinates["leftEye"] == null)
+      puppetCoordinates["leftEye"] = [-0.2, 0.2];
+
+    if (puppetCoordinates["rightEye"] == null)
+      puppetCoordinates["rightEye"] = [0.2, 0.2];
+
+    if (puppetCoordinates["mouth"] == null)
+      puppetCoordinates["mouth"] = [0.0, 0.0];
+
+    if (puppetCoordinates["mouthLeft"] == null)
+      puppetCoordinates["mouthLeft"] = [-0.1, 0.0];
+
+    if (puppetCoordinates["mouthRight"] == null)
+      puppetCoordinates["mouthRight"] = [0.1, 0.0];
+
+    if (puppetCoordinates["headTop"] == null)
+      puppetCoordinates["headTop"] = [0.0, .4];
+
+    if (puppetCoordinates["headRight"] == null)
+      puppetCoordinates["headRight"] = [0.3, .0];
+
+    if (puppetCoordinates["headBottom"] == null)
+      puppetCoordinates["headBottom"] = [0.0, -.4];
+
+    if (puppetCoordinates["headLeft"] == null)
+      puppetCoordinates["headLeft"] = [-0.3, .0];
+
+    return puppetCoordinates;
+  }
+
+  Map<String, List<double>> getCoordinatesForCanvas() {
     if (canvasCoordinates.length != 0) return canvasCoordinates;
 
-    final puppetCoordinates = json.decode(widget.newPicture.coordinates);
+    Map<String, List<double>> puppetCoordinates =
+        json.decode(widget.newPicture.coordinates);
 
-    if (puppetCoordinates["mouth"] == null) {
-      puppetCoordinates["mouth"] = [0.0, 0.0];
-    }
-
-    if (puppetCoordinates["mouthLeft"] == null) {
-      puppetCoordinates["mouthLeft"] = [-0.1, 0.0];
-    }
-
-    if (puppetCoordinates["mouthRight"] == null) {
-      puppetCoordinates["mouthRight"] = [0.1, 0.0];
-    }
-
-    if (puppetCoordinates["headTop"] == null) {
-      puppetCoordinates["headTop"] = [0.0, .4];
-    }
-
-    if (puppetCoordinates["headRight"] == null) {
-      puppetCoordinates["headRight"] = [0.3, .0];
-    }
-
-    if (puppetCoordinates["headBottom"] == null) {
-      puppetCoordinates["headBottom"] = [0.0, -.4];
-    }
-
-    if (puppetCoordinates["headLeft"] == null) {
-      puppetCoordinates["headLeft"] = [-0.3, .0];
-    }
+    puppetCoordinates = setMissingCoordinatesToDefault(puppetCoordinates);
 
     _puppetXtoCanvasX(x) {
       double offset = x * middle * 2;
@@ -120,7 +127,6 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
       ];
     });
 
-    print("Canvas Coordinates: $canvasCoordinates");
     return canvasCoordinates;
   }
 
@@ -292,7 +298,8 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                           details.localPosition.dx,
                           details.localPosition.dy
                         ];
-                        getCanvasCoordinates().forEach((pointName, existingXY) {
+                        getCoordinatesForCanvas()
+                            .forEach((pointName, existingXY) {
                           if (!_inProximity(existingXY, touchedXY)) return;
                           setState(() {
                             touchedXY = touchedXY;
@@ -325,7 +332,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                         });
                       },
                       child: CustomPaint(
-                        painter: CoordinatesPainter(getCanvasCoordinates(),
+                        painter: CoordinatesPainter(getCoordinatesForCanvas(),
                             magnifiedImage, touchedXY, grabbing),
                         child: Container(),
                       ),
