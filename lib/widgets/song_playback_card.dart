@@ -85,7 +85,8 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text('Are you sure?'),
-        content: Text('Are you sure you want to delete ${widget.song.getName}?'),
+        content:
+            Text('Are you sure you want to delete ${widget.song.getName}?'),
         actions: <Widget>[
           FlatButton(
               child: Text("No, Don't delete it."),
@@ -182,69 +183,63 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
   Widget build(BuildContext context) {
     return SizeTransition(
       sizeFactor: widget.animation,
-      child: Card(
-        margin: EdgeInsets.symmetric(
-          horizontal: 5,
-          vertical: 3,
-        ),
-        child: Padding(
-          padding: EdgeInsets.all(0),
-          child: ListTile(
-            leading: IconButton(
-              color: Colors.blue,
-              onPressed: () {
-                if (isPlaying) {
-                  stopAll();
-                } else {
-                  playSong(context);
-                  Future.delayed(Duration(milliseconds: 50), () {
-                    setState(() => isPlaying = true);
-                  });
-                  handleTabScroll();
-                }
-              },
-              icon: Icon(isPlaying ? Icons.stop : Icons.play_arrow,
-                  color: Colors.black, size: 30),
-            ),
-            title: GestureDetector(
-              onTap: () => renameSong(),
-              child: Center(
-                child: Stack(
-                  children: <Widget>[
-                    FadeTransition(
-                      opacity: renameAnimationController,
-                      child: RichText(
-                        text: TextSpan(
-                          style: TextStyle(fontSize: 18),
-                          children: [
-                            WidgetSpan(
-                              child: Text(widget.song.getName,
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold)),
-                            ),
-                            // WidgetSpan(
-                            //   child: Padding(
-                            //     padding:
-                            //         const EdgeInsets.symmetric(horizontal: 2.0),
-                            //     child: Icon(Icons.edit,
-                            //         color: Colors.grey[400], size: 16),
-                            //   ),
-                            // ),
-                          ],
+      child: GestureDetector(
+        onTap: () => renameSong(),
+        child: Card(
+          margin: EdgeInsets.symmetric(
+            horizontal: 5,
+            vertical: 3,
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(0),
+            child: ListTile(
+              leading: IconButton(
+                color: Colors.blue,
+                onPressed: () {
+                  if (isPlaying) {
+                    stopAll();
+                  } else {
+                    playSong(context);
+                    Future.delayed(Duration(milliseconds: 50), () {
+                      setState(() => isPlaying = true);
+                    });
+                    handleTabScroll();
+                  }
+                },
+                icon: Icon(isPlaying ? Icons.stop : Icons.play_arrow,
+                    color: Colors.black, size: 30),
+              ),
+              title: Center(
+                child: FadeTransition(
+                  opacity: renameAnimationController,
+                  child: RichText(
+                    text: TextSpan(
+                      style: TextStyle(fontSize: 18),
+                      children: [
+                        WidgetSpan(
+                          child: Text(widget.song.getName,
+                              style: TextStyle(fontWeight: FontWeight.bold)),
                         ),
-                      ),
+                        // WidgetSpan(
+                        //   child: Padding(
+                        //     padding:
+                        //         const EdgeInsets.symmetric(horizontal: 2.0),
+                        //     child: Icon(Icons.edit,
+                        //         color: Colors.grey[400], size: 16),
+                        //   ),
+                        // ),
+                      ],
                     ),
-                    Text("                  "),
-                  ],
+                  ),
                 ),
               ),
-            ),
-            // subtitle: Text(pet.name),
-            trailing: IconButton(
-              onPressed: () {
-                deleteSong();
-              },
-              icon: Icon(Icons.delete, color: Colors.redAccent, size: 30),
+              // subtitle: Text(pet.name),
+              trailing: IconButton(
+                onPressed: () {
+                  deleteSong();
+                },
+                icon: Icon(Icons.delete, color: Colors.redAccent, size: 30),
+              ),
             ),
           ),
         ),

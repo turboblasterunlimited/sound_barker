@@ -199,29 +199,23 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
             title: GestureDetector(
               onTap: () => renameBark(),
               child: Center(
-                child: Stack(
-                  children: <Widget>[
-                    FadeTransition(
-                      opacity: renameAnimationController,
-                      child: RichText(
-                        text: TextSpan(
-                          style: TextStyle(fontSize: 18),
-                          children: [
-                            WidgetSpan(
-                              child: Text(
-                                  widget.bark.getName,
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold)),
-                            ),
-                          ],
+                child: FadeTransition(
+                  opacity: renameAnimationController,
+                  child: RichText(
+                    text: TextSpan(
+                      style: TextStyle(fontSize: 18),
+                      children: [
+                        WidgetSpan(
+                          child: Text(widget.bark.getName,
+                              style: TextStyle(fontWeight: FontWeight.bold)),
                         ),
-                      ),
+                      ],
                     ),
-                    Text("                  "),
-                  ],
+                  ),
                 ),
               ),
             ),
+
             // subtitle: Text(pet.name),
             trailing: IconButton(
               onPressed: () {
