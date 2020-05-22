@@ -53,6 +53,10 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
   // Canvas pixels
   List<double> touchedXY = [0.0, 0.0];
   ui.Image magnifiedImage;
+  List<double> mouthStartingPosition = [0.0, 0.0];
+  List<double> mouthLeftStartingPosition = [0.0, 0.0];
+  List<double> mouthRightStartingPosition = [0.0, 0.0];
+
 
   void didChangeDependencies() {
     canvasLength ??= MediaQuery.of(context).size.width;
@@ -66,8 +70,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
     print("imageSizeDifference: $imageSizeDifference");
   }
 
-  Map<String, List<double>> setMissingCoordinatesToDefault(
-      Map<String, List<double>> puppetCoordinates) {
+  Map setMissingCoordinatesToDefault(puppetCoordinates) {
     if (puppetCoordinates["leftEye"] == null)
       puppetCoordinates["leftEye"] = [-0.2, 0.2];
 
@@ -101,8 +104,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
   Map<String, List<double>> getCoordinatesForCanvas() {
     if (canvasCoordinates.length != 0) return canvasCoordinates;
 
-    Map<String, List<double>> puppetCoordinates =
-        json.decode(widget.newPicture.coordinates);
+    Map puppetCoordinates = json.decode(widget.newPicture.coordinates);
 
     puppetCoordinates = setMissingCoordinatesToDefault(puppetCoordinates);
 
@@ -213,6 +215,19 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
       }
     }
 
+    moveMouthLeftRight() {
+      double deltaX = canvasCoordinates["mouth"][0] - mouthStartingPosition[0];
+      double deltaY = canvasCoordinates["mouth"][1] - mouthStartingPosition[1];
+
+      setState(() {
+        canvasCoordinates["mouthLeft"][0] = mouthLeftStartingPosition[0] + deltaX;
+        canvasCoordinates["mouthLeft"][1] = mouthLeftStartingPosition[1] + deltaY;
+
+        canvasCoordinates["mouthRight"][0] = mouthRightStartingPosition[0] + deltaX;
+        canvasCoordinates["mouthRight"][1] = mouthRightStartingPosition[1] + deltaY;
+      });
+    }
+
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: PreferredSize(
@@ -307,11 +322,16 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                             grabPoint[pointName] = existingXY;
                             widget.coordinatesSet = true;
                             print("IN PROXIMITY!!");
+                            if (pointName == "mouth")
+                              mouthStartingPosition = existingXY;
+                              mouthLeftStartingPosition = List.from(canvasCoordinates["mouthLeft"]);
+                              mouthRightStartingPosition = List.from(canvasCoordinates["mouthRight"]);
                           });
                         });
                       },
                       onPanUpdate: (details) {
                         if (!grabbing) return;
+                        String pointName = grabPoint.keys.first.toString();
 
                         setState(() {
                           touchedXY = [
@@ -319,8 +339,9 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                             details.localPosition.dy
                           ];
                           // The coordinate points are modified here
-                          canvasCoordinates[grabPoint.keys.first.toString()] =
-                              touchedXY;
+                          canvasCoordinates[pointName] = touchedXY;
+                          // Move mouthLeft and mouthRight with mouth
+                          if (pointName == "mouth") moveMouthLeftRight();
                         });
                       },
                       onPanEnd: (details) async {
