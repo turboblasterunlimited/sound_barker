@@ -97,18 +97,41 @@ class _MainScreenState extends State<MainScreen> {
       ),
       drawer: AppDrawer(),
       endDrawer: PictureGrid(),
-      body: Container(
-        child: Stack(
-          children: <Widget>[
-            Positioned(
-              child: SingingImage(),
-            ),
-            Positioned(
-              child: Align(
-                child: InterfaceSelector(),
+      body: Builder(
+        builder: (ctx) => Container(
+          child: Stack(
+            children: <Widget>[
+              Positioned(
+                child: Stack(
+                  children: <Widget>[
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onVerticalDragStart: (details) {
+                        return null;
+                        // Scaffold.of(context).openEndDrawer();
+                      },
+                      onHorizontalDragStart: (details) {
+                        Scaffold.of(ctx).openEndDrawer();
+                      },
+                      onTap: () {
+                        print("Tapping webview!");
+                        Scaffold.of(ctx).openEndDrawer();
+                      },
+                      child: IgnorePointer(
+                        ignoring: true,
+                        child: SingingImage(),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            )
-          ],
+              Positioned(
+                child: Align(
+                  child: InterfaceSelector(),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

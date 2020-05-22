@@ -164,6 +164,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
       pictures.add(widget.newPicture);
       pictures.mountedPicture = widget.newPicture;
       imageController.createDog(widget.newPicture);
+      // NEED TO INSTANTIATE THE WEBVIEW
       Navigator.popUntil(
         context,
         ModalRoute.withName(MainScreen.routeName),

@@ -31,6 +31,7 @@ class Pictures with ChangeNotifier {
 
   void add(Picture picture) {
     all.insert(0, picture);
+    notifyListeners();
   }
 
   void remove(picture) {
