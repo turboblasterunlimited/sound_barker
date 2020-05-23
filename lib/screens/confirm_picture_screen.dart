@@ -479,8 +479,18 @@ class MagnifyingTargetPainter extends CustomPainter {
   final touchedXY;
   final grabPoint;
   MagnifyingTargetPainter(this.touchedXY, this.grabPoint);
-
-
+  
+  Map<String, String> displayNames = {
+    "rightEye": "Right Eye",
+    "leftEye": "Left Eye",
+    "mouth": "Mouth",
+    "mouthRight": "Right Mouth",
+    "mouthLeft": "Left Mouth",
+    "headBottom": "Chin",
+    "headRight": "Head Right",
+    "headLeft": "Head Left",
+    "headTop": "Head Top",
+  };
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -508,8 +518,8 @@ class MagnifyingTargetPainter extends CustomPainter {
 
     final TextPainter textPainter = TextPainter(
         text: TextSpan(
-          text: grabPoint.first,
-          style: TextStyle(fontFamily: 'lato'),
+          text: displayNames[grabPoint.first],
+          style: TextStyle(fontFamily: 'lato', fontSize: 20),
         ),
         textAlign: TextAlign.center,
         textDirection: TextDirection.ltr)
