@@ -56,6 +56,8 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
   List<double> mouthStartingPosition = [0.0, 0.0];
   List<double> mouthLeftStartingPosition = [0.0, 0.0];
   List<double> mouthRightStartingPosition = [0.0, 0.0];
+  bool grabbing = false;
+  Map<String, List<double>> grabPoint = {};
 
   void didChangeDependencies() {
     canvasLength ??= MediaQuery.of(context).size.width;
@@ -157,9 +159,6 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
     return json.encode(puppetCoordinates);
   }
 
-  bool grabbing = false;
-  Map<String, List<double>> grabPoint = {};
-
   @override
   Widget build(BuildContext context) {
     Pictures pictures = Provider.of<Pictures>(context, listen: false);
@@ -200,7 +199,8 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
     double magImageYCompensator() {
       double posY = touchedXY[1] / canvasLength * imageSizeDifference;
       posY -= imageSizeDifference - magOffset;
-      // Need compensation logic here.
+      // Compensation logic, bumps magnified image below finger
+      if (touchedXY[1] < magOffset) posY -= 200;
       return posY;
     }
 
@@ -343,7 +343,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                             details.localPosition.dx,
                             details.localPosition.dy
                           ];
-                          // The coordinate points are modified here
+                          // Coordinate points are modified here
                           canvasCoordinates[pointName] = touchedXY;
                           // Move mouthLeft and mouthRight with mouth
                           if (pointName == "mouth") moveMouthLeftRight();
@@ -450,10 +450,6 @@ class MagnifiedImage extends CustomClipper<Rect> {
 
   double get getPostY {
     double pos;
-    // Compensation logic for static clipper at top of screen commented out until working.
-    // if (canvasY < magOffset) {
-    //   return (magOffset) + (canvasY / canvasLength * imageSizeDifference);
-    // }
     pos = canvasY + (canvasY / canvasLength * imageSizeDifference);
     return pos;
   }
@@ -479,7 +475,7 @@ class MagnifyingTargetPainter extends CustomPainter {
   final touchedXY;
   final grabPoint;
   MagnifyingTargetPainter(this.touchedXY, this.grabPoint);
-  
+
   Map<String, String> displayNames = {
     "rightEye": "Right Eye",
     "leftEye": "Left Eye",
@@ -500,10 +496,8 @@ class MagnifyingTargetPainter extends CustomPainter {
       ..color = Colors.blue;
 
     double posY = touchedXY[1];
-    // Compensation logic for static clipper marker at top of screen commented out until working.
-    // posY = posY < magOffset
-    //     ? magOffset
-    //     : posY;
+      // Compensation logic, bumps magnified image marker below finger
+    posY = posY < magOffset ? posY + 200 : posY;
 
     canvas.drawCircle(
       Offset(
