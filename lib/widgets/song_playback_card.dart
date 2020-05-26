@@ -187,8 +187,8 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
         onTap: () => renameSong(),
         child: Card(
           margin: EdgeInsets.symmetric(
-            horizontal: 5,
-            vertical: 3,
+            horizontal: 0,
+            vertical: 0,
           ),
           child: Padding(
             padding: EdgeInsets.all(0),
@@ -217,8 +217,10 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
                       style: TextStyle(fontSize: 18),
                       children: [
                         WidgetSpan(
-                          child: Text(widget.song.getName,
-                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          child: Text(
+                            widget.song.getName,
+                            // style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
                         ),
                         // WidgetSpan(
                         //   child: Padding(

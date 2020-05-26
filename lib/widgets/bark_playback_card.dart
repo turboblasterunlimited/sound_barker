@@ -129,7 +129,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
       context: context,
       builder: (ctx) => SimpleDialog(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
+          borderRadius: BorderRadius.circular(30.0),
         ),
         title: Center(
           child: Text('Rename Bark'),
@@ -184,8 +184,8 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
         onTap: () => renameBark(),
         child: Card(
           margin: EdgeInsets.symmetric(
-            horizontal: 5,
-            vertical: 3,
+            horizontal: 0,
+            vertical: 0,
           ),
           child: Padding(
             padding: EdgeInsets.all(0),
@@ -206,8 +206,10 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
                       style: TextStyle(fontSize: 18),
                       children: [
                         WidgetSpan(
-                          child: Text(widget.bark.getName,
-                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          child: Text(
+                            widget.bark.getName,
+                            // style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
                         ),
                       ],
                     ),

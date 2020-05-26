@@ -22,13 +22,15 @@ class InterfaceSelectorState extends State<InterfaceSelector> {
     double screenWidth = MediaQuery.of(context).size.width;
     double bottomPadding = MediaQuery.of(context).padding.bottom;
     double topPadding = MediaQuery.of(context).padding.top;
-    extent = (screenHeight - screenWidth + bottomPadding + topPadding) / (screenHeight + bottomPadding + topPadding);
+    extent = (screenHeight - screenWidth + bottomPadding + topPadding) /
+        (screenHeight + bottomPadding + topPadding);
     initialChildSize = extent;
     minChildSize = extent;
 
     return NotificationListener<DraggableScrollableNotification>(
       onNotification: (notification) {
-        Provider.of<TabListScrollController>(context, listen: false).updateTabExtent(notification.extent);
+        Provider.of<TabListScrollController>(context, listen: false)
+            .updateTabExtent(notification.extent);
       },
       child: DraggableScrollableActuator(
         child: DraggableScrollableSheet(
@@ -38,9 +40,9 @@ class InterfaceSelectorState extends State<InterfaceSelector> {
           builder: (BuildContext ctx, ScrollController scrollController) {
             Provider.of<TabListScrollController>(context, listen: false)
                 .setScrollController(scrollController);
-            
+
             return Container(
-              color: Theme.of(ctx).primaryColor,
+              color: Colors.white,
               child: DefaultTabController(
                 length: 2,
                 child: Column(
@@ -54,8 +56,18 @@ class InterfaceSelectorState extends State<InterfaceSelector> {
                       color: Theme.of(ctx).accentColor,
                       child: TabBar(
                         tabs: [
-                          Tab(text: "BARKS"),
-                          Tab(text: "SONGS"),
+                          Tab(
+                            child: Text(
+                              "BARKS",
+                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          Tab(
+                            child: Text(
+                              "SONGS",
+                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                          ),
                         ],
                       ),
                     ),

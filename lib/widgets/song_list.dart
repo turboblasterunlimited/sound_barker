@@ -15,57 +15,44 @@ class SongList extends StatefulWidget {
 }
 
 class _SongListState extends State<SongList> {
-// 
+//
   Widget build(BuildContext context) {
     // print("song list building");
     final songs = Provider.of<Songs>(context, listen: false);
     final soundController = Provider.of<SoundController>(context);
+    final spinnerState = Provider.of<SpinnerState>(context, listen: true);
 
     return Column(
       children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-          child: RawMaterialButton(
-            onPressed: () {
-              Navigator.pushNamed(context, SongCategorySelectScreen.routeName);
-            },
-            child: Text(
-              "TAP TO CREATE SONG",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(7.0),
-              // side: BorderSide(color: Colors.red),
-            ),
-            elevation: 2.0,
-            fillColor: Colors.white,
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          ),
-        ),
-        Consumer<SpinnerState>(builder: (ctx, spinState, _) {
-          return Visibility(
-            visible: spinState.songLoading,
-            // visible: true,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 2),
-              child: Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: SpinKitWave(
-                    color: Theme.of(context).primaryColor,
-                    size: 20,
-                  ),
+        RawMaterialButton(
+          onPressed: () {
+            Navigator.pushNamed(context, SongCategorySelectScreen.routeName);
+          },
+          child: spinnerState.songLoading
+              ? SpinKitWave(
+                  color: Colors.white,
+                  size: 20,
+                )
+              : Text(
+                  "TAP TO CREATE A SONG",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.white),
                 ),
-              ),
-            ),
-          );
-        }),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(40.0),
+          ),
+          elevation: 2.0,
+          fillColor: Theme.of(context).primaryColor,
+          padding: const EdgeInsets.symmetric(horizontal: 30.0),
+        ),
         Expanded(
           child: AnimatedList(
-            controller: Provider.of<TabListScrollController>(context, listen: false).scrollController,
+            controller:
+                Provider.of<TabListScrollController>(context, listen: false)
+                    .scrollController,
             key: songs.listKey,
             initialItemCount: songs.all.length,
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(0),
             itemBuilder: (ctx, i, Animation<double> animation) =>
                 SongPlaybackCard(
                     i, songs.all[i], songs, soundController, animation),

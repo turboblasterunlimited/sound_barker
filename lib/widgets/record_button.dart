@@ -35,9 +35,7 @@ class _RecordButtonState extends State<RecordButton> {
   void startRecorder() async {
     try {
       this.filePath = await flutterSound.startRecorder(
-          iosQuality: IosQuality.MAX,
-          sampleRate: 44100,
-          bitRate: 192000);
+          iosQuality: IosQuality.MAX, sampleRate: 44100, bitRate: 192000);
       _recordingTimer = Timer(Duration(seconds: 10), () {
         stopRecorder();
       });
@@ -93,27 +91,28 @@ class _RecordButtonState extends State<RecordButton> {
   @override
   Widget build(BuildContext context) {
     spinnerState = Provider.of<SpinnerState>(context, listen: true);
-
     return RawMaterialButton(
       onPressed: spinnerState.barksLoading ? null : onStartRecorderPressed(),
       child: spinnerState.barksLoading
           ? SpinKitWave(
-              color: Theme.of(context).primaryColor,
+              color: Colors.white,
               size: 20,
             )
           : Text(
               this._isRecording
                   ? "RECORDING... TAP TO STOP"
                   : "TAP TO RECORD BARKS",
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
             ),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(7.0),
+        borderRadius: BorderRadius.circular(40.0),
         // side: BorderSide(color: Colors.red),
       ),
       elevation: 2.0,
-      fillColor: this._isRecording ? Colors.redAccent[200] : Colors.white,
-      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      fillColor: this._isRecording
+          ? Colors.redAccent[200]
+          : Theme.of(context).primaryColor,
+      padding: const EdgeInsets.symmetric(horizontal: 30.0),
     );
   }
 }

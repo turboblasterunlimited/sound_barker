@@ -273,16 +273,17 @@ class MessageCreatorState extends State<MessageCreator> {
                     GestureDetector(
                       child: Text(
                         "Next Step ->",
-                        style: TextStyle(color: Colors.white, fontSize: 30),
+                        style: TextStyle(color: Colors.blue, fontSize: 30),
                       ),
                       onTap: () async {
                         widget.updateMessageFilePathCallback(resultPath());
                       },
                     ),
+                    Divider(),
                     GestureDetector(
                       child: Text(
                         "Skip ->",
-                        style: TextStyle(color: Colors.white, fontSize: 30),
+                        style: TextStyle(color: Colors.amber, fontSize: 30),
                       ),
                       onTap: () {
                         widget.updateMessageFilePathCallback();

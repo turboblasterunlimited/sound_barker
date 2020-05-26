@@ -41,7 +41,7 @@ class _SelectSongAndPictureScreenState
     }
 
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
+      // backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white, size: 30),
         centerTitle: true,

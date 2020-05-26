@@ -79,11 +79,12 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'Song Barker',
           theme: ThemeData(
-            // primarySwatch: MaterialColor(0xff419D78, color),
-            primarySwatch: MaterialColor(0xff367b92, color),
-            accentColor: Color(0xff2D3047),
-            highlightColor: MaterialColor(0xff419D78, color),
-            backgroundColor: MaterialColor(0xff367b92, color),
+            primarySwatch: MaterialColor(0xff0e79b2, color),
+
+            accentColor: Color(0xff2D3047), 
+            highlightColor: MaterialColor(0xff44bba4, color),
+            // backgroundColor: MaterialColor(0xff367b92, color),
+            backgroundColor: Colors.white,
             fontFamily: 'Lato',
             buttonTheme: ButtonThemeData(
               minWidth: 200.0,

@@ -46,7 +46,8 @@ class _MainScreenState extends State<MainScreen> {
     }
 
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
+      // backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: Colors.white,
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomPadding: false,
       key: scaffoldKey,
@@ -62,11 +63,7 @@ class _MainScreenState extends State<MainScreen> {
             Padding(
               padding: const EdgeInsets.only(top: 5),
               child: RawMaterialButton(
-                child: Icon(
-                  Icons.card_giftcard,
-                  color: Colors.white,
-                  size: 30,
-                ),
+                child: Image.asset("assets/images/replace_before_release.png"),
                 shape: CircleBorder(),
                 elevation: 2.0,
                 // fillColor: Theme.of(context).accentColor,

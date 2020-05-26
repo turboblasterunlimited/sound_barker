@@ -22,7 +22,7 @@ class BarkListState extends State<BarkList> {
     return Column(
       children: <Widget>[
         Padding(
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.all(0),
           child: Align(
             // alignment: Alignment(-.9, 0),
             child: RecordButton(),

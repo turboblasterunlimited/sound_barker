@@ -81,7 +81,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: Colors.white,
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white, size: 30),
