@@ -25,9 +25,12 @@ class _SongListState extends State<SongList> {
     return Column(
       children: <Widget>[
         RawMaterialButton(
-          onPressed: () {
-            Navigator.pushNamed(context, SongCategorySelectScreen.routeName);
-          },
+          onPressed: spinnerState.songLoading
+              ? null
+              : () {
+                  Navigator.pushNamed(
+                      context, SongCategorySelectScreen.routeName);
+                },
           child: spinnerState.songLoading
               ? SpinKitWave(
                   color: Colors.white,
