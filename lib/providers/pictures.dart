@@ -6,7 +6,8 @@ import 'package:flutter/foundation.dart';
 import 'dart:io';
 import 'dart:math';
 import 'package:image/image.dart' as IMG;
-import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 import '../services/gcloud.dart';
 import '../services/rest_api.dart';
@@ -15,8 +16,10 @@ class Pictures with ChangeNotifier {
   List<Picture> all = [];
   Picture mountedPicture;
 
-  mountPicture(picture) {
+  setPicture(picture) async {
     this.mountedPicture = picture;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('mountedPictureId', picture.fileId);
   }
 
   Picture findById(String id) {
@@ -71,7 +74,14 @@ class Pictures with ChangeNotifier {
     tempPics.forEach((pic) {
       add(pic);
     });
+    loadStoredPicture();
     notifyListeners();
+  }
+
+  Future<void> loadStoredPicture() async {
+    final prefs = await SharedPreferences.getInstance();
+    String savedPictureId = prefs.getString('mountedPictureId');
+    this.mountedPicture = findById(savedPictureId);
   }
 
   Future downloadAllImagesFromBucket([List images]) async {

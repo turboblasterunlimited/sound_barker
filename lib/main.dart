@@ -80,7 +80,6 @@ class MyApp extends StatelessWidget {
           title: 'Song Barker',
           theme: ThemeData(
             primarySwatch: MaterialColor(0xff0e79b2, color),
-
             accentColor: Color(0xff2D3047), 
             highlightColor: MaterialColor(0xff44bba4, color),
             // backgroundColor: MaterialColor(0xff367b92, color),

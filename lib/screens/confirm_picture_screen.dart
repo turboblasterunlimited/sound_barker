@@ -168,7 +168,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
       widget.newPicture.coordinates = canvasToPuppetCoordinates();
       widget.newPicture.uploadPictureAndSaveToServer();
       pictures.add(widget.newPicture);
-      pictures.mountedPicture = widget.newPicture;
+      pictures.setPicture(widget.newPicture);
       imageController.createDog(widget.newPicture);
       Navigator.popUntil(
         context,
@@ -181,7 +181,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
         widget.newPicture.coordinates = canvasToPuppetCoordinates();
       }
       RestAPI.updateImageOnServer(widget.newPicture);
-      pictures.mountedPicture = widget.newPicture;
+      pictures.setPicture(widget.newPicture);
       imageController.createDog(widget.newPicture);
 
       Navigator.popUntil(

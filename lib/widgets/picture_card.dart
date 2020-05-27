@@ -82,8 +82,8 @@ class _PictureCardState extends State<PictureCard>
             children: <Widget>[
               GestureDetector(
                 onTap: () {
+                  widget.pictures.setPicture(widget.picture);
                   imageController.createDog(widget.picture);
-                  widget.pictures.mountedPicture = widget.picture;
                   Navigator.pop(context);
                 },
                 child: Padding(

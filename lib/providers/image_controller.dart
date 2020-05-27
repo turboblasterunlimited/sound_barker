@@ -11,7 +11,6 @@ import '../providers/pictures.dart';
 class ImageController with ChangeNotifier {
   WebViewController webViewController;
   Map coordinates;
-  Picture mountedPicture;
 
   void mountController(controller) {
     this.webViewController = controller;
@@ -72,7 +71,6 @@ class ImageController with ChangeNotifier {
   dynamic createDog([Picture picture]) {
     if (picture == null)
       return webViewController.evaluateJavascript("create_puppet()");
-    this.mountedPicture = picture;
     webViewController
         .evaluateJavascript("create_puppet('${_base64Image(picture)}')");
     this.coordinates = json.decode(picture.coordinates);

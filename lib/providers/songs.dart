@@ -108,17 +108,6 @@ class Song with ChangeNotifier {
     notifyListeners();
   }
 
-  // createAmplitudeFile(filePathBase) async {
-  //   await FFMpeg.converter
-  //       .execute("-hide_banner -loglevel panic -i $filePath $filePathBase.wav");
-  //   final amplitudes = AmplitudeExtractor.extract("$filePathBase.wav");
-  //   File("$filePathBase.wav").delete();
-  //   final csvAmplitudes = const ListToCsvConverter().convert([amplitudes]);
-  //   File file = File("$filePathBase.csv");
-  //   file.writeAsStringSync(csvAmplitudes);
-  //   return file.path;
-  // }
-
   Future<Song> retrieveSong(Map songData, [bucket]) async {
     print("retrieving song: $songData");
     bucket ??= await Gcloud.accessBucket();
@@ -164,10 +153,6 @@ class Song with ChangeNotifier {
     await FFMpeg.converter.execute(
         "-i $backingTrackPath -i ${this.filePath} -filter_complex amix=inputs=2:duration=longest $tempMelodyFilePath");
     File(tempMelodyFilePath).renameSync(this.filePath);
-    try {
-      File(backingTrackUrl).deleteSync();
-    } catch (e) {
-      print(e);
-    }
+    File(backingTrackPath).deleteSync();
   }
 }

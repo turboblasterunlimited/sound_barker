@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:song_barker/providers/image_controller.dart';
 import 'package:song_barker/widgets/picture_grid.dart';
 
 import '../providers/pictures.dart';
@@ -34,11 +35,14 @@ class _MainScreenState extends State<MainScreen> {
     final barks = Provider.of<Barks>(context, listen: false);
     final songs = Provider.of<Songs>(context, listen: false);
     final pictures = Provider.of<Pictures>(context, listen: false);
+    final imageController = Provider.of<ImageController>(context, listen: false);
+
 
     void downloadEverything() async {
       await barks.retrieveAll();
       await songs.retrieveAll();
       await pictures.retrieveAll();
+      imageController.createDog(pictures.mountedPicture);
     }
 
     if (barks.all.isEmpty && songs.all.isEmpty && pictures.all.isEmpty) {
