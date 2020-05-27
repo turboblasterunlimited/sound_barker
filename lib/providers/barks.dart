@@ -61,17 +61,19 @@ class Barks with ChangeNotifier {
     for (var i = 0; i < barkCount; i++) {
       String filePathBase = myAppStoragePath + '/' + barks[i].fileId;
 
-      if (!await File(filePathBase + '.aac').exists()) {
+      if (!File(filePathBase + '.aac').existsSync()) {
         // download and generate amplitude file
         await Gcloud.downloadFromBucket(
             barks[i].fileUrl, barks[i].fileId + ".aac",
             bucket: bucket);
-        barks[i].filePath = filePathBase + '.aac';
-        barks[i].amplitudesPath = await AmplitudeExtractor.createAmplitudeFile(
+      }
+      if (!File(filePathBase + '.csv').existsSync()) {
+        await AmplitudeExtractor.createAmplitudeFile(
             barks[i].filePath, filePathBase);
       }
-      // either way, set filePath.
+      // either way, set filePaths.
       barks[i].filePath = filePathBase + '.aac';
+      barks[i].amplitudesPath = filePathBase + '.csv';
     }
   }
 
