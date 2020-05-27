@@ -79,15 +79,20 @@ class Pictures with ChangeNotifier {
     tempPics.forEach((pic) {
       add(pic);
     });
-    await loadStoredPicture();
+    await mountStoredPictureOrLast();
     notifyListeners();
+    print("Mounted Picture: ${mountedPicture.filePath}");
     return mountedPicture;
   }
 
-  Future<void> loadStoredPicture() async {
+  Future<void> mountStoredPictureOrLast() async {
     final prefs = await SharedPreferences.getInstance();
-    String savedPictureId = prefs.getString('mountedPictureId');
-    this.mountedPicture = findById(savedPictureId);
+    if (prefs.containsKey('mountedPictureId')) {
+      String savedPictureId = prefs.getString('mountedPictureId');
+      this.mountedPicture = findById(savedPictureId);
+    } else if (all.isNotEmpty) {
+      this.mountedPicture = all.last;
+    }
   }
 
   Future downloadAllImagesFromBucket([List images]) async {

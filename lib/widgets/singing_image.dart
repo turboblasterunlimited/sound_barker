@@ -71,15 +71,9 @@ class _SingingImageState extends State<SingingImage> {
                         // show that its ready for evaling js, or you could actually make a js
                         // eval call.
                         imageController.makeReady();
-                        // setState(() => isReady = true);
-                        // if (widget.picture != null)
-                        //   imageController.createDog(widget.picture);
-                        // else if (pictures.mountedPicture != null)
-                        //   imageController.createDog(pictures.mountedPicture);
                       }
                       if (message.message ==
                           "[puppet.js postMessage] create_puppet finished") {
-                        // setState(() => isFinished = true);
                         Future.delayed(Duration(seconds: 3), () {
                           if (randomGesture != null) randomGesture.cancel();
                           randomGesture = imageController.randomGesture();

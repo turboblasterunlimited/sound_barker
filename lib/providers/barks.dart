@@ -55,25 +55,26 @@ class Barks with ChangeNotifier {
 
   // downloads the files either from all barks in memory or just the barks passed.
   Future downloadAllBarksFromBucket([List barks]) async {
+    print("downloading all barks");
     Bucket bucket = await Gcloud.accessBucket();
     barks ??= all;
     int barkCount = barks.length;
     for (var i = 0; i < barkCount; i++) {
       String filePathBase = myAppStoragePath + '/' + barks[i].fileId;
 
-      if (!File(filePathBase + '.aac').existsSync()) {
-        // download and generate amplitude file
-        await Gcloud.downloadFromBucket(
-            barks[i].fileUrl, barks[i].fileId + ".aac",
+      // set filePaths in advance
+      barks[i].filePath = filePathBase + '.aac';
+      barks[i].amplitudesPath = filePathBase + '.csv';
+
+      // download and generate amplitude file if none exist
+      if (!File(barks[i].filePath).existsSync()) {
+        await Gcloud.downloadFromBucket(barks[i].fileUrl, barks[i].fileId + '.aac',
             bucket: bucket);
       }
-      if (!File(filePathBase + '.csv').existsSync()) {
+      if (!File(barks[i].amplitudesPath).existsSync()) {
         await AmplitudeExtractor.createAmplitudeFile(
             barks[i].filePath, filePathBase);
       }
-      // either way, set filePaths.
-      barks[i].filePath = filePathBase + '.aac';
-      barks[i].amplitudesPath = filePathBase + '.csv';
     }
   }
 

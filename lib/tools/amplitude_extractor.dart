@@ -42,7 +42,7 @@ class AmplitudeExtractor {
     final amplitudes = extract("$filePathBase.wav");
     final csvAmplitudes = const ListToCsvConverter().convert([amplitudes]);
     File file = File("$filePathBase.csv");
-    await File("$filePathBase.wav").delete();
+    File("$filePathBase.wav").deleteSync();
     file.writeAsStringSync(csvAmplitudes);
     return file.path;
   }
