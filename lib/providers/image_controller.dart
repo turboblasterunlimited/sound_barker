@@ -12,6 +12,7 @@ class ImageController with ChangeNotifier {
   WebViewController webViewController;
   Map coordinates;
   bool ready = false;
+  Timer randomGestureTimer;
 
   void makeReady() {
     ready = true;
@@ -41,9 +42,10 @@ class ImageController with ChangeNotifier {
   }
 
   Timer randomGesture() {
+    randomGestureTimer?.cancel();
     int rNum;
     var random = Random.secure();
-    Timer randomGestureTimer =
+    final timer =
         Timer.periodic(Duration(milliseconds: 1100), (timer) {
       rNum = random.nextInt(40);
       if (rNum <= 3) webViewController.evaluateJavascript("left_brow_raise()");
@@ -69,15 +71,15 @@ class ImageController with ChangeNotifier {
         webViewController.evaluateJavascript("left_blink_quick()");
       if (rNum == 22) webViewController.evaluateJavascript("left_blink_slow()");
     });
-    return randomGestureTimer;
+    this.randomGestureTimer = timer;
   }
 
   // SHOULD ALSO CHECK FOR THE EXISTENCE OF pictures.mountedPicture and then pass it to create_dog.
-  // NEED TO FIX ISSUE OF WIDGET SCREENS REBUILDING AFTER THEY HAVE BEEN LEFT.
-  dynamic createDog(Picture picture) {
+  Future createDog(Picture picture) async {
     if (!ready) {
       print("Not ready!");
-      Future.delayed(Duration(seconds: 1), createDog(picture));
+      await Future.delayed(Duration(seconds: 1), await createDog(picture));
+      return;
     }
     print("Making it!");
     webViewController

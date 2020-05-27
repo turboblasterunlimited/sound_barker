@@ -233,7 +233,7 @@ class MessageCreatorState extends State<MessageCreator> {
                       height: 80,
                       width: 80,
                       decoration: ShapeDecoration(
-                        color: _isRecording ? Colors.redAccent : Colors.white,
+                        color: _isRecording ? Colors.redAccent : Colors.blue[100],
                         shape: CircleBorder(),
                       ),
                       child: IconButton(

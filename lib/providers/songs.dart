@@ -121,12 +121,12 @@ class Song with ChangeNotifier {
 
     if (_setIfFilesExist(filePathBase)) return this;
 
-    _getMelodyAndGenerateAmplitudeFile(bucket, filePathBase);
+    await _getMelodyAndGenerateAmplitudeFile(bucket, filePathBase);
     if (backingTrackUrl != null) {
       String backingTrackPath = await Gcloud.downloadFromBucket(
           backingTrackUrl, fileId + "backing.aac",
           bucket: bucket);
-      _mergeTracks(backingTrackPath, filePathBase);
+      await _mergeTracks(backingTrackPath, filePathBase);
     }
     return this;
   }
@@ -141,14 +141,14 @@ class Song with ChangeNotifier {
     return false;
   }
 
-  void _getMelodyAndGenerateAmplitudeFile(bucket, filePathBase) async {
+  Future<void> _getMelodyAndGenerateAmplitudeFile(bucket, filePathBase) async {
     this.filePath = await Gcloud.downloadFromBucket(fileUrl, fileId + '.aac',
         bucket: bucket);
     this.amplitudesPath = await AmplitudeExtractor.createAmplitudeFile(
         this.filePath, filePathBase);
   }
 
-  void _mergeTracks(backingTrackPath, filePathBase) async {
+  Future<void> _mergeTracks(backingTrackPath, filePathBase) async {
     String tempMelodyFilePath = filePathBase + "temp.aac";
     await FFMpeg.converter.execute(
         "-i $backingTrackPath -i ${this.filePath} -filter_complex amix=inputs=2:duration=longest $tempMelodyFilePath");

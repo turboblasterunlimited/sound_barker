@@ -44,8 +44,8 @@ class _SongSelectCardState extends State<SongSelectCard> {
   void playSong() async {
     try {
       widget.soundController.stopPlayer();
-      await widget.soundController.startPlayer(widget.song.filePath,
-          stopPlayerCallBack());
+      await widget.soundController
+          .startPlayer(widget.song.filePath, stopPlayerCallBack());
     } catch (e) {
       showErrorDialog(context, e);
     }
@@ -65,25 +65,20 @@ class _SongSelectCardState extends State<SongSelectCard> {
               ? Border.all(color: Colors.blueAccent, width: 5)
               : Border.all(width: 0, color: Colors.transparent),
         ),
-        child: Card(
-          // margin: EdgeInsets.symmetric(
-          //   horizontal: 5,
-          //   vertical: 3,
-          // ),
-          child: Padding(
-            padding: EdgeInsets.all(0),
+        child: GestureDetector(
+          onTap: selectThis,
+          child: Card(
+            margin: EdgeInsets.symmetric(
+              horizontal: 0,
+              vertical: 0,
+            ),
             child: ListTile(
-              leading: GestureDetector(
-                onTap: () {
-                  selectThis();
-                },
-                child: isSelected
-                    ? Icon(
-                        Icons.check_box,
-                        color: Colors.blueAccent,
-                      )
-                    : Icon(Icons.check_box_outline_blank),
-              ),
+              leading: isSelected
+                  ? Icon(
+                      Icons.check_box,
+                      color: Colors.blueAccent,
+                    )
+                  : Icon(Icons.check_box_outline_blank),
               title: Center(
                 child: GestureDetector(
                   onTap: () {

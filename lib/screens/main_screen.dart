@@ -35,15 +35,15 @@ class _MainScreenState extends State<MainScreen> {
     final barks = Provider.of<Barks>(context, listen: false);
     final songs = Provider.of<Songs>(context, listen: false);
     final pictures = Provider.of<Pictures>(context, listen: false);
-    final imageController = Provider.of<ImageController>(context, listen: false);
-
+    final imageController =
+        Provider.of<ImageController>(context, listen: false);
 
     void downloadEverything() async {
       await barks.retrieveAll();
-      await songs.retrieveAll();
       Picture mountedPicture = await pictures.retrieveAll();
       if (mountedPicture == null) return;
       await imageController.createDog(mountedPicture);
+      await songs.retrieveAll();
     }
 
     if (barks.all.isEmpty && songs.all.isEmpty && pictures.all.isEmpty) {
