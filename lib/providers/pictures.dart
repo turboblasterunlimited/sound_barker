@@ -8,7 +8,6 @@ import 'dart:math';
 import 'package:image/image.dart' as IMG;
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 import '../services/gcloud.dart';
 import '../services/rest_api.dart';
 
@@ -37,7 +36,7 @@ class Pictures with ChangeNotifier {
     notifyListeners();
   }
 
-  void remove(picture) {
+  dynamic remove(picture) {
     try {
       RestAPI.deleteImageFromServer(picture);
     } catch (e) {
@@ -46,7 +45,13 @@ class Pictures with ChangeNotifier {
     }
     all.remove(picture);
     File(picture.filePath).delete();
+    if (picture == mountedPicture) {
+      this.mountedPicture = all.first;
+      notifyListeners();
+      return this.mountedPicture;
+    }
     notifyListeners();
+
   }
 
   Future retrieveAll() async {

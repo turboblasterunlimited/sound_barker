@@ -49,11 +49,17 @@ class _PictureCardState extends State<PictureCard>
     super.dispose();
   }
 
+  void replaceIfMounted() {
+    final newMounted =
+        Provider.of<Pictures>(context, listen: false).mountedPicture;
+    imageController.createDog(newMounted);
+  }
+
   void imageActions(String action) {
     if (action == "DELETE") {
       animationController.reverse();
       widget.pictures.remove(widget.picture);
-      imageController.createDog(widget.pictures.all.first);
+      replaceIfMounted();
     } else if (action == "SET FACE") {
       Navigator.push(
         context,
