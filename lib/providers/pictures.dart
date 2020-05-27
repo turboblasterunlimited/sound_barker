@@ -54,7 +54,7 @@ class Pictures with ChangeNotifier {
 
   }
 
-  Future retrieveAll() async {
+  Future<Picture> retrieveAll() async {
     List tempPics = [];
     List response = await RestAPI.retrieveAllImagesFromServer();
     response.forEach((serverImage) async {
@@ -79,8 +79,9 @@ class Pictures with ChangeNotifier {
     tempPics.forEach((pic) {
       add(pic);
     });
-    loadStoredPicture();
+    await loadStoredPicture();
     notifyListeners();
+    return mountedPicture;
   }
 
   Future<void> loadStoredPicture() async {

@@ -41,8 +41,8 @@ class _MainScreenState extends State<MainScreen> {
     void downloadEverything() async {
       await barks.retrieveAll();
       await songs.retrieveAll();
-      await pictures.retrieveAll();
-      imageController.createDog(pictures.mountedPicture);
+      final mountedPicture = await pictures.retrieveAll();
+      await imageController.createDog(mountedPicture);
     }
 
     if (barks.all.isEmpty && songs.all.isEmpty && pictures.all.isEmpty) {

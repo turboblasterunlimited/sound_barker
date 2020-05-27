@@ -20,8 +20,6 @@ class _SingingImageState extends State<SingingImage> {
   //     Completer<WebViewController>();
   static WebViewController webviewController;
   Timer randomGesture;
-  bool isReady = false;
-  // bool isFinished = false;
 
   void dispose() {
     if (randomGesture != null) randomGesture.cancel();
@@ -72,11 +70,12 @@ class _SingingImageState extends State<SingingImage> {
                         // here you can either set some var on the instance to ready to
                         // show that its ready for evaling js, or you could actually make a js
                         // eval call.
-                        setState(() => isReady = true);
-                        if (widget.picture != null)
-                          imageController.createDog(widget.picture);
-                        else if (pictures.mountedPicture != null)
-                          imageController.createDog(pictures.mountedPicture);
+                        imageController.makeReady();
+                        // setState(() => isReady = true);
+                        // if (widget.picture != null)
+                        //   imageController.createDog(widget.picture);
+                        // else if (pictures.mountedPicture != null)
+                        //   imageController.createDog(pictures.mountedPicture);
                       }
                       if (message.message ==
                           "[puppet.js postMessage] create_puppet finished") {

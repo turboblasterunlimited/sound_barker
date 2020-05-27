@@ -11,6 +11,12 @@ import '../providers/pictures.dart';
 class ImageController with ChangeNotifier {
   WebViewController webViewController;
   Map coordinates;
+  bool ready = false;
+
+  void makeReady() {
+    ready = true;
+    notifyListeners();
+  }
 
   void mountController(controller) {
     this.webViewController = controller;
@@ -68,9 +74,12 @@ class ImageController with ChangeNotifier {
 
   // SHOULD ALSO CHECK FOR THE EXISTENCE OF pictures.mountedPicture and then pass it to create_dog.
   // NEED TO FIX ISSUE OF WIDGET SCREENS REBUILDING AFTER THEY HAVE BEEN LEFT.
-  dynamic createDog([Picture picture]) {
-    if (picture == null)
-      return webViewController.evaluateJavascript("create_puppet()");
+  dynamic createDog(Picture picture) {
+    if (!ready) {
+      print("Not ready!");
+      Future.delayed(Duration(seconds: 1), createDog(picture));
+    }
+    print("Making it!");
     webViewController
         .evaluateJavascript("create_puppet('${_base64Image(picture)}')");
     this.coordinates = json.decode(picture.coordinates);

@@ -24,7 +24,7 @@ class AmplitudeExtractor {
     int i = 0;
     while ((i + sampleChunk - 1) < waveSamplesLength) {
       tempSubList = waveSamples.sublist(i, (i + sampleChunk - 1));
-      // amplitude from 0 to 1 (now 0 to .5)
+      // amplitude from 0 to 1 (now 0 to .5 [divisor * 2])
       _amplitude = tempSubList.reduce((a, b) => a.abs() + b.abs()) / (divisor * 2);
       result.add(_amplitude > 0.5 ? 0.5 : _amplitude);
       i += (sampleChunk - 1);
