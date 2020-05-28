@@ -53,7 +53,7 @@ class _CardCreatorScreenState extends State<CardCreatorScreen> {
             child: Stack(
               children: <Widget>[
                 SingingImage(widget.picture),
-                // CardDecoratorCanvas(),
+                CardDecoratorCanvas(),
               ],
             ),
           ),

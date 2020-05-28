@@ -74,17 +74,14 @@ class MessageCreatorState extends State<MessageCreator> {
           iosQuality: IosQuality.MAX, sampleRate: 44100, bitRate: 192000);
       print('start message recorder: $filePath');
 
-      _recorderSubscription = flutterSound.onRecorderStateChanged.listen((e) {
-        DateTime date = new DateTime.fromMillisecondsSinceEpoch(
-            e.currentPosition.toInt(),
-            isUtc: true);
-      });
-      _dbPeakSubscription =
-          flutterSound.onRecorderDbPeakChanged.listen((value) {});
+      _recorderSubscription =
+          flutterSound.onRecorderStateChanged.listen((e) {});
 
       this.setState(() {
         this._isRecording = true;
         this._hasShifted = false;
+        this.messageSpeed = 100;
+        this.messagePitch = 100;
       });
     } catch (err) {
       setState(() {
@@ -104,10 +101,6 @@ class MessageCreatorState extends State<MessageCreator> {
       if (_recorderSubscription != null) {
         _recorderSubscription.cancel();
         _recorderSubscription = null;
-      }
-      if (_dbPeakSubscription != null) {
-        _dbPeakSubscription.cancel();
-        _dbPeakSubscription = null;
       }
     } catch (err) {
       print('stopRecorder error: $err');
@@ -212,7 +205,7 @@ class MessageCreatorState extends State<MessageCreator> {
                   max: 200,
                   activeColor: Colors.blue,
                   inactiveColor: Colors.grey,
-                  onChanged: _isProcessingAudio || !_messageExists
+                  onChanged: _isProcessingAudio || !_messageExists || _isRecording
                       ? null
                       : (value) {
                           setState(() {
@@ -327,7 +320,7 @@ class MessageCreatorState extends State<MessageCreator> {
                   max: 200,
                   activeColor: Colors.blue,
                   inactiveColor: Colors.grey,
-                  onChanged: _isProcessingAudio || !_messageExists
+                  onChanged: _isProcessingAudio || !_messageExists || _isRecording
                       ? null
                       : (value) async {
                           setState(() {

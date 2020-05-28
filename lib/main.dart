@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:song_barker/providers/decorator.dart';
 import 'package:song_barker/tools/app_storage_path.dart';
 import 'package:flutter/rendering.dart';
 
@@ -74,13 +75,16 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(
           value: TabListScrollController(),
         ),
+        ChangeNotifierProvider.value(
+          value: Decorator(),
+        ),
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Song Barker',
           theme: ThemeData(
             primarySwatch: MaterialColor(0xff0e79b2, color),
-            accentColor: Color(0xff2D3047), 
+            accentColor: Color(0xff2D3047),
             highlightColor: MaterialColor(0xff44bba4, color),
             // backgroundColor: MaterialColor(0xff367b92, color),
             backgroundColor: Colors.white,

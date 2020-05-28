@@ -1,6 +1,7 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:song_barker/providers/decorator.dart';
 
 class CardDecoratorCanvas extends StatefulWidget {
   CardDecoratorCanvas();
@@ -10,28 +11,38 @@ class CardDecoratorCanvas extends StatefulWidget {
 }
 
 class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
-  bool _isDrawing = false;
-  bool _isTyping = false;
-  List<Offset> _offSets;
+  Decorator decoratorProvider;
+
+  List<List<Offset>> _offSets = [];
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: CardPainter(_offSets),
-      child: GestureDetector(
-        onPanStart: (details) {
+    decoratorProvider = Provider.of<Decorator>(context);
+
+    return GestureDetector(
+      onPanStart: (details) {
+        if (decoratorProvider.isDrawing)
           setState(() {
             _offSets.add(
-                Offset(details.localPosition.dx, details.localPosition.dy));
+              [Offset(details.localPosition.dx, details.localPosition.dy)],
+            );
           });
-        },
-        onPanUpdate: (details) {
-          print("drawing");
+      },
+      onPanUpdate: (details) {
+        if (decoratorProvider.isDrawing)
           setState(() {
-            _offSets.add(
-                Offset(details.localPosition.dx, details.localPosition.dy));
+            _offSets.last.add(
+              Offset(details.localPosition.dx, details.localPosition.dy),
+            );
           });
-        },
-        onPanEnd: (details) {},
+      },
+      onPanEnd: (details) {
+        if (decoratorProvider.isDrawing)
+          setState(() {
+            _offSets.last.add(_offSets.last.last);
+          });
+      },
+      child: CustomPaint(
+        painter: CardPainter(_offSets),
         child: Container(),
       ),
     );
@@ -48,14 +59,13 @@ class CardPainter extends CustomPainter {
     final paint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 4.0
-      ..color = Colors.blue;
+      ..color = Colors.pink;
 
-    for (var i = 0; i < offsets.length; i++) {
-      if (offsets[i] != null && offsets[i + 1] != null)
-        canvas.drawLine(offsets[i], offsets[i + 1], paint);
-
-      if (offsets[i] != null && offsets[i + 1] == null)
-        canvas.drawPoints(PointMode.points, offsets[i], paint);
+    for (var mark in offsets) {
+      for (var i = 0; i < mark.length - 1; i++) {
+        if (mark[i] != null && mark[i + 1] != null)
+          canvas.drawLine(mark[i], mark[i + 1], paint);
+      }
     }
   }
 
