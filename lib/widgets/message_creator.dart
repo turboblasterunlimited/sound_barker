@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sound_lite/flutter_sound_recorder.dart';
 import 'package:flutter_sound_lite/ios_quality.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:song_barker/tools/app_storage_path.dart';
 import 'package:song_barker/providers/image_controller.dart';
@@ -31,6 +32,8 @@ class MessageCreatorState extends State<MessageCreator> {
   bool _isRecording = false;
   bool _messageExists = false;
   bool _hasShifted = false;
+  bool _isProcessingAudio = false;
+
   String amplitudePath = "";
   String filePath = "";
   String alteredAmplitudePath = "";
@@ -146,7 +149,7 @@ class MessageCreatorState extends State<MessageCreator> {
     setState(() => _isPlaying = !_isPlaying);
   }
 
-  void generateAlteredAudioFiles() async {
+  Future<void> generateAlteredAudioFiles() async {
     if (File(alteredFilePath).existsSync()) File(alteredFilePath).deleteSync();
     if (File(alteredAmplitudePath).existsSync())
       File(alteredAmplitudePath).deleteSync();
@@ -160,6 +163,7 @@ class MessageCreatorState extends State<MessageCreator> {
         '-i $filePath -filter:a "asetrate=44100*$pitchChange,aresample=44100,atempo=$speedChange" -vn $alteredFilePath');
     alteredAmplitudePath =
         await AmplitudeExtractor.createAmplitudeFile(alteredFilePath);
+    setState(() => _isProcessingAudio = false);
   }
 
   _trimSilence() async {
@@ -208,14 +212,19 @@ class MessageCreatorState extends State<MessageCreator> {
                   max: 200,
                   activeColor: Colors.blue,
                   inactiveColor: Colors.grey,
-                  onChanged: (value) {
+                  onChanged: _isProcessingAudio
+                      ? null
+                      : (value) {
+                          setState(() {
+                            messagePitch = value;
+                            _hasShifted = true;
+                          });
+                        },
+                  onChangeEnd: (value) async {
                     setState(() {
                       messagePitch = value;
-                      _hasShifted = true;
+                      _isProcessingAudio = true;
                     });
-                  },
-                  onChangeEnd: (value) async {
-                    setState(() => messagePitch = value);
                     generateAlteredAudioFiles();
                   },
                 ),
@@ -237,7 +246,12 @@ class MessageCreatorState extends State<MessageCreator> {
                       ),
                       child: IconButton(
                         color: Colors.black38,
-                        icon: Icon(Icons.mic),
+                        icon: _isProcessingAudio
+                            ? SpinKitWave(
+                                color: Colors.white,
+                                size: 20,
+                              )
+                            : Icon(Icons.mic),
                         iconSize: 50,
                         onPressed: onStartRecorderPressed(),
                       ),
@@ -246,19 +260,21 @@ class MessageCreatorState extends State<MessageCreator> {
                       height: 80,
                       width: 80,
                       decoration: ShapeDecoration(
-                        color: (_isRecording || !_messageExists)
+                        color: (_isRecording || !_messageExists || _isProcessingAudio)
                             ? Colors.grey[350]
                             : Colors.blue,
                         shape: CircleBorder(),
                       ),
                       child: IconButton(
                         disabledColor: Colors.grey,
-                        color: _messageExists ? Colors.black38 : Colors.grey,
+                        color: !_messageExists ? Colors.grey : Colors.black38,
                         icon: _isPlaying
                             ? Icon(Icons.stop)
                             : Icon(Icons.play_arrow),
                         iconSize: 50,
-                        onPressed: _isRecording || !_messageExists
+                        onPressed: _isRecording ||
+                                !_messageExists ||
+                                _isProcessingAudio
                             ? null
                             : handlePlayStopButton,
                       ),
@@ -308,14 +324,19 @@ class MessageCreatorState extends State<MessageCreator> {
                   max: 200,
                   activeColor: Colors.blue,
                   inactiveColor: Colors.grey,
-                  onChanged: (value) async {
+                  onChanged: _isProcessingAudio
+                      ? null
+                      : (value) async {
+                          setState(() {
+                            messageSpeed = value;
+                            _hasShifted = true;
+                          });
+                        },
+                  onChangeEnd: (value) {
                     setState(() {
                       messageSpeed = value;
-                      _hasShifted = true;
+                      _isProcessingAudio = true;
                     });
-                  },
-                  onChangeEnd: (value) {
-                    setState(() => messageSpeed = value);
                     generateAlteredAudioFiles();
                   },
                 ),
