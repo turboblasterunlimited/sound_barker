@@ -14,8 +14,7 @@ import '../tools/amplitude_extractor.dart';
 
 class MessageCreator extends StatefulWidget {
   final updateMessageFilePathCallback;
-  MessageCreator(
-      this.updateMessageFilePathCallback);
+  MessageCreator(this.updateMessageFilePathCallback);
 
   @override
   MessageCreatorState createState() => MessageCreatorState();
@@ -40,9 +39,6 @@ class MessageCreatorState extends State<MessageCreator> {
   // 0 to 200
   double messageSpeed = 100;
   double messagePitch = 100;
-  // -1 to 1
-  double pitchCompensation = 0;
-  double speedCompensation = 0;
 
   @override
   void initState() {
@@ -154,14 +150,16 @@ class MessageCreatorState extends State<MessageCreator> {
     if (File(alteredFilePath).existsSync()) File(alteredFilePath).deleteSync();
     if (File(alteredAmplitudePath).existsSync())
       File(alteredAmplitudePath).deleteSync();
-    pitchCompensation = 1 - (messageSpeed / 100);
-    double pitchChange = (messagePitch / 100) - pitchCompensation;
-    speedCompensation = 1 - (messagePitch / 100);
-    double speedChange = (messageSpeed / 100) - speedCompensation;
+    double pitchChange = (messagePitch / 100);
+    double speedChange = (messageSpeed / 100);
+
+    if (pitchChange < .5) pitchChange = .5;
+    if (speedChange < .5) speedChange = .5;
 
     await FFMpeg.converter.execute(
         '-i $filePath -filter:a "asetrate=44100*$pitchChange,aresample=44100,atempo=$speedChange" -vn $alteredFilePath');
-    alteredAmplitudePath = await AmplitudeExtractor.createAmplitudeFile(alteredFilePath);
+    alteredAmplitudePath =
+        await AmplitudeExtractor.createAmplitudeFile(alteredFilePath);
   }
 
   _trimSilence() async {
@@ -233,7 +231,8 @@ class MessageCreatorState extends State<MessageCreator> {
                       height: 80,
                       width: 80,
                       decoration: ShapeDecoration(
-                        color: _isRecording ? Colors.redAccent : Colors.blue[100],
+                        color:
+                            _isRecording ? Colors.redAccent : Colors.blue[100],
                         shape: CircleBorder(),
                       ),
                       child: IconButton(

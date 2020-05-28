@@ -73,7 +73,6 @@ class ImageController with ChangeNotifier {
     this.randomGestureTimer = timer;
   }
 
-  // SHOULD ALSO CHECK FOR THE EXISTENCE OF pictures.mountedPicture and then pass it to create_dog.
   Future createDog(Picture picture) async {
     if (!ready) {
       print("Not ready!");
