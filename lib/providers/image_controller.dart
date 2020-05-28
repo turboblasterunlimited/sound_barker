@@ -45,8 +45,7 @@ class ImageController with ChangeNotifier {
     randomGestureTimer?.cancel();
     int rNum;
     var random = Random.secure();
-    final timer =
-        Timer.periodic(Duration(milliseconds: 1100), (timer) {
+    final timer = Timer.periodic(Duration(milliseconds: 1100), (timer) {
       rNum = random.nextInt(40);
       if (rNum <= 3) webViewController.evaluateJavascript("left_brow_raise()");
       if (rNum <= 6 && rNum > 3)
@@ -78,7 +77,9 @@ class ImageController with ChangeNotifier {
   Future createDog(Picture picture) async {
     if (!ready) {
       print("Not ready!");
-      await Future.delayed(Duration(seconds: 1), await createDog(picture));
+      await Future.delayed(Duration(seconds: 1), () {
+        createDog(picture);
+      });
       return;
     }
     print("Making it!");
