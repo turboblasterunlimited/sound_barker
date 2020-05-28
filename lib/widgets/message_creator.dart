@@ -212,7 +212,7 @@ class MessageCreatorState extends State<MessageCreator> {
                   max: 200,
                   activeColor: Colors.blue,
                   inactiveColor: Colors.grey,
-                  onChanged: _isProcessingAudio
+                  onChanged: _isProcessingAudio || !_messageExists
                       ? null
                       : (value) {
                           setState(() {
@@ -240,8 +240,9 @@ class MessageCreatorState extends State<MessageCreator> {
                       height: 80,
                       width: 80,
                       decoration: ShapeDecoration(
-                        color:
-                            _isRecording ? Colors.redAccent : Colors.blue[100],
+                        color: _isRecording
+                            ? Colors.redAccent
+                            : _messageExists ? Colors.blue[100] : Colors.blue,
                         shape: CircleBorder(),
                       ),
                       child: IconButton(
@@ -260,7 +261,9 @@ class MessageCreatorState extends State<MessageCreator> {
                       height: 80,
                       width: 80,
                       decoration: ShapeDecoration(
-                        color: (_isRecording || !_messageExists || _isProcessingAudio)
+                        color: (_isRecording ||
+                                !_messageExists ||
+                                _isProcessingAudio)
                             ? Colors.grey[350]
                             : Colors.blue,
                         shape: CircleBorder(),
@@ -324,7 +327,7 @@ class MessageCreatorState extends State<MessageCreator> {
                   max: 200,
                   activeColor: Colors.blue,
                   inactiveColor: Colors.grey,
-                  onChanged: _isProcessingAudio
+                  onChanged: _isProcessingAudio || !_messageExists
                       ? null
                       : (value) async {
                           setState(() {
