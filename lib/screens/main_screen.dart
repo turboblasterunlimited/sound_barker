@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:song_barker/providers/image_controller.dart';
+import 'package:song_barker/widgets/no_photos_button.dart';
 import 'package:song_barker/widgets/picture_grid.dart';
 
 import '../providers/pictures.dart';
@@ -34,7 +35,7 @@ class _MainScreenState extends State<MainScreen> {
 
     final barks = Provider.of<Barks>(context, listen: false);
     final songs = Provider.of<Songs>(context, listen: false);
-    final pictures = Provider.of<Pictures>(context, listen: false);
+    final pictures = Provider.of<Pictures>(context, listen: true);
     final imageController =
         Provider.of<ImageController>(context, listen: false);
 
@@ -119,9 +120,26 @@ class _MainScreenState extends State<MainScreen> {
                         print("Tapping webview!");
                         Scaffold.of(ctx).openEndDrawer();
                       },
+                      // WebView
                       child: IgnorePointer(
                         ignoring: true,
-                        child: SingingImage(),
+                        child: AspectRatio(
+                          aspectRatio: 1 / 1,
+                          child: Stack(
+                            children: <Widget>[
+                              Visibility(
+                                maintainState: true,
+                                visible: pictures.all.isNotEmpty,
+                                child: SingingImage(),
+                              ),
+                              Visibility(
+                                maintainState: true,
+                                visible: pictures.all.isEmpty,
+                                child: NoPhotosButton(),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   ],

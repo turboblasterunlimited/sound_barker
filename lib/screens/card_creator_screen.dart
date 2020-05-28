@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:song_barker/widgets/card_decorator.dart';
+import 'package:song_barker/widgets/card_decorator_canvas.dart';
 
 import 'package:song_barker/widgets/singing_image.dart';
 import '../providers/songs.dart';
@@ -18,7 +20,6 @@ class CardCreatorScreen extends StatefulWidget {
   Picture picture;
   CardCreatorScreen(this.song, this.picture);
 
-
   @override
   _CardCreatorScreenState createState() => _CardCreatorScreenState();
 }
@@ -26,7 +27,7 @@ class CardCreatorScreen extends StatefulWidget {
 class _CardCreatorScreenState extends State<CardCreatorScreen> {
   bool _messageIsDone = false;
   String messageFilePath;
-  
+
   void updateMessageFilePathCallback([createdMessageFilePath]) {
     setState(() {
       _messageIsDone = true;
@@ -47,18 +48,22 @@ class _CardCreatorScreenState extends State<CardCreatorScreen> {
       ),
       body: Column(
         children: <Widget>[
-          SingingImage(widget.picture),
+          AspectRatio(
+            aspectRatio: 1 / 1,
+            child: Stack(
+              children: <Widget>[
+                SingingImage(widget.picture),
+                // CardDecoratorCanvas(),
+              ],
+            ),
+          ),
           Visibility(
             visible: !_messageIsDone,
             child: MessageCreator(updateMessageFilePathCallback),
           ),
           Visibility(
             visible: _messageIsDone,
-            child: Expanded(
-              child: Column(),
-            ),
-            // child: CardDecorator(),
-
+            child: CardDecorator(),
           ),
         ],
       ),
