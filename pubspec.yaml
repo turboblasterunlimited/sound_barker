@@ -44,6 +44,7 @@ dependencies:
   dio_cookie_manager: ^1.0.0
   flutter_auth_buttons:
   shared_preferences: ^0.5.7+3
+  storage_path: ^0.2.0
   # snapping_sheet: ^2.0.0
 
 

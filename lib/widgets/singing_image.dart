@@ -1,8 +1,13 @@
 import 'dart:async';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:song_barker/providers/image_controller.dart';
+import 'package:song_barker/tools/app_storage_path.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:storage_path/storage_path.dart';
+
 
 import '../providers/pictures.dart';
 
@@ -23,6 +28,26 @@ class _SingingImageState extends State<SingingImage> {
   void dispose() {
     if (randomGesture != null) randomGesture.cancel();
     super.dispose();
+  }
+
+  Future<String> createGreetingCardFile(url) async {
+    File file;
+
+    // UriData.fromUri(url).contentAsBytes();
+
+    try {
+      String filename = '${DateTime.now()}';
+      var request = await HttpClient()?.getUrl(Uri.parse(url));
+      var response = await request.close();
+      var bytes = await consolidateHttpClientResponseBytes(response);
+      var videoPath = await StoragePath.videoPath;
+      file = new File('$videoPath/$filename');
+      await file.writeAsBytes(bytes);
+    } catch(e) {
+      print(e);
+    }
+    print(file.path);
+    return file.path;
   }
 
   @override
@@ -68,6 +93,13 @@ class _SingingImageState extends State<SingingImage> {
                 Future.delayed(Duration(seconds: 3), () {
                   imageController.randomGesture();
                 });
+              }
+              if (message.message
+                  .startsWith("[puppet.js postMessage] video url:")) {
+                print("in video url message handler");
+                String renderedVideoUrl = message.message.substring(40);
+                // String renderedVideoUrl = message.message.substring(35);
+                createGreetingCardFile(renderedVideoUrl);
               }
             },
           ),

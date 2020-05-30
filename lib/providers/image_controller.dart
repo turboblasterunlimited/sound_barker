@@ -75,13 +75,11 @@ class ImageController with ChangeNotifier {
 
   Future createDog(Picture picture) async {
     if (!ready) {
-      print("Not ready!");
       await Future.delayed(Duration(seconds: 1), () {
         createDog(picture);
       });
       return;
     }
-    print("Making it!");
     webViewController
         .evaluateJavascript("create_puppet('${_base64Image(picture)}')");
     this.coordinates = json.decode(picture.coordinates);
