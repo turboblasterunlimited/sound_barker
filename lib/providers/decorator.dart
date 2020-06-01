@@ -1,12 +1,10 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:song_barker/tools/app_storage_path.dart';
 
 class Decorator with ChangeNotifier {
   bool isDrawing = false;
   bool isTyping = false;
+  Color color = Colors.black;
 
   void startDrawing() {
     isDrawing = true;
@@ -27,6 +25,11 @@ class Decorator with ChangeNotifier {
 
   void stopDrawing() {
     isDrawing = false;
+    notifyListeners();
+  }
+
+  void setColor(Color newColor) {
+    this.color = newColor;
     notifyListeners();
   }
 }

@@ -86,7 +86,7 @@ class Song with ChangeNotifier {
   }
 
   String get getName {
-    if (name == "") return "Unnamed";
+    if (name == "" || name == null) return "Unnamed";
     return name;
   }
 

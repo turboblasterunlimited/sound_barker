@@ -8,7 +8,6 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:storage_path/storage_path.dart';
 
-
 import '../providers/pictures.dart';
 
 class SingingImage extends StatefulWidget {
@@ -30,25 +29,25 @@ class _SingingImageState extends State<SingingImage> {
     super.dispose();
   }
 
-  Future<String> createGreetingCardFile(url) async {
-    File file;
+  // Future<String> createGreetingCardFile(url) async {
+  //   File file;
 
-    // UriData.fromUri(url).contentAsBytes();
+  //   // UriData.fromUri(url).contentAsBytes();
 
-    try {
-      String filename = '${DateTime.now()}';
-      var request = await HttpClient()?.getUrl(Uri.parse(url));
-      var response = await request.close();
-      var bytes = await consolidateHttpClientResponseBytes(response);
-      var videoPath = await StoragePath.videoPath;
-      file = new File('$videoPath/$filename');
-      await file.writeAsBytes(bytes);
-    } catch(e) {
-      print(e);
-    }
-    print(file.path);
-    return file.path;
-  }
+  //   try {
+  //     String filename = '${DateTime.now()}';
+  //     var request = await HttpController.dio.download(url);
+  //     var response = await request.close();
+  //     var bytes = await consolidateHttpClientResponseBytes(response);
+  //     var videoPath = await StoragePath.videoPath;
+  //     file = new File('$videoPath/$filename');
+  //     await file.writeAsBytes(bytes);
+  //   } catch(e) {
+  //     print(e);
+  //   }
+  //   print(file.path);
+  //   return file.path;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +98,7 @@ class _SingingImageState extends State<SingingImage> {
                 print("in video url message handler");
                 String renderedVideoUrl = message.message.substring(40);
                 // String renderedVideoUrl = message.message.substring(35);
-                createGreetingCardFile(renderedVideoUrl);
+                // createGreetingCardFile(renderedVideoUrl);
               }
             },
           ),

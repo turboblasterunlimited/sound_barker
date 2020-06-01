@@ -50,8 +50,8 @@ class MessageCreatorState extends State<MessageCreator> {
     imageController = Provider.of<ImageController>(context, listen: false);
     flutterSound = FlutterSoundRecorder();
     flutterSound.setSubscriptionDuration(0.01);
-    flutterSound.setDbPeakLevelUpdate(0.8);
-    flutterSound.setDbLevelEnabled(true);
+    // flutterSound.setDbPeakLevelUpdate(0.8);
+    // flutterSound.setDbLevelEnabled(true);
   }
 
   @override

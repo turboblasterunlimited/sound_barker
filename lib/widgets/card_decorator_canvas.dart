@@ -3,6 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:song_barker/providers/decorator.dart';
 
+class Drawing {
+  List<List<Offset>> offsets = [];
+  Color color;
+  Drawing(this.color);
+}
+
 class CardDecoratorCanvas extends StatefulWidget {
   CardDecoratorCanvas();
 
@@ -12,8 +18,8 @@ class CardDecoratorCanvas extends StatefulWidget {
 
 class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
   Decorator decoratorProvider;
-
-  List<List<Offset>> _offSets = [];
+  List<Drawing> allDrawings = [];
+  
   @override
   Widget build(BuildContext context) {
     decoratorProvider = Provider.of<Decorator>(context);
@@ -22,7 +28,8 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
       onPanStart: (details) {
         if (decoratorProvider.isDrawing)
           setState(() {
-            _offSets.add(
+            allDrawings.add(Drawing(decoratorProvider.color));
+            allDrawings.last.offsets.add(
               [Offset(details.localPosition.dx, details.localPosition.dy)],
             );
           });
@@ -30,7 +37,7 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
       onPanUpdate: (details) {
         if (decoratorProvider.isDrawing)
           setState(() {
-            _offSets.last.add(
+            allDrawings.last.offsets.last.add(
               Offset(details.localPosition.dx, details.localPosition.dy),
             );
           });
@@ -38,11 +45,12 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
       onPanEnd: (details) {
         if (decoratorProvider.isDrawing)
           setState(() {
-            _offSets.last.add(_offSets.last.last);
+            allDrawings.last.offsets.last
+                .add(allDrawings.last.offsets.last.last);
           });
       },
       child: CustomPaint(
-        painter: CardPainter(_offSets),
+        painter: CardPainter(allDrawings),
         child: Container(),
       ),
     );
@@ -50,21 +58,24 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
 }
 
 class CardPainter extends CustomPainter {
-  final offsets;
+  final allDrawings;
 
-  CardPainter(this.offsets) : super();
+  CardPainter(this.allDrawings) : super();
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 4.0
-      ..color = Colors.pink;
+      ..color = Colors.black;
 
-    for (var mark in offsets) {
-      for (var i = 0; i < mark.length - 1; i++) {
-        if (mark[i] != null && mark[i + 1] != null)
-          canvas.drawLine(mark[i], mark[i + 1], paint);
+    for (var drawing in allDrawings) {
+      paint.color = drawing.color;
+      for (var mark in drawing.offsets) {
+        for (var i = 0; i < mark.length - 1; i++) {
+          if (mark[i] != null && mark[i + 1] != null)
+            canvas.drawLine(mark[i], mark[i + 1], paint);
+        }
       }
     }
   }
