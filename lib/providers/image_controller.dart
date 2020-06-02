@@ -81,8 +81,9 @@ class ImageController with ChangeNotifier {
       });
       return;
     }
-    webViewController
+    await webViewController
         .evaluateJavascript("create_puppet('${_base64Image(picture)}')");
+    
     this.coordinates = json.decode(picture.coordinates);
     setFace();
   }
@@ -94,27 +95,28 @@ class ImageController with ChangeNotifier {
     return '$encodingPrefix$base64Image';
   }
 
-  void setFace() {
+  void setFace() async {
     print("Coordinates: $coordinates");
     print("setting face");
-    webViewController.evaluateJavascript(
+    await webViewController.evaluateJavascript(
         "set_position('rightEyePosition', ${coordinates['rightEye'][0]}, ${coordinates['rightEye'][1]})");
-    webViewController.evaluateJavascript(
+    await webViewController.evaluateJavascript(
         "set_position('leftEyePosition', ${coordinates['leftEye'][0]}, ${coordinates['leftEye'][1]})");
-    webViewController.evaluateJavascript(
+    await webViewController.evaluateJavascript(
         "set_position('mouthPosition', ${coordinates['mouth'][0]}, ${coordinates['mouth'][1]})");
-    webViewController.evaluateJavascript(
+    await webViewController.evaluateJavascript(
         "set_position('mouthRight', ${coordinates['mouthRight'][0]}, ${coordinates['mouthRight'][1]})");
-    webViewController.evaluateJavascript(
+    await webViewController.evaluateJavascript(
         "set_position('mouthLeft', ${coordinates['mouthLeft'][0]}, ${coordinates['mouthLeft'][1]})");
-    webViewController.evaluateJavascript(
+    await webViewController.evaluateJavascript(
         "set_position('headTop', ${coordinates['headTop'][0]}, ${coordinates['headTop'][1]})");
-    webViewController.evaluateJavascript(
+    await webViewController.evaluateJavascript(
         "set_position('headRight', ${coordinates['headRight'][0]}, ${coordinates['headRight'][1]})");
-    webViewController.evaluateJavascript(
+    await webViewController.evaluateJavascript(
         "set_position('headBottom', ${coordinates['headBottom'][0]}, ${coordinates['headBottom'][1]})");
-    webViewController.evaluateJavascript(
+    await webViewController.evaluateJavascript(
         "set_position('headLeft', ${coordinates['headLeft'][0]}, ${coordinates['headLeft'][1]})");
     print("done setting face");
+    
   }
 }

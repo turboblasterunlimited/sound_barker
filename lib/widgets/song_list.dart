@@ -95,7 +95,7 @@ class _SongListState extends State<SongList> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: Text(
-                    "You'll be able to select the barks you've recorded.", textAlign: TextAlign.center,
+                    "You'll be able to use the barks you've recorded.", textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 20),
                   ),
                 ),

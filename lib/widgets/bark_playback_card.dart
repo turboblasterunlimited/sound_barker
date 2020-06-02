@@ -30,10 +30,11 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
   bool isPlaying = false;
   TabListScrollController tabListScrollController;
   final _controller = TextEditingController();
-  String tempName = "";
+  String tempName;
 
   @override
   void initState() {
+    tempName = widget.bark.name;
     tabListScrollController =
         Provider.of<TabListScrollController>(context, listen: false);
     renameAnimationController = AnimationController(
@@ -110,20 +111,26 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
   }
 
   void renameBark() async {
-    String currentName = widget.bark.name ?? "";
-    _controller.text = currentName;
+    _controller.text = tempName;
     _controller.selection = TextSelection(
       baseOffset: 0,
-      extentOffset: currentName.length,
+      extentOffset: tempName.length,
     );
     void _submitNameChange(ctx) async {
-      if (tempName != "") widget.bark.rename(tempName);
-      Navigator.of(ctx).pop();
-      await renameAnimationController.reverse();
-      setState(() {
-        widget.bark.name = tempName;
-      });
-      renameAnimationController.forward();
+      if (tempName == widget.bark.name)
+        Navigator.of(ctx).pop();
+      else if (tempName != "") {
+        Navigator.of(ctx).pop();
+        await renameAnimationController.reverse();
+        setState(() {
+          widget.bark.rename(tempName);
+          widget.bark.name = tempName;
+        });
+        renameAnimationController.forward();
+      } else {
+        setState(() => tempName = widget.bark.name);
+        Navigator.of(ctx).pop();
+      }
     }
 
     await showDialog<Null>(
