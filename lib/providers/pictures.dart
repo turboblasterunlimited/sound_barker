@@ -51,7 +51,6 @@ class Pictures with ChangeNotifier {
       return this.mountedPicture;
     }
     notifyListeners();
-
   }
 
   Future<Picture> retrieveAll() async {
@@ -79,6 +78,7 @@ class Pictures with ChangeNotifier {
     tempPics.forEach((pic) {
       add(pic);
     });
+    if (tempPics.isEmpty) return null;
     await mountStoredPictureOrLast();
     notifyListeners();
     print("Mounted Picture: ${mountedPicture.filePath}");
@@ -104,7 +104,8 @@ class Pictures with ChangeNotifier {
       String filePath = myAppStoragePath + '/' + fileName;
       images[i].filePath = filePath;
       if (!await File(filePath).exists())
-        await Gcloud.downloadFromBucket(images[i].fileUrl, fileName, bucket: bucket);
+        await Gcloud.downloadFromBucket(images[i].fileUrl, fileName,
+            bucket: bucket);
     }
   }
 }

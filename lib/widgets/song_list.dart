@@ -57,7 +57,7 @@ class _SongListState extends State<SongList> {
           visible: barks.all.isEmpty,
           child: Expanded(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Row(
@@ -67,7 +67,7 @@ class _SongListState extends State<SongList> {
                       size: 50,
                     ),
                      Text(
-                        "First record your pet!",
+                        " First record your pet!",
                         style: TextStyle(fontSize: 25),
                       ),
                     

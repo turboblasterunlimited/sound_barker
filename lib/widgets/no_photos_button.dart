@@ -16,26 +16,6 @@ class NoPhotosButton extends StatelessWidget {
             children: <Widget>[
               // Padding(padding: EdgeInsets.only(top: 120)),
               Container(
-                decoration: const BoxDecoration(
-                  border: Border(
-                    top: BorderSide(
-                      width: 1.0,
-                      color: Color(0xFFFFFFFFFF),
-                    ),
-                    left: BorderSide(
-                      width: 1.0,
-                      color: Color(0xFFFFFFFFFF),
-                    ),
-                    right: BorderSide(
-                      width: 1.0,
-                      color: Color(0xFFFFFFFFFF),
-                    ),
-                    bottom: BorderSide(width: 1.0, color: Color(0xFFFFFFFFFF)),
-                  ),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(100),
-                  ),
-                ),
                 child: RawMaterialButton(
                   // onPressed: () async {},
                   child: Column(

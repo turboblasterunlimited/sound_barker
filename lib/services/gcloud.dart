@@ -18,6 +18,7 @@ class Gcloud {
 
   static Future<String> downloadFromBucket(fileUrl, fileName,
       {Bucket bucket}) async {
+    if (fileUrl == null) return null;
     bucket ??= await accessBucket();
     String filePath = myAppStoragePath + '/' + fileName;
     try {
