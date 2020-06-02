@@ -24,7 +24,8 @@ class ImageController with ChangeNotifier {
   }
 
   void stopAnimation() {
-    this.webViewController.evaluateJavascript("stop_all_animations()");
+    // Pass false to keep headsway alive
+    this.webViewController.evaluateJavascript("stop_all_animations(false)");
   }
 
   // Probably Depricated
@@ -55,8 +56,8 @@ class ImageController with ChangeNotifier {
       if (rNum <= 12 && rNum > 9)
         webViewController.evaluateJavascript("right_brow_furrow()");
       if (rNum <= 15 && rNum > 12) {
-        webViewController.evaluateJavascript("left_blink_quick()");
-        webViewController.evaluateJavascript("right_blink_quick()");
+        // webViewController.evaluateJavascript("left_blink_quick()");
+        // webViewController.evaluateJavascript("right_blink_quick()");
       }
       if (rNum <= 18 && rNum > 15) {
         webViewController.evaluateJavascript("left_blink_slow()");
@@ -84,6 +85,7 @@ class ImageController with ChangeNotifier {
         .evaluateJavascript("create_puppet('${_base64Image(picture)}')");
     this.coordinates = json.decode(picture.coordinates);
     setFace();
+    print("Features: ${await webViewController.evaluateJavascript("features")}");
   }
 
   String _base64Image(picture) {
@@ -94,6 +96,7 @@ class ImageController with ChangeNotifier {
   }
 
   void setFace() {
+    print("Coordinates: $coordinates");
     print("setting face");
     webViewController.evaluateJavascript(
         "set_position('rightEyePosition', ${coordinates['rightEye'][0]}, ${coordinates['rightEye'][1]})");

@@ -94,9 +94,10 @@ class _SingingImageState extends State<SingingImage> {
                 });
               }
               if (message.message
-                  .startsWith("[puppet.js postMessage] video url:")) {
+                  .startsWith("[puppet.js postMessage] video_data")) {
                 print("in video url message handler");
-                String renderedVideoUrl = message.message.substring(40);
+                String videoData = message.message.substring(0, 50);
+                print("Video Data: $videoData");
                 // String renderedVideoUrl = message.message.substring(35);
                 // createGreetingCardFile(renderedVideoUrl);
               }

@@ -24,7 +24,6 @@ class _CardDecoratorState extends State<CardDecorator> {
         children: <Widget>[
           // Color Select
           Row(
-            // mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Flexible(
                 flex: 1,
@@ -77,6 +76,28 @@ class _CardDecoratorState extends State<CardDecorator> {
                   shape: CircleBorder(),
                   onPressed: () => decoratorProvider.setColor(Colors.pink),
                   child: decoratorProvider.color == Colors.pink
+                      ? Icon(Icons.check, size: 20)
+                      : Container(height: 20),
+                ),
+              ),
+              Flexible(
+                flex: 1,
+                child: RawMaterialButton(
+                  fillColor: Colors.purple,
+                  shape: CircleBorder(),
+                  onPressed: () => decoratorProvider.setColor(Colors.purple),
+                  child: decoratorProvider.color == Colors.purple
+                      ? Icon(Icons.check, size: 20)
+                      : Container(height: 20),
+                ),
+              ),
+              Flexible(
+                flex: 1,
+                child: RawMaterialButton(
+                  fillColor: Colors.yellow,
+                  shape: CircleBorder(),
+                  onPressed: () => decoratorProvider.setColor(Colors.yellow),
+                  child: decoratorProvider.color == Colors.yellow
                       ? Icon(Icons.check, size: 20)
                       : Container(height: 20),
                 ),
