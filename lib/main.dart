@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:song_barker/providers/decorator.dart';
+import 'package:song_barker/providers/card_decorator_provider.dart';
 import 'package:song_barker/tools/app_storage_path.dart';
 import 'package:flutter/rendering.dart';
 
@@ -76,7 +76,7 @@ class MyApp extends StatelessWidget {
           value: TabListScrollController(),
         ),
         ChangeNotifierProvider.value(
-          value: Decorator(),
+          value: CardDecoratorProvider(),
         ),
       ],
       child: MaterialApp(

@@ -1,30 +1,27 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:song_barker/classes/drawing.dart';
 
-class Decorator with ChangeNotifier {
+class CardDecoratorProvider with ChangeNotifier {
   bool isDrawing = true;
   bool isTyping = false;
-  bool isErasing = false;
   Color color = Colors.black;
+  List<Drawing> allDrawings;
+
+  void undoLast() {
+    if (allDrawings.isEmpty) return;
+    allDrawings.removeLast();
+  }
 
   void startDrawing() {
     isDrawing = true;
     isTyping = false;
-    isErasing = false;
-    notifyListeners();
-  }
-
-  void startErasing() {
-    isDrawing = false;
-    isTyping = false;
-    isErasing = true;
     notifyListeners();
   }
 
   void startTyping() {
     isTyping = true;
     isDrawing = false;
-    isErasing = false;
     notifyListeners();
   }
 

@@ -1,13 +1,9 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:song_barker/providers/decorator.dart';
+import 'package:song_barker/classes/drawing.dart';
+import 'package:song_barker/providers/card_decorator_provider.dart';
 
-class Drawing {
-  List<List<Offset>> offsets = [];
-  Color color;
-  Drawing(this.color);
-}
 
 class CardDecoratorCanvas extends StatefulWidget {
   CardDecoratorCanvas();
@@ -17,25 +13,26 @@ class CardDecoratorCanvas extends StatefulWidget {
 }
 
 class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
-  Decorator decoratorProvider;
+  CardDecoratorProvider decoratorProvider;
   List<Drawing> allDrawings = [];
   
   @override
   Widget build(BuildContext context) {
-    decoratorProvider = Provider.of<Decorator>(context);
+    decoratorProvider = Provider.of<CardDecoratorProvider>(context);
+    decoratorProvider.allDrawings = allDrawings;
 
     return GestureDetector(
       onPanStart: (details) {
-        if (decoratorProvider.isDrawing || decoratorProvider.isErasing)
+        if (decoratorProvider.isDrawing)
           setState(() {
-            allDrawings.add(Drawing(decoratorProvider.isDrawing ? decoratorProvider.color : Colors.transparent));
+            allDrawings.add(Drawing(decoratorProvider.color));
             allDrawings.last.offsets.add(
               [Offset(details.localPosition.dx, details.localPosition.dy)],
             );
           });
       },
       onPanUpdate: (details) {
-        if (decoratorProvider.isDrawing || decoratorProvider.isErasing)
+        if (decoratorProvider.isDrawing)
           setState(() {
             allDrawings.last.offsets.last.add(
               Offset(details.localPosition.dx, details.localPosition.dy),
@@ -43,7 +40,7 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
           });
       },
       onPanEnd: (details) {
-        if (decoratorProvider.isDrawing || decoratorProvider.isErasing)
+        if (decoratorProvider.isDrawing)
           setState(() {
             allDrawings.last.offsets.last
                 .add(allDrawings.last.offsets.last.last);

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:song_barker/providers/decorator.dart';
+import 'package:song_barker/providers/card_decorator_provider.dart';
 import 'package:song_barker/providers/image_controller.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 
@@ -13,13 +13,13 @@ class CardDecorator extends StatefulWidget {
 }
 
 class _CardDecoratorState extends State<CardDecorator> {
-  Decorator decoratorProvider;
+  CardDecoratorProvider decoratorProvider;
   ImageController imageController;
 
   @override
   Widget build(BuildContext context) {
     imageController = Provider.of<ImageController>(context);
-    decoratorProvider = Provider.of<Decorator>(context);
+    decoratorProvider = Provider.of<CardDecoratorProvider>(context);
     return Expanded(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -134,14 +134,12 @@ class _CardDecoratorState extends State<CardDecorator> {
               ),
               RawMaterialButton(
                 padding: EdgeInsets.symmetric(vertical: 20),
-                fillColor: decoratorProvider.isErasing
-                    ? Colors.amber[900]
-                    : Colors.amber[200],
+                fillColor: Colors.amber[200],
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(7.0),
                 ),
-                onPressed: decoratorProvider.startErasing,
-                child: Icon(LineAwesomeIcons.eraser),
+                onPressed: decoratorProvider.undoLast,
+                child: Icon(LineAwesomeIcons.undo),
               ),
             ],
           ),
