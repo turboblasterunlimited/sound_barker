@@ -4,65 +4,61 @@ class NoPhotosButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
-        children: <Widget>[
-          Container(
-            decoration: const BoxDecoration(
-              color: Colors.black,
-            ),
+      children: <Widget>[
+        Container(
+          decoration: const BoxDecoration(
+            color: Colors.black,
           ),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Padding(padding: EdgeInsets.only(top: 120)),
-                Container(
-                  decoration: const BoxDecoration(
-                    border: Border(
-                      top: BorderSide(
-                        width: 1.0,
-                        color: Color(0xFFFFFFFFFF),
-                      ),
-                      left: BorderSide(
-                        width: 1.0,
-                        color: Color(0xFFFFFFFFFF),
-                      ),
-                      right: BorderSide(
-                        width: 1.0,
-                        color: Color(0xFFFFFFFFFF),
-                      ),
-                      bottom:
-                          BorderSide(width: 1.0, color: Color(0xFFFFFFFFFF)),
+        ),
+        Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              // Padding(padding: EdgeInsets.only(top: 120)),
+              Container(
+                decoration: const BoxDecoration(
+                  border: Border(
+                    top: BorderSide(
+                      width: 1.0,
+                      color: Color(0xFFFFFFFFFF),
                     ),
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(20),
+                    left: BorderSide(
+                      width: 1.0,
+                      color: Color(0xFFFFFFFFFF),
                     ),
+                    right: BorderSide(
+                      width: 1.0,
+                      color: Color(0xFFFFFFFFFF),
+                    ),
+                    bottom: BorderSide(width: 1.0, color: Color(0xFFFFFFFFFF)),
                   ),
-                  child: RawMaterialButton(
-                    // onPressed: () async {},
-                    child: Column(
-                      children: <Widget>[
-                        Icon(
-                          Icons.add,
-                          color: Colors.white,
-                          size: 70,
-                        ),
-                        Text(
-                          "Tap to add a picture",
-                          style: TextStyle(color: Colors.white, fontSize: 30),
-                        ),
-                      ],
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    padding: const EdgeInsets.all(10.0),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(100),
                   ),
                 ),
-              ],
-            ),
+                child: RawMaterialButton(
+                  // onPressed: () async {},
+                  child: Column(
+                    children: <Widget>[
+                      Icon(
+                        Icons.add,
+                        color: Colors.white,
+                        size: 70,
+                      ),
+                      Text(
+                        "Tap to add a picture",
+                        style: TextStyle(color: Colors.white, fontSize: 30),
+                      ),
+                    ],
+                  ),
+                  shape: CircleBorder(),
+                  padding: const EdgeInsets.all(10.0),
+                ),
+              ),
+            ],
           ),
-        ],
-      
+        ),
+      ],
     );
     // return Expanded(
     //   child: RawMaterialButton(

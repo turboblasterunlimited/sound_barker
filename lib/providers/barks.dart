@@ -16,6 +16,7 @@ class Barks with ChangeNotifier {
   void addBark(bark) {
     all.insert(0, bark);
     if (listKey.currentState != null) listKey.currentState.insertItem(0);
+    notifyListeners();
   }
 
   Future retrieveAll() async {
@@ -41,17 +42,6 @@ class Barks with ChangeNotifier {
       addBark(bark);
     });
   }
-
-  // Future<String> createAmplitudeFile(filePath, filePathBase) async {
-  //   await FFMpeg.converter
-  //       .execute("-hide_banner -loglevel panic -i $filePathBase.aac $filePathBase.wav");
-  //   final amplitudes = AmplitudeExtractor.extract("$filePathBase.wav");
-  //   File("$filePathBase.wav").delete();
-  //   final csvAmplitudes = const ListToCsvConverter().convert([amplitudes]);
-  //   File file = File("$filePathBase.csv");
-  //   file.writeAsStringSync(csvAmplitudes);
-  //   return file.path;
-  // }
 
   // downloads the files either from all barks in memory or just the barks passed.
   Future downloadAllBarksFromBucket([List barks]) async {

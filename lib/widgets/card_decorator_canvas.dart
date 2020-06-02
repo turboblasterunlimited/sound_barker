@@ -1,9 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:song_barker/classes/drawing.dart';
+import 'package:song_barker/classes/drawing_typing.dart';
 import 'package:song_barker/providers/card_decorator_provider.dart';
-
 
 class CardDecoratorCanvas extends StatefulWidget {
   CardDecoratorCanvas();
@@ -15,13 +14,27 @@ class CardDecoratorCanvas extends StatefulWidget {
 class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
   CardDecoratorProvider decoratorProvider;
   List<Drawing> allDrawings = [];
-  
+  List<Typing> allTyping = [];
+
   @override
   Widget build(BuildContext context) {
     decoratorProvider = Provider.of<CardDecoratorProvider>(context);
     decoratorProvider.allDrawings = allDrawings;
 
     return GestureDetector(
+      onTapDown: (details) {
+        if (decoratorProvider.isTyping) {
+          allTyping.add(
+            Typing(
+                TextSpan(
+                  text: "",
+                  style: TextStyle(color: decoratorProvider.color),
+                ),
+                Offset(details.localPosition.dx, details.localPosition.dy),
+                decoratorProvider.color),
+          );
+        }
+      },
       onPanStart: (details) {
         if (decoratorProvider.isDrawing)
           setState(() {

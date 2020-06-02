@@ -1,16 +1,23 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:song_barker/classes/drawing.dart';
+import 'package:song_barker/classes/drawing_typing.dart';
 
 class CardDecoratorProvider with ChangeNotifier {
   bool isDrawing = true;
   bool isTyping = false;
   Color color = Colors.black;
   List<Drawing> allDrawings;
+  List<Typing> allTyping;
 
   void undoLast() {
-    if (allDrawings.isEmpty) return;
-    allDrawings.removeLast();
+    if (isDrawing) {
+      if (allDrawings.isEmpty) return;
+      allDrawings.removeLast();
+    }
+    if (isTyping) {
+      if (allTyping.isEmpty) return;
+      allDrawings.removeLast();
+    }
   }
 
   void startDrawing() {

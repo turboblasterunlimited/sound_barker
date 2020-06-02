@@ -18,7 +18,7 @@ class BarkListState extends State<BarkList> {
   Widget build(BuildContext context) {
     final SoundController soundController =
         Provider.of<SoundController>(context);
-    final barks = Provider.of<Barks>(context, listen: false);
+    final barks = Provider.of<Barks>(context);
     return Column(
       children: <Widget>[
         Padding(
@@ -28,17 +28,44 @@ class BarkListState extends State<BarkList> {
             child: RecordButton(),
           ),
         ),
-        Expanded(
-          child: AnimatedList(
-            controller:
-                Provider.of<TabListScrollController>(context, listen: false)
-                    .scrollController,
-            key: barks.listKey,
-            initialItemCount: barks.all.length,
-            // padding: const EdgeInsets.all(0),
-            itemBuilder: (ctx, i, Animation<double> animation) =>
-                BarkPlaybackCard(
-                    i, barks.all[i], barks, soundController, animation),
+        Visibility(
+          visible: barks.all.isEmpty,
+          child: Expanded(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                Icon(
+                  Icons.arrow_upward,
+                  size: 50,
+                ),
+                Text(
+                  "Record your pet!",
+                  style: TextStyle(fontSize: 25),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Text(
+                    "K9 Karaoke will separate the sounds that it hears.", textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
+              ])),
+        ),
+        Visibility(
+          visible: barks.all.isNotEmpty,
+          child: Expanded(
+            child: AnimatedList(
+              controller:
+                  Provider.of<TabListScrollController>(context, listen: false)
+                      .scrollController,
+              key: barks.listKey,
+              initialItemCount: barks.all.length,
+              // padding: const EdgeInsets.all(0),
+              itemBuilder: (ctx, i, Animation<double> animation) =>
+                  BarkPlaybackCard(
+                      i, barks.all[i], barks, soundController, animation),
+            ),
           ),
         ),
       ],

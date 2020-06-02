@@ -24,6 +24,7 @@ class Songs with ChangeNotifier {
   void addSong(song) {
     all.insert(0, song);
     if (listKey.currentState != null) listKey.currentState.insertItem(0);
+    notifyListeners();
   }
 
   void removeSong(songToDelete) {
