@@ -85,7 +85,6 @@ class ImageController with ChangeNotifier {
         .evaluateJavascript("create_puppet('${_base64Image(picture)}')");
     this.coordinates = json.decode(picture.coordinates);
     setFace();
-    print("Features: ${await webViewController.evaluateJavascript("features")}");
   }
 
   String _base64Image(picture) {

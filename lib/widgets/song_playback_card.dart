@@ -30,7 +30,7 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
   bool isPlaying = false;
   TabListScrollController tabListScrollController;
   final _controller = TextEditingController();
-  String tempName;
+  String tempName = "";
 
   @override
   void initState() {
@@ -117,13 +117,14 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
   }
 
   void renameSong() async {
-    _controller.text = widget.song.name;
+    String currentName = widget.song.name ?? "";
+    _controller.text = currentName;
     _controller.selection = TextSelection(
       baseOffset: 0,
-      extentOffset: widget.song.name.length,
+      extentOffset: currentName.length,
     );
     void _submitNameChange(ctx) async {
-      widget.song.rename(tempName);
+      if (tempName != "") widget.song.rename(tempName);
       Navigator.of(ctx).pop();
       await renameAnimationController.reverse();
       setState(() => widget.song.name = tempName);
