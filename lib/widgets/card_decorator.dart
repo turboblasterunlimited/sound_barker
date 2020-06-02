@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:song_barker/providers/decorator.dart';
 import 'package:song_barker/providers/image_controller.dart';
+import 'package:line_awesome_icons/line_awesome_icons.dart';
+
 
 class CardDecorator extends StatefulWidget {
   CardDecorator();
@@ -20,7 +22,7 @@ class _CardDecoratorState extends State<CardDecorator> {
     decoratorProvider = Provider.of<Decorator>(context);
     return Expanded(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           // Color Select
           Row(
@@ -104,10 +106,21 @@ class _CardDecoratorState extends State<CardDecorator> {
               ),
             ],
           ),
-          // Draw or Type
+          // Draw, Type, or Erase.
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
+              RawMaterialButton(
+                padding: EdgeInsets.symmetric(vertical: 20),
+                fillColor: decoratorProvider.isDrawing
+                    ? Colors.amber[900]
+                    : Colors.amber[200],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(7.0),
+                ),
+                onPressed: decoratorProvider.startDrawing,
+                child: Icon(Icons.edit),
+              ),
               RawMaterialButton(
                 padding: EdgeInsets.symmetric(vertical: 20),
                 fillColor: decoratorProvider.isTyping
@@ -121,33 +134,37 @@ class _CardDecoratorState extends State<CardDecorator> {
               ),
               RawMaterialButton(
                 padding: EdgeInsets.symmetric(vertical: 20),
-                fillColor: decoratorProvider.isDrawing
+                fillColor: decoratorProvider.isErasing
                     ? Colors.amber[900]
                     : Colors.amber[200],
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(7.0),
                 ),
-                onPressed: decoratorProvider.startDrawing,
-                child: Icon(Icons.edit),
+                onPressed: decoratorProvider.startErasing,
+                child: Icon(LineAwesomeIcons.eraser),
               ),
             ],
           ),
           // Choose Border Decorations
-          Row(
-            children: <Widget>[
-              RawMaterialButton(
-                padding: EdgeInsets.symmetric(vertical: 20),
-                fillColor: Colors.amber[200],
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(7.0),
+          Visibility(
+            visible: false,
+                      child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                RawMaterialButton(
+                  padding: EdgeInsets.symmetric(vertical: 20),
+                  fillColor: Colors.amber[200],
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(7.0),
+                  ),
+                  onPressed: () {
+                    imageController.webViewController
+                        .evaluateJavascript("test_render()");
+                  },
+                  child: Icon(LineAwesomeIcons.gift),
                 ),
-                onPressed: () {
-                  imageController.webViewController
-                      .evaluateJavascript("test_render()");
-                },
-                child: Icon(Icons.file_download),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),

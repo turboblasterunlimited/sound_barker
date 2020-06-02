@@ -41,8 +41,7 @@ class _CardCreatorScreenState extends State<CardCreatorScreen> {
       // backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
         centerTitle: true,
-        title: Text(
-          'Add a personal message?',
+        title: Text(_messageIsDone ? "Decorate it!" : 'Add a personal message?',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
       ),

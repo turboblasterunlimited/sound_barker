@@ -26,16 +26,16 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
 
     return GestureDetector(
       onPanStart: (details) {
-        if (decoratorProvider.isDrawing)
+        if (decoratorProvider.isDrawing || decoratorProvider.isErasing)
           setState(() {
-            allDrawings.add(Drawing(decoratorProvider.color));
+            allDrawings.add(Drawing(decoratorProvider.isDrawing ? decoratorProvider.color : Colors.transparent));
             allDrawings.last.offsets.add(
               [Offset(details.localPosition.dx, details.localPosition.dy)],
             );
           });
       },
       onPanUpdate: (details) {
-        if (decoratorProvider.isDrawing)
+        if (decoratorProvider.isDrawing || decoratorProvider.isErasing)
           setState(() {
             allDrawings.last.offsets.last.add(
               Offset(details.localPosition.dx, details.localPosition.dy),
@@ -43,7 +43,7 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
           });
       },
       onPanEnd: (details) {
-        if (decoratorProvider.isDrawing)
+        if (decoratorProvider.isDrawing || decoratorProvider.isErasing)
           setState(() {
             allDrawings.last.offsets.last
                 .add(allDrawings.last.offsets.last.last);
