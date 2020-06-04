@@ -9,6 +9,11 @@ class CardDecoratorProvider with ChangeNotifier {
   List<Drawing> allDrawings;
   List<Typing> allTyping;
 
+  void updateLastTextSpan(newTextSpan) {
+    allTyping.last.textSpan = newTextSpan;
+    notifyListeners();
+  }
+
   void undoLast() {
     if (isDrawing) {
       if (allDrawings.isEmpty) return;

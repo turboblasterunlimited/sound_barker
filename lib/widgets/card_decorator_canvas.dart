@@ -20,20 +20,20 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
   Widget build(BuildContext context) {
     decoratorProvider = Provider.of<CardDecoratorProvider>(context);
     decoratorProvider.allDrawings = allDrawings;
+    decoratorProvider.allTyping = allTyping;
 
     return GestureDetector(
       onTapDown: (details) {
-        if (decoratorProvider.isTyping) {
-          allTyping.add(
-            Typing(
-                TextSpan(
-                  text: "",
-                  style: TextStyle(color: decoratorProvider.color),
-                ),
-                Offset(details.localPosition.dx, details.localPosition.dy),
-                decoratorProvider.color),
-          );
-        }
+        // if (decoratorProvider.isTyping) {
+        //   allTyping.add(
+        //     Typing(
+        //         TextSpan(
+        //           text: "",
+        //           style: TextStyle(color: decoratorProvider.color),
+        //         ),
+        //         Offset(details.localPosition.dx, details.localPosition.dy),),
+        //   );
+        // }
       },
       onPanStart: (details) {
         if (decoratorProvider.isDrawing)
@@ -60,7 +60,7 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
           });
       },
       child: CustomPaint(
-        painter: CardPainter(allDrawings),
+        painter: CardPainter(allDrawings, allTyping),
         child: Container(),
       ),
     );
@@ -69,15 +69,15 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
 
 class CardPainter extends CustomPainter {
   final allDrawings;
+  final allTyping;
 
-  CardPainter(this.allDrawings) : super();
+  CardPainter(this.allDrawings, this.allTyping) : super();
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 4.0
-      ..color = Colors.black;
+      ..strokeWidth = 4.0;
 
     for (var drawing in allDrawings) {
       paint.color = drawing.color;
@@ -87,6 +87,15 @@ class CardPainter extends CustomPainter {
             canvas.drawLine(mark[i], mark[i + 1], paint);
         }
       }
+    }
+
+    for (var typing in allTyping) {
+      var tp = TextPainter(
+          text: typing.textSpan,
+          textAlign: TextAlign.left,
+          textDirection: TextDirection.ltr);
+      tp.layout();
+      tp.paint(canvas, typing.offset);
     }
   }
 

@@ -8,8 +8,8 @@ class Drawing {
 }
 
 class Typing {
+  // textSpan includes color
   TextSpan textSpan;
   Offset offset;
-  Color color;
-  Typing(this.textSpan, this.offset, this.color);
+  Typing(this.textSpan, this.offset);
 }
