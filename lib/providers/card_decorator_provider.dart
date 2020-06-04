@@ -40,5 +40,10 @@ class CardDecoratorProvider with ChangeNotifier {
   void setColor(Color newColor) {
     this.color = newColor;
     notifyListeners();
+    if (isTyping) {
+      final text = allTyping.last.textSpan.text;
+      final newTextSpan = TextSpan(text: text, style: TextStyle(color: color));
+      updateLastTextSpan(newTextSpan);
+    }
   }
 }
