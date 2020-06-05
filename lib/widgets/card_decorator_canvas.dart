@@ -97,7 +97,7 @@ class CardPainter extends CustomPainter {
 
     for (var typing in allTyping) {
       var tp = TextPainter(
-          textScaleFactor: 2.0,
+          textScaleFactor: 3.0,
           text: typing.textSpan,
           textAlign: TextAlign.center,
           textDirection: TextDirection.ltr);

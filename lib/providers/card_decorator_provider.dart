@@ -25,7 +25,7 @@ class CardDecoratorProvider with ChangeNotifier {
     if (isTyping) {
       if (allTyping.isEmpty) return;
       print("Typing length: ${allTyping.length}");
-      allDrawings.removeLast();
+      allTyping.removeLast();
       notifyListeners();
     }
   }
