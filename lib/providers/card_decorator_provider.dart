@@ -11,17 +11,22 @@ class CardDecoratorProvider with ChangeNotifier {
 
   void updateLastTextSpan(newTextSpan) {
     allTyping.last.textSpan = newTextSpan;
+    print("Typing length: ${allDrawings.length}");
     notifyListeners();
   }
 
   void undoLast() {
     if (isDrawing) {
       if (allDrawings.isEmpty) return;
+      print("Drawing length: ${allDrawings.length}");
       allDrawings.removeLast();
+      notifyListeners();
     }
     if (isTyping) {
       if (allTyping.isEmpty) return;
+      print("Typing length: ${allTyping.length}");
       allDrawings.removeLast();
+      notifyListeners();
     }
   }
 

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:song_barker/classes/drawing_typing.dart';
 import 'package:song_barker/providers/card_decorator_provider.dart';
+import 'package:song_barker/screens/confirm_picture_screen.dart';
 
 class CardDecoratorCanvas extends StatefulWidget {
   CardDecoratorCanvas();
@@ -89,13 +90,19 @@ class CardPainter extends CustomPainter {
       }
     }
 
+    Offset adjustOffset(Typing typing, Size tpSize) {
+      Offset oldOffset = typing.offset;
+     return Offset(oldOffset.dx - (tpSize.width/2), oldOffset.dy);
+    }
+
     for (var typing in allTyping) {
       var tp = TextPainter(
+          textScaleFactor: 2.0,
           text: typing.textSpan,
-          textAlign: TextAlign.left,
+          textAlign: TextAlign.center,
           textDirection: TextDirection.ltr);
       tp.layout();
-      tp.paint(canvas, typing.offset);
+      tp.paint(canvas, adjustOffset(typing, tp.size));
     }
   }
 
