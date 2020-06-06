@@ -46,33 +46,41 @@ class ImageController with ChangeNotifier {
   }
 
   Timer startRandomGesture() {
+    webViewController.evaluateJavascript("update_head_sway(2, 1)");
     randomGestureTimer?.cancel();
     int rNum;
     var random = Random.secure();
-    final timer = Timer.periodic(Duration(milliseconds: 1100), (timer) {
-      rNum = random.nextInt(40);
-      if (rNum <= 3) webViewController.evaluateJavascript("left_brow_raise()");
+
+    // amplitude, speed, duration
+    String browGestureSettings = "";
+
+    final timer = Timer.periodic(Duration(milliseconds: 4000), (timer) {
+      browGestureSettings = '0.${3 + random.nextInt(5)}, ${1 + random.nextInt(3)}0, ${1 + random.nextInt(3)}500';
+      rNum = random.nextInt(30);
+      if (rNum <= 3)
+        webViewController
+            .evaluateJavascript("left_brow_raise($browGestureSettings)");
       if (rNum <= 6 && rNum > 3)
-        webViewController.evaluateJavascript("right_brow_raise()");
+        webViewController
+            .evaluateJavascript("right_brow_raise($browGestureSettings)");
       if (rNum <= 9 && rNum > 6)
-        webViewController.evaluateJavascript("left_brow_furrow()");
+        webViewController
+            .evaluateJavascript("left_brow_furrow($browGestureSettings)");
       if (rNum <= 12 && rNum > 9)
-        webViewController.evaluateJavascript("right_brow_furrow()");
-      if (rNum <= 15 && rNum > 12) {
-        // webViewController.evaluateJavascript("left_blink_quick()");
-        // webViewController.evaluateJavascript("right_blink_quick()");
+        webViewController
+            .evaluateJavascript("right_brow_furrow($browGestureSettings)");
+      if (rNum == 15 || rNum == 13) {
+        webViewController.evaluateJavascript("left_blink_quick()");
+        webViewController.evaluateJavascript("right_blink_quick()");
       }
-      if (rNum <= 18 && rNum > 15) {
+      if (rNum % 2 == 0) {
         webViewController.evaluateJavascript("left_blink_slow()");
         webViewController.evaluateJavascript("right_blink_slow()");
       }
       if (rNum == 19)
         webViewController.evaluateJavascript("right_blink_quick()");
-      if (rNum == 20)
-        webViewController.evaluateJavascript("right_blink_slow()");
       if (rNum == 21)
-        webViewController.evaluateJavascript("left_blink_quick()");
-      if (rNum == 22) webViewController.evaluateJavascript("left_blink_slow()");
+        webViewController.evaluateJavascript("right_blink_slow()");
     });
     return this.randomGestureTimer = timer;
   }
