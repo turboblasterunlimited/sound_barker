@@ -22,6 +22,8 @@ class ImageController with ChangeNotifier {
   void mountController(controller) {
     this.webViewController = controller;
     notifyListeners();
+    randomGestureTimer?.cancel();
+    startRandomGesture();
   }
 
   void stopAnimation() {
@@ -43,7 +45,7 @@ class ImageController with ChangeNotifier {
     webViewController.evaluateJavascript("mouth_track_sound(${amplitudes[0]})");
   }
 
-  Timer randomGesture() {
+  Timer startRandomGesture() {
     randomGestureTimer?.cancel();
     int rNum;
     var random = Random.secure();
@@ -72,7 +74,7 @@ class ImageController with ChangeNotifier {
         webViewController.evaluateJavascript("left_blink_quick()");
       if (rNum == 22) webViewController.evaluateJavascript("left_blink_slow()");
     });
-    this.randomGestureTimer = timer;
+    return this.randomGestureTimer = timer;
   }
 
   Future createDog(Picture picture) async {

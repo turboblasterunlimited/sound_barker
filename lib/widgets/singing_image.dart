@@ -18,25 +18,25 @@ class SingingImage extends StatefulWidget {
 
 class _SingingImageState extends State<SingingImage> {
   WebViewController webviewController;
-  Timer randomGesture;
+  ImageController imageController;
 
   void dispose() {
-    if (randomGesture != null) randomGesture.cancel();
+    print("Disposing Random gestures");
+    imageController.randomGestureTimer?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final imageController = Provider.of<ImageController>(context);
+    imageController = Provider.of<ImageController>(context);
 
     return VisibilityDetector(
       key: Key(widget.visibilityKey),
       onVisibilityChanged: (VisibilityInfo info) {
         if (info.visibleFraction == 1) {
+          imageController.randomGestureTimer?.cancel();
           imageController.mountController(webviewController);
-          print("webview ${widget.visibilityKey}, is visible.");
-        } else {
-          print("webview ${widget.visibilityKey}, is invisible.");
+          imageController.startRandomGesture();
         }
       },
       child: WebView(
@@ -74,8 +74,8 @@ class _SingingImageState extends State<SingingImage> {
                 }
                 if (message.message ==
                     "[puppet.js postMessage] create_puppet finished") {
-                  Future.delayed(Duration(seconds: 3), () {
-                    imageController.randomGesture();
+                  Future.delayed(Duration(seconds: 2), () {
+                    imageController.startRandomGesture();
                   });
                 }
                 if (message.message
