@@ -51,7 +51,7 @@ class _CardCreatorScreenState extends State<CardCreatorScreen> {
             aspectRatio: 1 / 1,
             child: Stack(
               children: <Widget>[
-                SingingImage(widget.picture),
+                SingingImage(picture: widget.picture, visibilityKey: "cardCreation",),
                 CardDecoratorCanvas(),
               ],
             ),

@@ -46,6 +46,7 @@ dependencies:
   shared_preferences: ^0.5.7+3
   storage_path: ^0.2.0
   line_awesome_icons: ^1.0.4+2
+  visibility_detector: ^0.1.5
   # snapping_sheet: ^2.0.0
 
 

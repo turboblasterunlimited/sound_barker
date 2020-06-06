@@ -16,7 +16,6 @@ class _CardDecoratorState extends State<CardDecorator> {
   CardDecoratorProvider decoratorProvider;
   ImageController imageController;
   FocusNode focusNode;
-  String currentText = "";
   double canvasLength;
   final textController = TextEditingController();
 

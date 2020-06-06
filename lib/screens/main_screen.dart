@@ -130,7 +130,7 @@ class _MainScreenState extends State<MainScreen> {
                               Visibility(
                                 maintainState: true,
                                 visible: pictures.all.isNotEmpty,
-                                child: SingingImage(),
+                                child: SingingImage(visibilityKey: "mainScreen"),
                               ),
                               Visibility(
                                 maintainState: true,

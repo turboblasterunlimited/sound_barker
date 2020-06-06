@@ -21,6 +21,7 @@ class ImageController with ChangeNotifier {
 
   void mountController(controller) {
     this.webViewController = controller;
+    notifyListeners();
   }
 
   void stopAnimation() {
@@ -83,7 +84,7 @@ class ImageController with ChangeNotifier {
     }
     await webViewController
         .evaluateJavascript("create_puppet('${_base64Image(picture)}')");
-    
+
     this.coordinates = json.decode(picture.coordinates);
     setFace();
   }
@@ -117,6 +118,5 @@ class ImageController with ChangeNotifier {
     await webViewController.evaluateJavascript(
         "set_position('headLeft', ${coordinates['headLeft'][0]}, ${coordinates['headLeft'][1]})");
     print("done setting face");
-    
   }
 }

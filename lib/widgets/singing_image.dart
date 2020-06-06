@@ -1,27 +1,23 @@
 import 'dart:async';
-import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:song_barker/providers/image_controller.dart';
-import 'package:song_barker/tools/app_storage_path.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:storage_path/storage_path.dart';
 
 import '../providers/pictures.dart';
 
 class SingingImage extends StatefulWidget {
   Picture picture;
-  SingingImage([this.picture]);
+  String visibilityKey;
+  SingingImage({this.picture, this.visibilityKey});
 
   @override
   _SingingImageState createState() => _SingingImageState();
 }
 
 class _SingingImageState extends State<SingingImage> {
-  // static Completer<WebViewController> _controller =
-  //     Completer<WebViewController>();
-  static WebViewController webviewController;
+  WebViewController webviewController;
   Timer randomGesture;
 
   void dispose() {
@@ -29,81 +25,68 @@ class _SingingImageState extends State<SingingImage> {
     super.dispose();
   }
 
-  // Future<String> createGreetingCardFile(url) async {
-  //   File file;
-
-  //   // UriData.fromUri(url).contentAsBytes();
-
-  //   try {
-  //     String filename = '${DateTime.now()}';
-  //     var request = await HttpController.dio.download(url);
-  //     var response = await request.close();
-  //     var bytes = await consolidateHttpClientResponseBytes(response);
-  //     var videoPath = await StoragePath.videoPath;
-  //     file = new File('$videoPath/$filename');
-  //     await file.writeAsBytes(bytes);
-  //   } catch(e) {
-  //     print(e);
-  //   }
-  //   print(file.path);
-  //   return file.path;
-  // }
-
   @override
   Widget build(BuildContext context) {
-    final imageController = Provider.of<ImageController>(context, listen: true);
+    final imageController = Provider.of<ImageController>(context);
 
-    return WebView(
-      gestureRecognizers: null,
-      onWebViewCreated: (WebViewController c) {
-        webviewController = c;
-        // _controller.complete(webviewController);
-        print("WEB VIEW CREATED");
+    return VisibilityDetector(
+      key: Key(widget.visibilityKey),
+      onVisibilityChanged: (VisibilityInfo info) {
+        if (info.visibleFraction == 1) {
+          imageController.mountController(webviewController);
+          print("webview ${widget.visibilityKey}, is visible.");
+        } else {
+          print("webview ${widget.visibilityKey}, is invisible.");
+        }
       },
-      onPageFinished: (_) {
-        print("WEB VIEW \"FINISHED\"");
-        imageController.mountController(webviewController);
-      },
-      // initialUrl: "https://www.google.com",
-
-      initialUrl: "https://thedogbarksthesong.ml/puppet_002/puppet.html",
-      javascriptMode: JavascriptMode.unrestricted,
-      javascriptChannels: Set.from(
-        [
-          JavascriptChannel(
-            name: 'Print',
-            onMessageReceived: (JavascriptMessage message) {
-              //This is where you receive message from
-              //javascript code and handle in Flutter/Dart
-              //like here, the message is just being printed
-              //in Run/LogCat window of android studio
-              print(message.message);
-              // do things depending on the message
-              if (message.message == "[puppet.js postMessage] finished init") {
-                // here you can either set some var on the instance to ready to
-                // show that its ready for evaling js, or you could actually make a js
-                // eval call.
-                if (widget.picture != null)
-                  imageController.createDog(widget.picture);
-                imageController.makeReady();
-              }
-              if (message.message ==
-                  "[puppet.js postMessage] create_puppet finished") {
-                Future.delayed(Duration(seconds: 3), () {
-                  imageController.randomGesture();
-                });
-              }
-              if (message.message
-                  .startsWith("[puppet.js postMessage] video_data")) {
-                print("in video url message handler");
-                String videoData = message.message.substring(0, 50);
-                print("Video Data: $videoData");
-                // String renderedVideoUrl = message.message.substring(35);
-                // createGreetingCardFile(renderedVideoUrl);
-              }
-            },
-          ),
-        ],
+      child: WebView(
+        gestureRecognizers: null,
+        onWebViewCreated: (WebViewController c) {
+          webviewController = c;
+          // _controller.complete(webviewController);
+          print("WEB VIEW CREATED");
+        },
+        onPageFinished: (_) {
+          print("WEB VIEW \"FINISHED\"");
+          imageController.mountController(webviewController);
+        },
+        initialUrl: "https://thedogbarksthesong.ml/puppet_002/puppet.html",
+        javascriptMode: JavascriptMode.unrestricted,
+        javascriptChannels: Set.from(
+          [
+            JavascriptChannel(
+              name: 'Print',
+              onMessageReceived: (JavascriptMessage message) {
+                //This is where you receive message from
+                //javascript code and handle in Flutter/Dart
+                //like here, the message is just being printed
+                //in Run/LogCat window of android studio
+                print(message.message);
+                // do things depending on the message
+                if (message.message ==
+                    "[puppet.js postMessage] finished init") {
+                  // here you can either set some var on the instance to ready to
+                  // show that its ready for evaling js, or you could actually make a js
+                  // eval call.
+                  if (widget.picture != null)
+                    imageController.createDog(widget.picture);
+                  imageController.makeReady();
+                }
+                if (message.message ==
+                    "[puppet.js postMessage] create_puppet finished") {
+                  Future.delayed(Duration(seconds: 3), () {
+                    imageController.randomGesture();
+                  });
+                }
+                if (message.message
+                    .startsWith("[puppet.js postMessage] video_data")) {
+                  print("in video url message handler");
+                  String videoData = message.message.substring(0, 50);
+                }
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
