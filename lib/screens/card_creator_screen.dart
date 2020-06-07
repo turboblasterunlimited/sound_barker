@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:song_barker/providers/image_controller.dart';
 import 'package:song_barker/widgets/card_decorator.dart';
 import 'package:song_barker/widgets/card_decorator_canvas.dart';
 
@@ -37,8 +39,8 @@ class _CardCreatorScreenState extends State<CardCreatorScreen> {
 
   @override
   Widget build(BuildContext context) {
+      Provider.of<ImageController>(context, listen: false).resetReadyInit();
     return Scaffold(
-      // backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
         centerTitle: true,
         title: Text(_messageIsDone ? "Decorate it!" : 'Add a personal message?',

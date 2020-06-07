@@ -20,6 +20,7 @@ class _SingingImageState extends State<SingingImage> {
   WebViewController webviewController;
   ImageController imageController;
 
+  @override
   void dispose() {
     print("Disposing Random gestures");
     imageController.randomGestureTimer?.cancel();
@@ -33,9 +34,10 @@ class _SingingImageState extends State<SingingImage> {
     return VisibilityDetector(
       key: Key(widget.visibilityKey),
       onVisibilityChanged: (VisibilityInfo info) {
-        if (info.visibleFraction == 1) {
-          imageController.randomGestureTimer?.cancel();
+        // This only get's triggered when returning to main_screen webview. imageController.init and ready is reset in picture_card when creating card webview. 
+        if (info.visibleFraction == 1 && imageController.isInit) {
           imageController.mountController(webviewController);
+          imageController.randomGestureTimer?.cancel();
           imageController.startRandomGesture();
         }
       },
@@ -68,12 +70,14 @@ class _SingingImageState extends State<SingingImage> {
                   // here you can either set some var on the instance to ready to
                   // show that its ready for evaling js, or you could actually make a js
                   // eval call.
+                  imageController.makeInit();
+
                   if (widget.picture != null)
                     imageController.createDog(widget.picture);
-                  imageController.makeReady();
                 }
                 if (message.message ==
                     "[puppet.js postMessage] create_puppet finished") {
+                  imageController.makeReady();
                   Future.delayed(Duration(seconds: 2), () {
                     imageController.setFace();
                     imageController.startRandomGesture();

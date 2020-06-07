@@ -11,19 +11,30 @@ import '../providers/pictures.dart';
 class ImageController with ChangeNotifier {
   WebViewController webViewController;
   Map coordinates;
-  bool ready = false;
+  bool isInit = false;
+  bool isReady = false;
   Timer randomGestureTimer;
 
+
   void makeReady() {
-    ready = true;
+    isReady = true;
+    notifyListeners();
+  }
+
+  void makeInit() {
+    isInit = true;
+    notifyListeners();
+  }
+
+  void resetReadyInit() {
+    isReady = false;
+    isInit = false;
     notifyListeners();
   }
 
   void mountController(controller) {
     this.webViewController = controller;
     notifyListeners();
-    randomGestureTimer?.cancel();
-    startRandomGesture();
   }
 
   void stopAnimation() {
@@ -55,7 +66,8 @@ class ImageController with ChangeNotifier {
     String browGestureSettings = "";
 
     final timer = Timer.periodic(Duration(milliseconds: 4000), (timer) {
-      browGestureSettings = '0.${3 + random.nextInt(5)}, ${1 + random.nextInt(3)}0, ${1 + random.nextInt(3)}500';
+      browGestureSettings =
+          '0.${3 + random.nextInt(5)}, ${1 + random.nextInt(3)}0, ${1 + random.nextInt(3)}500';
       rNum = random.nextInt(30);
       if (rNum <= 3)
         webViewController
@@ -86,17 +98,16 @@ class ImageController with ChangeNotifier {
   }
 
   Future createDog(Picture picture) async {
-    if (!ready) {
-      await Future.delayed(Duration(seconds: 1), () {
-        createDog(picture);
-      });
-      return;
-    }
+    // if (!ready) {
+    //   await Future.delayed(Duration(seconds: 1), () {
+    // createDog(picture);
+    // });
+    // return;
+    // }
     await webViewController
         .evaluateJavascript("create_puppet('${_base64Image(picture)}')");
 
     this.coordinates = json.decode(picture.coordinates);
-    setFace();
   }
 
   String _base64Image(picture) {
