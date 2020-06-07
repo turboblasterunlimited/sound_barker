@@ -37,10 +37,10 @@ class ImageController with ChangeNotifier {
   }
 
   void mouthTrackSound(String amplitudesFilePath) async {
-    final input = new File(amplitudesFilePath).openRead();
+    final input = File(amplitudesFilePath).openRead();
     final amplitudes = await input
         .transform(utf8.decoder)
-        .transform(new CsvToListConverter())
+        .transform(CsvToListConverter())
         .toList();
     webViewController.evaluateJavascript("mouth_track_sound(${amplitudes[0]})");
   }

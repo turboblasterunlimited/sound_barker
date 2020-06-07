@@ -75,6 +75,7 @@ class _SingingImageState extends State<SingingImage> {
                 if (message.message ==
                     "[puppet.js postMessage] create_puppet finished") {
                   Future.delayed(Duration(seconds: 2), () {
+                    imageController.setFace();
                     imageController.startRandomGesture();
                   });
                 }
