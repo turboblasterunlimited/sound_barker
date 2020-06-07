@@ -78,6 +78,7 @@ class Pictures with ChangeNotifier {
     tempPics.forEach((pic) {
       add(pic);
     });
+    // Important
     if (tempPics.isEmpty) return null;
     await mountStoredPictureOrLast();
     notifyListeners();

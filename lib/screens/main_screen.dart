@@ -42,6 +42,7 @@ class _MainScreenState extends State<MainScreen> {
     void downloadEverything() async {
       await barks.retrieveAll();
       Picture mountedPicture = await pictures.retrieveAll();
+      print("Checkpoint");
       if (mountedPicture != null)
         await imageController.createDog(mountedPicture);
       await songs.retrieveAll();

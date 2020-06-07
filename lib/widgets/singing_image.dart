@@ -71,7 +71,7 @@ class _SingingImageState extends State<SingingImage> {
                   // show that its ready for evaling js, or you could actually make a js
                   // eval call.
                   imageController.makeInit();
-
+                  print("Made ready");
                   if (widget.picture != null)
                     imageController.createDog(widget.picture);
                 }
