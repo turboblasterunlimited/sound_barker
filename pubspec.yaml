@@ -47,7 +47,6 @@ dependencies:
   storage_path: ^0.2.0
   line_awesome_icons: ^1.0.4+2
   visibility_detector: ^0.1.5
-  # snapping_sheet: ^2.0.0
 
 
   # The following adds the Cupertino Icons font to your application.

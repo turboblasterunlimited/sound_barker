@@ -34,7 +34,7 @@ class _SingingImageState extends State<SingingImage> {
     return VisibilityDetector(
       key: Key(widget.visibilityKey),
       onVisibilityChanged: (VisibilityInfo info) {
-        // This only get's triggered when returning to main_screen webview. imageController.init and ready is reset in picture_card when creating card webview. 
+        // This only get's triggered when returning to main_screen webview. imageController.init and ready is reset in picture_card when creating card webview.
         if (info.visibleFraction == 1 && imageController.isInit) {
           imageController.mountController(webviewController);
           imageController.randomGestureTimer?.cancel();
@@ -58,7 +58,7 @@ class _SingingImageState extends State<SingingImage> {
           [
             JavascriptChannel(
               name: 'Print',
-              onMessageReceived: (JavascriptMessage message) {
+              onMessageReceived: (JavascriptMessage message) async {
                 //This is where you receive message from
                 //javascript code and handle in Flutter/Dart
                 //like here, the message is just being printed
@@ -78,10 +78,8 @@ class _SingingImageState extends State<SingingImage> {
                 if (message.message ==
                     "[puppet.js postMessage] create_puppet finished") {
                   imageController.makeReady();
-                  Future.delayed(Duration(seconds: 2), () {
-                    imageController.setFace();
-                    imageController.startRandomGesture();
-                  });
+                  await imageController.setFace();
+                  imageController.startRandomGesture();
                 }
                 if (message.message
                     .startsWith("[puppet.js postMessage] video_data")) {

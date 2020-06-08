@@ -19,7 +19,6 @@ import './providers/songs.dart';
 import './providers/image_controller.dart';
 import './providers/sound_controller.dart';
 import './providers/spinner_state.dart';
-import './providers/greeting_cards.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -59,9 +58,6 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider.value(
           value: Pictures(),
-        ),
-        ChangeNotifierProvider.value(
-          value: GreetingCards(),
         ),
         ChangeNotifierProvider.value(
           value: SoundController(),

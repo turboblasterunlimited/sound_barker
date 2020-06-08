@@ -4,8 +4,6 @@ import 'package:song_barker/tools/app_storage_path.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:io';
-import 'dart:math';
-import 'package:image/image.dart' as IMG;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../services/gcloud.dart';
@@ -141,23 +139,5 @@ class Picture with ChangeNotifier, Gcloud {
     this.fileUrl = await Gcloud.uploadAsset(fileId, filePath, true);
     Map body = await RestAPI.createImageOnServer(this);
     created = DateTime.parse(body["created"]);
-  }
-
-  Future<void> crop() async {
-    var bytes = await File(filePath).readAsBytes();
-    IMG.Image src = IMG.decodeImage(bytes);
-
-    var cropSize = min(src.width, src.height);
-    int offsetX = (src.width - min(src.width, src.height)) ~/ 2;
-    int offsetY = (src.height - min(src.width, src.height)) ~/ 2;
-
-    IMG.Image destImage =
-        IMG.copyCrop(src, offsetX, offsetY, cropSize, cropSize);
-
-    destImage = IMG.copyResize(destImage, width: 800);
-    var jpg = IMG.encodeJpg(destImage, quality: 80);
-
-    File(filePath).deleteSync();
-    await File(filePath).writeAsBytes(jpg);
   }
 }

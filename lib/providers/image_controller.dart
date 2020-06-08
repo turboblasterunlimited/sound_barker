@@ -56,22 +56,20 @@ class ImageController with ChangeNotifier {
   }
 
   Timer startRandomGesture() {
-    webViewController.evaluateJavascript("update_head_sway(2, 1)");
+    // webViewController.evaluateJavascript("update_head_sway(2, 1)");
     randomGestureTimer?.cancel();
     int rNum;
     var random = Random.secure();
-
     // amplitude, speed, duration
     String browGestureSettings = "";
-
     final timer = Timer.periodic(Duration(milliseconds: 4000), (timer) {
       browGestureSettings =
-          '0.${3 + random.nextInt(5)}, ${1 + random.nextInt(3)}0, ${1 + random.nextInt(3)}500';
+          '0.${3 + random.nextInt(3)}, ${1 + random.nextInt(3)}0, ${1 + random.nextInt(3)}500';
       rNum = random.nextInt(30);
-      if (rNum <= 3)
+      if (rNum <= 4)
         webViewController
             .evaluateJavascript("left_brow_raise($browGestureSettings)");
-      if (rNum <= 6 && rNum > 3)
+      if (rNum <= 6 && rNum > 2)
         webViewController
             .evaluateJavascript("right_brow_raise($browGestureSettings)");
       if (rNum <= 9 && rNum > 6)
@@ -118,7 +116,7 @@ class ImageController with ChangeNotifier {
     return '$encodingPrefix$base64Image';
   }
 
-  void setFace() async {
+  Future<void> setFace() async {
     print("Coordinates: $coordinates");
     print("setting face");
     await webViewController.evaluateJavascript(
