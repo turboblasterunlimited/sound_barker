@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:cookie_jar/cookie_jar.dart';
-import 'package:song_barker/tools/app_storage_path.dart';
+import 'package:K9_Karaoke/tools/app_storage_path.dart';
 
 class HttpController {
   static Dio dio;

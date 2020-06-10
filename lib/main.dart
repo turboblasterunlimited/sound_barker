@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:song_barker/providers/card_decorator_provider.dart';
-import 'package:song_barker/tools/app_storage_path.dart';
+import 'package:K9_Karaoke/providers/card_decorator_provider.dart';
+import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:flutter/rendering.dart';
 
-import 'package:song_barker/providers/active_wave_streamer.dart';
-import 'package:song_barker/providers/tab_list_scroll_controller.dart';
-import 'package:song_barker/services/http_controller.dart';
+import 'package:K9_Karaoke/providers/active_wave_streamer.dart';
+import 'package:K9_Karaoke/providers/tab_list_scroll_controller.dart';
+import 'package:K9_Karaoke/services/http_controller.dart';
 import './screens/song_category_select_screen.dart';
 import './screens/main_screen.dart';
 import './screens/select_song_and_picture_screen.dart';

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:song_barker/providers/image_controller.dart';
-import 'package:song_barker/widgets/card_decorator.dart';
-import 'package:song_barker/widgets/card_decorator_canvas.dart';
+import 'package:K9_Karaoke/providers/image_controller.dart';
+import 'package:K9_Karaoke/widgets/card_decorator.dart';
+import 'package:K9_Karaoke/widgets/card_decorator_canvas.dart';
 
-import 'package:song_barker/widgets/singing_image.dart';
+import 'package:K9_Karaoke/widgets/singing_image.dart';
 import '../providers/songs.dart';
 import '../providers/pictures.dart';
 import '../widgets/message_creator.dart';

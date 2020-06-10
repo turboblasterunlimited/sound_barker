@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:song_barker/classes/drawing_typing.dart';
-import 'package:song_barker/providers/card_decorator_provider.dart';
-import 'package:song_barker/providers/image_controller.dart';
+import 'package:K9_Karaoke/classes/drawing_typing.dart';
+import 'package:K9_Karaoke/providers/card_decorator_provider.dart';
+import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 
 class CardDecorator extends StatefulWidget {

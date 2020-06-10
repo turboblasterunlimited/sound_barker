@@ -13,9 +13,9 @@ import 'package:image/image.dart' as IMG;
     await File(filePath).writeAsBytes(jpg);
   }
 
-Future<void> cropImage(newPicture, toolbarColor, widgetColor) async {
+Future<void> cropImage(picture, toolbarColor, widgetColor) async {
   File newFile = await ImageCropper.cropImage(
-    sourcePath: newPicture.filePath,
+    sourcePath: picture.filePath,
     aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
     compressQuality: 100,
     androidUiSettings: AndroidUiSettings(
@@ -33,5 +33,5 @@ Future<void> cropImage(newPicture, toolbarColor, widgetColor) async {
   resizeImage(newFile.path);
 
   // Replace old file
-  newFile.rename(newPicture.filePath);
+  newFile.rename(picture.filePath);
 }

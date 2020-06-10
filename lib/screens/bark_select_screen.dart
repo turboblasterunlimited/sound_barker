@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:song_barker/providers/sound_controller.dart';
-import 'package:song_barker/widgets/bark_select_card.dart';
+import 'package:K9_Karaoke/providers/sound_controller.dart';
+import 'package:K9_Karaoke/widgets/bark_select_card.dart';
 import '../providers/barks.dart';
 import '../widgets/bark_select_card.dart';
 

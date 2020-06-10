@@ -6,7 +6,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:image/image.dart' as IMG;
 import 'package:flutter/painting.dart';
-import 'package:song_barker/screens/main_screen.dart';
+import 'package:K9_Karaoke/screens/main_screen.dart';
 import 'dart:ui' as ui;
 
 import '../providers/pictures.dart';

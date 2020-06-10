@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:song_barker/classes/drawing_typing.dart';
+import 'package:K9_Karaoke/classes/drawing_typing.dart';
 
 class CardDecoratorProvider with ChangeNotifier {
   bool isDrawing = true;

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:song_barker/providers/image_controller.dart';
-import 'package:song_barker/widgets/no_photos_button.dart';
-import 'package:song_barker/widgets/picture_grid.dart';
+import 'package:K9_Karaoke/providers/image_controller.dart';
+import 'package:K9_Karaoke/widgets/no_photos_button.dart';
+import 'package:K9_Karaoke/widgets/picture_grid.dart';
 
 import '../providers/pictures.dart';
 import '../providers/barks.dart';
@@ -42,7 +42,6 @@ class _MainScreenState extends State<MainScreen> {
     void downloadEverything() async {
       await barks.retrieveAll();
       Picture mountedPicture = await pictures.retrieveAll();
-      print("Checkpoint");
       if (mountedPicture != null)
         await imageController.createDog(mountedPicture);
       await songs.retrieveAll();

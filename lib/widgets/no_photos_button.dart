@@ -17,7 +17,6 @@ class NoPhotosButton extends StatelessWidget {
               // Padding(padding: EdgeInsets.only(top: 120)),
               Container(
                 child: RawMaterialButton(
-                  // onPressed: () async {},
                   child: Column(
                     children: <Widget>[
                       Icon(

@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:song_barker/providers/image_controller.dart';
+import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:provider/provider.dart';

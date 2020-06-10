@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:song_barker/providers/tab_list_scroll_controller.dart';
+import 'package:K9_Karaoke/providers/tab_list_scroll_controller.dart';
 
 import '../providers/sound_controller.dart';
 import '../providers/barks.dart';

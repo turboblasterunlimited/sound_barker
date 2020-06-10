@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 import 'dart:io';
 import 'package:csv/csv.dart';
-import 'package:song_barker/tools/ffmpeg.dart';
+import 'package:K9_Karaoke/tools/ffmpeg.dart';
 
 class AmplitudeExtractor {
   static List<double> extract(String filePath) {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:song_barker/providers/image_controller.dart';
+import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'dart:io';
 
 import '../providers/pictures.dart';

@@ -1,9 +1,9 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:song_barker/classes/drawing_typing.dart';
-import 'package:song_barker/providers/card_decorator_provider.dart';
-import 'package:song_barker/screens/confirm_picture_screen.dart';
+import 'package:K9_Karaoke/classes/drawing_typing.dart';
+import 'package:K9_Karaoke/providers/card_decorator_provider.dart';
+import 'package:K9_Karaoke/screens/confirm_picture_screen.dart';
 
 class CardDecoratorCanvas extends StatefulWidget {
   CardDecoratorCanvas();

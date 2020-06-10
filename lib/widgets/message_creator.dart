@@ -3,10 +3,10 @@ import 'package:flutter_sound_lite/flutter_sound_recorder.dart';
 import 'package:flutter_sound_lite/ios_quality.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
-import 'package:song_barker/tools/app_storage_path.dart';
-import 'package:song_barker/providers/image_controller.dart';
-import 'package:song_barker/tools/amplitude_extractor.dart';
-import 'package:song_barker/tools/ffmpeg.dart';
+import 'package:K9_Karaoke/tools/app_storage_path.dart';
+import 'package:K9_Karaoke/providers/image_controller.dart';
+import 'package:K9_Karaoke/tools/amplitude_extractor.dart';
+import 'package:K9_Karaoke/tools/ffmpeg.dart';
 import 'dart:async';
 import 'dart:io';
 

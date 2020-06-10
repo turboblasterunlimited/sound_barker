@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:song_barker/providers/tab_list_scroll_controller.dart';
+import 'package:K9_Karaoke/providers/tab_list_scroll_controller.dart';
 
 import '../widgets/bark_playback_card.dart';
 import './bark_playback_card.dart';

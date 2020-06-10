@@ -2,9 +2,9 @@ import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:song_barker/screens/main_screen.dart';
+import 'package:K9_Karaoke/screens/main_screen.dart';
 
-import 'package:song_barker/services/http_controller.dart';
+import 'package:K9_Karaoke/services/http_controller.dart';
 import '../services/authenticate_user.dart';
 
 class AuthenticationScreen extends StatefulWidget {

@@ -3,12 +3,12 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
-import 'package:song_barker/providers/barks.dart';
-import 'package:song_barker/providers/tab_list_scroll_controller.dart';
+import 'package:K9_Karaoke/providers/barks.dart';
+import 'package:K9_Karaoke/providers/tab_list_scroll_controller.dart';
 
-import 'package:song_barker/screens/song_category_select_screen.dart';
+import 'package:K9_Karaoke/screens/song_category_select_screen.dart';
 import '../providers/sound_controller.dart';
-import 'package:song_barker/widgets/song_playback_card.dart';
+import 'package:K9_Karaoke/widgets/song_playback_card.dart';
 import '../providers/songs.dart';
 import '../providers/spinner_state.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';

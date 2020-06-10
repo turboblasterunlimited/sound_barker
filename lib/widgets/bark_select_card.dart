@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:song_barker/screens/main_screen.dart';
+import 'package:K9_Karaoke/screens/main_screen.dart';
 
 import './error_dialog.dart';
 import '../providers/sound_controller.dart';
