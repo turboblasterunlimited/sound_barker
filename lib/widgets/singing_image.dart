@@ -63,7 +63,9 @@ class _SingingImageState extends State<SingingImage> {
                 //javascript code and handle in Flutter/Dart
                 //like here, the message is just being printed
                 //in Run/LogCat window of android studio
-                print(message.message);
+                
+                // print(message.message);
+
                 // do things depending on the message
                 if (message.message ==
                     "[puppet.js postMessage] finished init") {

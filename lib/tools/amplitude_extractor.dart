@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:io';
 import 'package:csv/csv.dart';
@@ -25,7 +26,8 @@ class AmplitudeExtractor {
     while ((i + sampleChunk - 1) < waveSamplesLength) {
       tempSubList = waveSamples.sublist(i, (i + sampleChunk - 1));
       // amplitude from 0 to 1 (now 0 to .5 [divisor * 2])
-      _amplitude = tempSubList.reduce((a, b) => a.abs() + b.abs()) / (divisor * 2);
+      _amplitude =
+          tempSubList.reduce((a, b) => a.abs() + b.abs()) / (divisor * 2);
       result.add(_amplitude > 0.5 ? 0.5 : _amplitude);
       i += (sampleChunk - 1);
     }
@@ -35,15 +37,28 @@ class AmplitudeExtractor {
   }
 
   static Future<String> createAmplitudeFile(filePath, [filePathBase]) async {
-    filePathBase ??= filePath.substring(0, filePath.length - 4);
-    await FFMpeg.converter
-        .execute("-hide_banner -loglevel panic -i $filePath $filePathBase.wav");
-    print("filePathBase.wav exists: ${File('$filePathBase.wav').existsSync()}");
-    final amplitudes = extract("$filePathBase.wav");
+    final amplitudes = await getAmplitudes(filePath, [filePathBase]);
     final csvAmplitudes = const ListToCsvConverter().convert([amplitudes]);
     File file = File("$filePathBase.csv");
-    File("$filePathBase.wav").deleteSync();
     file.writeAsStringSync(csvAmplitudes);
     return file.path;
+  }
+
+  static Future<List> getAmplitudes(filePath, [filePathBase]) async {
+    filePathBase ??= filePath.substring(0, filePath.length - 4);
+    await FFMpeg.process
+        .execute("-hide_banner -loglevel panic -i $filePath $filePathBase.wav");
+    final amplitudes = extract("$filePathBase.wav");
+    File("$filePathBase.wav").deleteSync();
+    return amplitudes;
+  }
+
+  static Future<List> fileToList(filePath) async {
+    final input = File(filePath).openRead();
+    List amplitudes = await input
+        .transform(utf8.decoder)
+        .transform(CsvToListConverter())
+        .toList();
+    return amplitudes;
   }
 }

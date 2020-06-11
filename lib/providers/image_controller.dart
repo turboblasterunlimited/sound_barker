@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:K9_Karaoke/tools/amplitude_extractor.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:convert';
@@ -47,11 +48,7 @@ class ImageController with ChangeNotifier {
   }
 
   void mouthTrackSound(String amplitudesFilePath) async {
-    final input = File(amplitudesFilePath).openRead();
-    final amplitudes = await input
-        .transform(utf8.decoder)
-        .transform(CsvToListConverter())
-        .toList();
+    List amplitudes = await AmplitudeExtractor.fileToList(amplitudesFilePath);
     webViewController.evaluateJavascript("mouth_track_sound(${amplitudes[0]})");
   }
 

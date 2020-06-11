@@ -14,8 +14,8 @@ import '../providers/sound_controller.dart';
 import '../tools/amplitude_extractor.dart';
 
 class MessageCreator extends StatefulWidget {
-  final updateMessageFilePathCallback;
-  MessageCreator(this.updateMessageFilePathCallback);
+  final addMessageCallback;
+  MessageCreator(this.addMessageCallback);
 
   @override
   MessageCreatorState createState() => MessageCreatorState();
@@ -23,8 +23,6 @@ class MessageCreator extends StatefulWidget {
 
 class MessageCreatorState extends State<MessageCreator> {
   StreamSubscription _recorderSubscription;
-  StreamSubscription _dbPeakSubscription;
-  StreamSubscription _playerSubscription;
   FlutterSoundRecorder flutterSound;
   ImageController imageController;
   SoundController soundController;
@@ -50,8 +48,6 @@ class MessageCreatorState extends State<MessageCreator> {
     imageController = Provider.of<ImageController>(context, listen: false);
     flutterSound = FlutterSoundRecorder();
     flutterSound.setSubscriptionDuration(0.01);
-    // flutterSound.setDbPeakLevelUpdate(0.8);
-    // flutterSound.setDbLevelEnabled(true);
   }
 
   @override
@@ -105,7 +101,6 @@ class MessageCreatorState extends State<MessageCreator> {
     } catch (err) {
       print('stopRecorder error: $err');
     }
-    // await _trimSilence();
     amplitudePath = await AmplitudeExtractor.createAmplitudeFile(filePath);
   }
 
@@ -152,7 +147,7 @@ class MessageCreatorState extends State<MessageCreator> {
     if (pitchChange < .5) pitchChange = .5;
     if (speedChange < .5) speedChange = .5;
 
-    await FFMpeg.converter.execute(
+    await FFMpeg.process.execute(
         '-i $filePath -filter:a "asetrate=44100*$pitchChange,aresample=44100,atempo=$speedChange" -vn $alteredFilePath');
     alteredAmplitudePath =
         await AmplitudeExtractor.createAmplitudeFile(alteredFilePath);
@@ -166,7 +161,7 @@ class MessageCreatorState extends State<MessageCreator> {
 
     String duration = info["duration"].toString();
     print("Duration: $duration");
-    await FFMpeg.converter.execute(
+    await FFMpeg.process.execute(
         '-i $filePath -filter:a "silenceremove=start_periods=1:start_duration=1:start_threshold=0dB:detection=peak,aformat=dblp,areverse,silenceremove=start_periods=1:start_duration=1:start_threshold=0dB:detection=peak,aformat=dblp,areverse" $alteredFilePath');
     // '-i $filePath -filter:a "silenceremove=start_periods=1:start_duration=0:start_threshold=0dB:detection=peak:stop_periods=0:stop_duration=0:stop_threshold=0dB:detection=peak:stop_silence=0" $alteredFilePath');
     File(filePath).deleteSync();
@@ -175,6 +170,7 @@ class MessageCreatorState extends State<MessageCreator> {
     print("filepath exists: ${File(filePath).existsSync()}");
   }
 
+  // pitched/stretched recroding or normal recording 
   String resultPath() {
     if (File(alteredFilePath).existsSync()) {
       return alteredFilePath;
@@ -287,7 +283,7 @@ class MessageCreatorState extends State<MessageCreator> {
                         style: TextStyle(color: Colors.blue, fontSize: 30),
                       ),
                       onTap: () async {
-                        widget.updateMessageFilePathCallback(resultPath());
+                        widget.addMessageCallback(resultPath());
                       },
                     ),
                     Divider(),
@@ -297,7 +293,7 @@ class MessageCreatorState extends State<MessageCreator> {
                         style: TextStyle(color: Colors.amber, fontSize: 30),
                       ),
                       onTap: () {
-                        widget.updateMessageFilePathCallback();
+                        widget.addMessageCallback();
                       },
                     ),
                   ],

@@ -3,7 +3,7 @@ import 'package:flutter_ffmpeg/log_level.dart';
 
 class FFMpeg {
   static final FlutterFFmpegConfig config = FlutterFFmpegConfig();
-  static final FlutterFFmpeg converter = FlutterFFmpeg();
+  static final FlutterFFmpeg process = FlutterFFmpeg();
   static final FlutterFFprobe probe = FlutterFFprobe();
 
   static final logLevel = config.setLogLevel(LogLevel.AV_LOG_WARNING);
