@@ -11,13 +11,12 @@ class SoundController with ChangeNotifier {
   }
 
   Future<void> startPlayer(path,
-      [Function callback]) async {
+      [Function callback, bool isLocal = true]) async {
     if (audioPlayer.state == AudioPlayerState.PLAYING) {
       stopPlayer();
     }
 
-    // audioPlayer.monitorNotificationStateChanges();
-    audioPlayer.play(path, isLocal: true);
+    audioPlayer.play(path, isLocal: isLocal);
     if (callback != null) {
       audioPlayer.onPlayerStateChanged.listen((playerState) =>
           {if (playerState == AudioPlayerState.STOPPED) callback()});

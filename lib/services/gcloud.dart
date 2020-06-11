@@ -13,7 +13,7 @@ class Gcloud {
     auth.AutoRefreshingAuthClient client =
         await auth.clientViaServiceAccount(credentials, scopes);
     var storage = Storage(client, 'songbarker');
-    return storage.bucket('K9_Karaoke_sequences');
+    return storage.bucket('song_barker_sequences');
   }
 
   static Future<String> downloadFromBucket(fileUrl, fileName,

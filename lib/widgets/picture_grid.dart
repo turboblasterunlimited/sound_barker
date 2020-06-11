@@ -52,7 +52,7 @@ class PictureGrid extends StatelessWidget {
                         await file.copy(newFilePath);
                         newPicture.filePath = newFilePath;
                         // await newPicture.crop();
-                        print("Original filepath: newPicture.filePath");
+                        print("Original filepath: ${newPicture.filePath}");
                         await cropImage(newPicture,
                             Theme.of(context).accentColor, Colors.white);
 

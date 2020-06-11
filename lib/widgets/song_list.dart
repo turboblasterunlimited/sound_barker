@@ -1,12 +1,10 @@
-import 'dart:math';
-
+import 'package:K9_Karaoke/screens/creatable_song_select_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/barks.dart';
 import 'package:K9_Karaoke/providers/tab_list_scroll_controller.dart';
 
-import 'package:K9_Karaoke/screens/song_category_select_screen.dart';
 import '../providers/sound_controller.dart';
 import 'package:K9_Karaoke/widgets/song_playback_card.dart';
 import '../providers/songs.dart';
@@ -34,7 +32,7 @@ class _SongListState extends State<SongList> {
               ? null
               : () {
                   Navigator.pushNamed(
-                      context, SongCategorySelectScreen.routeName);
+                      context, CreatableSongSelectScreen.routeName);
                 },
           child: spinnerState.songLoading
               ? SpinKitWave(
@@ -66,11 +64,10 @@ class _SongListState extends State<SongList> {
                       LineAwesomeIcons.arrow_left,
                       size: 50,
                     ),
-                     Text(
-                        " First record your pet!",
-                        style: TextStyle(fontSize: 25),
-                      ),
-                    
+                    Text(
+                      " First record your pet!",
+                      style: TextStyle(fontSize: 25),
+                    ),
                   ],
                 ),
               ],
@@ -95,7 +92,8 @@ class _SongListState extends State<SongList> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: Text(
-                    "You'll be able to use the barks you've recorded.", textAlign: TextAlign.center,
+                    "You'll be able to use the barks you've recorded.",
+                    textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 20),
                   ),
                 ),
