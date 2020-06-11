@@ -72,12 +72,16 @@ class _SingingImageState extends State<SingingImage> {
                   // eval call.
                   imageController.makeInit();
                   print("Made ready");
-                  if (widget.picture != null)
+                  if (widget.picture != null) {
+                    print("pic name: ${widget.picture.name}");
                     imageController.createDog(widget.picture);
+                  }
                 }
                 if (message.message ==
                     "[puppet.js postMessage] create_puppet finished") {
                   imageController.makeReady();
+                  print("pic: ${widget.picture}");
+
                   await imageController.setFace();
                   imageController.startRandomGesture();
                 }
