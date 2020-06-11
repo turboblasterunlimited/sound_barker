@@ -32,9 +32,8 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
 
   void playSong() async {
     try {
-      widget.soundController.stopPlayer();
       await widget.soundController.startPlayer(
-          widget.creatableSong["backing_track_bucket_fp"],
+          "https://storage.googleapis.com/song_barker_sequences/" + widget.creatableSong["backing_track_bucket_fp"],
           stopPlayerCallBack(),
           false);
     } catch (e) {
@@ -72,6 +71,7 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
                 trailing: IconButton(
                   color: Colors.blue,
                   onPressed: () {
+                    print("Song Source: ${widget.creatableSong["backing_track_bucket_fp"]}");
                     if (isPlaying) {
                       widget.soundController.stopPlayer();
                     } else {
