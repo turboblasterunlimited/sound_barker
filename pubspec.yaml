@@ -42,7 +42,7 @@ dependencies:
   dio: ^3.0.9
   cookie_jar: ^1.0.1
   dio_cookie_manager: ^1.0.0
-  flutter_auth_buttons:
+  flutter_auth_buttons: ^0.8.0
   shared_preferences: ^0.5.7+3
   storage_path: ^0.2.0
   line_awesome_icons: ^1.0.4+2

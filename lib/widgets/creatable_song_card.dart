@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:K9_Karaoke/screens/bark_select_screen.dart';
+import 'package:line_awesome_icons/line_awesome_icons.dart';
 
 import '../widgets/error_dialog.dart';
 import '../providers/sound_controller.dart';
@@ -33,7 +34,8 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
   void playSong() async {
     try {
       await widget.soundController.startPlayer(
-          "https://storage.googleapis.com/song_barker_sequences/" + widget.creatableSong["backing_track_bucket_fp"],
+          "https://storage.googleapis.com/song_barker_sequences/" +
+              widget.creatableSong["backing_track_bucket_fp"],
           stopPlayerCallBack(),
           false);
     } catch (e) {
@@ -64,14 +66,12 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
             child: Padding(
               padding: EdgeInsets.all(4),
               child: ListTile(
-                leading: Icon(Icons.music_note, color: Colors.black, size: 40),
-                title: Text(widget.creatableSong["name"] +
-                    " - " +
-                    widget.creatableSong["song_family"]),
+                leading: Icon(LineAwesomeIcons.music, color: Colors.black, size: 40),
+                title: Text(widget.creatableSong["song_family"]),
+                subtitle: Text(widget.creatableSong["name"]),
                 trailing: IconButton(
                   color: Colors.blue,
                   onPressed: () {
-                    print("Song Source: ${widget.creatableSong["backing_track_bucket_fp"]}");
                     if (isPlaying) {
                       widget.soundController.stopPlayer();
                     } else {
@@ -83,7 +83,7 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
                   },
                   icon: isPlaying
                       ? Icon(Icons.stop, color: Colors.blueGrey, size: 30)
-                      : Text("preview"),
+                      : Icon(Icons.play_arrow, color: Colors.blueGrey, size: 30),
                 ),
               ),
             ),

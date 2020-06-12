@@ -14,6 +14,7 @@ final captureBackingFileName = RegExp(r'\/([0-9a-zA-Z_ ]*.[a-zA-Z]{3})$');
 class Songs with ChangeNotifier {
   List<Song> all = [];
   final listKey = GlobalKey<AnimatedListState>();
+  List creatableSongs;
 
   Song findById(String id) {
     return all.firstWhere((test) {
@@ -31,6 +32,11 @@ class Songs with ChangeNotifier {
     RestAPI.deleteSongFromServer(songToDelete);
     all.remove(songToDelete);
     File(songToDelete.filePath).delete();
+  }
+
+  Future retrieveCreatableSongsData() async {
+    creatableSongs = await RestAPI.retrieveAllCreatableSongsFromServer();
+    notifyListeners();
   }
 
   // ALL SONGS THAT AREN'T HIDDEN UNLESS THEY ALREADY EXIST ON THE CLIENT

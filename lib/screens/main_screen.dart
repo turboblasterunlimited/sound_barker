@@ -40,6 +40,7 @@ class _MainScreenState extends State<MainScreen> {
         Provider.of<ImageController>(context, listen: false);
 
     void downloadEverything() async {
+      await songs.retrieveCreatableSongsData();
       await barks.retrieveAll();
       Picture mountedPicture = await pictures.retrieveAll();
       if (mountedPicture != null)
@@ -130,7 +131,8 @@ class _MainScreenState extends State<MainScreen> {
                               Visibility(
                                 maintainState: true,
                                 visible: pictures.all.isNotEmpty,
-                                child: SingingImage(visibilityKey: "mainScreen"),
+                                child:
+                                    SingingImage(visibilityKey: "mainScreen"),
                               ),
                               Visibility(
                                 maintainState: true,

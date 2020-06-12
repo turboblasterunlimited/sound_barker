@@ -1,3 +1,4 @@
+import 'package:K9_Karaoke/providers/songs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
@@ -23,7 +24,7 @@ class _CreatableSongSelectScreenState extends State<CreatableSongSelectScreen> {
   Future<List> collectCreatableSongs() async {
     if (creatableSongs.length != 0) return creatableSongs;
     print("building creatable songs");
-    creatableSongs = await RestAPI.retrieveAllCreatableSongsFromServer();
+    creatableSongs = Provider.of<Songs>(context, listen: false).creatableSongs;
     print("creatable songs retrieved: $creatableSongs");
     creatableSongs.forEach((cs) {
       cs["backing_track_bucket_fp"] = "backing_tracks/${cs["backing_track"]}/0.aac";
