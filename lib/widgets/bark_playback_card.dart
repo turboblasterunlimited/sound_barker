@@ -225,7 +225,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
                 ),
               ),
 
-              // subtitle: Text(pet.name),
+              subtitle: Center(child: Text(widget.bark.length.toString())),
               trailing: IconButton(
                 onPressed: () {
                   deleteBark();

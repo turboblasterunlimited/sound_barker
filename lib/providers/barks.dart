@@ -1,3 +1,4 @@
+import 'package:K9_Karaoke/tools/ffmpeg.dart';
 import 'package:flutter/material.dart';
 import 'package:gcloud/storage.dart';
 import 'package:K9_Karaoke/tools/amplitude_extractor.dart';
@@ -58,13 +59,20 @@ class Barks with ChangeNotifier {
 
       // download and generate amplitude file if none exist
       if (!File(barks[i].filePath).existsSync()) {
-        await Gcloud.downloadFromBucket(barks[i].fileUrl, barks[i].fileId + '.aac',
+        await Gcloud.downloadFromBucket(
+            barks[i].fileUrl, barks[i].fileId + '.aac',
             bucket: bucket);
       }
       if (!File(barks[i].amplitudesPath).existsSync()) {
         await AmplitudeExtractor.createAmplitudeFile(
             barks[i].filePath, filePathBase);
       }
+      String tempPath = myAppStoragePath + "/temp_file.aac";
+      await FFMpeg.process.execute('-i ${barks[i].filePath} -acodec copy $tempPath');
+      Map info = await FFMpeg.probe.getMediaInformation(tempPath);
+      var duration = info["duration"].toString();
+      barks[i].length = int.parse(duration);
+      File(tempPath).deleteSync();
     }
   }
 
@@ -88,6 +96,7 @@ class Bark with ChangeNotifier {
   String fileId;
   DateTime created;
   String amplitudesPath;
+  int length;
 
   Bark({
     String name,
@@ -96,6 +105,7 @@ class Bark with ChangeNotifier {
     String fileId,
     DateTime created,
     String amplitudesPath,
+    int length,
   }) {
     this.name = name;
     this.filePath = filePath;
@@ -103,6 +113,7 @@ class Bark with ChangeNotifier {
     this.fileId = fileId ??= Uuid().v4();
     this.created = created ??= DateTime.now();
     this.amplitudesPath = amplitudesPath;
+    this.length = length;
   }
 
   String get getName {
@@ -127,11 +138,11 @@ class Bark with ChangeNotifier {
   Future<List> uploadBarkAndRetrieveCroppedBarks(imageId) async {
     await Gcloud.uploadAsset(fileId, filePath, false);
     List responseBody = await RestAPI.splitRawBarkOnServer(fileId, imageId);
-    List newBarks = parseCroppedBarks(responseBody);
+    List newBarks = await parseCroppedBarks(responseBody);
     return newBarks;
   }
 
-  List parseCroppedBarks(List cloudBarkData) {
+  Future<List> parseCroppedBarks(List cloudBarkData) async {
     List newBarks = [];
     int barkCount = cloudBarkData.length;
     for (var i = 0; i < barkCount; i++) {

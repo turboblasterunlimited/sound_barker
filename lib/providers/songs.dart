@@ -23,6 +23,7 @@ class Songs with ChangeNotifier {
   }
 
   void addSong(song) {
+    song.songFamily = getSongFamily(song.formulaId);
     all.insert(0, song);
     if (listKey.currentState != null) listKey.currentState.insertItem(0);
     notifyListeners();
@@ -39,9 +40,15 @@ class Songs with ChangeNotifier {
     notifyListeners();
   }
 
+  String getSongFamily(String id) {
+    int i = creatableSongs.indexWhere((element) => element["id"].toString() == id);
+    Map result = creatableSongs[i];
+    return result['song_family'];
+  }
+
   // ALL SONGS THAT AREN'T HIDDEN UNLESS THEY ALREADY EXIST ON THE CLIENT
   Future retrieveAll() async {
-    print("retrieve all songs check point");
+    await retrieveCreatableSongsData();
     List tempSongs = [];
     Bucket bucket = await Gcloud.accessBucket();
     List serverSongs = await RestAPI.retrieveAllSongsFromServer();
@@ -72,7 +79,7 @@ class Song with ChangeNotifier {
   String backingTrackUrl;
   DateTime created;
   String amplitudesPath;
-
+  String songFamily;
   Song(
       {String filePath,
       String name,
@@ -81,7 +88,8 @@ class Song with ChangeNotifier {
       String formulaId,
       String backingTrackUrl,
       DateTime created,
-      String amplitudesPath}) {
+      String amplitudesPath,
+      String songFamily}) {
     this.filePath = filePath;
     this.name = name;
     this.fileUrl = fileUrl;
@@ -90,6 +98,7 @@ class Song with ChangeNotifier {
     this.backingTrackUrl = backingTrackUrl;
     this.created = created;
     this.amplitudesPath = amplitudesPath;
+    songFamily = songFamily;
   }
 
   String get getName {

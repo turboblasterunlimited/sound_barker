@@ -245,7 +245,7 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
                   ),
                 ),
               ),
-              // subtitle: Text(pet.name),
+              subtitle: Center(child: Text(widget.song.songFamily)),
               trailing: IconButton(
                 onPressed: () {
                   deleteSong();
