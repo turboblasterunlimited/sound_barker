@@ -87,6 +87,7 @@ class _SongSelectCardState extends State<SongSelectCard> {
                   child: Text(widget.song.getName),
                 ),
               ),
+              subtitle: Center(child: Text(widget.song.songFamily)),
               trailing: IconButton(
                 color: Colors.blue,
                 onPressed: () {

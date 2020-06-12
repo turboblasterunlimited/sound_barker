@@ -225,7 +225,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
                 ),
               ),
 
-              subtitle: Center(child: Text(widget.bark.length.toString())),
+              subtitle: Center(child: Text(widget.bark.length)),
               trailing: IconButton(
                 onPressed: () {
                   deleteBark();

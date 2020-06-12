@@ -101,7 +101,8 @@ class _BarkSelectCardState extends State<BarkSelectCard> {
               style: TextStyle(color: Colors.blue[800], fontSize: 16),
             ),
           ),
-          title: Text(widget.bark.getName),
+          title: Center(child: Text(widget.bark.getName)),
+          subtitle: Center(child: Text(widget.bark.length)),
           trailing: IconButton(
             color: Colors.blue,
             onPressed: () {

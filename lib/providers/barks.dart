@@ -35,13 +35,23 @@ class Barks with ChangeNotifier {
       );
       tempBarks.add(bark);
     });
-    downloadAllBarksFromBucket(tempBarks);
+    await downloadAllBarksFromBucket(tempBarks);
     tempBarks.sort((bark1, bark2) {
       return bark1.created.compareTo(bark2.created);
     });
     tempBarks.forEach((bark) {
       addBark(bark);
     });
+  }
+
+  Future<void> _setLengthProp(Bark bark) async {
+    String tempPath = myAppStoragePath + "/temp_file.wav";
+    await FFMpeg.process.execute('-i ${bark.filePath} $tempPath');
+    Map info = await FFMpeg.probe.getMediaInformation(tempPath);
+    var duration = info["duration"].toString();
+    print("duration: $duration");
+    bark.setLengthProp(int.parse(duration));
+    File(tempPath).deleteSync();
   }
 
   // downloads the files either from all barks in memory or just the barks passed.
@@ -67,12 +77,7 @@ class Barks with ChangeNotifier {
         await AmplitudeExtractor.createAmplitudeFile(
             barks[i].filePath, filePathBase);
       }
-      String tempPath = myAppStoragePath + "/temp_file.aac";
-      await FFMpeg.process.execute('-i ${barks[i].filePath} -acodec copy $tempPath');
-      Map info = await FFMpeg.probe.getMediaInformation(tempPath);
-      var duration = info["duration"].toString();
-      barks[i].length = int.parse(duration);
-      File(tempPath).deleteSync();
+      await _setLengthProp(barks[i]);
     }
   }
 
@@ -96,7 +101,7 @@ class Bark with ChangeNotifier {
   String fileId;
   DateTime created;
   String amplitudesPath;
-  int length;
+  String length;
 
   Bark({
     String name,
@@ -105,7 +110,7 @@ class Bark with ChangeNotifier {
     String fileId,
     DateTime created,
     String amplitudesPath,
-    int length,
+    String length,
   }) {
     this.name = name;
     this.filePath = filePath;
@@ -119,6 +124,17 @@ class Bark with ChangeNotifier {
   String get getName {
     if (name == "" || name == null) return "Unnamed";
     return name;
+  }
+
+  void setLengthProp(int milliseconds) {
+    print("Milliseconds: $milliseconds");
+    if (milliseconds < 600)
+      this.length = "short";
+    else if (milliseconds < 900)
+      this.length = "medium";
+    else
+      this.length = "long";
+    notifyListeners();
   }
 
   Future<void> rename(newName) async {

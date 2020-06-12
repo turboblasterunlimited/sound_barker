@@ -68,7 +68,7 @@ class _RecordButtonState extends State<RecordButton> {
         .uploadBarkAndRetrieveCroppedBarks(pictures.mountedPictureFileId());
     Barks barks = Provider.of<Barks>(context, listen: false);
     addCroppedBarksToAllBarks(barks, croppedBarks);
-    barks.downloadAllBarksFromBucket(croppedBarks);
+    await barks.downloadAllBarksFromBucket(croppedBarks);
     spinnerState.stopLoading();
   }
 

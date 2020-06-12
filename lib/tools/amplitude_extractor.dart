@@ -5,27 +5,35 @@ import 'package:csv/csv.dart';
 import 'package:K9_Karaoke/tools/ffmpeg.dart';
 
 class AmplitudeExtractor {
-  static List<double> extract(String filePath) {
-    print("start extraction");
-    List<double> result = [];
+  static Map<String, dynamic> getSampleData(filePath) {
     int headerOffset = 44;
     Uint8List bytes = File(filePath).readAsBytesSync();
     // 44100
     int sampleRate = bytes.sublist(24, 28).buffer.asInt32List()[0];
-    int framerate = 60;
-    // 735
-    int sampleChunk = (sampleRate / framerate).round();
     List<int> waveSamples =
         bytes.sublist(headerOffset).buffer.asInt16List().toList();
-    int waveSamplesLength = waveSamples.length;
-    print("Wave samples length: $waveSamplesLength");
+    int samplesLength = waveSamples.length;
+    print("Wave samples length: $samplesLength");
+    return {
+      "samplesLength": samplesLength,
+      "waveSamples": waveSamples,
+      "sampleRate": sampleRate
+    };
+  }
+
+  static List<double> extract(String filePath) {
+    List<double> result = [];
+    Map sampleData = getSampleData(filePath);
+    int framerate = 60;
+    // 735
+    int sampleChunk = (sampleData["sampleRate"] / framerate).round();
     // number of samples in a frame of animation Xs the max possible average amplitude
     int divisor = sampleChunk * 10000;
     List<int> tempSubList;
     double _amplitude;
     int i = 0;
-    while ((i + sampleChunk - 1) < waveSamplesLength) {
-      tempSubList = waveSamples.sublist(i, (i + sampleChunk - 1));
+    while ((i + sampleChunk - 1) < sampleData["waveSamplesLength"]) {
+      tempSubList = sampleData["waveSamples"].sublist(i, (i + sampleChunk - 1));
       // amplitude from 0 to 1 (now 0 to .5 [divisor * 2])
       _amplitude =
           tempSubList.reduce((a, b) => a.abs() + b.abs()) / (divisor * 2);
