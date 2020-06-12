@@ -2,8 +2,6 @@ import 'package:K9_Karaoke/providers/songs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
-
-import '../services/rest_api.dart';
 import 'package:K9_Karaoke/widgets/creatable_song_card.dart';
 import '../providers/sound_controller.dart';
 
@@ -19,21 +17,24 @@ class CreatableSongSelectScreen extends StatefulWidget {
 
 class _CreatableSongSelectScreenState extends State<CreatableSongSelectScreen> {
   SoundController soundController;
-  List creatableSongs = [];
+  List creatableSongs;
 
-  Future<List> collectCreatableSongs() async {
-    if (creatableSongs.length != 0) return creatableSongs;
-    print("building creatable songs");
+  List collectCreatableSongs() {
+    print("result1: $creatableSongs");
+    if (creatableSongs != null) return creatableSongs;
     creatableSongs = Provider.of<Songs>(context, listen: false).creatableSongs;
-    print("creatable songs retrieved: $creatableSongs");
     creatableSongs.forEach((cs) {
-      cs["backing_track_bucket_fp"] = "backing_tracks/${cs["backing_track"]}/0.aac";
+      cs["backing_track_bucket_fp"] =
+          "backing_tracks/${cs["backing_track"]}/0.aac";
     });
+    creatableSongs.sort((a, b) => a['song_family'].compareTo(b['song_family']));
+    print("result: $creatableSongs");
     return creatableSongs;
   }
 
   @override
   Widget build(BuildContext context) {
+    creatableSongs = collectCreatableSongs();
     soundController = Provider.of<SoundController>(context);
     return Scaffold(
       // extendBodyBehindAppBar: true,
@@ -52,25 +53,12 @@ class _CreatableSongSelectScreenState extends State<CreatableSongSelectScreen> {
       body: Column(
         children: <Widget>[
           Expanded(
-            child: FutureBuilder(
-                future: collectCreatableSongs(),
-                builder: (context, projectSnap) {
-                  if (projectSnap.connectionState == ConnectionState.waiting &&
-                      projectSnap.hasData == false) {
-                    print('project snapshot data is: ${projectSnap.data}');
-                    return Center(
-                        child: SpinKitWave(
-                      color: Theme.of(context).primaryColor,
-                      size: 80,
-                    ));
-                  }
-                  return ListView.builder(
-                    padding: const EdgeInsets.all(10),
-                    itemCount: projectSnap.data.length,
-                    itemBuilder: (ctx, i) => CreatableSongCard(
-                        projectSnap.data.toList()[i], soundController),
-                  );
-                }),
+            child: ListView.builder(
+              padding: const EdgeInsets.all(10),
+              itemCount: creatableSongs.length,
+              itemBuilder: (ctx, i) =>
+                  CreatableSongCard(creatableSongs[i], soundController),
+            ),
           ),
         ],
       ),
