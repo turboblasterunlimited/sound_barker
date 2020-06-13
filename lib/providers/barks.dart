@@ -49,7 +49,6 @@ class Barks with ChangeNotifier {
     await FFMpeg.process.execute('-i ${bark.filePath} $tempPath');
     Map info = await FFMpeg.probe.getMediaInformation(tempPath);
     var duration = info["duration"].toString();
-    print("duration: $duration");
     bark.setLengthProp(int.parse(duration));
     File(tempPath).deleteSync();
   }
@@ -127,13 +126,13 @@ class Bark with ChangeNotifier {
   }
 
   void setLengthProp(int milliseconds) {
-    print("Milliseconds: $milliseconds");
     if (milliseconds < 600)
       this.length = "short";
     else if (milliseconds < 900)
       this.length = "medium";
     else
       this.length = "long";
+    print("Bark length: ${length}");
     notifyListeners();
   }
 

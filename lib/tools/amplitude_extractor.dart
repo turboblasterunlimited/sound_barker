@@ -14,11 +14,12 @@ class AmplitudeExtractor {
         bytes.sublist(headerOffset).buffer.asInt16List().toList();
     int samplesLength = waveSamples.length;
     print("Wave samples length: $samplesLength");
-    return {
+    Map<String, dynamic> result = {
       "samplesLength": samplesLength,
       "waveSamples": waveSamples,
       "sampleRate": sampleRate
     };
+    return result;
   }
 
   static List<double> extract(String filePath) {
@@ -32,7 +33,7 @@ class AmplitudeExtractor {
     List<int> tempSubList;
     double _amplitude;
     int i = 0;
-    while ((i + sampleChunk - 1) < sampleData["waveSamplesLength"]) {
+    while ((i + sampleChunk - 1) < sampleData["samplesLength"]) {
       tempSubList = sampleData["waveSamples"].sublist(i, (i + sampleChunk - 1));
       // amplitude from 0 to 1 (now 0 to .5 [divisor * 2])
       _amplitude =

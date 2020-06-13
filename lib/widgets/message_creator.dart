@@ -110,31 +110,21 @@ class MessageCreatorState extends State<MessageCreator> {
   }
 
   void stopPlayback() {
+    if (mounted) setState(() => _isPlaying = false);
     imageController.stopAnimation();
     soundController.stopPlayer();
   }
 
-  Function stopPlayerCallBack() {
-    return () {
-      stopPlayback();
-      if (mounted) setState(() => _isPlaying = false);
-    };
-  }
-
   void startPlayback(audioFile, amplitudeFile) async {
-    stopPlayback();
+    if (mounted) setState(() => _isPlaying = true);
     imageController.mouthTrackSound(amplitudeFile);
-    await soundController.startPlayer(audioFile, stopPlayerCallBack());
-    print("song playback file path: $audioFile");
+    await soundController.startPlayer(audioFile, stopPlayback);
   }
 
-  void handlePlayStopButton() {
-    _isPlaying
-        ? stopPlayback()
-        : _hasShifted
-            ? startPlayback(alteredFilePath, alteredAmplitudePath)
-            : startPlayback(filePath, amplitudePath);
-    setState(() => _isPlaying = !_isPlaying);
+  void handlePlayButton() {
+    _hasShifted
+        ? startPlayback(alteredFilePath, alteredAmplitudePath)
+        : startPlayback(filePath, amplitudePath);
   }
 
   Future<void> generateAlteredAudioFiles() async {
@@ -170,7 +160,7 @@ class MessageCreatorState extends State<MessageCreator> {
     print("filepath exists: ${File(filePath).existsSync()}");
   }
 
-  // pitched/stretched recroding or normal recording 
+  // pitched/stretched recroding or normal recording
   String resultPath() {
     if (File(alteredFilePath).existsSync()) {
       return alteredFilePath;
@@ -201,14 +191,15 @@ class MessageCreatorState extends State<MessageCreator> {
                   max: 200,
                   activeColor: Colors.blue,
                   inactiveColor: Colors.grey,
-                  onChanged: _isProcessingAudio || !_messageExists || _isRecording
-                      ? null
-                      : (value) {
-                          setState(() {
-                            messagePitch = value;
-                            _hasShifted = true;
-                          });
-                        },
+                  onChanged:
+                      _isProcessingAudio || !_messageExists || _isRecording
+                          ? null
+                          : (value) {
+                              setState(() {
+                                messagePitch = value;
+                                _hasShifted = true;
+                              });
+                            },
                   onChangeEnd: (value) async {
                     setState(() {
                       messagePitch = value;
@@ -268,7 +259,11 @@ class MessageCreatorState extends State<MessageCreator> {
                                 !_messageExists ||
                                 _isProcessingAudio
                             ? null
-                            : handlePlayStopButton,
+                            : () {
+                                _isPlaying
+                                    ? stopPlayback()
+                                    : handlePlayButton();
+                              },
                       ),
                     ),
                   ],
@@ -316,14 +311,15 @@ class MessageCreatorState extends State<MessageCreator> {
                   max: 200,
                   activeColor: Colors.blue,
                   inactiveColor: Colors.grey,
-                  onChanged: _isProcessingAudio || !_messageExists || _isRecording
-                      ? null
-                      : (value) async {
-                          setState(() {
-                            messageSpeed = value;
-                            _hasShifted = true;
-                          });
-                        },
+                  onChanged:
+                      _isProcessingAudio || !_messageExists || _isRecording
+                          ? null
+                          : (value) async {
+                              setState(() {
+                                messageSpeed = value;
+                                _hasShifted = true;
+                              });
+                            },
                   onChangeEnd: (value) {
                     setState(() {
                       messageSpeed = value;

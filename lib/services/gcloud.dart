@@ -5,7 +5,8 @@ import 'package:googleapis_auth/auth_io.dart' as auth;
 import '../tools/app_storage_path.dart';
 
 class Gcloud {
-  static Future<Bucket> accessBucket() async {
+  static Future<Bucket> accessBucket(
+      [bucket_name = "song_barker_sequences"]) async {
     var credData =
         await rootBundle.loadString('credentials/gcloud_credentials.json');
     var credentials = auth.ServiceAccountCredentials.fromJson(credData);
@@ -13,7 +14,7 @@ class Gcloud {
     auth.AutoRefreshingAuthClient client =
         await auth.clientViaServiceAccount(credentials, scopes);
     var storage = Storage(client, 'songbarker');
-    return storage.bucket('song_barker_sequences');
+    return storage.bucket(bucket_name);
   }
 
   static Future<String> downloadFromBucket(fileUrl, fileName,

@@ -1,3 +1,4 @@
+import 'package:K9_Karaoke/providers/sound_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/classes/drawing_typing.dart';
@@ -6,18 +7,22 @@ import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 
 class CardDecorator extends StatefulWidget {
-  CardDecorator();
+  final cardAudioFilePath;
+  final cardAmplitudes;
+  CardDecorator(this.cardAudioFilePath, this.cardAmplitudes);
 
   @override
   _CardDecoratorState createState() => _CardDecoratorState();
 }
 
 class _CardDecoratorState extends State<CardDecorator> {
+  SoundController soundController;
   CardDecoratorProvider decoratorProvider;
   ImageController imageController;
   FocusNode focusNode;
   double canvasLength;
   final textController = TextEditingController();
+  bool _isPlaying = false;
 
   @override
   void didChangeDependencies() {
@@ -33,13 +38,27 @@ class _CardDecoratorState extends State<CardDecorator> {
 
   @override
   void dispose() {
-    // Clean up the focus node when the Form is disposed.
     focusNode.dispose();
     super.dispose();
   }
 
+  void stopPlayback() {
+    imageController.stopAnimation();
+    soundController.stopPlayer();
+    if (mounted) setState(() => _isPlaying = false);
+  }
+
+  void playCard() {
+    soundController.startPlayer(widget.cardAudioFilePath, stopPlayback);
+    imageController.mouthTrackSound(widget.cardAmplitudes);
+    if (mounted) setState(() => _isPlaying = false);
+  }
+
+  void uploadAndShare() {}
+
   @override
   Widget build(BuildContext context) {
+    soundController = Provider.of<SoundController>(context);
     imageController = Provider.of<ImageController>(context);
     decoratorProvider = Provider.of<CardDecoratorProvider>(context);
 
@@ -221,8 +240,11 @@ class _CardDecoratorState extends State<CardDecorator> {
                             ),
                           );
                           // set color to textSpan that is being edited
-                        } else if (decoratorProvider.color != decoratorProvider.allTyping.last.textSpan.style.color) {
-                          decoratorProvider.setColor(decoratorProvider.allTyping.last.textSpan.style.color);
+                        } else if (decoratorProvider.color !=
+                            decoratorProvider
+                                .allTyping.last.textSpan.style.color) {
+                          decoratorProvider.setColor(decoratorProvider
+                              .allTyping.last.textSpan.style.color);
                         }
 
                         focusNode.requestFocus();
@@ -249,6 +271,35 @@ class _CardDecoratorState extends State<CardDecorator> {
                     ),
                   ],
                 ),
+                // Playback and Share
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    RawMaterialButton(
+                      padding: EdgeInsets.symmetric(vertical: 20),
+                      fillColor: Colors.amber[200],
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(7.0),
+                      ),
+                      onPressed: () {
+                        _isPlaying ? stopPlayback() : playCard();
+                      },
+                      child: _isPlaying ? Icon(LineAwesomeIcons.stop) : Icon(LineAwesomeIcons.play),
+                    ),
+                    RawMaterialButton(
+                      padding: EdgeInsets.symmetric(vertical: 20),
+                      fillColor: Colors.amber[200],
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(7.0),
+                      ),
+                      onPressed: () {
+                        uploadAndShare();
+                      },
+                      child: Icon(LineAwesomeIcons.share),
+                    ),
+                  ],
+                ),
+
                 // Choose Border Decorations
                 Visibility(
                   visible: false,
