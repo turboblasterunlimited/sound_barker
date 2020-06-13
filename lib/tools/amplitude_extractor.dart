@@ -47,6 +47,7 @@ class AmplitudeExtractor {
   }
 
   static Future<String> createAmplitudeFile(filePath, [filePathBase]) async {
+    filePathBase ??= filePath.substring(0, filePath.length - 4);
     final amplitudes = await getAmplitudes(filePath, filePathBase);
     final csvAmplitudes = const ListToCsvConverter().convert([amplitudes]);
     File file = File("$filePathBase.csv");
