@@ -52,6 +52,7 @@ class MessageCreatorState extends State<MessageCreator> {
 
   @override
   void dispose() {
+    stopPlayback();
     super.dispose();
   }
 
@@ -110,9 +111,11 @@ class MessageCreatorState extends State<MessageCreator> {
   }
 
   void stopPlayback() {
-    if (mounted) setState(() => _isPlaying = false);
-    imageController.stopAnimation();
-    soundController.stopPlayer();
+    if (_isPlaying) {
+      setState(() => _isPlaying = false);
+      imageController.stopAnimation();
+      soundController.stopPlayer();
+    }
   }
 
   void startPlayback(audioFile, amplitudeFile) async {
@@ -278,7 +281,7 @@ class MessageCreatorState extends State<MessageCreator> {
                         style: TextStyle(color: Colors.blue, fontSize: 30),
                       ),
                       onTap: () async {
-                        widget.addMessageCallback(resultPath());
+                        await widget.addMessageCallback(resultPath());
                       },
                     ),
                     Divider(),

@@ -16,6 +16,8 @@ class SoundController with ChangeNotifier {
       stopPlayer();
     }
 
+    print("audio path: $path");
+
     audioPlayer.play(path, isLocal: isLocal);
     if (callback != null) {
       audioPlayer.onPlayerStateChanged.listen((playerState) =>

@@ -38,21 +38,24 @@ class _CardDecoratorState extends State<CardDecorator> {
 
   @override
   void dispose() {
+    stopPlayback();
     focusNode.dispose();
     super.dispose();
   }
 
   void stopPlayback() {
-    print("called stop playback");
-    imageController.stopAnimation();
-    soundController.stopPlayer();
-    if (mounted) setState(() => _isPlaying = false);
+    if (_isPlaying) {
+      print("called stop playback");
+      imageController.stopAnimation();
+      soundController.stopPlayer();
+      setState(() => _isPlaying = false);
+    }
   }
 
   void playCard() {
     soundController.startPlayer(widget.cardAudioFilePath, stopPlayback);
     imageController.mouthTrackSound(amplitudes: widget.cardAmplitudes);
-    if (mounted) setState(() => _isPlaying = true);
+    setState(() => _isPlaying = true);
   }
 
   void uploadAndShare() {}
@@ -285,7 +288,9 @@ class _CardDecoratorState extends State<CardDecorator> {
                       onPressed: () {
                         _isPlaying ? stopPlayback() : playCard();
                       },
-                      child: _isPlaying ? Icon(LineAwesomeIcons.stop) : Icon(LineAwesomeIcons.play),
+                      child: _isPlaying
+                          ? Icon(LineAwesomeIcons.stop)
+                          : Icon(LineAwesomeIcons.play),
                     ),
                     RawMaterialButton(
                       padding: EdgeInsets.symmetric(vertical: 20),

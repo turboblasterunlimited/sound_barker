@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:convert';
 import 'dart:io';
-import 'package:csv/csv.dart';
 
 import '../providers/pictures.dart';
 
@@ -29,7 +28,6 @@ class ImageController with ChangeNotifier {
   void resetReadyInit() {
     isReady = false;
     isInit = false;
-    notifyListeners();
   }
 
   void mountController(controller) {

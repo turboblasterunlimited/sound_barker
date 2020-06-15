@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:K9_Karaoke/providers/sound_controller.dart';
 import 'package:K9_Karaoke/tools/amplitude_extractor.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:K9_Karaoke/tools/ffmpeg.dart';
@@ -35,11 +36,13 @@ class _CardCreatorScreenState extends State<CardCreatorScreen> {
   bool _messageIsDone = false;
   String cardAudioFilePath = myAppStoragePath + "/message_song_audio.aac";
   List cardAmplitudes;
+  SoundController soundController;
 
   Future<List> _mergeMessageWithSong(String messageFilePath) async {
-    final cardAudio = File(cardAudioFilePath);
-    if (cardAudio.existsSync()) cardAudio.deleteSync();
-    // concat audio
+    // delete old file
+    final cardAudioFile = File(cardAudioFilePath);
+    if (cardAudioFile.existsSync()) cardAudioFile.deleteSync();
+    // concat and save card audio file
     await FFMpeg.process.execute(
         '-i "concat:$messageFilePath|${widget.song.filePath}" -c copy $cardAudioFilePath');
     // concat and return amplitudes
@@ -73,12 +76,30 @@ class _CardCreatorScreenState extends State<CardCreatorScreen> {
   @override
   Widget build(BuildContext context) {
     Provider.of<ImageController>(context, listen: false).resetReadyInit();
+    soundController = Provider.of<SoundController>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text(
           _messageIsDone ? "Decorate it!" : 'Add a personal message?',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        // BACK ARROW
+        leading: RawMaterialButton(
+          child: Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+            size: 22,
+          ),
+          onPressed: () {
+            setState(() {
+              if (_messageIsDone)
+                setState(() => _messageIsDone = false);
+              else
+                Navigator.of(context).pop();
+            });
+          },
         ),
       ),
       body: Column(
