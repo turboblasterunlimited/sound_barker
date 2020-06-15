@@ -59,16 +59,12 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
   }
 
   void startAll() async {
-    print("bark amplitudespath: ${widget.bark.amplitudesPath}");
-    print("bark filepath: ${widget.bark.filePath}");
-
     imageController.mouthTrackSound(filePath: widget.bark.amplitudesPath);
     await widget.soundController.startPlayer(widget.bark.filePath);
   }
 
   void playBark() async {
     try {
-      stopAll();
       startAll();
     } catch (e) {
       showErrorDialog(context, e.toString());

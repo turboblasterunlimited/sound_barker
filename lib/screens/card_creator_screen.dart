@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:K9_Karaoke/tools/amplitude_extractor.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:K9_Karaoke/tools/ffmpeg.dart';
@@ -32,19 +34,27 @@ class CardCreatorScreen extends StatefulWidget {
 class _CardCreatorScreenState extends State<CardCreatorScreen> {
   bool _messageIsDone = false;
   String cardAudioFilePath = myAppStoragePath + "/message_song_audio.aac";
-  List<double> cardAmplitudes;
+  List cardAmplitudes;
 
   Future<List> _mergeMessageWithSong(String messageFilePath) async {
+    final cardAudio = File(cardAudioFilePath);
+    if (cardAudio.existsSync()) cardAudio.deleteSync();
+    // concat audio
     await FFMpeg.process.execute(
         '-i "concat:$messageFilePath|${widget.song.filePath}" -c copy $cardAudioFilePath');
-    print("Exists??: $cardAudioFilePath");
-    return await AmplitudeExtractor.getAmplitudes(cardAudioFilePath);
+    // concat and return amplitudes
+    List messageAmplitudes =
+        await AmplitudeExtractor.getAmplitudes(messageFilePath);
+    List songAmplitudes =
+        await AmplitudeExtractor.fileToList(widget.song.amplitudesPath);
+    return messageAmplitudes + songAmplitudes;
   }
 
   void addMessageCallback([String messageFilePath]) async {
-    List<double> amplitudes;
+    List amplitudes;
     String filePath;
     if (messageFilePath != null) {
+      // message added
       amplitudes = await _mergeMessageWithSong(messageFilePath);
       filePath = cardAudioFilePath;
     } else {

@@ -22,8 +22,8 @@ class AmplitudeExtractor {
     return result;
   }
 
-  static List<double> extract(String filePath) {
-    List<double> result = [];
+  static List extract(String filePath) {
+    List result = [];
     Map sampleData = getSampleData(filePath);
     int framerate = 60;
     // 735
@@ -64,12 +64,13 @@ class AmplitudeExtractor {
     return amplitudes;
   }
 
-  static Future<List> fileToList(filePath) async {
+  static Future<List> fileToList(String filePath) async {
     final input = File(filePath).openRead();
-    List amplitudes = await input
+    List<List> amplitudes = await input
         .transform(utf8.decoder)
-        .transform(CsvToListConverter())
+        .transform(CsvToListConverter(shouldParseNumbers: true))
         .toList();
-    return amplitudes;
+        print("Amplitudes: $amplitudes");
+    return amplitudes[0];
   }
 }

@@ -43,6 +43,7 @@ class _CardDecoratorState extends State<CardDecorator> {
   }
 
   void stopPlayback() {
+    print("called stop playback");
     imageController.stopAnimation();
     soundController.stopPlayer();
     if (mounted) setState(() => _isPlaying = false);
