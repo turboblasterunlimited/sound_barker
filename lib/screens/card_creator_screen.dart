@@ -32,24 +32,31 @@ class CardCreatorScreen extends StatefulWidget {
 class _CardCreatorScreenState extends State<CardCreatorScreen> {
   bool _messageIsDone = false;
   String cardAudioFilePath = myAppStoragePath + "/message_song_audio.aac";
-  List cardAmplitudes;
+  List<double> cardAmplitudes;
 
-  Future<void> mergeMessageWithSong(String messageFilePath) async {
+  Future<List> _mergeMessageWithSong(String messageFilePath) async {
     await FFMpeg.process.execute(
-        'ffmpeg -i "concat:$messageFilePath|${widget.song.filePath}" -c copy $cardAudioFilePath');
-    cardAmplitudes = await AmplitudeExtractor.getAmplitudes(cardAudioFilePath);
+        '-i "concat:$messageFilePath|${widget.song.filePath}" -c copy $cardAudioFilePath');
+    print("Exists??: $cardAudioFilePath");
+    return await AmplitudeExtractor.getAmplitudes(cardAudioFilePath);
   }
 
   void addMessageCallback([String messageFilePath]) async {
-    setState(() async {
+    List<double> amplitudes;
+    String filePath;
+    if (messageFilePath != null) {
+      amplitudes = await _mergeMessageWithSong(messageFilePath);
+      filePath = cardAudioFilePath;
+    } else {
+      // no message added
+      filePath = widget.song.filePath;
+      amplitudes =
+          await AmplitudeExtractor.fileToList(widget.song.amplitudesPath);
+    }
+    setState(() {
+      cardAudioFilePath = filePath;
+      cardAmplitudes = amplitudes;
       _messageIsDone = true;
-      if (messageFilePath != null)
-        await mergeMessageWithSong(messageFilePath);
-      else {
-        // no message added
-        cardAudioFilePath = widget.song.filePath;
-        cardAmplitudes = await AmplitudeExtractor.fileToList(widget.song.amplitudesPath);
-      }
     });
   }
 

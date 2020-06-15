@@ -117,7 +117,7 @@ class MessageCreatorState extends State<MessageCreator> {
 
   void startPlayback(audioFile, amplitudeFile) async {
     if (mounted) setState(() => _isPlaying = true);
-    imageController.mouthTrackSound(amplitudeFile);
+    imageController.mouthTrackSound(filePath: amplitudeFile);
     await soundController.startPlayer(audioFile, stopPlayback);
   }
 

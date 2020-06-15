@@ -62,7 +62,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
     print("bark amplitudespath: ${widget.bark.amplitudesPath}");
     print("bark filepath: ${widget.bark.filePath}");
 
-    imageController.mouthTrackSound(widget.bark.amplitudesPath);
+    imageController.mouthTrackSound(filePath: widget.bark.amplitudesPath);
     await widget.soundController.startPlayer(widget.bark.filePath);
   }
 
