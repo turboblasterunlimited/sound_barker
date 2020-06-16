@@ -1,7 +1,9 @@
+import 'package:K9_Karaoke/providers/sound_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_sound_lite/ios_quality.dart';
+import 'package:flutter_sound_lite/flutter_sound.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_sound_lite/flutter_sound_recorder.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'dart:async';
 import 'dart:io';
@@ -21,7 +23,7 @@ class RecordButton extends StatefulWidget {
 class _RecordButtonState extends State<RecordButton> {
   String filePath;
   bool _isRecording = false;
-  FlutterSoundRecorder flutterSound;
+  SoundController soundController;
   SpinnerState spinnerState;
   double maxDuration = 1.0;
   Timer _recordingTimer;
@@ -29,16 +31,22 @@ class _RecordButtonState extends State<RecordButton> {
   @override
   void initState() {
     super.initState();
-    flutterSound = FlutterSoundRecorder();
   }
 
   void startRecorder() async {
+    Directory tempDir = await getTemporaryDirectory();
+    this.filePath =
+        '${tempDir.path}/${soundController.recorder.slotNo}-flutter_sound.aac}';
+    PermissionStatus status = await Permission.microphone.request();
+
+    if (status != PermissionStatus.granted) {
+      throw RecordingPermissionException("Microphone permission not granted");
+    }
+
     try {
-      this.filePath = await flutterSound.startRecorder(
-          iosQuality: IosQuality.MAX, sampleRate: 44100, bitRate: 192000);
-      _recordingTimer = Timer(Duration(seconds: 10), () {
-        stopRecorder();
-      });
+      await soundController.recorder.startRecorder(
+          toFile: this.filePath, sampleRate: 44100, bitRate: 192000);
+      _recordingTimer = Timer(Duration(seconds: 10), stopRecorder);
 
       this.setState(() {
         this._isRecording = true;
@@ -57,7 +65,7 @@ class _RecordButtonState extends State<RecordButton> {
       this._isRecording = false;
     });
     try {
-      await flutterSound.stopRecorder();
+      await soundController.recorder.stopRecorder();
     } catch (err) {
       print('stopRecorder error: $err');
     }
@@ -84,12 +92,13 @@ class _RecordButtonState extends State<RecordButton> {
   }
 
   onStartRecorderPressed() {
-    if (flutterSound.isRecording) return stopRecorder;
+    if (soundController.recorder.isRecording) return stopRecorder;
     return startRecorder;
   }
 
   @override
   Widget build(BuildContext context) {
+    soundController = Provider.of<SoundController>(context, listen: true);
     spinnerState = Provider.of<SpinnerState>(context, listen: true);
     return RawMaterialButton(
       onPressed: spinnerState.barksLoading ? null : onStartRecorderPressed(),
@@ -102,7 +111,8 @@ class _RecordButtonState extends State<RecordButton> {
               this._isRecording
                   ? "RECORDING... TAP TO STOP"
                   : "TAP TO RECORD BARKS",
-              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+              style:
+                  TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
             ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(40.0),

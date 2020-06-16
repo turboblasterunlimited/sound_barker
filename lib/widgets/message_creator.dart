@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sound_lite/flutter_sound_recorder.dart';
-import 'package:flutter_sound_lite/ios_quality.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
@@ -23,9 +22,8 @@ class MessageCreator extends StatefulWidget {
 
 class MessageCreatorState extends State<MessageCreator> {
   StreamSubscription _recorderSubscription;
-  FlutterSoundRecorder flutterSound;
-  ImageController imageController;
   SoundController soundController;
+  ImageController imageController;
   bool _isPlaying = false;
   bool _isRecording = false;
   bool _messageExists = false;
@@ -40,15 +38,6 @@ class MessageCreatorState extends State<MessageCreator> {
   // 0 to 200
   double messageSpeed = 100;
   double messagePitch = 100;
-
-  @override
-  void initState() {
-    super.initState();
-    soundController = Provider.of<SoundController>(context, listen: false);
-    imageController = Provider.of<ImageController>(context, listen: false);
-    flutterSound = FlutterSoundRecorder();
-    flutterSound.setSubscriptionDuration(0.01);
-  }
 
   @override
   void dispose() {
@@ -66,13 +55,13 @@ class MessageCreatorState extends State<MessageCreator> {
 
   void startRecorder() async {
     _deleteEverything();
+    Directory tempDir = await getTemporaryDirectory();
+    this.filePath =
+        '${tempDir.path}/${soundController.recorder.slotNo}-flutter_sound.aac}';
     try {
-      this.filePath = await flutterSound.startRecorder(
-          iosQuality: IosQuality.MAX, sampleRate: 44100, bitRate: 192000);
+      await soundController.recorder.startRecorder(
+          toFile: this.filePath, sampleRate: 44100, bitRate: 192000);
       print('start message recorder: $filePath');
-
-      _recorderSubscription =
-          flutterSound.onRecorderStateChanged.listen((e) {});
 
       this.setState(() {
         this._isRecording = true;
@@ -94,7 +83,7 @@ class MessageCreatorState extends State<MessageCreator> {
     });
 
     try {
-      await flutterSound.stopRecorder();
+      await soundController.recorder.stopRecorder();
       if (_recorderSubscription != null) {
         _recorderSubscription.cancel();
         _recorderSubscription = null;
@@ -106,7 +95,7 @@ class MessageCreatorState extends State<MessageCreator> {
   }
 
   onStartRecorderPressed() {
-    if (flutterSound.isRecording) return stopRecorder;
+    if (soundController.recorder.isRecording) return stopRecorder;
     return startRecorder;
   }
 
@@ -174,6 +163,9 @@ class MessageCreatorState extends State<MessageCreator> {
 
   @override
   Widget build(BuildContext context) {
+    soundController = Provider.of<SoundController>(context);
+    imageController = Provider.of<ImageController>(context, listen: false);
+
     return Expanded(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,

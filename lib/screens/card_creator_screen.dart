@@ -1,26 +1,16 @@
 import 'dart:io';
-
 import 'package:K9_Karaoke/providers/sound_controller.dart';
 import 'package:K9_Karaoke/tools/amplitude_extractor.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:K9_Karaoke/tools/ffmpeg.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:K9_Karaoke/providers/image_controller.dart';
+
 import 'package:K9_Karaoke/widgets/card_decorator.dart';
 import 'package:K9_Karaoke/widgets/card_decorator_canvas.dart';
-
 import 'package:K9_Karaoke/widgets/singing_image.dart';
 import '../providers/songs.dart';
 import '../providers/pictures.dart';
 import '../widgets/message_creator.dart';
-
-enum t_MEDIA {
-  FILE,
-  BUFFER,
-  ASSET,
-  STREAM,
-}
 
 class CardCreatorScreen extends StatefulWidget {
   static const routeName = 'record-message-screen';
@@ -43,6 +33,7 @@ class _CardCreatorScreenState extends State<CardCreatorScreen> {
     final cardAudioFile = File(cardAudioFilePath);
     if (cardAudioFile.existsSync()) cardAudioFile.deleteSync();
     // concat and save card audio file
+    print("Merging: $messageFilePath|${widget.song.filePath}");
     await FFMpeg.process.execute(
         '-i "concat:$messageFilePath|${widget.song.filePath}" -c copy $cardAudioFilePath');
     // concat and return amplitudes

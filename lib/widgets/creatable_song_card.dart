@@ -36,8 +36,7 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
       await widget.soundController.startPlayer(
           "https://storage.googleapis.com/song_barker_sequences/" +
               widget.creatableSong["backing_track_bucket_fp"],
-          stopPlayerCallBack(),
-          false);
+          stopPlayerCallBack());
     } catch (e) {
       showErrorDialog(context, e);
     }
@@ -66,7 +65,8 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
             child: Padding(
               padding: EdgeInsets.all(4),
               child: ListTile(
-                leading: Icon(LineAwesomeIcons.music, color: Colors.black, size: 40),
+                leading:
+                    Icon(LineAwesomeIcons.music, color: Colors.black, size: 40),
                 title: Text(widget.creatableSong["song_family"]),
                 subtitle: Text(widget.creatableSong["name"]),
                 trailing: IconButton(
@@ -83,7 +83,8 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
                   },
                   icon: isPlaying
                       ? Icon(Icons.stop, color: Colors.blueGrey, size: 30)
-                      : Icon(Icons.play_arrow, color: Colors.blueGrey, size: 30),
+                      : Icon(Icons.play_arrow,
+                          color: Colors.blueGrey, size: 30),
                 ),
               ),
             ),

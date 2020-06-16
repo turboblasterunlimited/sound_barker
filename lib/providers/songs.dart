@@ -166,6 +166,7 @@ class Song with ChangeNotifier {
 
   Future<void> _mergeTracks(backingTrackPath, filePathBase) async {
     String tempMelodyFilePath = filePathBase + "temp.aac";
+    print("MERGING...");
     await FFMpeg.process.execute(
         "-i $backingTrackPath -i ${this.filePath} -filter_complex amix=inputs=2:duration=longest $tempMelodyFilePath");
     File(tempMelodyFilePath).renameSync(this.filePath);

@@ -1,31 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter_sound_lite/flutter_sound.dart';
 
 class SoundController with ChangeNotifier {
-  AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
+  FlutterSoundRecorder recorder = FlutterSoundRecorder();
+  FlutterSoundPlayer player = FlutterSoundPlayer();
+
+  SoundController() {
+    player.openAudioSession(
+        focus: AudioFocus.requestFocusTransient,
+        category: SessionCategory.playback,
+        mode: SessionMode.modeDefault);
+    recorder.openAudioSession(
+        focus: AudioFocus.requestFocusTransient,
+        category: SessionCategory.record,
+        mode: SessionMode.modeDefault);
+  }
 
   void stopPlayer() {
-    if (audioPlayer.state == AudioPlayerState.PLAYING) {
-      audioPlayer.stop();
+    if (player.isPlaying) {
+      player.stopPlayer();
     }
   }
 
-  Future<void> startPlayer(path,
-      [Function callback, bool isLocal = true]) async {
-    if (audioPlayer.state == AudioPlayerState.PLAYING) {
+  Future<void> startPlayer(path, [Function callback]) async {
+    if (player.isPlaying) {
       stopPlayer();
     }
-
     print("audio path: $path");
-
-    audioPlayer.play(path, isLocal: isLocal);
-    if (callback != null) {
-      audioPlayer.onPlayerStateChanged.listen((playerState) =>
-          {if (playerState == AudioPlayerState.STOPPED) callback()});
-      audioPlayer.onPlayerCompletion.listen((event) {
-        callback();
-      });
-    }
+    player.startPlayer(fromURI: path, whenFinished: callback);
   }
-
 }
