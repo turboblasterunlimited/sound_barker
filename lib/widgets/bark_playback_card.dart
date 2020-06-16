@@ -27,7 +27,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
   // bool get wantKeepAlive => true;
   AnimationController renameAnimationController;
   ImageController imageController;
-  bool isPlaying = false;
+  bool _isPlaying = false;
   TabListScrollController tabListScrollController;
   final _controller = TextEditingController();
   String tempName;
@@ -54,13 +54,17 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
   }
 
   void stopAll() {
-    imageController.stopAnimation();
-    widget.soundController.stopPlayer();
+    if (_isPlaying) {
+      setState(() => _isPlaying = false);
+      imageController.stopAnimation();
+      widget.soundController.stopPlayer();
+    }
   }
 
   void startAll() async {
+    setState(() => _isPlaying = true);
     imageController.mouthTrackSound(filePath: widget.bark.amplitudesPath);
-    await widget.soundController.startPlayer(widget.bark.filePath);
+    await widget.soundController.startPlayer(widget.bark.filePath, stopAll);
   }
 
   void playBark() async {
@@ -220,7 +224,6 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
                   ),
                 ),
               ),
-
               subtitle: Center(child: Text(widget.bark.length)),
               trailing: IconButton(
                 onPressed: () {

@@ -27,7 +27,7 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
   // bool get wantKeepAlive => true;
   ImageController imageController;
   AnimationController renameAnimationController;
-  bool isPlaying = false;
+  bool _isPlaying = false;
   TabListScrollController tabListScrollController;
   final _controller = TextEditingController();
   String tempName;
@@ -48,37 +48,24 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
 
   @override
   void dispose() {
+    stopAll();
     renameAnimationController.dispose();
     super.dispose();
   }
 
   void stopAll() {
-    imageController.stopAnimation();
-    widget.soundController.stopPlayer();
-  }
-
-  Function stopPlayerCallBack() {
-    return () {
-      stopAll();
-      if (mounted) setState(() => isPlaying = false);
-    };
+    if (_isPlaying) {
+      setState(() => _isPlaying = false);
+      imageController.stopAnimation();
+      widget.soundController.stopPlayer();
+    }
   }
 
   void startAll() async {
-    stopAll();
+    setState(() => _isPlaying = true);
     imageController.mouthTrackSound(filePath: widget.song.amplitudesPath);
-    await widget.soundController
-        .startPlayer(widget.song.filePath, stopPlayerCallBack());
+    await widget.soundController.startPlayer(widget.song.filePath, stopAll);
     print("song playback file path: ${widget.song.filePath}");
-  }
-
-  void playSong(context) async {
-    try {
-      stopAll();
-      startAll();
-    } catch (e) {
-      showErrorDialog(context, e);
-    }
   }
 
   void deleteSong() async {
@@ -206,17 +193,14 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
               leading: IconButton(
                 color: Colors.blue,
                 onPressed: () {
-                  if (isPlaying) {
+                  if (_isPlaying) {
                     stopAll();
                   } else {
-                    playSong(context);
-                    Future.delayed(Duration(milliseconds: 50), () {
-                      setState(() => isPlaying = true);
-                    });
+                    startAll();
                     handleTabScroll();
                   }
                 },
-                icon: Icon(isPlaying ? Icons.stop : Icons.play_arrow,
+                icon: Icon(_isPlaying ? Icons.stop : Icons.play_arrow,
                     color: Colors.black, size: 30),
               ),
               title: Center(
@@ -247,9 +231,7 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
               ),
               subtitle: Center(child: Text(widget.song.songFamily)),
               trailing: IconButton(
-                onPressed: () {
-                  deleteSong();
-                },
+                onPressed: deleteSong,
                 icon: Icon(Icons.delete, color: Colors.redAccent, size: 30),
               ),
             ),

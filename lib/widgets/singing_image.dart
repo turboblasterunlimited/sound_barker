@@ -34,10 +34,11 @@ class _SingingImageState extends State<SingingImage> {
     return VisibilityDetector(
       key: Key(widget.visibilityKey),
       onVisibilityChanged: (VisibilityInfo info) {
+        print("image controller is init == ${imageController.isInit}");
         // This only get's triggered when returning to main_screen webview. imageController.init and ready is reset in picture_card when creating card webview.
-        if (info.visibleFraction == 1 && imageController.isInit) {
+        if (info.visibleFraction > 0 && imageController.isInit && widget.visibilityKey == 'mainScreen') {
+          print("should see when returning to mainscreen");
           imageController.mountController(webviewController);
-          imageController.randomGestureTimer?.cancel();
           imageController.startRandomGesture();
         }
       },
@@ -86,11 +87,6 @@ class _SingingImageState extends State<SingingImage> {
 
                   await imageController.setFace();
                   imageController.startRandomGesture();
-                }
-                if (message.message
-                    .startsWith("[puppet.js postMessage] video_data")) {
-                  print("in video url message handler");
-                  String videoData = message.message.substring(0, 50);
                 }
               },
             ),

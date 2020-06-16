@@ -75,9 +75,6 @@ class _CardCreatorScreenState extends State<CardCreatorScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<ImageController>(context, listen: false).resetReadyInit();
-    soundController = Provider.of<SoundController>(context, listen: false);
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
