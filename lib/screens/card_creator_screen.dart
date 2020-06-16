@@ -29,13 +29,15 @@ class _CardCreatorScreenState extends State<CardCreatorScreen> {
   SoundController soundController;
 
   Future<List> _mergeMessageWithSong(String messageFilePath) async {
-    // delete old file
+    // delete old files
     final cardAudioFile = File(cardAudioFilePath);
+    final tempFile = File("$myAppStoragePath/tempFile.wav");
     if (cardAudioFile.existsSync()) cardAudioFile.deleteSync();
     // concat and save card audio file
-    print("Merging: $messageFilePath|${widget.song.filePath}");
     await FFMpeg.process.execute(
-        '-i "concat:$messageFilePath|${widget.song.filePath}" -c copy $cardAudioFilePath');
+        '-i "concat:$messageFilePath|${widget.song.filePath}" -c copy ${tempFile.path}');
+    await FFMpeg.process.execute('-i ${tempFile.path} $cardAudioFilePath');
+    if (tempFile.existsSync()) tempFile.deleteSync();
     // concat and return amplitudes
     List messageAmplitudes =
         await AmplitudeExtractor.getAmplitudes(messageFilePath);
@@ -59,6 +61,7 @@ class _CardCreatorScreenState extends State<CardCreatorScreen> {
     }
     setState(() {
       cardAudioFilePath = filePath;
+      print("Path check: $cardAudioFilePath");
       cardAmplitudes = amplitudes;
       _messageIsDone = true;
     });
