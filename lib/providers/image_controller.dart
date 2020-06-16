@@ -100,8 +100,8 @@ class ImageController with ChangeNotifier {
     // This is to handle createDog(pic) getting on startup after pics download, if it completes before webview is init.
     if (!isInit) {
       print("Not ready");
-      await Future.delayed(Duration(seconds: 1), () {
-        return createDog(picture);
+      return await Future.delayed(Duration(seconds: 1), () {
+        createDog(picture);
       });
     }
     this.coordinates = await json.decode(picture.coordinates);

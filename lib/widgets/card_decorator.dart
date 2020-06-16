@@ -53,6 +53,7 @@ class _CardDecoratorState extends State<CardDecorator> {
   }
 
   void playCard() {
+    print("Card audio filepath: ${widget.cardAudioFilePath}");
     soundController.startPlayer(widget.cardAudioFilePath, stopPlayback);
     imageController.mouthTrackSound(amplitudes: widget.cardAmplitudes);
     setState(() => _isPlaying = true);
