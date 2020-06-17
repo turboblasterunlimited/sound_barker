@@ -277,34 +277,37 @@ class _CardDecoratorState extends State<CardDecorator> {
                   ],
                 ),
                 // Playback and Share
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    RawMaterialButton(
-                      padding: EdgeInsets.symmetric(vertical: 20),
-                      fillColor: Colors.amber[200],
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(7.0),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      RawMaterialButton(
+                        padding: EdgeInsets.symmetric(vertical: 20),
+                        fillColor: Colors.amber[200],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(7.0),
+                        ),
+                        onPressed: () {
+                          _isPlaying ? stopPlayback() : playCard();
+                        },
+                        child: _isPlaying
+                            ? Icon(LineAwesomeIcons.stop)
+                            : Icon(LineAwesomeIcons.play),
                       ),
-                      onPressed: () {
-                        _isPlaying ? stopPlayback() : playCard();
-                      },
-                      child: _isPlaying
-                          ? Icon(LineAwesomeIcons.stop)
-                          : Icon(LineAwesomeIcons.play),
-                    ),
-                    RawMaterialButton(
-                      padding: EdgeInsets.symmetric(vertical: 20),
-                      fillColor: Colors.amber[200],
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(7.0),
+                      RawMaterialButton(
+                        padding: EdgeInsets.symmetric(vertical: 20),
+                        fillColor: Colors.amber[200],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(7.0),
+                        ),
+                        onPressed: () {
+                          uploadAndShare();
+                        },
+                        child: Icon(Icons.share),
                       ),
-                      onPressed: () {
-                        uploadAndShare();
-                      },
-                      child: Icon(LineAwesomeIcons.share),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
 
                 // Choose Border Decorations

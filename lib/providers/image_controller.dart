@@ -107,6 +107,8 @@ class ImageController with ChangeNotifier {
     this.coordinates = await json.decode(picture.coordinates);
     await webViewController
         .evaluateJavascript("create_puppet('${_base64Image(picture)}')");
+    // webViewController
+    //     .evaluateJavascript("test('dog1.jpg')");
   }
 
   String _base64Image(picture) {
@@ -117,7 +119,6 @@ class ImageController with ChangeNotifier {
   }
 
   Future<void> setFace() async {
-    print("Coordinates: $coordinates");
     print("setting face");
     await webViewController.evaluateJavascript(
         "set_position('rightEyePosition', ${coordinates['rightEye'][0]}, ${coordinates['rightEye'][1]})");
@@ -138,5 +139,6 @@ class ImageController with ChangeNotifier {
     await webViewController.evaluateJavascript(
         "set_position('headLeft', ${coordinates['headLeft'][0]}, ${coordinates['headLeft'][1]})");
     print("done setting face");
+    // var result = await webViewController.evaluateJavascript("mouth_color(0.5058823529, 0.1372549019, 0.0588235294);");
   }
 }

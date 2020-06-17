@@ -87,6 +87,7 @@ class _SingingImageState extends State<SingingImage> {
 
                   await imageController.setFace();
                   imageController.startRandomGesture();
+                  imageController.webViewController.evaluateJavascript('mouth_color(0.5686274509, 0.39607843137, 0.43137254902)');
                 }
               },
             ),
