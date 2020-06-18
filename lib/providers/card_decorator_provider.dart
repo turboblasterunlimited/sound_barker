@@ -8,7 +8,17 @@ class CardDecoratorProvider with ChangeNotifier {
   Color color = Colors.black;
   List<Drawing> allDrawings;
   List<Typing> allTyping;
+  var cardPainter;
 
+  setPainter(painter) {
+    cardPainter = painter;
+    notifyListeners();
+    return painter;
+  }
+
+  void saveCanvasToFile() {
+    cardPainter?.toPNG();
+  }
   void updateLastTextSpan(newTextSpan) {
     allTyping.last.textSpan = newTextSpan;
     print("Typing length: ${allDrawings.length}");

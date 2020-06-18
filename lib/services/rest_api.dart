@@ -1,9 +1,66 @@
+import 'package:uuid/uuid.dart';
+
 import '../services/http_controller.dart';
 import '../providers/songs.dart';
 import '../providers/barks.dart';
 import '../providers/pictures.dart';
 
 class RestAPI {
+  static Future<String> createCardOnServer(String imageId, String audioId, amplitudes) async {
+    String cardId = Uuid().v4();
+    // create card image
+    final imageBody = {'uuid': imageId};
+    final imageUrl = 'http://165.227.178.14/decoration_image';
+
+    var response;
+    try {
+      response = await HttpController.dio.post(
+        imageUrl,
+        data: imageBody,
+      );
+    } catch (e) {
+      print("create decoration image: ${e.message}");
+      print(e.response.headers);
+      print(e.response.data);
+      print(e.response.request);
+    }
+    print("create decoration image body: ${response.data}");
+
+    // create card audio
+    final audioBody = {'uuid': audioId};
+    final audioUrl = 'http://165.227.178.14/card_audio';
+
+    try {
+      response = await HttpController.dio.post(
+        audioUrl,
+        data: audioBody,
+      );
+    } catch (e) {
+      print("create card audio error: ${e.message}");
+      print(e.response.headers);
+      print(e.response.data);
+      print(e.response.request);
+    }
+    print("create card audio body: ${response.data}");
+
+    final cardBody = {'uuid': cardId, 'card_audio_id': audioId, 'decoration_image_id': imageId, 'animation_json': amplitudes.toString()};
+    final cardUrl = 'http://165.227.178.14/greeting_card';
+    print("card request body: $cardBody");
+    try {
+      response = await HttpController.dio.post(
+        cardUrl,
+        data: cardBody,
+      );
+    } catch (e) {
+      print("create greeting card error: ${e.message}");
+      print(e.response.headers);
+      print(e.response.data);
+      print(e.response.request);
+    }
+    print("create greeting card body: ${response.data}");
+    return response.data.toString();
+  }
+
   static Future<Map> createSong(cropIds, songId) async {
     /// "Song" on the server side means "creatable song"
     Map body = {'uuids': cropIds, 'song_id': songId.toString()};

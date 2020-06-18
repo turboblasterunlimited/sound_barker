@@ -1,9 +1,11 @@
+import 'dart:io';
+import 'dart:typed_data';
 import 'dart:ui';
+import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/classes/drawing_typing.dart';
 import 'package:K9_Karaoke/providers/card_decorator_provider.dart';
-import 'package:K9_Karaoke/screens/confirm_picture_screen.dart';
 
 class CardDecoratorCanvas extends StatefulWidget {
   CardDecoratorCanvas();
@@ -22,6 +24,7 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
     decoratorProvider = Provider.of<CardDecoratorProvider>(context);
     decoratorProvider.allDrawings = allDrawings;
     decoratorProvider.allTyping = allTyping;
+    double screenWidth = MediaQuery.of(context).size.width;
 
     return GestureDetector(
       onTapDown: (details) {
@@ -61,7 +64,7 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
           });
       },
       child: CustomPaint(
-        painter: CardPainter(allDrawings, allTyping),
+        painter: decoratorProvider.cardPainter = CardPainter(allDrawings, allTyping, screenWidth),
         child: Container(),
       ),
     );
@@ -71,8 +74,25 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
 class CardPainter extends CustomPainter {
   final allDrawings;
   final allTyping;
+  final screenWidth;
 
-  CardPainter(this.allDrawings, this.allTyping) : super();
+  CardPainter(this.allDrawings, this.allTyping, this.screenWidth) : super();
+
+  Future<String> capturePNG(String uniqueId) async {
+    print("capturing png...");
+    var recorder = PictureRecorder();
+    var canvas = Canvas(recorder);
+    paint(canvas, Size(screenWidth, screenWidth));
+    var picture = recorder.endRecording();
+    var image = await picture.toImage(512, 512);
+    ByteData data = await image.toByteData(format: ImageByteFormat.png);
+
+    final buffer = data.buffer;
+    final file = await File("$myAppStoragePath/$uniqueId.png").writeAsBytes(
+        buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
+    return file.path;
+    // return data.buffer.asUint8List();
+  }
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -92,7 +112,7 @@ class CardPainter extends CustomPainter {
 
     Offset adjustOffset(Typing typing, Size tpSize) {
       Offset oldOffset = typing.offset;
-     return Offset(oldOffset.dx - (tpSize.width/2), oldOffset.dy);
+      return Offset(oldOffset.dx - (tpSize.width / 2), oldOffset.dy);
     }
 
     for (var typing in allTyping) {

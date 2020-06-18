@@ -44,4 +44,31 @@ class Gcloud {
     }
     return info.downloadLink.toString();
   }
+
+  static Future<void> uploadCardAssets(
+      String audioFilePath, String imageFilePath) async {
+    String audioFileWritePath = "card_audios/$audioFilePath";
+    String imageFileWritePath = "card_audios/$imageFilePath";
+
+    var audioInfo;
+    var imageInfo;
+
+    Bucket bucket = await accessBucket("k9karaoke_cards");
+    try {
+      audioInfo = await File(audioFilePath)
+          .openRead()
+          .pipe(bucket.write(audioFileWritePath));
+    } catch (e) {
+      print(e);
+    }
+    try {
+      imageInfo = await File(imageFilePath)
+          .openRead()
+          .pipe(bucket.write(imageFileWritePath));
+    } catch (e) {
+      print(e);
+    }
+    print(
+        "audioDownloadLink: ${audioInfo.downloadLink}, imageDownloadLink: ${imageInfo.downloadLink}");
+  }
 }

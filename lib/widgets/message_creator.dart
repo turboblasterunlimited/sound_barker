@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
@@ -54,6 +56,11 @@ class MessageCreatorState extends State<MessageCreator> {
   }
 
   void startRecorder() async {
+    PermissionStatus status = await Permission.microphone.request();
+    if (status != PermissionStatus.granted) {
+      throw RecordingPermissionException("Microphone permission not granted");
+    }
+    
     _deleteEverything();
     Directory tempDir = await getTemporaryDirectory();
     this.filePath =

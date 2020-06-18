@@ -1,15 +1,19 @@
 import 'package:K9_Karaoke/providers/sound_controller.dart';
+import 'package:K9_Karaoke/services/gcloud.dart';
+import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/classes/drawing_typing.dart';
 import 'package:K9_Karaoke/providers/card_decorator_provider.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
+import 'package:uuid/uuid.dart';
 
 class CardDecorator extends StatefulWidget {
   final cardAudioFilePath;
+  final cardAudioId;
   final cardAmplitudes;
-  CardDecorator(this.cardAudioFilePath, this.cardAmplitudes);
+  CardDecorator(this.cardAudioFilePath, this.cardAudioId, this.cardAmplitudes);
 
   @override
   _CardDecoratorState createState() => _CardDecoratorState();
@@ -59,7 +63,12 @@ class _CardDecoratorState extends State<CardDecorator> {
     setState(() => _isPlaying = true);
   }
 
-  void uploadAndShare() {}
+  void uploadAndShare() async {
+    String imageId = Uuid().v4();
+    String imageFilePath = await decoratorProvider.cardPainter.capturePNG(Uuid().v4());
+    await Gcloud.uploadCardAssets(widget.cardAudioFilePath, imageFilePath);
+    await RestAPI.createCardOnServer(imageId, widget.cardAudioId, widget.cardAmplitudes);
+  }
 
   @override
   Widget build(BuildContext context) {

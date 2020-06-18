@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:K9_Karaoke/widgets/card_decorator.dart';
 import 'package:K9_Karaoke/widgets/card_decorator_canvas.dart';
 import 'package:K9_Karaoke/widgets/singing_image.dart';
+import 'package:uuid/uuid.dart';
 import '../providers/songs.dart';
 import '../providers/pictures.dart';
 import '../widgets/message_creator.dart';
@@ -24,9 +25,15 @@ class CardCreatorScreen extends StatefulWidget {
 
 class _CardCreatorScreenState extends State<CardCreatorScreen> {
   bool _messageIsDone = false;
-  String cardAudioFilePath = myAppStoragePath + "/message_song_audio.aac";
+  String cardAudioId = Uuid().v4();
+  String cardAudioFilePath;
   List cardAmplitudes;
   SoundController soundController;
+
+  initState() {
+    cardAudioFilePath = "$myAppStoragePath/$cardAudioId.aac";
+    super.initState();
+  }
 
   Future<List> _mergeMessageWithSong(String messageFilePath) async {
     // delete old files
@@ -48,23 +55,24 @@ class _CardCreatorScreenState extends State<CardCreatorScreen> {
 
   void addMessageCallback([String messageFilePath]) async {
     List amplitudes;
-    String filePath;
     if (messageFilePath != null) {
       // message added
       amplitudes = await _mergeMessageWithSong(messageFilePath);
-      filePath = cardAudioFilePath;
-    } else {
-      // no message added
-      filePath = widget.song.filePath;
-      amplitudes =
-          await AmplitudeExtractor.fileToList(widget.song.amplitudesPath);
-    }
-    setState(() {
-      cardAudioFilePath = filePath;
-      print("Path check: $cardAudioFilePath");
+      setState(() {
       cardAmplitudes = amplitudes;
       _messageIsDone = true;
     });
+    } else {
+      // no message added
+      amplitudes =
+          await AmplitudeExtractor.fileToList(widget.song.amplitudesPath);
+      setState(() {
+        cardAudioId = widget.song.fileId;
+        cardAudioFilePath = widget.song.filePath;
+        cardAmplitudes = amplitudes;
+        _messageIsDone = true;
+      });
+    }
   }
 
   @override
@@ -113,7 +121,7 @@ class _CardCreatorScreenState extends State<CardCreatorScreen> {
           ),
           Visibility(
             visible: _messageIsDone,
-            child: CardDecorator(cardAudioFilePath, cardAmplitudes),
+            child: CardDecorator(cardAudioFilePath, cardAudioId, cardAmplitudes),
           ),
         ],
       ),
