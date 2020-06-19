@@ -13,7 +13,8 @@ class CardDecorator extends StatefulWidget {
   final cardAudioFilePath;
   final cardAudioId;
   final cardAmplitudes;
-  CardDecorator(this.cardAudioFilePath, this.cardAudioId, this.cardAmplitudes);
+  final pictureId;
+  CardDecorator(this.cardAudioFilePath, this.cardAudioId, this.cardAmplitudes, this.pictureId);
 
   @override
   _CardDecoratorState createState() => _CardDecoratorState();
@@ -64,10 +65,10 @@ class _CardDecoratorState extends State<CardDecorator> {
   }
 
   void uploadAndShare() async {
-    String imageId = Uuid().v4();
-    String imageFilePath = await decoratorProvider.cardPainter.capturePNG(Uuid().v4());
-    await Gcloud.uploadCardAssets(widget.cardAudioFilePath, imageFilePath);
-    await RestAPI.createCardOnServer(imageId, widget.cardAudioId, widget.cardAmplitudes);
+    String decorationImageId = Uuid().v4();
+    String decorationImageFilePath = await decoratorProvider.cardPainter.capturePNG(decorationImageId);
+    await Gcloud.uploadCardAssets(widget.cardAudioFilePath, decorationImageFilePath);
+    await RestAPI.createCardOnServer(decorationImageId, widget.cardAudioId, widget.cardAmplitudes, widget.pictureId);
   }
 
   @override

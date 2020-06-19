@@ -6,10 +6,11 @@ import '../providers/barks.dart';
 import '../providers/pictures.dart';
 
 class RestAPI {
-  static Future<String> createCardOnServer(String imageId, String audioId, amplitudes) async {
+  static Future<String> createCardOnServer(
+      String decorationImageId, String audioId, amplitudes, String imageId) async {
     String cardId = Uuid().v4();
-    // create card image
-    final imageBody = {'uuid': imageId};
+    // create card decoration image
+    final imageBody = {'uuid': decorationImageId};
     final imageUrl = 'http://165.227.178.14/decoration_image';
 
     var response;
@@ -43,7 +44,13 @@ class RestAPI {
     }
     print("create card audio body: ${response.data}");
 
-    final cardBody = {'uuid': cardId, 'card_audio_id': audioId, 'decoration_image_id': imageId, 'animation_json': amplitudes.toString()};
+    final cardBody = {
+      'uuid': cardId,
+      'card_audio_id': audioId,
+      "image_id": imageId,
+      'decoration_image_id': decorationImageId,
+      'animation_json': "{mouth_positions: $amplitudes}"
+    };
     final cardUrl = 'http://165.227.178.14/greeting_card';
     print("card request body: $cardBody");
     try {

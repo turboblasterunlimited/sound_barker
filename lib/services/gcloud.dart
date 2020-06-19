@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:path/path.dart';
 import 'package:flutter/services.dart';
 import 'package:gcloud/storage.dart';
 import 'package:googleapis_auth/auth_io.dart' as auth;
@@ -47,8 +48,8 @@ class Gcloud {
 
   static Future<void> uploadCardAssets(
       String audioFilePath, String imageFilePath) async {
-    String audioFileWritePath = "card_audios/$audioFilePath";
-    String imageFileWritePath = "card_audios/$imageFilePath";
+    String audioFileWritePath = "card_audios/${basename(audioFilePath)}";
+    String imageFileWritePath = "decoration_images/${basename(imageFilePath)}";
 
     var audioInfo;
     var imageInfo;

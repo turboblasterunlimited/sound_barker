@@ -121,7 +121,7 @@ class _CardCreatorScreenState extends State<CardCreatorScreen> {
           ),
           Visibility(
             visible: _messageIsDone,
-            child: CardDecorator(cardAudioFilePath, cardAudioId, cardAmplitudes),
+            child: CardDecorator(cardAudioFilePath, cardAudioId, cardAmplitudes, widget.picture.fileId),
           ),
         ],
       ),
