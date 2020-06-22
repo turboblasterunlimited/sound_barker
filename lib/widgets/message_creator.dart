@@ -143,21 +143,21 @@ class MessageCreatorState extends State<MessageCreator> {
     setState(() => _isProcessingAudio = false);
   }
 
-  _trimSilence() async {
-    Map info = await FFMpeg.probe.getMediaInformation(filePath);
-    print(
-        "info on alteredFilepath: ${await FFMpeg.probe.getMediaInformation(filePath)}");
+  // _trimSilence() async {
+  //   Map info = await FFMpeg.probe.getMediaInformation(filePath);
+  //   print(
+  //       "info on alteredFilepath: ${await FFMpeg.probe.getMediaInformation(filePath)}");
 
-    String duration = info["duration"].toString();
-    print("Duration: $duration");
-    await FFMpeg.process.execute(
-        '-i $filePath -filter:a "silenceremove=start_periods=1:start_duration=1:start_threshold=0dB:detection=peak,aformat=dblp,areverse,silenceremove=start_periods=1:start_duration=1:start_threshold=0dB:detection=peak,aformat=dblp,areverse" $alteredFilePath');
-    // '-i $filePath -filter:a "silenceremove=start_periods=1:start_duration=0:start_threshold=0dB:detection=peak:stop_periods=0:stop_duration=0:stop_threshold=0dB:detection=peak:stop_silence=0" $alteredFilePath');
-    File(filePath).deleteSync();
-    File(alteredFilePath).renameSync(filePath);
-    print("Altered filepath exists: ${File(alteredFilePath).existsSync()}");
-    print("filepath exists: ${File(filePath).existsSync()}");
-  }
+  //   String duration = info["duration"].toString();
+  //   print("Duration: $duration");
+  //   await FFMpeg.process.execute(
+  //       '-i $filePath -filter:a "silenceremove=start_periods=1:start_duration=1:start_threshold=0dB:detection=peak,aformat=dblp,areverse,silenceremove=start_periods=1:start_duration=1:start_threshold=0dB:detection=peak,aformat=dblp,areverse" $alteredFilePath');
+  //   // '-i $filePath -filter:a "silenceremove=start_periods=1:start_duration=0:start_threshold=0dB:detection=peak:stop_periods=0:stop_duration=0:stop_threshold=0dB:detection=peak:stop_silence=0" $alteredFilePath');
+  //   File(filePath).deleteSync();
+  //   File(alteredFilePath).renameSync(filePath);
+  //   print("Altered filepath exists: ${File(alteredFilePath).existsSync()}");
+  //   print("filepath exists: ${File(filePath).existsSync()}");
+  // }
 
   // pitched/stretched recroding or normal recording
   String resultPath() {

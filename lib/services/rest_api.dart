@@ -49,7 +49,7 @@ class RestAPI {
       'card_audio_id': audioId,
       "image_id": imageId,
       'decoration_image_id': decorationImageId,
-      'animation_json': "{mouth_positions: $amplitudes}"
+      'animation_json': '{"mouth_positions": $amplitudes}'
     };
     final cardUrl = 'http://165.227.178.14/greeting_card';
     print("card request body: $cardBody");
