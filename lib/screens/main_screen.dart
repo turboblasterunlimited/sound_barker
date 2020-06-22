@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:K9_Karaoke/widgets/no_photos_button.dart';
@@ -48,14 +49,13 @@ class _MainScreenState extends State<MainScreen> {
       await songs.retrieveAll();
     }
 
-    if (barks.all.isEmpty && songs.all.isEmpty && pictures.all.isEmpty) {
-      downloadEverything();
-    }
+    // if (barks.all.isEmpty && songs.all.isEmpty && pictures.all.isEmpty) {
+    //   downloadEverything();
+    // }
 
     return Scaffold(
       // backgroundColor: Theme.of(context).primaryColor,
       backgroundColor: Colors.white,
-      extendBodyBehindAppBar: true,
       resizeToAvoidBottomPadding: false,
       key: scaffoldKey,
       appBar: PreferredSize(
@@ -66,37 +66,25 @@ class _MainScreenState extends State<MainScreen> {
           backgroundColor: Colors.transparent,
           elevation: 0,
           centerTitle: true,
+          leading: Icon(LineAwesomeIcons.paw),
           actions: <Widget>[
             Padding(
               padding: const EdgeInsets.only(top: 5),
               child: RawMaterialButton(
-                child: Image.asset("assets/images/replace_before_release.png"),
+                child: Icon(
+                  Icons.menu,
+                  color: Colors.white,
+                  size: 30,
+                ),
                 shape: CircleBorder(),
                 elevation: 2.0,
                 // fillColor: Theme.of(context).accentColor,
                 onPressed: () {
-                  Navigator.pushNamed(
-                      context, SelectSongAndPictureScreen.routeName);
+                  scaffoldKey.currentState.openDrawer();
                 },
               ),
             ),
           ],
-          leading: Padding(
-            padding: const EdgeInsets.only(top: 5),
-            child: RawMaterialButton(
-              child: Icon(
-                Icons.menu,
-                color: Colors.white,
-                size: 30,
-              ),
-              shape: CircleBorder(),
-              elevation: 2.0,
-              // fillColor: Theme.of(context).accentColor,
-              onPressed: () {
-                scaffoldKey.currentState.openDrawer();
-              },
-            ),
-          ),
         ),
       ),
       drawer: AppDrawer(),

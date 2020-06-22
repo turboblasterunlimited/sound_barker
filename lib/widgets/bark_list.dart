@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:K9_Karaoke/providers/tab_list_scroll_controller.dart';
 
 import '../widgets/bark_playback_card.dart';
 import './bark_playback_card.dart';
@@ -56,9 +55,6 @@ class BarkListState extends State<BarkList> {
           visible: barks.all.isNotEmpty,
           child: Expanded(
             child: AnimatedList(
-              controller:
-                  Provider.of<TabListScrollController>(context, listen: false)
-                      .scrollController,
               key: barks.listKey,
               initialItemCount: barks.all.length,
               // padding: const EdgeInsets.all(0),

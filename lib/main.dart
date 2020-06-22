@@ -6,7 +6,6 @@ import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:flutter/rendering.dart';
 
 import 'package:K9_Karaoke/providers/active_wave_streamer.dart';
-import 'package:K9_Karaoke/providers/tab_list_scroll_controller.dart';
 import 'package:K9_Karaoke/services/http_controller.dart';
 import './screens/main_screen.dart';
 import './screens/select_song_and_picture_screen.dart';
@@ -69,9 +68,6 @@ class MyApp extends StatelessWidget {
           value: SpinnerState(),
         ),
         ChangeNotifierProvider.value(
-          value: TabListScrollController(),
-        ),
-        ChangeNotifierProvider.value(
           value: CardDecoratorProvider(),
         ),
       ],
@@ -93,8 +89,9 @@ class MyApp extends StatelessWidget {
             ),
           ),
           // home: MainScreen(),
-          home: AuthenticationScreen(),
+          home: MainScreen(),
           routes: {
+            AuthenticationScreen.routeName: (ctx) => AuthenticationScreen(),
             MainScreen.routeName: (ctx) => MainScreen(),
             CreatableSongSelectScreen.routeName: (ctx) =>
                 CreatableSongSelectScreen(),

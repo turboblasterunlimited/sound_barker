@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/barks.dart';
-import 'package:K9_Karaoke/providers/tab_list_scroll_controller.dart';
 
 import '../providers/sound_controller.dart';
 import 'package:K9_Karaoke/widgets/song_playback_card.dart';
@@ -103,9 +102,6 @@ class _SongListState extends State<SongList> {
           visible: barks.all.isNotEmpty,
           child: Expanded(
             child: AnimatedList(
-              controller:
-                  Provider.of<TabListScrollController>(context, listen: false)
-                      .scrollController,
               key: songs.listKey,
               initialItemCount: songs.all.length,
               padding: const EdgeInsets.all(0),

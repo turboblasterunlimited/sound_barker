@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import 'package:K9_Karaoke/providers/tab_list_scroll_controller.dart';
 import '../widgets/song_list.dart';
 import '../widgets/bark_list.dart';
 
@@ -27,63 +25,47 @@ class InterfaceSelectorState extends State<InterfaceSelector> {
     initialChildSize = extent;
     minChildSize = extent;
 
-    return NotificationListener<DraggableScrollableNotification>(
-      onNotification: (notification) {
-        Provider.of<TabListScrollController>(context, listen: false)
-            .updateTabExtent(notification.extent);
-      },
-      child: DraggableScrollableActuator(
-        child: DraggableScrollableSheet(
-          initialChildSize: initialChildSize,
-          minChildSize: minChildSize,
-          maxChildSize: maxChildSize,
-          builder: (BuildContext ctx, ScrollController scrollController) {
-            Provider.of<TabListScrollController>(context, listen: false)
-                .setScrollController(scrollController);
-
-            return Container(
-              color: Colors.white,
-              child: DefaultTabController(
-                length: 2,
-                child: Column(
-                  children: <Widget>[
-                    // MaterialButton(
-                    //   onPressed: () {
-                    //     // setState(() => )
-                    //   },
-                    // ),
-                    Material(
-                      color: Theme.of(ctx).accentColor,
-                      child: TabBar(
-                        tabs: [
-                          Tab(
-                            child: Text(
-                              "BARKS",
-                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Tab(
-                            child: Text(
-                              "SONGS",
-                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ],
-                      ),
+    return Container(
+      color: Colors.white,
+      child: DefaultTabController(
+        length: 2,
+        child: Column(
+          children: <Widget>[
+            // MaterialButton(
+            //   onPressed: () {
+            //     // setState(() => )
+            //   },
+            // ),
+            Material(
+              color: Theme.of(context).accentColor,
+              child: TabBar(
+                tabs: [
+                  Tab(
+                    child: Text(
+                      "BARKS",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
-                    Expanded(
-                      child: TabBarView(
-                        children: [
-                          BarkList(),
-                          SongList(),
-                        ],
-                      ),
+                  ),
+                  Tab(
+                    child: Text(
+                      "SONGS",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            );
-          },
+            ),
+            Expanded(
+              child: TabBarView(
+                children: [
+                  BarkList(),
+                  SongList(),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

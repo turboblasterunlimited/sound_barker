@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:K9_Karaoke/providers/tab_list_scroll_controller.dart';
 import 'dart:async';
 
 import '../providers/sound_controller.dart';
@@ -28,7 +27,6 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
   ImageController imageController;
   AnimationController renameAnimationController;
   bool _isPlaying = false;
-  TabListScrollController tabListScrollController;
   final _controller = TextEditingController();
   String tempName;
 
@@ -42,8 +40,6 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
     );
     super.initState();
     renameAnimationController.forward();
-    tabListScrollController =
-        Provider.of<TabListScrollController>(context, listen: false);
   }
 
   @override
@@ -164,18 +160,6 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
     );
   }
 
-  void handleTabScroll() {
-    if (tabListScrollController.tabExtent == 0.8) {
-      var position = tabListScrollController.scrollController.position.pixels;
-      position += 250;
-      DraggableScrollableActuator.reset(context);
-      Future.delayed(Duration(milliseconds: 100)).then((_) {
-        tabListScrollController.scrollController.jumpTo(position);
-      });
-      tabListScrollController.updateTabExtent(0.5);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return SizeTransition(
@@ -197,7 +181,6 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
                     stopAll();
                   } else {
                     startAll();
-                    handleTabScroll();
                   }
                 },
                 icon: Icon(_isPlaying ? Icons.stop : Icons.play_arrow,

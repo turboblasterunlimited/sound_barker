@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
-import 'package:K9_Karaoke/providers/tab_list_scroll_controller.dart';
 import 'dart:io';
 
 import '../providers/pictures.dart';
@@ -22,13 +21,10 @@ class _PictureCardState extends State<PictureCard>
     with TickerProviderStateMixin {
   ImageController imageController;
   AnimationController animationController;
-  TabListScrollController tabListScrollController;
 
   @override
   void initState() {
     super.initState();
-    tabListScrollController =
-        Provider.of<TabListScrollController>(context, listen: false);
     imageController = Provider.of<ImageController>(context, listen: false);
 
     animationController =
@@ -139,18 +135,6 @@ class _PictureCardState extends State<PictureCard>
         ),
       ),
     );
-  }
-
-  void handleTabScroll() {
-    if (tabListScrollController.tabExtent == 0.8) {
-      var position = tabListScrollController.scrollController.position.pixels;
-      position += 250;
-      DraggableScrollableActuator.reset(context);
-      Future.delayed(Duration(milliseconds: 100)).then((_) {
-        tabListScrollController.scrollController.jumpTo(position);
-      });
-      tabListScrollController.updateTabExtent(0.5);
-    }
   }
 
   @override

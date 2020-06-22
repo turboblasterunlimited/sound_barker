@@ -1,6 +1,7 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 class User with ChangeNotifier {
-  String email = 'tovi@gmail.com';
-  String id = 'dev';
+  String email;
+
+  User(this.email);
 }

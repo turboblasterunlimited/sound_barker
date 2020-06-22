@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:K9_Karaoke/providers/tab_list_scroll_controller.dart';
 
 import '../providers/sound_controller.dart';
 import '../providers/barks.dart';
@@ -28,15 +27,12 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
   AnimationController renameAnimationController;
   ImageController imageController;
   bool _isPlaying = false;
-  TabListScrollController tabListScrollController;
   final _controller = TextEditingController();
   String tempName;
 
   @override
   void initState() {
     tempName = widget.bark.name;
-    tabListScrollController =
-        Provider.of<TabListScrollController>(context, listen: false);
     renameAnimationController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 500),
@@ -172,18 +168,6 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
     );
   }
 
-  void handleTabScroll() {
-    if (tabListScrollController.tabExtent == 0.8) {
-      var position = tabListScrollController.scrollController.position.pixels;
-      position += 250;
-      DraggableScrollableActuator.reset(context);
-      Future.delayed(Duration(milliseconds: 100)).then((_) {
-        tabListScrollController.scrollController.jumpTo(position);
-      });
-      tabListScrollController.updateTabExtent(0.5);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return SizeTransition(
@@ -202,7 +186,6 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
                 color: Colors.blue,
                 onPressed: () {
                   playBark();
-                  handleTabScroll();
                 },
                 icon: Icon(Icons.play_arrow, color: Colors.black, size: 30),
               ),

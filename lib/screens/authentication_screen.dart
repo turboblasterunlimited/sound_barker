@@ -8,6 +8,7 @@ import 'package:K9_Karaoke/services/http_controller.dart';
 import '../services/authenticate_user.dart';
 
 class AuthenticationScreen extends StatefulWidget {
+  static const routeName = 'authentication-screen';
   AuthenticationScreen();
 
   @override
