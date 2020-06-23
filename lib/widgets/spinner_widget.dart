@@ -1,8 +1,5 @@
-import 'package:K9_Karaoke/providers/user.dart';
-import 'package:K9_Karaoke/screens/authentication_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:provider/provider.dart';
 
 class SpinnerWidget extends StatefulWidget {
   String messageText;
@@ -15,23 +12,22 @@ class SpinnerWidget extends StatefulWidget {
 class _SpinnerWidgetState extends State<SpinnerWidget> {
   Widget build(BuildContext context) {
     return Expanded(
-      child: Container(
-        color: Colors.black,
-        child: Column(
-          children: <Widget>[
-            SpinKitWave(
-              // color: Theme.of(context).primaryColor,
-              color: Colors.black,
-              size: 100,
+          child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          SpinKitWave(
+            // color: Theme.of(context).primaryColor,
+            color: Colors.blue,
+            size: 100,
+          ),
+          Center(
+            child: Text(
+              // toString incase null
+              widget.messageText.toString(),
             ),
-            Center(
-              child: Text(
-                // toString incase null
-                widget.messageText.toString(),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

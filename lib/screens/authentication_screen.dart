@@ -34,7 +34,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     }
   }
 
-  Future checkIfSignedIn() async {
+  Future<Map> checkIfSignedIn() async {
     var response =
         await HttpController.dio.get('http://165.227.178.14/is-logged-in');
     print("response data: $response");
@@ -56,6 +56,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     );
     print("Sign in response data: ${response.data}");
     if (response.data["success"]) {
+      print("the response data: ${response.data}");
       handleSignedIn(response.data["payload"]["email"]);
     } else {
       setState(() {
@@ -80,8 +81,10 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   void didChangeDependencies() async {
     super.didChangeDependencies();
     var responseData = await checkIfSignedIn();
+    print("reeeeesponse data: ${responseData}");
     if (responseData["logged_in"]) {
-      handleSignedIn(responseData["email"]);
+      print("it's true");
+      handleSignedIn(responseData["user_id"]);
     }
     setState(() => loading = false);
   }

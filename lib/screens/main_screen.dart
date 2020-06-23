@@ -32,7 +32,7 @@ class _MainScreenState extends State<MainScreen> {
   ImageController imageController;
   SpinnerState spinnerState;
 
-  signInIfNeeded(context) {
+  void signInIfNeeded(context) {
     print("sign in if needed screen");
     print("user is signed in: ${user.isSignedIn()}");
     if (user.isSignedIn()) return;
@@ -107,55 +107,49 @@ class _MainScreenState extends State<MainScreen> {
         builder: (ctx) => Container(
           child: Stack(
             children: <Widget>[
-              Positioned(
-                child: Stack(
-                  children: <Widget>[
-                    GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onVerticalDragStart: (details) {
-                        return null;
-                        // Scaffold.of(context).openEndDrawer();
-                      },
-                      onHorizontalDragStart: (details) {
-                        Scaffold.of(ctx).openEndDrawer();
-                      },
-                      onTap: () {
-                        print("Tapping webview!");
-                        Scaffold.of(ctx).openEndDrawer();
-                      },
-                      // WebView
-                      child: IgnorePointer(
-                        ignoring: true,
-                        child: AspectRatio(
-                          aspectRatio: 1 / 1,
-                          child: Stack(
-                            children: <Widget>[
-                              Visibility(
-                                maintainState: true,
-                                visible: pictures.all.isNotEmpty,
-                                child: SingingImage(),
-                              ),
-                              Visibility(
-                                maintainState: true,
-                                visible: pictures.all.isEmpty,
-                                child: NoPhotosButton(),
-                              ),
-                            ],
-                          ),
+              Column(
+                children: <Widget>[
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onVerticalDragStart: (details) {
+                      return null;
+                      // Scaffold.of(context).openEndDrawer();
+                    },
+                    onHorizontalDragStart: (details) {
+                      Scaffold.of(ctx).openEndDrawer();
+                    },
+                    onTap: () {
+                      print("Tapping webview!");
+                      Scaffold.of(ctx).openEndDrawer();
+                    },
+                    // WebView
+                    child: IgnorePointer(
+                      ignoring: true,
+                      child: AspectRatio(
+                        aspectRatio: 1 / 1,
+                        child: Stack(
+                          children: <Widget>[
+                            Visibility(
+                              maintainState: true,
+                              visible: pictures.all.isNotEmpty,
+                              child: SingingImage(),
+                            ),
+                            Visibility(
+                              maintainState: true,
+                              visible: pictures.all.isEmpty,
+                              child: NoPhotosButton(),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                  ],
-                ),
-              ),
-              Positioned(
-                child: Align(
-                  child: InterfaceSelector(),
-                ),
+                  ),
+                  InterfaceSelector(),
+                ],
               ),
               Visibility(
-                visible: Provider.of<User>(context).isSignedIn(),
-                child: SpinnerWidget(),
+                visible: !Provider.of<User>(context).isSignedIn(),
+                child: SpinnerWidget('main screen spinner...'),
               ),
             ],
           ),

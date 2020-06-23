@@ -27,46 +27,13 @@ class InterfaceSelectorState extends State<InterfaceSelector> {
 
     return Container(
       color: Colors.white,
-      child: DefaultTabController(
-        length: 2,
-        child: Column(
-          children: <Widget>[
-            // MaterialButton(
-            //   onPressed: () {
-            //     // setState(() => )
-            //   },
-            // ),
-            Material(
-              color: Theme.of(context).accentColor,
-              child: TabBar(
-                tabs: [
-                  Tab(
-                    child: Text(
-                      "BARKS",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  Tab(
-                    child: Text(
-                      "SONGS",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: TabBarView(
-                children: [
-                  BarkList(),
-                  SongList(),
-                ],
-              ),
-            ),
-          ],
-        ),
+      child: Column(
+        children: <Widget>[
+          Text('ListItem'),
+          Text('ListItem'),
+          Text('ListItem'),
+          Text('ListItem'),
+        ],
       ),
     );
   }

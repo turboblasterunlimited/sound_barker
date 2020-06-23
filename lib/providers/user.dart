@@ -6,11 +6,12 @@ class User with ChangeNotifier {
   User({this.email});
 
   bool isSignedIn() {
-    print("email is: $email");
+    print("email from within: $email");
     return email != null;
   }
   void signIn(userEmail) {
     email = userEmail;
+    print("signIn email from within: $email");
     notifyListeners();
   }
 }
