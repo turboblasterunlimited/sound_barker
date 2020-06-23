@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class SpinnerState with ChangeNotifier {
   bool barksLoading = false;
   bool songLoading = false;
-  bool signingIn = false;
+  bool signingIn = true;
 
   loadBarks() {
     barksLoading = true;

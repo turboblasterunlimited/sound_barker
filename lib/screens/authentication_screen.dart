@@ -1,10 +1,12 @@
 import 'dart:io' show Platform;
+import 'package:K9_Karaoke/providers/user.dart';
+import 'package:K9_Karaoke/widgets/spinner_widget.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:K9_Karaoke/screens/main_screen.dart';
 
 import 'package:K9_Karaoke/services/http_controller.dart';
+import 'package:provider/provider.dart';
 import '../services/authenticate_user.dart';
 
 class AuthenticationScreen extends StatefulWidget {
@@ -32,14 +34,17 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     }
   }
 
-  Future<bool> checkIfSignedIn() async {
+  Future checkIfSignedIn() async {
     var response =
         await HttpController.dio.get('http://165.227.178.14/is-logged-in');
-    return response.data["logged_in"];
+    print("response data: $response");
+    return response.data;
   }
 
-  void navigateNext() {
-    Navigator.of(context).pushNamed(MainScreen.routeName);
+  void handleSignedIn(email) {
+    print("Sign-in successful email: $email");
+    Provider.of<User>(context, listen: false).signIn(email);
+    Navigator.of(context).pop();
   }
 
   void handleAuthentication(context) async {
@@ -49,8 +54,9 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       'http://165.227.178.14/openid-token/$platform',
       data: token,
     );
+    print("Sign in response data: ${response.data}");
     if (response.data["success"]) {
-      navigateNext();
+      handleSignedIn(response.data["payload"]["email"]);
     } else {
       setState(() {
         loading = false;
@@ -73,14 +79,16 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
-    if (await checkIfSignedIn()) {
-      navigateNext();
+    var responseData = await checkIfSignedIn();
+    if (responseData["logged_in"]) {
+      handleSignedIn(responseData["email"]);
     }
     setState(() => loading = false);
   }
 
   @override
   Widget build(BuildContext context) {
+    print("building auth screen...");
     return Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomPadding: false,
@@ -90,7 +98,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          "K9 Karaoke",
+          "K-9 Karaoke",
           style: TextStyle(
               fontWeight: FontWeight.bold, fontSize: 23, color: Colors.white),
         ),
@@ -142,13 +150,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
             ),
             Visibility(
               visible: loading,
-              child: Center(
-                child: SpinKitWave(
-                  // color: Theme.of(context).primaryColor,
-                  color: Colors.white,
-                  size: 100,
-                ),
-              ),
+              child: SpinnerWidget("Signing in..."),
             ),
           ],
         ),

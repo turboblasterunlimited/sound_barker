@@ -1,10 +1,12 @@
+import 'package:K9_Karaoke/providers/spinner_state.dart';
+import 'package:K9_Karaoke/providers/user.dart';
+import 'package:K9_Karaoke/widgets/spinner_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:K9_Karaoke/widgets/no_photos_button.dart';
-import 'package:K9_Karaoke/widgets/picture_grid.dart';
 
 import '../providers/pictures.dart';
 import '../providers/barks.dart';
@@ -12,7 +14,7 @@ import '../providers/songs.dart';
 import '../widgets/interface_selector.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/singing_image.dart';
-import '../screens/select_song_and_picture_screen.dart';
+import 'authentication_screen.dart';
 
 class MainScreen extends StatefulWidget {
   static const routeName = 'main-screen';
@@ -23,6 +25,19 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  User user;
+  Barks barks;
+  Songs songs;
+  Pictures pictures;
+  ImageController imageController;
+  SpinnerState spinnerState;
+
+  signInIfNeeded(context) {
+    print("sign in if needed screen");
+    print("user is signed in: ${user.isSignedIn()}");
+    if (user.isSignedIn()) return;
+    Navigator.of(context).pushNamed(AuthenticationScreen.routeName);
+  }
 
   @override
   void initState() {
@@ -30,29 +45,29 @@ class _MainScreenState extends State<MainScreen> {
     SystemChrome.setEnabledSystemUIOverlays([]);
   }
 
+  void downloadEverything() async {
+    await songs.retrieveCreatableSongsData();
+    await barks.retrieveAll();
+    Picture mountedPicture = await pictures.retrieveAll();
+    if (mountedPicture != null) await imageController.createDog(mountedPicture);
+    await songs.retrieveAll();
+  }
+
   @override
   Widget build(BuildContext context) {
     var outlineColor = Theme.of(context).accentColor;
+    user = Provider.of<User>(context);
 
-    final barks = Provider.of<Barks>(context, listen: false);
-    final songs = Provider.of<Songs>(context, listen: false);
-    final pictures = Provider.of<Pictures>(context, listen: true);
-    final imageController =
-        Provider.of<ImageController>(context, listen: false);
-
-    void downloadEverything() async {
-      await songs.retrieveCreatableSongsData();
-      await barks.retrieveAll();
-      Picture mountedPicture = await pictures.retrieveAll();
-      if (mountedPicture != null)
-        await imageController.createDog(mountedPicture);
-      await songs.retrieveAll();
-    }
+    barks = Provider.of<Barks>(context, listen: false);
+    songs = Provider.of<Songs>(context, listen: false);
+    pictures = Provider.of<Pictures>(context, listen: true);
+    imageController = Provider.of<ImageController>(context, listen: false);
+    spinnerState = Provider.of<SpinnerState>(context);
 
     // if (barks.all.isEmpty && songs.all.isEmpty && pictures.all.isEmpty) {
     //   downloadEverything();
     // }
-
+    Future.delayed(Duration.zero, () => signInIfNeeded(context));
     return Scaffold(
       // backgroundColor: Theme.of(context).primaryColor,
       backgroundColor: Colors.white,
@@ -88,7 +103,6 @@ class _MainScreenState extends State<MainScreen> {
         ),
       ),
       drawer: AppDrawer(),
-      endDrawer: PictureGrid(),
       body: Builder(
         builder: (ctx) => Container(
           child: Stack(
@@ -119,8 +133,7 @@ class _MainScreenState extends State<MainScreen> {
                               Visibility(
                                 maintainState: true,
                                 visible: pictures.all.isNotEmpty,
-                                child:
-                                    SingingImage(visibilityKey: "mainScreen"),
+                                child: SingingImage(),
                               ),
                               Visibility(
                                 maintainState: true,
@@ -139,7 +152,11 @@ class _MainScreenState extends State<MainScreen> {
                 child: Align(
                   child: InterfaceSelector(),
                 ),
-              )
+              ),
+              Visibility(
+                visible: Provider.of<User>(context).isSignedIn(),
+                child: SpinnerWidget(),
+              ),
             ],
           ),
         ),
