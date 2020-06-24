@@ -3,8 +3,8 @@ import 'package:K9_Karaoke/services/gcloud.dart';
 import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:K9_Karaoke/classes/drawing_typing.dart';
-import 'package:K9_Karaoke/providers/card_decorator_provider.dart';
+import 'package:K9_Karaoke/classes/card_decoration.dart';
+import 'package:K9_Karaoke/providers/karaoke_card_decorator.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:uuid/uuid.dart';
@@ -22,7 +22,7 @@ class CardDecorator extends StatefulWidget {
 
 class _CardDecoratorState extends State<CardDecorator> {
   SoundController soundController;
-  CardDecoratorProvider decoratorProvider;
+  KaraokeCardDecorator karaokeCardDecorator;
   ImageController imageController;
   FocusNode focusNode;
   double canvasLength;
@@ -66,7 +66,7 @@ class _CardDecoratorState extends State<CardDecorator> {
 
   void uploadAndShare() async {
     String decorationImageId = Uuid().v4();
-    String decorationImageFilePath = await decoratorProvider.cardPainter.capturePNG(decorationImageId);
+    String decorationImageFilePath = await karaokeCardDecorator.cardPainter.capturePNG(decorationImageId);
     await Gcloud.uploadCardAssets(widget.cardAudioFilePath, decorationImageFilePath);
     await RestAPI.createCardOnServer(decorationImageId, widget.cardAudioId, widget.cardAmplitudes, widget.pictureId);
   }
@@ -75,15 +75,15 @@ class _CardDecoratorState extends State<CardDecorator> {
   Widget build(BuildContext context) {
     soundController = Provider.of<SoundController>(context);
     imageController = Provider.of<ImageController>(context);
-    decoratorProvider = Provider.of<CardDecoratorProvider>(context);
+    karaokeCardDecorator = Provider.of<KaraokeCardDecorator>(context);
 
     void updateTextColor(color) {
-      if (decoratorProvider.isDrawing) return;
+      if (karaokeCardDecorator.isDrawing) return;
       var newTextSpan = TextSpan(
-        text: decoratorProvider.allTyping.last.textSpan.text,
+        text: karaokeCardDecorator.allTyping.last.textSpan.text,
         style: TextStyle(color: color),
       );
-      decoratorProvider.updateLastTextSpan(newTextSpan);
+      karaokeCardDecorator.updateLastTextSpan(newTextSpan);
     }
 
     return Expanded(
@@ -98,9 +98,9 @@ class _CardDecoratorState extends State<CardDecorator> {
                 print("Text: $text");
                 var newTextSpan = TextSpan(
                   text: text,
-                  style: TextStyle(color: decoratorProvider.color),
+                  style: TextStyle(color: karaokeCardDecorator.color),
                 );
-                decoratorProvider.updateLastTextSpan(newTextSpan);
+                karaokeCardDecorator.updateLastTextSpan(newTextSpan);
               },
               onSubmitted: (text) {},
             ),
@@ -118,10 +118,10 @@ class _CardDecoratorState extends State<CardDecorator> {
                         fillColor: Colors.black,
                         shape: CircleBorder(),
                         onPressed: () {
-                          decoratorProvider.setColor(Colors.black);
+                          karaokeCardDecorator.setColor(Colors.black);
                           updateTextColor(Colors.black);
                         },
-                        child: decoratorProvider.color == Colors.black
+                        child: karaokeCardDecorator.color == Colors.black
                             ? Icon(Icons.check, size: 20, color: Colors.white)
                             : Container(height: 20),
                       ),
@@ -132,10 +132,10 @@ class _CardDecoratorState extends State<CardDecorator> {
                         fillColor: Colors.white,
                         shape: CircleBorder(),
                         onPressed: () {
-                          decoratorProvider.setColor(Colors.white);
+                          karaokeCardDecorator.setColor(Colors.white);
                           updateTextColor(Colors.white);
                         },
-                        child: decoratorProvider.color == Colors.white
+                        child: karaokeCardDecorator.color == Colors.white
                             ? Icon(Icons.check, size: 20)
                             : Container(height: 20),
                       ),
@@ -146,10 +146,10 @@ class _CardDecoratorState extends State<CardDecorator> {
                         fillColor: Colors.green,
                         shape: CircleBorder(),
                         onPressed: () {
-                          decoratorProvider.setColor(Colors.green);
+                          karaokeCardDecorator.setColor(Colors.green);
                           updateTextColor(Colors.green);
                         },
-                        child: decoratorProvider.color == Colors.green
+                        child: karaokeCardDecorator.color == Colors.green
                             ? Icon(Icons.check, size: 20)
                             : Container(height: 20),
                       ),
@@ -160,10 +160,10 @@ class _CardDecoratorState extends State<CardDecorator> {
                         fillColor: Colors.blue,
                         shape: CircleBorder(),
                         onPressed: () {
-                          decoratorProvider.setColor(Colors.blue);
+                          karaokeCardDecorator.setColor(Colors.blue);
                           updateTextColor(Colors.blue);
                         },
-                        child: decoratorProvider.color == Colors.blue
+                        child: karaokeCardDecorator.color == Colors.blue
                             ? Icon(Icons.check, size: 20)
                             : Container(height: 20),
                       ),
@@ -174,10 +174,10 @@ class _CardDecoratorState extends State<CardDecorator> {
                         fillColor: Colors.pink,
                         shape: CircleBorder(),
                         onPressed: () {
-                          decoratorProvider.setColor(Colors.pink);
+                          karaokeCardDecorator.setColor(Colors.pink);
                           updateTextColor(Colors.pink);
                         },
-                        child: decoratorProvider.color == Colors.pink
+                        child: karaokeCardDecorator.color == Colors.pink
                             ? Icon(Icons.check, size: 20)
                             : Container(height: 20),
                       ),
@@ -188,10 +188,10 @@ class _CardDecoratorState extends State<CardDecorator> {
                         fillColor: Colors.purple,
                         shape: CircleBorder(),
                         onPressed: () {
-                          decoratorProvider.setColor(Colors.purple);
+                          karaokeCardDecorator.setColor(Colors.purple);
                           updateTextColor(Colors.purple);
                         },
-                        child: decoratorProvider.color == Colors.purple
+                        child: karaokeCardDecorator.color == Colors.purple
                             ? Icon(Icons.check, size: 20)
                             : Container(height: 20),
                       ),
@@ -202,10 +202,10 @@ class _CardDecoratorState extends State<CardDecorator> {
                         fillColor: Colors.yellow,
                         shape: CircleBorder(),
                         onPressed: () {
-                          decoratorProvider.setColor(Colors.yellow);
+                          karaokeCardDecorator.setColor(Colors.yellow);
                           updateTextColor(Colors.yellow);
                         },
-                        child: decoratorProvider.color == Colors.yellow
+                        child: karaokeCardDecorator.color == Colors.yellow
                             ? Icon(Icons.check, size: 20)
                             : Container(height: 20),
                       ),
@@ -219,7 +219,7 @@ class _CardDecoratorState extends State<CardDecorator> {
                     // Drawing button
                     RawMaterialButton(
                       padding: EdgeInsets.symmetric(vertical: 20),
-                      fillColor: decoratorProvider.isDrawing
+                      fillColor: karaokeCardDecorator.isDrawing
                           ? Colors.amber[900]
                           : Colors.amber[200],
                       shape: RoundedRectangleBorder(
@@ -227,14 +227,14 @@ class _CardDecoratorState extends State<CardDecorator> {
                       ),
                       onPressed: () {
                         focusNode.unfocus();
-                        decoratorProvider.startDrawing();
+                        karaokeCardDecorator.startDrawing();
                       },
                       child: Icon(Icons.edit),
                     ),
                     // Typing button
                     RawMaterialButton(
                       padding: EdgeInsets.symmetric(vertical: 20),
-                      fillColor: decoratorProvider.isTyping
+                      fillColor: karaokeCardDecorator.isTyping
                           ? Colors.amber[900]
                           : Colors.amber[200],
                       shape: RoundedRectangleBorder(
@@ -242,28 +242,28 @@ class _CardDecoratorState extends State<CardDecorator> {
                       ),
                       onPressed: () {
                         focusNode.unfocus();
-                        if (decoratorProvider.allTyping.isEmpty) {
-                          decoratorProvider.allTyping.add(
+                        if (karaokeCardDecorator.allTyping.isEmpty) {
+                          karaokeCardDecorator.allTyping.add(
                             Typing(
                               TextSpan(
                                 text: "",
                                 style: TextStyle(
-                                    color: decoratorProvider.color,
+                                    color: karaokeCardDecorator.color,
                                     fontSize: 40),
                               ),
                               Offset(canvasLength / 2, canvasLength - 50),
                             ),
                           );
                           // set color to textSpan that is being edited
-                        } else if (decoratorProvider.color !=
-                            decoratorProvider
+                        } else if (karaokeCardDecorator.color !=
+                            karaokeCardDecorator
                                 .allTyping.last.textSpan.style.color) {
-                          decoratorProvider.setColor(decoratorProvider
+                          karaokeCardDecorator.setColor(karaokeCardDecorator
                               .allTyping.last.textSpan.style.color);
                         }
 
                         focusNode.requestFocus();
-                        decoratorProvider.startTyping();
+                        karaokeCardDecorator.startTyping();
                       },
                       child: Icon(Icons.font_download),
                     ),
@@ -276,8 +276,8 @@ class _CardDecoratorState extends State<CardDecorator> {
                       ),
                       onPressed: () {
                         focusNode.unfocus();
-                        decoratorProvider.undoLast();
-                        if (decoratorProvider.isTyping)
+                        karaokeCardDecorator.undoLast();
+                        if (karaokeCardDecorator.isTyping)
                           setState(() {
                             textController.clear();
                           });

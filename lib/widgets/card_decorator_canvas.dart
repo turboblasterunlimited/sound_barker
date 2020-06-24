@@ -4,8 +4,8 @@ import 'dart:ui';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:K9_Karaoke/classes/drawing_typing.dart';
-import 'package:K9_Karaoke/providers/card_decorator_provider.dart';
+import 'package:K9_Karaoke/classes/card_decoration.dart';
+import 'package:K9_Karaoke/providers/karaoke_card_decorator.dart';
 
 class CardDecoratorCanvas extends StatefulWidget {
   CardDecoratorCanvas();
@@ -15,41 +15,41 @@ class CardDecoratorCanvas extends StatefulWidget {
 }
 
 class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
-  CardDecoratorProvider decoratorProvider;
+  KaraokeCardDecorator karaokeCardDecorator;
   List<Drawing> allDrawings = [];
   List<Typing> allTyping = [];
 
   @override
   Widget build(BuildContext context) {
-    decoratorProvider = Provider.of<CardDecoratorProvider>(context);
-    decoratorProvider.allDrawings = allDrawings;
-    decoratorProvider.allTyping = allTyping;
+    karaokeCardDecorator = Provider.of<KaraokeCardDecorator>(context);
+    karaokeCardDecorator.allDrawings = allDrawings;
+    karaokeCardDecorator.allTyping = allTyping;
     double screenWidth = MediaQuery.of(context).size.width;
 
     return GestureDetector(
       onTapDown: (details) {
-        // if (decoratorProvider.isTyping) {
+        // if (karaokeCardDecorator.isTyping) {
         //   allTyping.add(
         //     Typing(
         //         TextSpan(
         //           text: "",
-        //           style: TextStyle(color: decoratorProvider.color),
+        //           style: TextStyle(color: karaokeCardDecorator.color),
         //         ),
         //         Offset(details.localPosition.dx, details.localPosition.dy),),
         //   );
         // }
       },
       onPanStart: (details) {
-        if (decoratorProvider.isDrawing)
+        if (karaokeCardDecorator.isDrawing)
           setState(() {
-            allDrawings.add(Drawing(decoratorProvider.color));
+            allDrawings.add(Drawing(karaokeCardDecorator.color));
             allDrawings.last.offsets.add(
               [Offset(details.localPosition.dx, details.localPosition.dy)],
             );
           });
       },
       onPanUpdate: (details) {
-        if (decoratorProvider.isDrawing)
+        if (karaokeCardDecorator.isDrawing)
           setState(() {
             allDrawings.last.offsets.last.add(
               Offset(details.localPosition.dx, details.localPosition.dy),
@@ -57,14 +57,14 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
           });
       },
       onPanEnd: (details) {
-        if (decoratorProvider.isDrawing)
+        if (karaokeCardDecorator.isDrawing)
           setState(() {
             allDrawings.last.offsets.last
                 .add(allDrawings.last.offsets.last.last);
           });
       },
       child: CustomPaint(
-        painter: decoratorProvider.cardPainter = CardPainter(allDrawings, allTyping, screenWidth),
+        painter: karaokeCardDecorator.cardPainter = CardPainter(allDrawings, allTyping, screenWidth),
         child: Container(),
       ),
     );

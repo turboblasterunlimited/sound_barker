@@ -3,7 +3,7 @@ import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:K9_Karaoke/providers/card_decorator_provider.dart';
+import 'package:K9_Karaoke/providers/karaoke_card_decorator.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:flutter/rendering.dart';
 
@@ -70,7 +70,7 @@ class MyApp extends StatelessWidget {
           value: SpinnerState(),
         ),
         ChangeNotifierProvider.value(
-          value: CardDecoratorProvider(),
+          value: KaraokeCardDecorator(),
         ),
         ChangeNotifierProvider.value(
           value: User(),

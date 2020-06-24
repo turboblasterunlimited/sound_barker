@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:K9_Karaoke/classes/drawing_typing.dart';
+import 'package:K9_Karaoke/classes/card_decoration.dart';
 
-class CardDecoratorProvider with ChangeNotifier {
+class KaraokeCardDecorator with ChangeNotifier {
   bool isDrawing = true;
   bool isTyping = false;
   Color color = Colors.black;
