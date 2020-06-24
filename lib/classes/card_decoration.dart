@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 
 class CardDecoration {
   String fileId;
-  CardDecoration({this.fileId});
+  Drawing drawing;
+  Typing typing;
+  CardDecoration({this.fileId, this.drawing, this.typing});
 }
 
 class Drawing {

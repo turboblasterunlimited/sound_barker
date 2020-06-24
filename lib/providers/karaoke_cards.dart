@@ -14,5 +14,5 @@ class KaraokeCard {
   Picture picture;
   Song song;
   CardDecoration cardDecoration;
-  KaraokeCard({this.fileId});
+  KaraokeCard({this.fileId, this.picture, this.song, this.cardDecoration});
 }
