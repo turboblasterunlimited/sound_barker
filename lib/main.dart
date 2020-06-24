@@ -1,4 +1,5 @@
 import 'package:K9_Karaoke/providers/user.dart';
+import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -79,11 +80,11 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'Song Barker',
           theme: ThemeData(
-            primarySwatch: MaterialColor(0xff0e79b2, color),
-            accentColor: Color(0xff2D3047),
+            backgroundColor: Colors.amber[50],
+            primarySwatch: MaterialColor(0xff234498, color),
+            accentColor: Colors.purple[200],
             highlightColor: MaterialColor(0xff44bba4, color),
             // backgroundColor: MaterialColor(0xff367b92, color),
-            backgroundColor: Colors.white,
             fontFamily: 'Lato',
             buttonTheme: ButtonThemeData(
               minWidth: 200.0,
@@ -101,6 +102,7 @@ class MyApp extends StatelessWidget {
                 CreatableSongSelectScreen(),
             SelectSongAndPictureScreen.routeName: (ctx) =>
                 SelectSongAndPictureScreen(),
+            MenuScreen.routeName: (ctx) => MenuScreen(),
           }),
     );
   }

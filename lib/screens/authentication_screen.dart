@@ -1,7 +1,7 @@
 import 'dart:io' show Platform;
 import 'package:K9_Karaoke/providers/user.dart';
+import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/widgets/spinner_widget.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 
@@ -44,10 +44,10 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   void handleSignedIn(email) {
     print("Sign-in successful email: $email");
     Provider.of<User>(context, listen: false).signIn(email);
-    Navigator.of(context).pop();
+    Navigator.of(context).pushReplacementNamed(MenuScreen.routeName);
   }
 
-  void handleAuthentication(context) async {
+  void handleAuthentication() async {
     setState(() => loading = true);
     var token = await authenticate(clientId, ['email', 'openid', 'profile']);
     var response = await HttpController.dio.post(
@@ -93,11 +93,11 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   Widget build(BuildContext context) {
     print("building auth screen...");
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.amber[50],
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white, size: 30),
-        backgroundColor: Theme.of(context).accentColor,
+        backgroundColor: Theme.of(context).backgroundColor,
         elevation: 0,
         centerTitle: true,
         title: Text(
@@ -140,7 +140,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                     Center(
                       child: GoogleSignInButton(
                         onPressed: () {
-                          handleAuthentication(ctx);
+                          handleAuthentication();
                         },
                       ),
                     ),

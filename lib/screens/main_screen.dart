@@ -1,5 +1,6 @@
 import 'package:K9_Karaoke/providers/spinner_state.dart';
 import 'package:K9_Karaoke/providers/user.dart';
+import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/widgets/spinner_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -69,15 +70,14 @@ class _MainScreenState extends State<MainScreen> {
     // }
     Future.delayed(Duration.zero, () => signInIfNeeded(context));
     return Scaffold(
-      // backgroundColor: Theme.of(context).primaryColor,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).backgroundColor,
       resizeToAvoidBottomPadding: false,
       key: scaffoldKey,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(60.0),
         child: AppBar(
           iconTheme:
-              IconThemeData(color: Theme.of(context).accentColor, size: 30),
+              IconThemeData(color: Theme.of(context).primaryColor, size: 30),
           backgroundColor: Colors.transparent,
           elevation: 0,
           centerTitle: true,
@@ -88,14 +88,14 @@ class _MainScreenState extends State<MainScreen> {
               child: RawMaterialButton(
                 child: Icon(
                   Icons.menu,
-                  color: Colors.white,
+                  color: Colors.black,
                   size: 30,
                 ),
                 shape: CircleBorder(),
                 elevation: 2.0,
                 // fillColor: Theme.of(context).accentColor,
                 onPressed: () {
-                  scaffoldKey.currentState.openDrawer();
+                  Navigator.of(context).pushNamed(MenuScreen.routeName);
                 },
               ),
             ),
@@ -125,21 +125,24 @@ class _MainScreenState extends State<MainScreen> {
                     // WebView
                     child: IgnorePointer(
                       ignoring: true,
-                      child: AspectRatio(
-                        aspectRatio: 1 / 1,
-                        child: Stack(
-                          children: <Widget>[
-                            Visibility(
-                              maintainState: true,
-                              visible: pictures.all.isNotEmpty,
-                              child: SingingImage(),
-                            ),
-                            Visibility(
-                              maintainState: true,
-                              visible: pictures.all.isEmpty,
-                              child: NoPhotosButton(),
-                            ),
-                          ],
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 22.0),
+                        child: AspectRatio(
+                          aspectRatio: 1 / 1,
+                          child: Stack(
+                            children: <Widget>[
+                              Visibility(
+                                maintainState: true,
+                                visible: pictures.all.isNotEmpty,
+                                child: SingingImage(),
+                              ),
+                              Visibility(
+                                maintainState: true,
+                                visible: pictures.all.isEmpty,
+                                child: NoPhotosButton(),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
