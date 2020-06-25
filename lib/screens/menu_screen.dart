@@ -1,5 +1,9 @@
+import 'package:K9_Karaoke/providers/current_activity.dart';
+import 'package:K9_Karaoke/screens/main_screen.dart';
+import 'package:K9_Karaoke/screens/picture_menu_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
+import 'package:provider/provider.dart';
 
 class MenuScreen extends StatefulWidget {
   static const routeName = 'menu-screen';
@@ -9,7 +13,10 @@ class MenuScreen extends StatefulWidget {
 }
 
 class _MenuState extends State<MenuScreen> {
+  CurrentActivity currentActivity;
   Widget build(BuildContext context) {
+    currentActivity = Provider.of<CurrentActivity>(context, listen: false);
+
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       resizeToAvoidBottomPadding: false,
@@ -47,15 +54,23 @@ class _MenuState extends State<MenuScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text("Create New Karaoke Card",
-                  style: TextStyle(
-                      fontSize: 40, color: Theme.of(context).primaryColor)),
+            GestureDetector(
+              onTap: () {
+                currentActivity.startCreateCard();
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    PictureMenuScreen.routeName,
+                    (route) => route.settings.name == MainScreen.routeName);
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text("Create New Card",
+                    style: TextStyle(
+                        fontSize: 40, color: Theme.of(context).primaryColor)),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text("View Karaoke Cards",
+              child: Text("View Cards",
                   style: TextStyle(
                       fontSize: 40, color: Theme.of(context).primaryColor)),
             ),

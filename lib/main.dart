@@ -1,5 +1,7 @@
+import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/user.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
+import 'package:K9_Karaoke/screens/picture_menu_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -75,6 +77,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(
           value: User(),
         ),
+        ChangeNotifierProvider.value(
+          value: CurrentActivity(),
+        ),
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -103,6 +108,7 @@ class MyApp extends StatelessWidget {
             SelectSongAndPictureScreen.routeName: (ctx) =>
                 SelectSongAndPictureScreen(),
             MenuScreen.routeName: (ctx) => MenuScreen(),
+            PictureMenuScreen.routeName: (ctx) => PictureMenuScreen(),
           }),
     );
   }

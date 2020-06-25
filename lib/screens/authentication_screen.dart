@@ -38,12 +38,10 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   Future<Map> checkIfSignedIn() async {
     var response =
         await HttpController.dio.get('http://165.227.178.14/is-logged-in');
-    print("response data: $response");
     return response.data;
   }
 
   void handleSignedIn(email) {
-    print("Sign-in successful email: $email");
     Provider.of<User>(context, listen: false).signIn(email);
     Navigator.of(context).pushReplacementNamed(MenuScreen.routeName);
   }
@@ -82,9 +80,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   void didChangeDependencies() async {
     super.didChangeDependencies();
     var responseData = await checkIfSignedIn();
-    print("reeeeesponse data: ${responseData}");
     if (responseData["logged_in"]) {
-      print("it's true");
       handleSignedIn(responseData["user_id"]);
     }
     setState(() => loading = false);
