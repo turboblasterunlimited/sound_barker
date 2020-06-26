@@ -98,7 +98,6 @@ class MyApp extends StatelessWidget {
               buttonColor: Colors.amber[200],
             ),
           ),
-          // home: MainScreen(),
           home: MainScreen(),
           routes: {
             AuthenticationScreen.routeName: (ctx) => AuthenticationScreen(),

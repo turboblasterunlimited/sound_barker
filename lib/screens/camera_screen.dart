@@ -1,3 +1,7 @@
+// DOESN'T WORK WITH IOS EMULATOR
+
+
+
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:path/path.dart' show join;
@@ -9,7 +13,7 @@ import '../providers/pictures.dart';
 
 class CameraScreen extends StatefulWidget {
   static const routeName = 'camera-screen';
-  dynamic cameras;
+  final cameras;
   CameraScreen(this.cameras);
 
   @override
@@ -40,43 +44,21 @@ class _CameraScreenState extends State<CameraScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("Building camera screen.");
     var outlineColor = Colors.black;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).accentColor,
-      extendBodyBehindAppBar: true,
+      backgroundColor: Theme.of(context).backgroundColor,
+      resizeToAvoidBottomPadding: false,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(30.0),
+        preferredSize: Size.fromHeight(60.0),
         child: AppBar(
-          iconTheme: IconThemeData(color: Colors.white, size: 30),
+          iconTheme:
+              IconThemeData(color: Theme.of(context).primaryColor, size: 30),
           backgroundColor: Colors.transparent,
           elevation: 0,
           centerTitle: true,
-          title: Text(
-            'Song Barker',
-            style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 23,
-                shadows: [
-                  Shadow(
-                      // bottomLeft
-                      offset: Offset(-1.5, -1.5),
-                      color: outlineColor),
-                  Shadow(
-                      // bottomRight
-                      offset: Offset(1.5, -1.5),
-                      color: outlineColor),
-                  Shadow(
-                      // topRight
-                      offset: Offset(1.5, 1.5),
-                      color: outlineColor),
-                  Shadow(
-                      // topLeft
-                      offset: Offset(-1.5, 1.5),
-                      color: outlineColor),
-                ],
-                color: Colors.white),
-          ),
+          
         ),
       ),
       body: !_controller.value.isInitialized
@@ -90,7 +72,7 @@ class _CameraScreenState extends State<CameraScreen> {
                 Expanded(
                   child: Center(
                     child: FloatingActionButton(
-                      backgroundColor: Theme.of(context).primaryColor,
+                      backgroundColor: Colors.white,
                       child: Icon(Icons.camera_alt),
                       onPressed: () async {
                         Picture newPicture = Picture();

@@ -1,7 +1,15 @@
+import 'dart:io';
+
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/pictures.dart';
+import 'package:K9_Karaoke/screens/camera_screen.dart';
+import 'package:K9_Karaoke/screens/confirm_picture_screen.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
+import 'package:K9_Karaoke/tools/app_storage_path.dart';
+import 'package:K9_Karaoke/tools/cropper.dart';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 
@@ -14,6 +22,24 @@ class PictureMenuScreen extends StatefulWidget {
 
 class _PictureMenuScreenState extends State<PictureMenuScreen> {
   Pictures pictures;
+  Future getImage() async {
+    final newPicture = Picture();
+    newPicture.filePath = "$myAppStoragePath/${newPicture.fileId}.jpg";
+
+    final pickedFile = await ImagePicker().getImage(source: ImageSource.camera);
+    final bytes = await pickedFile.readAsBytes();
+
+    File(newPicture.filePath).writeAsBytes(
+      bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
+
+    await cropImage(newPicture, Theme.of(context).backgroundColor, Theme.of(context).primaryColor);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ConfirmPictureScreen(newPicture),
+      ),
+    );
+  }
 
   Widget build(BuildContext context) {
     pictures = Provider.of<Pictures>(context, listen: false);
@@ -60,7 +86,17 @@ class _PictureMenuScreenState extends State<PictureMenuScreen> {
                 padding: EdgeInsets.all(10),
                 child: Text("Take A Picture", style: TextStyle(fontSize: 20)),
                 color: Theme.of(context).primaryColor,
-                onPressed: () {},
+                onPressed: getImage,
+                // () async {
+
+                // List<CameraDescription> cameras = await availableCameras();
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (ctx) => CameraScreen(cameras),
+                //   ),
+                // );
+                // },
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(22.0),
                 ),
