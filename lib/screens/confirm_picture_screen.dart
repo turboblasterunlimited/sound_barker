@@ -292,8 +292,14 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
               aspectRatio: 1 / 1,
               child: Stack(
                 children: <Widget>[
-                  Image.file(
-                    File(widget.newPicture.filePath),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    child: FittedBox(
+                      fit: BoxFit.fill,
+                      child: Image.file(
+                        File(widget.newPicture.filePath),
+                      ),
+                    ),
                   ),
                   GestureDetector(
                     // SETTING COORDINATES
