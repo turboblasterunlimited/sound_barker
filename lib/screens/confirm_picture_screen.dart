@@ -233,6 +233,15 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
       });
     }
 
+    double _getTextFormFieldLength() {
+      int nameLength = widget.newPicture.name.length;
+      print("namelength $nameLength");
+      int correctedLength = nameLength == 0 ? 1 : nameLength;
+      print("correctedlength $correctedLength");
+
+      return correctedLength * 17.0;
+    }
+
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       resizeToAvoidBottomPadding: false,
@@ -246,12 +255,13 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
           centerTitle: true,
           leading: Icon(LineAwesomeIcons.paw),
           title: Container(
-            width: 200,
+            width: _getTextFormFieldLength() + 60,
             child: TextFormField(
               style: TextStyle(color: Colors.grey[600], fontSize: 25),
               maxLength: 12,
               textAlign: TextAlign.center,
               decoration: InputDecoration(
+                  counterText: "",
                   suffixIcon: Icon(LineAwesomeIcons.edit),
                   border: InputBorder.none),
               initialValue: widget.newPicture.name,
