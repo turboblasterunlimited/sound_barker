@@ -2,12 +2,10 @@ import 'dart:io';
 
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/pictures.dart';
-import 'package:K9_Karaoke/screens/camera_screen.dart';
 import 'package:K9_Karaoke/screens/confirm_picture_screen.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:K9_Karaoke/tools/cropper.dart';
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
@@ -22,23 +20,28 @@ class PictureMenuScreen extends StatefulWidget {
 
 class _PictureMenuScreenState extends State<PictureMenuScreen> {
   Pictures pictures;
-  Future getImage() async {
-    final newPicture = Picture();
-    newPicture.filePath = "$myAppStoragePath/${newPicture.fileId}.jpg";
 
-    final pickedFile = await ImagePicker().getImage(source: ImageSource.camera);
-    final bytes = await pickedFile.readAsBytes();
-
-    File(newPicture.filePath).writeAsBytes(
-      bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
-
-    await cropImage(newPicture, Theme.of(context).backgroundColor, Theme.of(context).primaryColor);
+  Future<void> _cropAndNavigate(newPicture) async {
+    await cropImage(newPicture, Theme.of(context).backgroundColor,
+        Theme.of(context).primaryColor);
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ConfirmPictureScreen(newPicture),
       ),
     );
+  }
+
+  Future getImage(source) async {
+    final newPicture = Picture();
+    newPicture.filePath = "$myAppStoragePath/${newPicture.fileId}.jpg";
+
+    final pickedFile = await ImagePicker().getImage(source: source);
+    final bytes = await pickedFile.readAsBytes();
+
+    File(newPicture.filePath).writeAsBytesSync(
+        bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
+    await _cropAndNavigate(newPicture);
   }
 
   Widget build(BuildContext context) {
@@ -66,7 +69,6 @@ class _PictureMenuScreenState extends State<PictureMenuScreen> {
                 ),
                 shape: CircleBorder(),
                 elevation: 2.0,
-                // fillColor: Theme.of(context).accentColor,
                 onPressed: () {
                   Navigator.of(context).pushNamed(MenuScreen.routeName);
                 },
@@ -86,17 +88,7 @@ class _PictureMenuScreenState extends State<PictureMenuScreen> {
                 padding: EdgeInsets.all(10),
                 child: Text("Take A Picture", style: TextStyle(fontSize: 20)),
                 color: Theme.of(context).primaryColor,
-                onPressed: getImage,
-                // () async {
-
-                // List<CameraDescription> cameras = await availableCameras();
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (ctx) => CameraScreen(cameras),
-                //   ),
-                // );
-                // },
+                onPressed: () => getImage(ImageSource.camera),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(22.0),
                 ),
@@ -108,7 +100,7 @@ class _PictureMenuScreenState extends State<PictureMenuScreen> {
                 padding: EdgeInsets.all(10),
                 child: Text("Phone Storage", style: TextStyle(fontSize: 20)),
                 color: Theme.of(context).primaryColor,
-                onPressed: () {},
+                onPressed: () => getImage(ImageSource.gallery),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(22.0),
                 ),

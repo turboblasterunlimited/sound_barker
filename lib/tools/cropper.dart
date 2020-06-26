@@ -26,7 +26,7 @@ Future<void> cropImage(picture, toolbarColor, widgetColor) async {
       title: 'Now crop it!',
     ),
   );
-
+  print("Rename File: ${picture.filePath}");
   newFile.renameSync(picture.filePath);
   // make it 512x512
   resizeImage(picture.filePath);

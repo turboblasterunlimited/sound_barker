@@ -31,7 +31,6 @@ dependencies:
   path_provider: ^1.6.0
   webview_flutter: ^0.3.19+8
   flutter_spinkit: ^4.1.2
-  camera: ^0.5.7+4
   outline_material_icons: ^0.1.1
   csv: ^4.0.3
   file_picker: ^1.4.3+2
