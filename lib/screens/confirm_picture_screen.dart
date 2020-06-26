@@ -288,99 +288,102 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            AspectRatio(
-              aspectRatio: 1 / 1,
-              child: Stack(
-                children: <Widget>[
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    child: FittedBox(
-                      fit: BoxFit.fill,
-                      child: Image.file(
-                        File(widget.newPicture.filePath),
+            GestureDetector(
+              // SETTING COORDINATES
+              onPanStart: (details) async {
+                touchedXY = [
+                  details.localPosition.dx,
+                  details.localPosition.dy
+                ];
+                getCoordinatesForCanvas().forEach((pointName, existingXY) {
+                  if (!_inProximity(existingXY, touchedXY)) return;
+                  setState(() {
+                    touchedXY = touchedXY;
+                    grabbing = true;
+                    grabPoint[pointName] = existingXY;
+                    widget.coordinatesSet = true;
+                    print("IN PROXIMITY!!");
+                    if (pointName == "mouth")
+                      mouthStartingPosition = existingXY;
+                    mouthLeftStartingPosition =
+                        List.from(canvasCoordinates["mouthLeft"]);
+                    mouthRightStartingPosition =
+                        List.from(canvasCoordinates["mouthRight"]);
+                  });
+                });
+              },
+              onPanUpdate: (details) {
+                if (!grabbing) return;
+                String pointName = grabPoint.keys.first;
+
+                setState(() {
+                  touchedXY = [
+                    details.localPosition.dx,
+                    details.localPosition.dy
+                  ];
+                  // Coordinate points are modified here
+                  canvasCoordinates[pointName] = touchedXY;
+                  // Move mouthLeft and mouthRight with mouth
+                  if (pointName == "mouth") moveMouthLeftRight();
+                });
+              },
+              onPanEnd: (details) async {
+                if (!grabbing) return;
+                switchEyes();
+                setState(() {
+                  grabbing = false;
+                  grabPoint = {};
+                });
+              },
+              child: AspectRatio(
+                aspectRatio: 1 / 1,
+                child: Stack(
+                  children: <Widget>[
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      child: FittedBox(
+                        fit: BoxFit.fill,
+                        child: Image.file(
+                          File(widget.newPicture.filePath),
+                        ),
                       ),
                     ),
-                  ),
-                  GestureDetector(
-                    // SETTING COORDINATES
-                    onPanStart: (details) async {
-                      touchedXY = [
-                        details.localPosition.dx,
-                        details.localPosition.dy
-                      ];
-                      getCoordinatesForCanvas()
-                          .forEach((pointName, existingXY) {
-                        if (!_inProximity(existingXY, touchedXY)) return;
-                        setState(() {
-                          touchedXY = touchedXY;
-                          grabbing = true;
-                          grabPoint[pointName] = existingXY;
-                          widget.coordinatesSet = true;
-                          print("IN PROXIMITY!!");
-                          if (pointName == "mouth")
-                            mouthStartingPosition = existingXY;
-                          mouthLeftStartingPosition =
-                              List.from(canvasCoordinates["mouthLeft"]);
-                          mouthRightStartingPosition =
-                              List.from(canvasCoordinates["mouthRight"]);
-                        });
-                      });
-                    },
-                    onPanUpdate: (details) {
-                      if (!grabbing) return;
-                      String pointName = grabPoint.keys.first;
-
-                      setState(() {
-                        touchedXY = [
-                          details.localPosition.dx,
-                          details.localPosition.dy
-                        ];
-                        // Coordinate points are modified here
-                        canvasCoordinates[pointName] = touchedXY;
-                        // Move mouthLeft and mouthRight with mouth
-                        if (pointName == "mouth") moveMouthLeftRight();
-                      });
-                    },
-                    onPanEnd: (details) async {
-                      if (!grabbing) return;
-                      switchEyes();
-                      setState(() {
-                        grabbing = false;
-                        grabPoint = {};
-                      });
-                    },
-                    child: CustomPaint(
-                      painter: CoordinatesPainter(getCoordinatesForCanvas(),
-                          magnifiedImage, touchedXY, grabbing),
+                    // Points and lines
+                    CustomPaint(
+                      painter: CoordinatesPainter(
+                          getCoordinatesForCanvas(), magnifiedImage, touchedXY),
                       child: Container(),
                     ),
-                  ),
-
-                  // Magnifying glass
-                  Visibility(
-                    visible: grabbing,
-                    child: Stack(
-                      children: <Widget>[
-                        Positioned(
-                          left: 0 -
-                              (touchedXY[0] /
-                                  canvasLength *
-                                  imageSizeDifference),
-                          bottom: magImageYCompensator(),
-                          child: ClipOval(
-                              clipper:
-                                  MagnifiedImage(touchedXY[0], touchedXY[1]),
-                              child: Image.memory(imageDataBytes)),
-                        ),
-                        CustomPaint(
-                          painter: MagnifyingTargetPainter(
-                              touchedXY, grabPoint.keys),
-                          child: Container(),
-                        ),
-                      ],
+                    // Magnifying glass
+                    Visibility(
+                      visible: grabbing,
+                      child: Stack(
+                        children: <Widget>[
+                          Positioned(
+                            left: 0 -
+                                (touchedXY[0] /
+                                    canvasLength *
+                                    imageSizeDifference),
+                            bottom: magImageYCompensator(),
+                            child: ClipOval(
+                                clipper:
+                                    MagnifiedImage(touchedXY[0], touchedXY[1]),
+                                child: Image.memory(imageDataBytes)),
+                          ),
+                          CustomPaint(
+                            painter: MagnifyingTargetPainter(
+                                touchedXY, grabPoint.keys),
+                            child: Container(),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                    CustomPaint(
+                      painter: PointLabelsPainter(canvasCoordinates),
+                      child: Container(),
+                    ),
+                  ],
+                ),
               ),
             ),
             Visibility(
@@ -463,22 +466,22 @@ class MagnifiedImage extends CustomClipper<Rect> {
   bool shouldReclip(oldClipper) => true;
 }
 
-class MagnifyingTargetPainter extends CustomPainter {
-  final touchedXY;
-  final grabPoint;
-  MagnifyingTargetPainter(this.touchedXY, this.grabPoint);
+Map<String, String> displayNames = {
+  "rightEye": "Right Eye",
+  "leftEye": "Left Eye",
+  "mouth": "Mouth",
+  "mouthRight": "Right Mouth",
+  "mouthLeft": "Left Mouth",
+  "headBottom": "Chin",
+  "headRight": "Head Right",
+  "headLeft": "Head Left",
+  "headTop": "Head Top",
+};
 
-  Map<String, String> displayNames = {
-    "rightEye": "Right Eye",
-    "leftEye": "Left Eye",
-    "mouth": "Mouth",
-    "mouthRight": "Right Mouth",
-    "mouthLeft": "Left Mouth",
-    "headBottom": "Chin",
-    "headRight": "Head Right",
-    "headLeft": "Head Left",
-    "headTop": "Head Top",
-  };
+// must be separate for stacking purposes
+class PointLabelsPainter extends CustomPainter {
+  final coordinates;
+  PointLabelsPainter(this.coordinates);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -487,36 +490,65 @@ class MagnifyingTargetPainter extends CustomPainter {
       ..strokeWidth = 4.0
       ..color = Colors.blue;
 
-    double posY = touchedXY[1];
-    // Compensation logic, bumps magnified image marker below finger
-    posY = posY < magOffset ? posY + 200 : posY;
+    Offset adjustOffset(List coordinates, Size tpSize) {
+      return Offset(coordinates[0] - (tpSize.width / 2), coordinates[1] - 40);
+    }
 
-    canvas.drawCircle(
-      Offset(
-        touchedXY[0],
-        posY - magOffset,
-      ),
-      4.0,
-      paint,
-    );
+    void drawPointLabels() {
+      coordinates.forEach((name, location) {
+        var tp = TextPainter(
+            // textScaleFactor: 1.0,
+            text: TextSpan(
+              text: displayNames[name],
+              style: TextStyle(fontFamily: 'lato', fontSize: 15),
+            ),
+            textAlign: TextAlign.center,
+            textDirection: TextDirection.ltr);
+        tp.layout();
+        tp.paint(canvas, adjustOffset(location, tp.size));
+      });
+    }
 
-    if (grabPoint.length == 0) return;
+    drawPointLabels();
+  }
 
-    final TextPainter textPainter = TextPainter(
-        text: TextSpan(
-          text: displayNames[grabPoint.first],
-          style: TextStyle(fontFamily: 'lato', fontSize: 20),
+  @override
+  bool shouldRepaint(CustomPainter oldDeligate) => true;
+}
+
+class MagnifyingTargetPainter extends CustomPainter {
+  final touchedXY;
+  final grabPoint;
+
+  MagnifyingTargetPainter(
+    this.touchedXY,
+    this.grabPoint,
+  );
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 4.0
+      ..color = Colors.blue;
+
+    void drawMagnifier() {
+      double posY = touchedXY[1];
+      // Compensation logic, bumps magnified image marker below finger
+      posY = posY < magOffset ? posY + 200 : posY;
+
+      canvas.drawCircle(
+        Offset(
+          touchedXY[0],
+          posY - magOffset,
         ),
-        textAlign: TextAlign.center,
-        textDirection: TextDirection.ltr)
-      ..layout(maxWidth: size.width - 12.0 - 12.0);
-    textPainter.paint(
-      canvas,
-      Offset(
-        touchedXY[0] - 40,
-        posY - magOffset + 20,
-      ),
-    );
+        4.0,
+        paint,
+      );
+    }
+
+    if (grabPoint.isEmpty) return;
+    drawMagnifier();
   }
 
   @override
@@ -527,10 +559,8 @@ class CoordinatesPainter extends CustomPainter {
   final coordinates;
   final ui.Image magnifiedImage;
   final touchedXY;
-  final grabbing;
 
-  CoordinatesPainter(
-      this.coordinates, this.magnifiedImage, this.touchedXY, this.grabbing)
+  CoordinatesPainter(this.coordinates, this.magnifiedImage, this.touchedXY)
       : super();
 
   @override
