@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
 import 'dart:convert';
@@ -34,7 +35,7 @@ class ConfirmPictureScreen extends StatefulWidget {
     this.coordinatesSet = coordinatesSet ?? false;
     if (this.editing == true) {
       this.title =
-          this.isNamed == false ? "Rename your picture" : "Set the face";
+          this.isNamed == false ? "Rename This Photo" : "Align Face Markers";
     } else {
       this.title = "Name it!";
     }
@@ -59,6 +60,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
   bool grabbing = false;
   Map<String, List<double>> grabPoint = {};
 
+  @override
   void didChangeDependencies() {
     canvasLength ??= MediaQuery.of(context).size.width;
     middle ??= canvasLength / 2;
@@ -233,37 +235,54 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
 
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
+      resizeToAvoidBottomPadding: false,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(40.0),
+        preferredSize: Size.fromHeight(60.0),
         child: AppBar(
+          iconTheme:
+              IconThemeData(color: Theme.of(context).primaryColor, size: 30),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
           centerTitle: true,
-          leading: RawMaterialButton(
-            child: Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-              size: 22,
+          leading: Icon(LineAwesomeIcons.paw),
+          title: Container(
+            width: 200,
+            child: TextFormField(
+              style: TextStyle(color: Colors.grey[600], fontSize: 25),
+              maxLength: 12,
+              textAlign: TextAlign.center,
+              decoration: InputDecoration(
+                  suffixIcon: Icon(LineAwesomeIcons.edit),
+                  border: InputBorder.none),
+              initialValue: widget.newPicture.name,
+              onChanged: (val) {
+                setState(() {
+                  widget.newPicture.name = val;
+                });
+              },
+              onFieldSubmitted: (_) {
+                FocusScope.of(context).unfocus();
+              },
             ),
-            onPressed: () {
-              // BACK ARROW
-              setState(() {
-                if (widget.editing) {
-                  Navigator.popUntil(
-                    context,
-                    ModalRoute.withName(MainScreen.routeName),
-                  );
-                } else if (!widget.isNamed) {
-                  // if on first screen
-                  Navigator.of(context).pop();
-                } else {
-                  // if on second screen
-                  widget.isNamed = false;
-                  widget.title = 'Name your picture';
-                }
-              });
-            },
           ),
-          title: Text(widget.title),
-          iconTheme: IconThemeData(color: Colors.white, size: 30),
+          actions: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(top: 5),
+              child: RawMaterialButton(
+                child: Icon(
+                  Icons.menu,
+                  color: Colors.black,
+                  size: 30,
+                ),
+                shape: CircleBorder(),
+                elevation: 2.0,
+                // fillColor: Theme.of(context).accentColor,
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          ],
         ),
       ),
       body: SingleChildScrollView(
@@ -276,97 +295,64 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                   Image.file(
                     File(widget.newPicture.filePath),
                   ),
-                  Visibility(
-                    visible: !widget.isNamed,
-                    child: Container(
-                      color: Colors.white,
-                      padding: EdgeInsets.all(10),
-                      child: TextFormField(
-                        style: TextStyle(fontSize: 30),
-                        textAlign: TextAlign.center,
-                        autofocus: true,
-                        initialValue: widget.imageName,
-                        onChanged: (newName) {
-                          widget.imageName = newName;
-                        },
-                        onFieldSubmitted: (_) {
-                          // NAMING
-                          setState(() {
-                            widget.newPicture.name = widget.imageName;
-                            if (widget.editing == false) {
-                              widget.title = "Align face points";
-                              widget.isNamed = true;
-                              widget.coordinatesSet = true;
-                            } else if (widget.editing == true) {
-                              _submitEditedPicture();
-                            } else {
-                              widget.title = "Looks good!";
-                            }
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                  Visibility(
-                    visible: widget.isNamed,
-                    child: GestureDetector(
-                      // SETTING COORDINATES
-                      onPanStart: (details) async {
+                  GestureDetector(
+                    // SETTING COORDINATES
+                    onPanStart: (details) async {
+                      touchedXY = [
+                        details.localPosition.dx,
+                        details.localPosition.dy
+                      ];
+                      getCoordinatesForCanvas()
+                          .forEach((pointName, existingXY) {
+                        if (!_inProximity(existingXY, touchedXY)) return;
+                        setState(() {
+                          touchedXY = touchedXY;
+                          grabbing = true;
+                          grabPoint[pointName] = existingXY;
+                          widget.coordinatesSet = true;
+                          print("IN PROXIMITY!!");
+                          if (pointName == "mouth")
+                            mouthStartingPosition = existingXY;
+                          mouthLeftStartingPosition =
+                              List.from(canvasCoordinates["mouthLeft"]);
+                          mouthRightStartingPosition =
+                              List.from(canvasCoordinates["mouthRight"]);
+                        });
+                      });
+                    },
+                    onPanUpdate: (details) {
+                      if (!grabbing) return;
+                      String pointName = grabPoint.keys.first;
+
+                      setState(() {
                         touchedXY = [
                           details.localPosition.dx,
                           details.localPosition.dy
                         ];
-                        getCoordinatesForCanvas()
-                            .forEach((pointName, existingXY) {
-                          if (!_inProximity(existingXY, touchedXY)) return;
-                          setState(() {
-                            touchedXY = touchedXY;
-                            grabbing = true;
-                            grabPoint[pointName] = existingXY;
-                            widget.coordinatesSet = true;
-                            print("IN PROXIMITY!!");
-                            if (pointName == "mouth")
-                              mouthStartingPosition = existingXY;
-                            mouthLeftStartingPosition =
-                                List.from(canvasCoordinates["mouthLeft"]);
-                            mouthRightStartingPosition =
-                                List.from(canvasCoordinates["mouthRight"]);
-                          });
-                        });
-                      },
-                      onPanUpdate: (details) {
-                        if (!grabbing) return;
-                        String pointName = grabPoint.keys.first;
-
-                        setState(() {
-                          touchedXY = [
-                            details.localPosition.dx,
-                            details.localPosition.dy
-                          ];
-                          // Coordinate points are modified here
-                          canvasCoordinates[pointName] = touchedXY;
-                          // Move mouthLeft and mouthRight with mouth
-                          if (pointName == "mouth") moveMouthLeftRight();
-                        });
-                      },
-                      onPanEnd: (details) async {
-                        if (!grabbing) return;
-                        switchEyes();
-                        setState(() {
-                          grabbing = false;
-                          grabPoint = {};
-                        });
-                      },
-                      child: CustomPaint(
-                        painter: CoordinatesPainter(getCoordinatesForCanvas(),
-                            magnifiedImage, touchedXY, grabbing),
-                        child: Container(),
-                      ),
+                        // Coordinate points are modified here
+                        canvasCoordinates[pointName] = touchedXY;
+                        // Move mouthLeft and mouthRight with mouth
+                        if (pointName == "mouth") moveMouthLeftRight();
+                      });
+                    },
+                    onPanEnd: (details) async {
+                      if (!grabbing) return;
+                      switchEyes();
+                      setState(() {
+                        grabbing = false;
+                        grabPoint = {};
+                      });
+                    },
+                    child: CustomPaint(
+                      painter: CoordinatesPainter(getCoordinatesForCanvas(),
+                          magnifiedImage, touchedXY, grabbing),
+                      child: Container(),
                     ),
                   ),
+
                   // Magnifying glass
                   Visibility(
-                    visible: widget.isNamed && grabbing,
+                    visible: grabbing,
                     child: Stack(
                       children: <Widget>[
                         Positioned(
@@ -496,7 +482,7 @@ class MagnifyingTargetPainter extends CustomPainter {
       ..color = Colors.blue;
 
     double posY = touchedXY[1];
-      // Compensation logic, bumps magnified image marker below finger
+    // Compensation logic, bumps magnified image marker below finger
     posY = posY < magOffset ? posY + 200 : posY;
 
     canvas.drawCircle(

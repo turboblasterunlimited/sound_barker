@@ -33,7 +33,6 @@ dependencies:
   flutter_spinkit: ^4.1.2
   outline_material_icons: ^0.1.1
   csv: ^4.0.3
-  file_picker: ^1.4.3+2
   image_cropper: ^1.2.1
   openid_client: ^0.2.5
   url_launcher: ^5.4.7  

@@ -127,7 +127,7 @@ class Picture with ChangeNotifier, Gcloud {
     DateTime created,
   }) {
     this.coordinates = coordinates;
-    this.name = name;
+    this.name = "Pooch";
     this.filePath = filePath;
     this.fileUrl = fileUrl;
     this.fileId = fileId ??= Uuid().v4();

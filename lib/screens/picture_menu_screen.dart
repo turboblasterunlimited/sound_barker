@@ -4,6 +4,7 @@ import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/pictures.dart';
 import 'package:K9_Karaoke/screens/confirm_picture_screen.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
+import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:K9_Karaoke/tools/cropper.dart';
 import 'package:flutter/material.dart';
@@ -112,7 +113,10 @@ class _PictureMenuScreenState extends State<PictureMenuScreen> {
                 padding: EdgeInsets.all(10),
                 child: Text("Photo Library", style: TextStyle(fontSize: 20)),
                 color: Theme.of(context).primaryColor,
-                onPressed: () {},
+                onPressed: pictures.all.isEmpty
+                    ? null
+                    : () => Navigator.of(context)
+                        .pushNamed(PhotoLibraryScreen.routeName),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(22.0),
                 ),
