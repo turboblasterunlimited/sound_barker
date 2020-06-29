@@ -5,6 +5,10 @@ class CurrentActivity with ChangeNotifier {
   bool songLibrary = false;
   bool barkLibrary = false;
 
+  bool activitySelected() {
+    return cardCreation || songLibrary || barkLibrary;
+  }
+
   void startCreateCard() {
     cardCreation = true;
     songLibrary = false;

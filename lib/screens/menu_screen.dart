@@ -29,21 +29,25 @@ class _MenuState extends State<MenuScreen> {
           elevation: 0,
           centerTitle: true,
           leading: Icon(LineAwesomeIcons.paw),
+          // Can only close if activity already selected
           actions: <Widget>[
             Padding(
               padding: const EdgeInsets.only(top: 5),
               child: RawMaterialButton(
-                child: Icon(
-                  Icons.menu,
-                  color: Colors.black,
-                  size: 30,
+                child: Visibility(
+                  visible: currentActivity.activitySelected(),
+                  child: Icon(
+                    Icons.menu,
+                    color: Colors.black,
+                    size: 30,
+                  ),
                 ),
                 shape: CircleBorder(),
                 elevation: 2.0,
                 // fillColor: Theme.of(context).accentColor,
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+                onPressed: currentActivity.activitySelected()
+                    ? () => Navigator.of(context).pop()
+                    : null,
               ),
             ),
           ],

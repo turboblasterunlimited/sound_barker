@@ -25,7 +25,7 @@ class ConfirmPictureScreen extends StatefulWidget {
   bool isNamed;
   bool coordinatesSet;
   bool editing;
-  String title;
+  String instructionalText;
   String imageName;
 
   ConfirmPictureScreen(Picture newPicture, {isNamed, coordinatesSet}) {
@@ -34,10 +34,10 @@ class ConfirmPictureScreen extends StatefulWidget {
     this.isNamed = isNamed ?? false;
     this.coordinatesSet = coordinatesSet ?? false;
     if (this.editing == true) {
-      this.title =
-          this.isNamed == false ? "Rename This Photo" : "Align Face Markers";
+      this.instructionalText =
+          this.isNamed == false ? "Rename This Photo" : "Align Face\n\nMarkers";
     } else {
-      this.title = "Name it!";
+      this.instructionalText = "Name it!";
     }
     this.imageName = this.newPicture.name ?? "";
   }
@@ -235,10 +235,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
 
     double _getTextFormFieldLength() {
       int nameLength = widget.newPicture.name.length;
-      print("namelength $nameLength");
       int correctedLength = nameLength == 0 ? 1 : nameLength;
-      print("correctedlength $correctedLength");
-
       return correctedLength * 17.0;
     }
 
@@ -396,6 +393,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                 ),
               ),
             ),
+            Text(widget.instructionalText),
             Visibility(
               visible: widget.coordinatesSet,
               child: SizedBox(
