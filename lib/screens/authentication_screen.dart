@@ -94,12 +94,10 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       backgroundColor: Colors.amber[50],
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white, size: 30),
         backgroundColor: Theme.of(context).backgroundColor,
         elevation: 0,
         centerTitle: true,
-        leading:
-            Icon(LineAwesomeIcons.paw, color: Theme.of(context).primaryColor),
+        leading: Image.asset("assets/images/K9_logotype.png", width: 300),
       ),
       body: Builder(
         builder: (ctx) => Column(

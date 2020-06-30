@@ -53,12 +53,17 @@ class _PictureMenuScreenState extends State<PictureMenuScreen> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(60.0),
         child: AppBar(
-          iconTheme:
-              IconThemeData(color: Theme.of(context).primaryColor, size: 30),
           backgroundColor: Colors.transparent,
           elevation: 0,
-          centerTitle: true,
-          leading: Icon(LineAwesomeIcons.paw),
+          automaticallyImplyLeading: false, // Don't show the leading button
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Image.asset("assets/images/K9_logotype.png", width: 100),
+              // Your widgets here
+            ],
+          ),
           actions: <Widget>[
             Padding(
               padding: const EdgeInsets.only(top: 5),

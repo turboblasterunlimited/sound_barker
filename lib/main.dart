@@ -1,6 +1,7 @@
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/user.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
+import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/screens/picture_menu_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -107,6 +108,7 @@ class MyApp extends StatelessWidget {
                 SelectSongAndPictureScreen(),
             MenuScreen.routeName: (ctx) => MenuScreen(),
             PictureMenuScreen.routeName: (ctx) => PictureMenuScreen(),
+            PhotoLibraryScreen.routeName: (ctx) => PhotoLibraryScreen(),
           }),
     );
   }

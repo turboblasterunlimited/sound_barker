@@ -108,7 +108,7 @@ class _MainScreenState extends State<MainScreen> {
           backgroundColor: Colors.transparent,
           elevation: 0,
           centerTitle: true,
-          leading: Icon(LineAwesomeIcons.paw),
+          leading: Image.asset("assets/images/K9_logotype.png"),
           actions: <Widget>[
             Padding(
               padding: const EdgeInsets.only(top: 5),
