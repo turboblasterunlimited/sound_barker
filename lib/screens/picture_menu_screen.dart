@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/pictures.dart';
-import 'package:K9_Karaoke/screens/confirm_picture_screen.dart';
+import 'package:K9_Karaoke/screens/set_picture_coordinates_screen.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
@@ -28,7 +28,7 @@ class _PictureMenuScreenState extends State<PictureMenuScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ConfirmPictureScreen(newPicture),
+        builder: (context) => SetPictureCoordinatesScreen(newPicture),
       ),
     );
   }

@@ -4,7 +4,7 @@ import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'dart:io';
 
 import '../providers/pictures.dart';
-import '../screens/confirm_picture_screen.dart';
+import '../screens/set_picture_coordinates_screen.dart';
 
 class PictureCard extends StatefulWidget {
   final int index;
@@ -55,7 +55,7 @@ class _PictureCardState extends State<PictureCard>
         context,
         MaterialPageRoute(
           builder: (context) =>
-              ConfirmPictureScreen(widget.picture, isNamed: true),
+              SetPictureCoordinatesScreen(widget.picture, isNamed: true),
         ),
       );
     } else if (action == "RENAME") {
@@ -63,7 +63,7 @@ class _PictureCardState extends State<PictureCard>
         context,
         MaterialPageRoute(
           builder: (context) =>
-              ConfirmPictureScreen(widget.picture, coordinatesSet: true),
+              SetPictureCoordinatesScreen(widget.picture, coordinatesSet: true),
         ),
       );
     }

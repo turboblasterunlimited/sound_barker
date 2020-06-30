@@ -90,6 +90,7 @@ class MyApp extends StatelessWidget {
             primarySwatch: MaterialColor(0xff234498, color),
             accentColor: Colors.purple[200],
             highlightColor: MaterialColor(0xff44bba4, color),
+            errorColor: MaterialColor(0xff9a2020, color),
             // backgroundColor: MaterialColor(0xff367b92, color),
             fontFamily: 'Lato',
             buttonTheme: ButtonThemeData(

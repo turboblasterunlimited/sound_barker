@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:K9_Karaoke/widgets/card_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'dart:io';
@@ -20,7 +21,7 @@ double imageSizeDifference;
 double magOffset = 80;
 int magImageSize = 550;
 
-class ConfirmPictureScreen extends StatefulWidget {
+class SetPictureCoordinatesScreen extends StatefulWidget {
   Picture newPicture;
   bool isNamed;
   bool coordinatesSet;
@@ -28,14 +29,14 @@ class ConfirmPictureScreen extends StatefulWidget {
   String instructionalText;
   String imageName;
 
-  ConfirmPictureScreen(Picture newPicture, {isNamed, coordinatesSet}) {
+  SetPictureCoordinatesScreen(Picture newPicture, {isNamed, coordinatesSet}) {
     this.newPicture = newPicture;
     this.editing = isNamed ?? coordinatesSet ?? false;
     this.isNamed = isNamed ?? false;
     this.coordinatesSet = coordinatesSet ?? false;
     if (this.editing == true) {
       this.instructionalText =
-          this.isNamed == false ? "Rename This Photo" : "Align Face\n\nMarkers";
+          this.isNamed == false ? "Rename This Photo" : "Align Face Markers";
     } else {
       this.instructionalText = "Name it!";
     }
@@ -43,10 +44,12 @@ class ConfirmPictureScreen extends StatefulWidget {
   }
 
   @override
-  _ConfirmPictureScreenState createState() => _ConfirmPictureScreenState();
+  _SetPictureCoordinatesScreenState createState() =>
+      _SetPictureCoordinatesScreenState();
 }
 
-class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
+class _SetPictureCoordinatesScreenState
+    extends State<SetPictureCoordinatesScreen> {
   Map<String, List<double>> canvasCoordinates = {};
   double middle;
   IMG.Image imageData;
@@ -236,7 +239,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
     double _getTextFormFieldLength() {
       int nameLength = widget.newPicture.name.length;
       int correctedLength = nameLength == 0 ? 1 : nameLength;
-      return correctedLength * 17.0;
+      return correctedLength * 10.0;
     }
 
     return Scaffold(
@@ -250,27 +253,35 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
           backgroundColor: Colors.transparent,
           elevation: 0,
           centerTitle: true,
-          leading: Icon(LineAwesomeIcons.paw),
-          title: Container(
-            width: _getTextFormFieldLength() + 60,
-            child: TextFormField(
-              style: TextStyle(color: Colors.grey[600], fontSize: 25),
-              maxLength: 12,
-              textAlign: TextAlign.center,
-              decoration: InputDecoration(
-                  counterText: "",
-                  suffixIcon: Icon(LineAwesomeIcons.edit),
-                  border: InputBorder.none),
-              initialValue: widget.newPicture.name,
-              onChanged: (val) {
-                setState(() {
-                  widget.newPicture.name = val;
-                });
-              },
-              onFieldSubmitted: (_) {
-                FocusScope.of(context).unfocus();
-              },
-            ),
+          automaticallyImplyLeading: false, // Don't show the leading button
+          titleSpacing: 3.0,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Image.asset("assets/images/K9_logotype.png", width: 80),
+              Container(
+                width: _getTextFormFieldLength() + 58,
+                child: TextFormField(
+                  style: TextStyle(color: Colors.grey[600], fontSize: 20),
+                  maxLength: 12,
+                  textAlign: TextAlign.center,
+                  decoration: InputDecoration(
+                      counterText: "",
+                      suffixIcon: Icon(LineAwesomeIcons.edit),
+                      border: InputBorder.none),
+                  initialValue: widget.newPicture.name,
+                  onChanged: (val) {
+                    setState(() {
+                      widget.newPicture.name = val;
+                    });
+                  },
+                  onFieldSubmitted: (_) {
+                    FocusScope.of(context).unfocus();
+                  },
+                ),
+              ),
+            ],
           ),
           actions: <Widget>[
             Padding(
@@ -385,60 +396,75 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                         ],
                       ),
                     ),
-                    CustomPaint(
-                      painter: PointLabelsPainter(canvasCoordinates),
-                      child: Container(),
-                    ),
+                    // CustomPaint(
+                    //   painter: PointLabelsPainter(canvasCoordinates),
+                    //   child: Container(),
+                    // ),
                   ],
                 ),
               ),
             ),
-            // CardProgressBar(),
-            Text(widget.instructionalText),
-            Visibility(
-              visible: widget.coordinatesSet,
-              child: SizedBox(
-                height: 200,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    RawMaterialButton(
-                      onPressed: () {
-                        if (widget.editing) {
-                          _submitEditedPicture();
-                        } else {
-                          _submitPicture();
-                        }
-                      },
-                      child: Icon(
-                        Icons.thumb_up,
-                        color: Colors.black38,
-                        size: 40,
-                      ),
-                      shape: CircleBorder(),
-                      elevation: 2.0,
-                      fillColor: Colors.green,
-                      padding: const EdgeInsets.all(15.0),
-                    ),
-                    RawMaterialButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Icon(
-                        Icons.thumb_down,
-                        color: Colors.black38,
-                        size: 40,
-                      ),
-                      shape: CircleBorder(),
-                      elevation: 2.0,
-                      fillColor: Colors.red,
-                      padding: const EdgeInsets.all(15.0),
-                    ),
-                  ],
+            CardProgressBar(),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(top: 20.0, bottom: 20),
+                  child: Text(widget.instructionalText,
+                      style: TextStyle(fontSize: 20, color: Colors.grey[600])),
                 ),
-              ),
-            )
+                Visibility(
+                  visible: widget.coordinatesSet,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      RawMaterialButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Icon(
+                          Icons.close,
+                          color: Colors.white,
+                          size: 40,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                        elevation: 2.0,
+                        fillColor: Theme.of(context).errorColor,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 40.0, vertical: 2),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(10),
+                      ),
+                      RawMaterialButton(
+                        onPressed: () {
+                          if (widget.editing) {
+                            _submitEditedPicture();
+                          } else {
+                            _submitPicture();
+                          }
+                        },
+                        child: Icon(
+                          Icons.check,
+                          color: Colors.white,
+                          size: 40,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                        elevation: 2.0,
+                        fillColor: Theme.of(context).primaryColor,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 40.0, vertical: 2),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
@@ -487,43 +513,43 @@ Map<String, String> displayNames = {
   "headTop": "Head Top",
 };
 
-// must be separate for stacking purposes
-class PointLabelsPainter extends CustomPainter {
-  final coordinates;
-  PointLabelsPainter(this.coordinates);
+// // must be separate for stacking purposes
+// class PointLabelsPainter extends CustomPainter {
+//   final coordinates;
+//   PointLabelsPainter(this.coordinates);
 
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 4.0
-      ..color = Colors.blue;
+//   @override
+//   void paint(Canvas canvas, Size size) {
+//     final paint = Paint()
+//       ..style = PaintingStyle.stroke
+//       ..strokeWidth = 4.0
+//       ..color = Colors.blue;
 
-    Offset adjustOffset(List coordinates, Size tpSize) {
-      return Offset(coordinates[0] - (tpSize.width / 2), coordinates[1] - 40);
-    }
+//     Offset adjustOffset(List coordinates, Size tpSize) {
+//       return Offset(coordinates[0] - (tpSize.width / 2), coordinates[1] - 40);
+//     }
 
-    void drawPointLabels() {
-      coordinates.forEach((name, location) {
-        var tp = TextPainter(
-            // textScaleFactor: 1.0,
-            text: TextSpan(
-              text: displayNames[name],
-              style: TextStyle(fontFamily: 'lato', fontSize: 15),
-            ),
-            textAlign: TextAlign.center,
-            textDirection: TextDirection.ltr);
-        tp.layout();
-        tp.paint(canvas, adjustOffset(location, tp.size));
-      });
-    }
+//     void drawPointLabels() {
+//       coordinates.forEach((name, location) {
+//         var tp = TextPainter(
+//             // textScaleFactor: 1.0,
+//             text: TextSpan(
+//               text: displayNames[name],
+//               style: TextStyle(fontFamily: 'lato', fontSize: 15),
+//             ),
+//             textAlign: TextAlign.center,
+//             textDirection: TextDirection.ltr);
+//         tp.layout();
+//         tp.paint(canvas, adjustOffset(location, tp.size));
+//       });
+//     }
 
-    drawPointLabels();
-  }
+//     drawPointLabels();
+//   }
 
-  @override
-  bool shouldRepaint(CustomPainter oldDeligate) => true;
-}
+//   @override
+//   bool shouldRepaint(CustomPainter oldDeligate) => true;
+// }
 
 class MagnifyingTargetPainter extends CustomPainter {
   final touchedXY;
@@ -533,6 +559,10 @@ class MagnifyingTargetPainter extends CustomPainter {
     this.touchedXY,
     this.grabPoint,
   );
+
+  Offset adjustOffset(Offset offset, Size tpSize) {
+    return Offset(offset.dx - (tpSize.width / 2), offset.dy - 40);
+  }
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -545,15 +575,26 @@ class MagnifyingTargetPainter extends CustomPainter {
       double posY = touchedXY[1];
       // Compensation logic, bumps magnified image marker below finger
       posY = posY < magOffset ? posY + 200 : posY;
-
+      final offset = Offset(
+        touchedXY[0],
+        posY - magOffset,
+      );
       canvas.drawCircle(
-        Offset(
-          touchedXY[0],
-          posY - magOffset,
-        ),
+       offset,
         4.0,
         paint,
       );
+
+      final tp = TextPainter(
+          // textScaleFactor: 1.0,
+          text: TextSpan(
+            text: displayNames[grabPoint.first],
+            style: TextStyle(fontFamily: 'lato', fontSize: 25, color: Colors.blue, fontWeight: FontWeight.bold),
+          ),
+          textAlign: TextAlign.center,
+          textDirection: TextDirection.ltr);
+      tp.layout();
+      tp.paint(canvas, adjustOffset(offset, tp.size));
     }
 
     if (grabPoint.isEmpty) return;

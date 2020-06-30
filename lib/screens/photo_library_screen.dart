@@ -25,12 +25,17 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(60.0),
         child: AppBar(
-          iconTheme:
-              IconThemeData(color: Theme.of(context).primaryColor, size: 30),
           backgroundColor: Colors.transparent,
           elevation: 0,
-          centerTitle: true,
-          leading: Image.asset("assets/images/K9_logotype.png"),
+          automaticallyImplyLeading: false, // Don't show the leading button
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Image.asset("assets/images/K9_logotype.png", width: 100),
+              // Your widgets here
+            ],
+          ),
           actions: <Widget>[
             Padding(
               padding: const EdgeInsets.only(top: 5),
@@ -52,20 +57,25 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
       ),
       body: Column(
         children: <Widget>[
-          Stack(
-            children: <Widget>[
-              GestureDetector(
-                onTap: () {},
-                child: Row(children: <Widget>[
-                  Icon(LineAwesomeIcons.arrow_left),
-                  Text('Back'),
-                ]),
-              ),
-              Center(
-                child: Text('Photo Library',
-                    style: TextStyle(fontSize: 20, color: Colors.grey[600])),
-              ),
-            ],
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Stack(
+              children: <Widget>[
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Row(children: <Widget>[
+                    Icon(LineAwesomeIcons.angle_left),
+                    Text('Back'),
+                  ]),
+                ),
+                Center(
+                  child: Text('Photo Library',
+                      style: TextStyle(fontSize: 20, color: Colors.grey[600])),
+                ),
+              ],
+            ),
           ),
           Expanded(
             child: Center(
