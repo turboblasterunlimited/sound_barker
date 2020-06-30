@@ -1,13 +1,14 @@
+import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/spinner_state.dart';
 import 'package:K9_Karaoke/providers/user.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
+import 'package:K9_Karaoke/screens/picture_menu_screen.dart';
 import 'package:K9_Karaoke/widgets/spinner_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
-import 'package:K9_Karaoke/widgets/no_photos_button.dart';
 
 import '../providers/pictures.dart';
 import '../providers/barks.dart';
@@ -32,12 +33,39 @@ class _MainScreenState extends State<MainScreen> {
   Pictures pictures;
   ImageController imageController;
   SpinnerState spinnerState;
+  CurrentActivity currentActivity;
+  bool everythingDownloaded = false;
+
+  bool noAssets() {
+    return barks.all.isEmpty && songs.all.isEmpty && pictures.all.isEmpty;
+  }
+
+  Future<void> signInCallback() async {
+    if (noAssets()) await downloadEverything();
+    setState(() => everythingDownloaded = true);
+    if (pictures.all.isEmpty)
+      startCreateCard();
+    else
+      showMenu();
+  }
+
+  void startCreateCard() {
+    currentActivity.startCreateCard();
+    Navigator.of(context).pushNamed(PictureMenuScreen.routeName);
+  }
+
+  void showMenu() {
+    Navigator.of(context).pushNamed(MenuScreen.routeName);
+  }
 
   void signInIfNeeded(context) {
     print("sign in if needed screen");
     print("user is signed in: ${user.isSignedIn()}");
     if (user.isSignedIn()) return;
-    Navigator.of(context).pushNamed(AuthenticationScreen.routeName);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => AuthenticationScreen(signInCallback)));
   }
 
   @override
@@ -46,7 +74,7 @@ class _MainScreenState extends State<MainScreen> {
     SystemChrome.setEnabledSystemUIOverlays([]);
   }
 
-  void downloadEverything() async {
+  Future<void> downloadEverything() async {
     await songs.retrieveCreatableSongsData();
     await barks.retrieveAll();
     Picture mountedPicture = await pictures.retrieveAll();
@@ -56,19 +84,18 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var outlineColor = Theme.of(context).accentColor;
     user = Provider.of<User>(context);
-
     barks = Provider.of<Barks>(context, listen: false);
     songs = Provider.of<Songs>(context, listen: false);
     pictures = Provider.of<Pictures>(context, listen: true);
     imageController = Provider.of<ImageController>(context, listen: false);
     spinnerState = Provider.of<SpinnerState>(context);
+    currentActivity = Provider.of<CurrentActivity>(context);
 
-    // if (barks.all.isEmpty && songs.all.isEmpty && pictures.all.isEmpty) {
-    //   downloadEverything();
-    // }
-    Future.delayed(Duration.zero, () => signInIfNeeded(context));
+    Future.delayed(Duration.zero, () {
+      signInIfNeeded(context);
+    });
+
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       resizeToAvoidBottomPadding: false,
@@ -136,11 +163,11 @@ class _MainScreenState extends State<MainScreen> {
                                 visible: pictures.all.isNotEmpty,
                                 child: SingingImage(),
                               ),
-                              Visibility(
-                                maintainState: true,
-                                visible: pictures.all.isEmpty,
-                                child: NoPhotosButton(),
-                              ),
+                              // Visibility(
+                              //   maintainState: true,
+                              //   visible: pictures.all.isEmpty,
+                              //   child: NoPhotosButton(),
+                              // ),
                             ],
                           ),
                         ),
@@ -151,8 +178,16 @@ class _MainScreenState extends State<MainScreen> {
                 ],
               ),
               Visibility(
-                visible: !Provider.of<User>(context).isSignedIn(),
-                child: SpinnerWidget('main screen spinner...'),
+                visible: !imageController.isReady,
+                child: SpinnerWidget('Loading...'),
+              ),
+              Visibility(
+                visible: !everythingDownloaded,
+                child: SpinnerWidget('Downloading content...'),
+              ),
+              Visibility(
+                visible: !user.isSignedIn(),
+                child: SpinnerWidget('Main screen spinner...'),
               ),
             ],
           ),

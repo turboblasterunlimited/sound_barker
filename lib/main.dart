@@ -100,7 +100,6 @@ class MyApp extends StatelessWidget {
           ),
           home: MainScreen(),
           routes: {
-            AuthenticationScreen.routeName: (ctx) => AuthenticationScreen(),
             MainScreen.routeName: (ctx) => MainScreen(),
             CreatableSongSelectScreen.routeName: (ctx) =>
                 CreatableSongSelectScreen(),

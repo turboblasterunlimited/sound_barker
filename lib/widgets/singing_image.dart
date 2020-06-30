@@ -1,7 +1,5 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -15,7 +13,8 @@ class SingingImage extends StatefulWidget {
   _SingingImageState createState() => _SingingImageState();
 }
 
-class _SingingImageState extends State<SingingImage> {
+class _SingingImageState extends State<SingingImage>
+    with AutomaticKeepAliveClientMixin {
   WebViewController webviewController;
   ImageController imageController;
 
@@ -28,6 +27,7 @@ class _SingingImageState extends State<SingingImage> {
 
   @override
   Widget build(BuildContext context) {
+    print("building singing image");
     imageController = Provider.of<ImageController>(context);
 
     return WebView(
@@ -48,18 +48,7 @@ class _SingingImageState extends State<SingingImage> {
           JavascriptChannel(
             name: 'Print',
             onMessageReceived: (JavascriptMessage message) async {
-              //This is where you receive message from
-              //javascript code and handle in Flutter/Dart
-              //like here, the message is just being printed
-              //in Run/LogCat window of android studio
-
-              // print(message.message);
-
-              // do things depending on the message
               if (message.message == "[puppet.js postMessage] finished init") {
-                // here you can either set some var on the instance to ready to
-                // show that its ready for evaling js, or you could actually make a js
-                // eval call.
                 imageController.makeInit();
                 print("Made ready");
                 if (widget.picture != null) {
@@ -69,9 +58,8 @@ class _SingingImageState extends State<SingingImage> {
               }
               if (message.message ==
                   "[puppet.js postMessage] create_puppet finished") {
+                print("create puppet finished");
                 imageController.makeReady();
-                print("pic: ${widget.picture}");
-
                 await imageController.setFace();
                 imageController.startRandomGesture();
                 imageController.webViewController.evaluateJavascript(
@@ -83,4 +71,7 @@ class _SingingImageState extends State<SingingImage> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

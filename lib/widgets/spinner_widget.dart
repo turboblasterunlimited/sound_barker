@@ -11,8 +11,11 @@ class SpinnerWidget extends StatefulWidget {
 
 class _SpinnerWidgetState extends State<SpinnerWidget> {
   Widget build(BuildContext context) {
-    return Expanded(
-          child: Column(
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
+      color: Colors.white,
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[

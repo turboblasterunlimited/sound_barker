@@ -104,6 +104,7 @@ class ImageController with ChangeNotifier {
         createDog(picture);
       });
     }
+    print("picture from within createDog: ${picture.name}");
     this.coordinates = await json.decode(picture.coordinates);
     await webViewController
         .evaluateJavascript("create_puppet('${_base64Image(picture)}')");

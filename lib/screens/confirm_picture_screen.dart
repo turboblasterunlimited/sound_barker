@@ -393,6 +393,7 @@ class _ConfirmPictureScreenState extends State<ConfirmPictureScreen> {
                 ),
               ),
             ),
+            // CardProgressBar(),
             Text(widget.instructionalText),
             Visibility(
               visible: widget.coordinatesSet,

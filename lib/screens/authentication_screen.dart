@@ -1,6 +1,5 @@
 import 'dart:io' show Platform;
 import 'package:K9_Karaoke/providers/user.dart';
-import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/widgets/spinner_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
@@ -11,8 +10,9 @@ import 'package:provider/provider.dart';
 import '../services/authenticate_user.dart';
 
 class AuthenticationScreen extends StatefulWidget {
+  Function callback;
   static const routeName = 'authentication-screen';
-  AuthenticationScreen();
+  AuthenticationScreen(this.callback);
 
   @override
   _AuthenticationScreenState createState() => _AuthenticationScreenState();
@@ -43,7 +43,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
 
   void handleSignedIn(email) {
     Provider.of<User>(context, listen: false).signIn(email);
-    Navigator.of(context).pushReplacementNamed(MenuScreen.routeName);
+    widget.callback();
+    Navigator.of(context).pop();
   }
 
   void handleAuthentication() async {
