@@ -26,21 +26,12 @@ class SetPictureCoordinatesScreen extends StatefulWidget {
   bool isNamed;
   bool coordinatesSet;
   bool editing;
-  String instructionalText;
-  String imageName;
 
   SetPictureCoordinatesScreen(Picture newPicture, {isNamed, coordinatesSet}) {
     this.newPicture = newPicture;
     this.editing = isNamed ?? coordinatesSet ?? false;
     this.isNamed = isNamed ?? false;
     this.coordinatesSet = coordinatesSet ?? false;
-    if (this.editing == true) {
-      this.instructionalText =
-          this.isNamed == false ? "Rename This Photo" : "Align Face Markers";
-    } else {
-      this.instructionalText = "Name it!";
-    }
-    this.imageName = this.newPicture.name ?? "";
   }
 
   @override
@@ -62,9 +53,23 @@ class _SetPictureCoordinatesScreenState
   List<double> mouthRightStartingPosition = [0.0, 0.0];
   bool grabbing = false;
   Map<String, List<double>> grabPoint = {};
+  final _nameTextController = TextEditingController();
+  String _instructionalText = "";
+  Pictures pictures;
+  ImageController imageController;
+  String _tempName;
+
+  String _getInstructionalText() {
+    return widget.isNamed ? "Align Face Markers" : "Name Your Photo";
+  }
 
   @override
   void didChangeDependencies() {
+    _tempName = widget.newPicture.name;
+    _instructionalText = _getInstructionalText();
+
+    if (!widget.isNamed) highlightNameField();
+
     canvasLength ??= MediaQuery.of(context).size.width;
     middle ??= canvasLength / 2;
     super.didChangeDependencies();
@@ -164,83 +169,89 @@ class _SetPictureCoordinatesScreenState
     return json.encode(puppetCoordinates);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    Pictures pictures = Provider.of<Pictures>(context, listen: false);
-    ImageController imageController = Provider.of<ImageController>(context);
+  void _submitPicture() {
+    widget.newPicture.coordinates = canvasToPuppetCoordinates();
+    widget.newPicture.uploadPictureAndSaveToServer();
+    pictures.add(widget.newPicture);
+    pictures.setPicture(widget.newPicture);
+    imageController.createDog(widget.newPicture);
+    Navigator.popUntil(
+      context,
+      ModalRoute.withName(MainScreen.routeName),
+    );
+  }
 
-    void _submitPicture() {
-      widget.newPicture.coordinates = canvasToPuppetCoordinates();
-      widget.newPicture.uploadPictureAndSaveToServer();
-      pictures.add(widget.newPicture);
-      pictures.setPicture(widget.newPicture);
-      imageController.createDog(widget.newPicture);
-      Navigator.popUntil(
-        context,
-        ModalRoute.withName(MainScreen.routeName),
-      );
-    }
+  bool _inProximity(existingXY, touchedXY) {
+    if ((existingXY[0] - touchedXY[0]).abs() < 10.0 &&
+        (existingXY[1] - touchedXY[1]).abs() < 10.0) return true;
+    return false;
+  }
 
-    void _submitEditedPicture() {
-      if (widget.isNamed) {
-        widget.newPicture.coordinates = canvasToPuppetCoordinates();
-      }
-      RestAPI.updateImageOnServer(widget.newPicture);
-      pictures.setPicture(widget.newPicture);
-      imageController.createDog(widget.newPicture);
-
-      Navigator.popUntil(
-        context,
-        ModalRoute.withName(MainScreen.routeName),
-      );
-    }
-
-    bool _inProximity(existingXY, touchedXY) {
-      if ((existingXY[0] - touchedXY[0]).abs() < 10.0 &&
-          (existingXY[1] - touchedXY[1]).abs() < 10.0) return true;
-      return false;
-    }
-
-    double magImageYCompensator() {
-      double posY = touchedXY[1] / canvasLength * imageSizeDifference;
-      posY -= imageSizeDifference - magOffset;
-      // Compensation logic, bumps magnified image below finger
-      if (touchedXY[1] < magOffset) posY -= 200;
-      return posY;
-    }
-
-    void switchEyes() {
-      if (canvasCoordinates["rightEye"][0] < canvasCoordinates["leftEye"][0]) {
-        var temp = canvasCoordinates["rightEye"];
-        setState(() {
-          this.canvasCoordinates["rightEye"] = canvasCoordinates["leftEye"];
-          this.canvasCoordinates["leftEye"] = temp;
-        });
-      }
-    }
-
-    moveMouthLeftRight() {
-      double deltaX = canvasCoordinates["mouth"][0] - mouthStartingPosition[0];
-      double deltaY = canvasCoordinates["mouth"][1] - mouthStartingPosition[1];
-
+  void switchEyes() {
+    if (canvasCoordinates["rightEye"][0] < canvasCoordinates["leftEye"][0]) {
+      var temp = canvasCoordinates["rightEye"];
       setState(() {
-        canvasCoordinates["mouthLeft"][0] =
-            mouthLeftStartingPosition[0] + deltaX;
-        canvasCoordinates["mouthLeft"][1] =
-            mouthLeftStartingPosition[1] + deltaY;
-
-        canvasCoordinates["mouthRight"][0] =
-            mouthRightStartingPosition[0] + deltaX;
-        canvasCoordinates["mouthRight"][1] =
-            mouthRightStartingPosition[1] + deltaY;
+        this.canvasCoordinates["rightEye"] = canvasCoordinates["leftEye"];
+        this.canvasCoordinates["leftEye"] = temp;
       });
     }
+  }
 
-    double _getTextFormFieldLength() {
-      int nameLength = widget.newPicture.name.length;
-      int correctedLength = nameLength == 0 ? 1 : nameLength;
-      return correctedLength * 10.0;
+  moveMouthLeftRight() {
+    double deltaX = canvasCoordinates["mouth"][0] - mouthStartingPosition[0];
+    double deltaY = canvasCoordinates["mouth"][1] - mouthStartingPosition[1];
+
+    setState(() {
+      canvasCoordinates["mouthLeft"][0] = mouthLeftStartingPosition[0] + deltaX;
+      canvasCoordinates["mouthLeft"][1] = mouthLeftStartingPosition[1] + deltaY;
+
+      canvasCoordinates["mouthRight"][0] =
+          mouthRightStartingPosition[0] + deltaX;
+      canvasCoordinates["mouthRight"][1] =
+          mouthRightStartingPosition[1] + deltaY;
+    });
+  }
+
+  double magImageYCompensator() {
+    double posY = touchedXY[1] / canvasLength * imageSizeDifference;
+    posY -= imageSizeDifference - magOffset;
+    // Compensation logic, bumps magnified image below finger
+    if (touchedXY[1] < magOffset) posY -= 200;
+    return posY;
+  }
+
+  // double _getTextFormFieldLength() {
+  //   int nameLength = widget.newPicture.name.length;
+  //   int correctedLength = nameLength == 0 ? 1 : nameLength;
+  //   return correctedLength * 10.0;
+  // }
+
+  void _submitEditedPicture() {
+    if (widget.isNamed) {
+      widget.newPicture.coordinates = canvasToPuppetCoordinates();
     }
+    RestAPI.updateImageOnServer(widget.newPicture);
+    pictures.setPicture(widget.newPicture);
+    imageController.createDog(widget.newPicture);
+
+    Navigator.popUntil(
+      context,
+      ModalRoute.withName(MainScreen.routeName),
+    );
+  }
+
+  void highlightNameField() {
+    _nameTextController.text = widget.newPicture.name;
+    _nameTextController.selection = TextSelection(
+      baseOffset: 0,
+      extentOffset: widget.newPicture.name.length,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    pictures = Provider.of<Pictures>(context, listen: false);
+    imageController = Provider.of<ImageController>(context);
 
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
@@ -261,22 +272,28 @@ class _SetPictureCoordinatesScreenState
             children: <Widget>[
               Image.asset("assets/images/K9_logotype.png", width: 80),
               Container(
-                width: _getTextFormFieldLength() + 58,
+                width: 170,
                 child: TextFormField(
+                  controller: _nameTextController,
+                  autofocus: widget.isNamed ? false : true,
                   style: TextStyle(color: Colors.grey[600], fontSize: 20),
                   maxLength: 12,
-                  textAlign: TextAlign.center,
+                  textAlign: TextAlign.right,
                   decoration: InputDecoration(
                       counterText: "",
                       suffixIcon: Icon(LineAwesomeIcons.edit),
                       border: InputBorder.none),
-                  initialValue: widget.newPicture.name,
                   onChanged: (val) {
                     setState(() {
-                      widget.newPicture.name = val;
+                      _tempName = val;
                     });
                   },
                   onFieldSubmitted: (_) {
+                    setState(() {
+                      widget.newPicture.name = _tempName;
+                      widget.isNamed = true;
+                      _instructionalText = _getInstructionalText();
+                    });
                     FocusScope.of(context).unfocus();
                   },
                 ),
@@ -367,10 +384,13 @@ class _SetPictureCoordinatesScreenState
                       ),
                     ),
                     // Points and lines
-                    CustomPaint(
-                      painter: CoordinatesPainter(
-                          getCoordinatesForCanvas(), magnifiedImage, touchedXY),
-                      child: Container(),
+                    Visibility(
+                      visible: widget.isNamed ? true : false,
+                      child: CustomPaint(
+                        painter: CoordinatesPainter(getCoordinatesForCanvas(),
+                            magnifiedImage, touchedXY),
+                        child: Container(),
+                      ),
                     ),
                     // Magnifying glass
                     Visibility(
@@ -410,58 +430,54 @@ class _SetPictureCoordinatesScreenState
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0, bottom: 20),
-                  child: Text(widget.instructionalText,
+                  child: Text(_instructionalText,
                       style: TextStyle(fontSize: 20, color: Colors.grey[600])),
                 ),
-                Visibility(
-                  visible: widget.coordinatesSet,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      RawMaterialButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Icon(
-                          Icons.close,
-                          color: Colors.white,
-                          size: 40,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                        ),
-                        elevation: 2.0,
-                        fillColor: Theme.of(context).errorColor,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 40.0, vertical: 2),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    RawMaterialButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Icon(
+                        Icons.close,
+                        color: Colors.white,
+                        size: 40,
                       ),
-                      Padding(
-                        padding: EdgeInsets.all(10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0),
                       ),
-                      RawMaterialButton(
-                        onPressed: () {
-                          if (widget.editing) {
-                            _submitEditedPicture();
-                          } else {
-                            _submitPicture();
-                          }
-                        },
-                        child: Icon(
-                          Icons.check,
-                          color: Colors.white,
-                          size: 40,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                        ),
-                        elevation: 2.0,
-                        fillColor: Theme.of(context).primaryColor,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 40.0, vertical: 2),
+                      elevation: 2.0,
+                      fillColor: Theme.of(context).errorColor,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 40.0, vertical: 2),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(10),
+                    ),
+                    RawMaterialButton(
+                      
+                      onPressed: widget.coordinatesSet
+                          ? () => widget.editing
+                              ? _submitEditedPicture()
+                              : _submitPicture()
+                          : null,
+                      child: Icon(
+                        Icons.check,
+                        color: Colors.white,
+                        size: 40,
                       ),
-                    ],
-                  ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      elevation: 2.0,
+                      fillColor: widget.coordinatesSet ? Theme.of(context).primaryColor : Colors.grey,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 40.0, vertical: 2),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -580,7 +596,7 @@ class MagnifyingTargetPainter extends CustomPainter {
         posY - magOffset,
       );
       canvas.drawCircle(
-       offset,
+        offset,
         4.0,
         paint,
       );
@@ -589,7 +605,11 @@ class MagnifyingTargetPainter extends CustomPainter {
           // textScaleFactor: 1.0,
           text: TextSpan(
             text: displayNames[grabPoint.first],
-            style: TextStyle(fontFamily: 'lato', fontSize: 25, color: Colors.blue, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                fontFamily: 'lato',
+                fontSize: 25,
+                color: Colors.blue,
+                fontWeight: FontWeight.bold),
           ),
           textAlign: TextAlign.center,
           textDirection: TextDirection.ltr);

@@ -13,7 +13,6 @@ import 'package:flutter/rendering.dart';
 import 'package:K9_Karaoke/providers/active_wave_streamer.dart';
 import 'package:K9_Karaoke/services/http_controller.dart';
 import './screens/main_screen.dart';
-import './screens/select_song_and_picture_screen.dart';
 import './screens/authentication_screen.dart';
 import './screens/creatable_song_select_screen.dart';
 
@@ -105,8 +104,7 @@ class MyApp extends StatelessWidget {
             MainScreen.routeName: (ctx) => MainScreen(),
             CreatableSongSelectScreen.routeName: (ctx) =>
                 CreatableSongSelectScreen(),
-            SelectSongAndPictureScreen.routeName: (ctx) =>
-                SelectSongAndPictureScreen(),
+            
             MenuScreen.routeName: (ctx) => MenuScreen(),
             PictureMenuScreen.routeName: (ctx) => PictureMenuScreen(),
             PhotoLibraryScreen.routeName: (ctx) => PhotoLibraryScreen(),
