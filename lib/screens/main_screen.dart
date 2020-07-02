@@ -4,6 +4,7 @@ import 'package:K9_Karaoke/providers/spinner_state.dart';
 import 'package:K9_Karaoke/providers/user.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/screens/picture_menu_screen.dart';
+import 'package:K9_Karaoke/widgets/card_progress_bar.dart';
 import 'package:K9_Karaoke/widgets/spinner_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -101,7 +102,6 @@ class _MainScreenState extends State<MainScreen> {
     currentActivity = Provider.of<CurrentActivity>(context);
     cards = Provider.of<KaraokeCards>(context);
 
-
     Future.delayed(Duration.zero, () {
       signInIfNeeded(context);
     });
@@ -172,7 +172,7 @@ class _MainScreenState extends State<MainScreen> {
                           child: Stack(
                             children: <Widget>[
                               SingingImage(),
-                             
+
                               // Visibility(
                               //   maintainState: true,
                               //   visible: pictures.all.isEmpty,
@@ -184,7 +184,7 @@ class _MainScreenState extends State<MainScreen> {
                       ),
                     ),
                   ),
-                  InterfaceSelector(),
+                  CardProgressBar(),
                 ],
               ),
               Visibility(

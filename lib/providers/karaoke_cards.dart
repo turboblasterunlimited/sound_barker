@@ -22,6 +22,7 @@ class KaraokeCard with ChangeNotifier {
   String fileId;
   Picture picture;
   Song song;
+  List<String> barks = [];
   // if editing a previously generated card
   String decorationImagePath;
   // if making a new card
@@ -30,11 +31,24 @@ class KaraokeCard with ChangeNotifier {
       {this.fileId,
       this.picture,
       this.song,
+      this.barks,
       this.cardDecoration,
       this.decorationImagePath});
 
   setPicture(newPicture) {
     picture = newPicture;
     notifyListeners();
+  }
+  bool get hasPicture {
+    return picture != null;
+  }
+  bool get hasBarks {
+    return barks != null;
+  }
+  bool get hasSong {
+    return song != null;
+  }
+  bool get hasDecoration {
+    return cardDecoration != null || decorationImagePath != null;
   }
 }
