@@ -46,7 +46,7 @@ class CardProgressBar extends StatelessWidget {
           progressButton(
               "SONG", card.hasSong, currentActivity.isSong, "SOME LOGIC"),
           progressButton(
-              "SPEAK", card.hasBarks, currentActivity.isSong, "SOME LOGIC"),
+              "SPEAK", card.hasBarks, currentActivity.isSpeak, "SOME LOGIC"),
           progressButton(
               "STYLE", card.hasDecoration, currentActivity.isStyle, "LOGIC"),
         ]);

@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/widgets/card_progress_bar.dart';
 import 'package:flutter/material.dart';
@@ -60,6 +61,7 @@ class _SetPictureCoordinatesScreenState
   ImageController imageController;
   String _tempName;
   KaraokeCard card;
+  CurrentActivity currentActivity;
 
   String _getInstructionalText() {
     return widget.isNamed ? "Align Face Markers" : "Name Your Photo";
@@ -176,6 +178,7 @@ class _SetPictureCoordinatesScreenState
     widget.newPicture.uploadPictureAndSaveToServer();
     pictures.add(widget.newPicture);
     card.setPicture(widget.newPicture);
+    currentActivity.setCardCreationStep(CardCreationSteps.song);
     imageController.createDog(widget.newPicture);
     Navigator.popUntil(
       context,
@@ -254,8 +257,9 @@ class _SetPictureCoordinatesScreenState
   @override
   Widget build(BuildContext context) {
     pictures = Provider.of<Pictures>(context, listen: false);
-    imageController = Provider.of<ImageController>(context);
-    card = Provider.of<KaraokeCards>(context).currentCard;
+    imageController = Provider.of<ImageController>(context, listen: false);
+    card = Provider.of<KaraokeCards>(context, listen: false).currentCard;
+    currentActivity = Provider.of<CurrentActivity>(context, listen: false);
 
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
