@@ -9,7 +9,8 @@ class CurrentActivity with ChangeNotifier {
     return cardCreation || songLibrary || barkLibrary;
   }
 
-  void startCreateCard() {
+  void startCreateCard(Function setCurrentCardCallback) {
+    setCurrentCardCallback();
     cardCreation = true;
     songLibrary = false;
     barkLibrary = false;

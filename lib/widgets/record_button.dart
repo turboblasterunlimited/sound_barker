@@ -1,3 +1,4 @@
+import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/sound_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound_lite/flutter_sound.dart';
@@ -10,7 +11,6 @@ import 'dart:io';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../providers/barks.dart';
-import '../providers/pictures.dart';
 import '../providers/spinner_state.dart';
 
 class RecordButton extends StatefulWidget {
@@ -27,6 +27,7 @@ class _RecordButtonState extends State<RecordButton> {
   SpinnerState spinnerState;
   double maxDuration = 1.0;
   Timer _recordingTimer;
+  KaraokeCard card;
 
   @override
   void initState() {
@@ -71,9 +72,8 @@ class _RecordButtonState extends State<RecordButton> {
     }
 
     Bark rawBark = Bark(filePath: filePath);
-    Pictures pictures = Provider.of<Pictures>(context, listen: false);
     List croppedBarks = await rawBark
-        .uploadBarkAndRetrieveCroppedBarks(pictures.mountedPictureFileId());
+        .uploadBarkAndRetrieveCroppedBarks(card.picture.fileId);
     Barks barks = Provider.of<Barks>(context, listen: false);
     addCroppedBarksToAllBarks(barks, croppedBarks);
     await barks.downloadAllBarksFromBucket(croppedBarks);
@@ -100,6 +100,8 @@ class _RecordButtonState extends State<RecordButton> {
   Widget build(BuildContext context) {
     soundController = Provider.of<SoundController>(context, listen: true);
     spinnerState = Provider.of<SpinnerState>(context, listen: true);
+    card = Provider.of<KaraokeCards>(context, listen: false).currentCard;
+
     return RawMaterialButton(
       onPressed: spinnerState.barksLoading ? null : onStartRecorderPressed(),
       child: spinnerState.barksLoading

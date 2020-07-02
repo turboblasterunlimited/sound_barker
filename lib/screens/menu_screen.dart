@@ -1,4 +1,5 @@
 import 'package:K9_Karaoke/providers/current_activity.dart';
+import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/screens/main_screen.dart';
 import 'package:K9_Karaoke/screens/picture_menu_screen.dart';
 import 'package:flutter/material.dart';
@@ -13,10 +14,12 @@ class MenuScreen extends StatefulWidget {
 }
 
 class _MenuState extends State<MenuScreen> {
+  KaraokeCards cards;
   CurrentActivity currentActivity;
+
   Widget build(BuildContext context) {
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
-
+    cards = Provider.of<KaraokeCards>(context, listen: false);
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       resizeToAvoidBottomPadding: false,
@@ -64,7 +67,7 @@ class _MenuState extends State<MenuScreen> {
           children: <Widget>[
             GestureDetector(
               onTap: () {
-                currentActivity.startCreateCard();
+                currentActivity.startCreateCard(cards.newCurrentCard);
                 Navigator.of(context).pushNamed(PictureMenuScreen.routeName);
               },
               child: Padding(

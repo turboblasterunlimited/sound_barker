@@ -1,4 +1,5 @@
 import 'package:K9_Karaoke/providers/current_activity.dart';
+import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/user.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
@@ -79,6 +80,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider.value(
           value: CurrentActivity(),
+        ),
+        ChangeNotifierProvider.value(
+          value: KaraokeCards(),
         ),
       ],
       child: MaterialApp(

@@ -11,22 +11,11 @@ import '../services/rest_api.dart';
 
 class Pictures with ChangeNotifier {
   List<Picture> all = [];
-  Picture mountedPicture;
-
-  setPicture(picture) async {
-    this.mountedPicture = picture;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('mountedPictureId', picture.fileId);
-  }
 
   Picture findById(String id) {
     return all.firstWhere((test) {
       return test.fileId == id;
     });
-  }
-
-  String mountedPictureFileId() {
-    return mountedPicture == null ? null : mountedPicture.fileId;
   }
 
   void add(Picture picture) {
@@ -43,11 +32,6 @@ class Pictures with ChangeNotifier {
     }
     all.remove(picture);
     File(picture.filePath).delete();
-    if (picture == mountedPicture) {
-      this.mountedPicture = all.first;
-      notifyListeners();
-      return this.mountedPicture;
-    }
     notifyListeners();
   }
 
@@ -78,20 +62,7 @@ class Pictures with ChangeNotifier {
     });
     // Important
     if (tempPics.isEmpty) return null;
-    await mountStoredPictureOrLast();
     notifyListeners();
-    print("Mounted Picture: ${mountedPicture.filePath}");
-    return mountedPicture;
-  }
-
-  Future<void> mountStoredPictureOrLast() async {
-    final prefs = await SharedPreferences.getInstance();
-    if (prefs.containsKey('mountedPictureId')) {
-      String savedPictureId = prefs.getString('mountedPictureId');
-      this.mountedPicture = findById(savedPictureId);
-    } else if (all.isNotEmpty) {
-      this.mountedPicture = all.last;
-    }
   }
 
   Future downloadAllImagesFromBucket([List images]) async {

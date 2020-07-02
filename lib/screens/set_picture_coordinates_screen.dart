@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/widgets/card_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
@@ -58,6 +59,7 @@ class _SetPictureCoordinatesScreenState
   Pictures pictures;
   ImageController imageController;
   String _tempName;
+  KaraokeCard card;
 
   String _getInstructionalText() {
     return widget.isNamed ? "Align Face Markers" : "Name Your Photo";
@@ -173,7 +175,7 @@ class _SetPictureCoordinatesScreenState
     widget.newPicture.coordinates = canvasToPuppetCoordinates();
     widget.newPicture.uploadPictureAndSaveToServer();
     pictures.add(widget.newPicture);
-    pictures.setPicture(widget.newPicture);
+    card.setPicture(widget.newPicture);
     imageController.createDog(widget.newPicture);
     Navigator.popUntil(
       context,
@@ -231,7 +233,7 @@ class _SetPictureCoordinatesScreenState
       widget.newPicture.coordinates = canvasToPuppetCoordinates();
     }
     RestAPI.updateImageOnServer(widget.newPicture);
-    pictures.setPicture(widget.newPicture);
+    card.setPicture(widget.newPicture);
     imageController.createDog(widget.newPicture);
 
     Navigator.popUntil(
@@ -241,10 +243,11 @@ class _SetPictureCoordinatesScreenState
   }
 
   void highlightNameField() {
-    _nameTextController.text = widget.newPicture.name;
+    String tempText = widget.newPicture.name == "Name" ? "" : widget.newPicture.name;
+    _nameTextController.text = tempText;
     _nameTextController.selection = TextSelection(
       baseOffset: 0,
-      extentOffset: widget.newPicture.name.length,
+      extentOffset: tempText.length,
     );
   }
 
@@ -252,6 +255,7 @@ class _SetPictureCoordinatesScreenState
   Widget build(BuildContext context) {
     pictures = Provider.of<Pictures>(context, listen: false);
     imageController = Provider.of<ImageController>(context);
+    card = Provider.of<KaraokeCards>(context).currentCard;
 
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
@@ -271,31 +275,37 @@ class _SetPictureCoordinatesScreenState
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Image.asset("assets/images/K9_logotype.png", width: 80),
-              Container(
-                width: 170,
-                child: TextFormField(
-                  controller: _nameTextController,
-                  autofocus: widget.isNamed ? false : true,
-                  style: TextStyle(color: Colors.grey[600], fontSize: 20),
-                  maxLength: 12,
-                  textAlign: TextAlign.right,
-                  decoration: InputDecoration(
-                      counterText: "",
-                      suffixIcon: Icon(LineAwesomeIcons.edit),
-                      border: InputBorder.none),
-                  onChanged: (val) {
-                    setState(() {
-                      _tempName = val;
-                    });
-                  },
-                  onFieldSubmitted: (_) {
-                    setState(() {
-                      widget.newPicture.name = _tempName;
-                      widget.isNamed = true;
-                      _instructionalText = _getInstructionalText();
-                    });
-                    FocusScope.of(context).unfocus();
-                  },
+              Expanded(
+                child: Center(
+                  child: Container(
+                    width: 170,
+                    child: TextFormField(
+                      controller: _nameTextController,
+                      
+                      autofocus: widget.isNamed ? false : true,
+                      style: TextStyle(color: Colors.grey[600], fontSize: 20),
+                      maxLength: 12,
+                      textAlign: TextAlign.right,
+                      decoration: InputDecoration(
+                          hintText: "Name",
+                          counterText: "",
+                          suffixIcon: Icon(LineAwesomeIcons.edit),
+                          border: InputBorder.none),
+                      onChanged: (val) {
+                        setState(() {
+                          _tempName = val;
+                        });
+                      },
+                      onFieldSubmitted: (_) {
+                        setState(() {
+                          widget.newPicture.name = _tempName;
+                          widget.isNamed = true;
+                          _instructionalText = _getInstructionalText();
+                        });
+                        FocusScope.of(context).unfocus();
+                      },
+                    ),
+                  ),
                 ),
               ),
             ],

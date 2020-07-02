@@ -1,4 +1,5 @@
 import 'package:K9_Karaoke/providers/current_activity.dart';
+import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/spinner_state.dart';
 import 'package:K9_Karaoke/providers/user.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
@@ -36,6 +37,7 @@ class _MainScreenState extends State<MainScreen> {
   SpinnerState spinnerState;
   CurrentActivity currentActivity;
   bool everythingDownloaded = false;
+  KaraokeCards cards;
 
   bool noAssets() {
     return barks.all.isEmpty && songs.all.isEmpty && pictures.all.isEmpty;
@@ -51,7 +53,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void startCreateCard() {
-    currentActivity.startCreateCard();
+    currentActivity.startCreateCard(cards.newCurrentCard);
     Navigator.of(context).pushNamed(PictureMenuScreen.routeName);
   }
 
@@ -85,8 +87,6 @@ class _MainScreenState extends State<MainScreen> {
   Future<void> downloadEverything() async {
     await songs.retrieveCreatableSongsData();
     await barks.retrieveAll();
-    Picture mountedPicture = await pictures.retrieveAll();
-    if (mountedPicture != null) await imageController.createDog(mountedPicture);
     await songs.retrieveAll();
   }
 
@@ -99,6 +99,8 @@ class _MainScreenState extends State<MainScreen> {
     imageController = Provider.of<ImageController>(context);
     spinnerState = Provider.of<SpinnerState>(context);
     currentActivity = Provider.of<CurrentActivity>(context);
+    cards = Provider.of<KaraokeCards>(context);
+
 
     Future.delayed(Duration.zero, () {
       signInIfNeeded(context);

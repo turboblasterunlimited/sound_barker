@@ -1,3 +1,4 @@
+import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/screens/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +23,7 @@ class _PictureCardState extends State<PictureCard>
     with TickerProviderStateMixin {
   ImageController imageController;
   AnimationController animationController;
+  KaraokeCard card;
 
   @override
   void initState() {
@@ -79,7 +81,7 @@ class _PictureCardState extends State<PictureCard>
             children: <Widget>[
               GestureDetector(
                 onTap: () {
-                  widget.pictures.setPicture(widget.picture);
+                  card.setPicture(widget.picture);
                   imageController.createDog(widget.picture);
                   Navigator.popUntil(context, ModalRoute.withName("/"));
                 },
@@ -140,6 +142,8 @@ class _PictureCardState extends State<PictureCard>
 
   @override
   Widget build(BuildContext context) {
+    card = Provider.of<KaraokeCards>(context, listen: false).currentCard;
+
     Animation animation = Tween(begin: 0.0, end: 1.0).animate(
         new CurvedAnimation(parent: animationController, curve: Curves.ease));
 
