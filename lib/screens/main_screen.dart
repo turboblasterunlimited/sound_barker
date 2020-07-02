@@ -19,6 +19,7 @@ import '../widgets/singing_image.dart';
 import 'authentication_screen.dart';
 
 class MainScreen extends StatefulWidget {
+  // routeName seems to be '/' in some cases.
   static const routeName = 'main-screen';
 
   @override
@@ -106,16 +107,19 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       resizeToAvoidBottomPadding: false,
-      key: scaffoldKey,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(60.0),
         child: AppBar(
-          iconTheme:
-              IconThemeData(color: Theme.of(context).primaryColor, size: 30),
           backgroundColor: Colors.transparent,
           elevation: 0,
-          centerTitle: true,
-          leading: Image.asset("assets/images/K9_logotype.png"),
+          automaticallyImplyLeading: false, // Don't show the leading button
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Image.asset("assets/images/K9_logotype.png", width: 100),
+            ],
+          ),
           actions: <Widget>[
             Padding(
               padding: const EdgeInsets.only(top: 5),

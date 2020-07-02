@@ -31,7 +31,6 @@ class _MenuState extends State<MenuScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Image.asset("assets/images/K9_logotype.png", width: 100),
-              // Your widgets here
             ],
           ),
           // Can only close if activity already selected

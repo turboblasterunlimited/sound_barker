@@ -101,6 +101,7 @@ class MyApp extends StatelessWidget {
           ),
           home: MainScreen(),
           routes: {
+            MainScreen.routeName: (ctx) => MainScreen(),
             CreatableSongSelectScreen.routeName: (ctx) =>
                 CreatableSongSelectScreen(),
             MenuScreen.routeName: (ctx) => MenuScreen(),
