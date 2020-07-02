@@ -1,3 +1,4 @@
+import 'package:K9_Karaoke/screens/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
@@ -80,7 +81,7 @@ class _PictureCardState extends State<PictureCard>
                 onTap: () {
                   widget.pictures.setPicture(widget.picture);
                   imageController.createDog(widget.picture);
-                  Navigator.pop(context);
+                  Navigator.popUntil(context, ModalRoute.withName("/"));
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),

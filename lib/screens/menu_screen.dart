@@ -66,9 +66,7 @@ class _MenuState extends State<MenuScreen> {
             GestureDetector(
               onTap: () {
                 currentActivity.startCreateCard();
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    PictureMenuScreen.routeName,
-                    (route) => route.settings.name == MainScreen.routeName);
+                Navigator.of(context).pushNamed(PictureMenuScreen.routeName);
               },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),

@@ -70,8 +70,15 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   void initState() {
+    print("INITING MAIN SCREEN");
     super.initState();
     SystemChrome.setEnabledSystemUIOverlays([]);
+  }
+
+  @override
+  void dispose() {
+    print("DISPOSING MAIN SCREEN");
+    super.dispose();
   }
 
   Future<void> downloadEverything() async {
@@ -88,7 +95,7 @@ class _MainScreenState extends State<MainScreen> {
     barks = Provider.of<Barks>(context, listen: false);
     songs = Provider.of<Songs>(context, listen: false);
     pictures = Provider.of<Pictures>(context, listen: true);
-    imageController = Provider.of<ImageController>(context, listen: false);
+    imageController = Provider.of<ImageController>(context);
     spinnerState = Provider.of<SpinnerState>(context);
     currentActivity = Provider.of<CurrentActivity>(context);
 
@@ -158,11 +165,8 @@ class _MainScreenState extends State<MainScreen> {
                           aspectRatio: 1 / 1,
                           child: Stack(
                             children: <Widget>[
-                              Visibility(
-                                maintainState: true,
-                                visible: pictures.all.isNotEmpty,
-                                child: SingingImage(),
-                              ),
+                              SingingImage(),
+                             
                               // Visibility(
                               //   maintainState: true,
                               //   visible: pictures.all.isEmpty,

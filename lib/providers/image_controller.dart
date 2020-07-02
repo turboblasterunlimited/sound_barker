@@ -32,6 +32,7 @@ class ImageController with ChangeNotifier {
 
   void mountController(controller) {
     this.webViewController = controller;
+    print("Controller set...");
     notifyListeners();
   }
 
