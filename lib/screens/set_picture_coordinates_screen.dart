@@ -179,7 +179,7 @@ class _SetPictureCoordinatesScreenState
     imageController.createDog(widget.newPicture);
     Navigator.popUntil(
       context,
-      ModalRoute.withName(MainScreen.routeName),
+      ModalRoute.withName("/"),
     );
   }
 
