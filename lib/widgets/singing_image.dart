@@ -60,9 +60,8 @@ class _SingingImageState extends State<SingingImage> {
                 print("create puppet finished");
                 imageController.makeReady();
                 await imageController.setFace();
+                await imageController.setMouthColor();
                 imageController.startRandomGesture();
-                imageController.webViewController.evaluateJavascript(
-                    'mouth_color(0.5686274509, 0.39607843137, 0.43137254902)');
               }
             },
           ),

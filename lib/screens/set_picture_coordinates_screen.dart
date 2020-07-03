@@ -10,7 +10,6 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:image/image.dart' as IMG;
 import 'package:flutter/painting.dart';
-import 'package:K9_Karaoke/screens/main_screen.dart';
 import 'dart:ui' as ui;
 
 import '../providers/pictures.dart';
@@ -31,9 +30,9 @@ class SetPictureCoordinatesScreen extends StatefulWidget {
 
   SetPictureCoordinatesScreen(Picture newPicture, {isNamed, coordinatesSet}) {
     this.newPicture = newPicture;
-    this.editing = isNamed ?? coordinatesSet ?? false;
     this.isNamed = isNamed ?? false;
     this.coordinatesSet = coordinatesSet ?? false;
+    this.editing = isNamed || coordinatesSet ? true : false;
   }
 
   @override
@@ -240,12 +239,13 @@ class _SetPictureCoordinatesScreenState
 
     Navigator.popUntil(
       context,
-      ModalRoute.withName(MainScreen.routeName),
+      ModalRoute.withName("/"),
     );
   }
 
   void highlightNameField() {
-    String tempText = widget.newPicture.name == "Name" ? "" : widget.newPicture.name;
+    String tempText =
+        widget.newPicture.name == "Name" ? "" : widget.newPicture.name;
     _nameTextController.text = tempText;
     _nameTextController.selection = TextSelection(
       baseOffset: 0,
@@ -284,7 +284,6 @@ class _SetPictureCoordinatesScreenState
                     width: 170,
                     child: TextFormField(
                       controller: _nameTextController,
-                      
                       autofocus: widget.isNamed ? false : true,
                       style: TextStyle(color: Colors.grey[600], fontSize: 20),
                       maxLength: 12,
@@ -471,7 +470,6 @@ class _SetPictureCoordinatesScreenState
                       padding: EdgeInsets.all(10),
                     ),
                     RawMaterialButton(
-                      
                       onPressed: widget.coordinatesSet
                           ? () => widget.editing
                               ? _submitEditedPicture()
@@ -486,7 +484,9 @@ class _SetPictureCoordinatesScreenState
                         borderRadius: BorderRadius.circular(30.0),
                       ),
                       elevation: 2.0,
-                      fillColor: widget.coordinatesSet ? Theme.of(context).primaryColor : Colors.grey,
+                      fillColor: widget.coordinatesSet
+                          ? Theme.of(context).primaryColor
+                          : Colors.grey,
                       padding: const EdgeInsets.symmetric(
                           horizontal: 40.0, vertical: 2),
                     ),

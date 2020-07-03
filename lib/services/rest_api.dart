@@ -119,6 +119,7 @@ class RestAPI {
       'uuid': image.fileId,
       'name': image.name,
       'coordinates_json': image.coordinates,
+      'mouth_color': image.mouthColor,
     };
     print("Image upload body: $body");
     final url = 'http://165.227.178.14/image';

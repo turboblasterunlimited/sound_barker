@@ -1,6 +1,7 @@
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
+import 'package:K9_Karaoke/screens/set_picture_coordinates_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -75,10 +76,9 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
                       mouthTone[i] = (value * sliderVal).round();
                     });
                   });
-                },
-                onChangeEnd: (_) {
                   imageController.setMouthColor(mouthColorToDecimal());
                 },
+                onChangeEnd: (_) {},
               ),
               ClipOval(
                 child: Material(
@@ -97,7 +97,13 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
           children: <Widget>[
             RawMaterialButton(
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        SetPictureCoordinatesScreen(card.picture, isNamed: true, coordinatesSet: true),
+                  ),
+                );
               },
               child: Icon(
                 Icons.close,

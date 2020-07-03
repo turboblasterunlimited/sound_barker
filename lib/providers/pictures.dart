@@ -88,6 +88,7 @@ class Picture with ChangeNotifier, Gcloud {
   String coordinates;
   bool creationAnimation;
   DateTime created;
+  List<double> mouthColor;
 
   Picture({
     String name,
@@ -96,6 +97,7 @@ class Picture with ChangeNotifier, Gcloud {
     String fileId,
     String coordinates = "{}",
     DateTime created,
+    List<double> mouthColor,
   }) {
     this.coordinates = coordinates;
     this.name = "Name";
@@ -104,6 +106,8 @@ class Picture with ChangeNotifier, Gcloud {
     this.fileId = fileId ??= Uuid().v4();
     this.creationAnimation = true;
     this.created = created;
+    this.mouthColor = mouthColor ??= [0.5686274509, 0.39607843137, 0.43137254902];
+
   }
 
   Future<void> uploadPictureAndSaveToServer() async {

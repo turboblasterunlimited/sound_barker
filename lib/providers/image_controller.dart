@@ -11,6 +11,7 @@ import '../providers/pictures.dart';
 class ImageController with ChangeNotifier {
   WebViewController webViewController;
   Map coordinates;
+  List<double> mouthColor;
   bool isInit = false;
   bool isReady = false;
   Timer randomGestureTimer;
@@ -62,9 +63,9 @@ class ImageController with ChangeNotifier {
     bool mouthOpen = true;
     mouthOpenAndClose = Timer.periodic(Duration(seconds: 1), (timer) {
       if (mouthOpen) {
-        webViewController.evaluateJavascript("mouth_open(1)");
+        webViewController.evaluateJavascript("mouth_to_pos(0, 1, 60)");
       } else {
-        webViewController.evaluateJavascript("mouth_open(0)");
+        webViewController.evaluateJavascript("mouth_to_pos(1, 0, 60)");
       }
       mouthOpen = !mouthOpen;
     });
@@ -119,6 +120,7 @@ class ImageController with ChangeNotifier {
     }
     print("picture from within createDog: ${picture.name}");
     this.coordinates = await json.decode(picture.coordinates);
+    this.mouthColor = picture.mouthColor;
     await webViewController
         .evaluateJavascript("create_puppet('${_base64Image(picture)}')");
     // webViewController
@@ -156,8 +158,9 @@ class ImageController with ChangeNotifier {
     // var result = await webViewController.evaluateJavascript("mouth_color(0.5058823529, 0.1372549019, 0.0588235294);");
   }
 
-  void setMouthColor(rgb) {
-    webViewController
+  Future setMouthColor([rgb]) async {
+    rgb ??= mouthColor;
+    await webViewController
         .evaluateJavascript("mouth_color(${rgb[0]}, ${rgb[1]}, ${rgb[2]});");
   }
 }
