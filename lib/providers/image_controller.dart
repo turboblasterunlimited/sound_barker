@@ -10,12 +10,15 @@ import '../providers/pictures.dart';
 
 class ImageController with ChangeNotifier {
   WebViewController webViewController;
-  Map coordinates;
-  List<double> mouthColor;
+  Picture picture;
   bool isInit = false;
   bool isReady = false;
   Timer randomGestureTimer;
   Timer mouthOpenAndClose;
+
+  void setPicture(Picture pic) {
+    picture = pic;
+  } 
 
   void makeReady() {
     isReady = true;
@@ -119,8 +122,7 @@ class ImageController with ChangeNotifier {
       });
     }
     print("picture from within createDog: ${picture.name}");
-    this.coordinates = await json.decode(picture.coordinates);
-    this.mouthColor = picture.mouthColor;
+    setPicture(picture);
     await webViewController
         .evaluateJavascript("create_puppet('${_base64Image(picture)}')");
     // webViewController
@@ -135,6 +137,7 @@ class ImageController with ChangeNotifier {
   }
 
   Future<void> setFace() async {
+    var coordinates = await json.decode(picture.coordinates);
     print("setting face");
     await webViewController.evaluateJavascript(
         "set_position('rightEyePosition', ${coordinates['rightEye'][0]}, ${coordinates['rightEye'][1]})");
@@ -159,7 +162,7 @@ class ImageController with ChangeNotifier {
   }
 
   Future setMouthColor([rgb]) async {
-    rgb ??= mouthColor;
+    rgb ??= picture.mouthColor;
     await webViewController
         .evaluateJavascript("mouth_color(${rgb[0]}, ${rgb[1]}, ${rgb[2]});");
   }

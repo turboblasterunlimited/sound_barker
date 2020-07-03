@@ -89,6 +89,7 @@ class _MainScreenState extends State<MainScreen> {
     await songs.retrieveCreatableSongsData();
     await barks.retrieveAll();
     await songs.retrieveAll();
+    await pictures.retrieveAll();
   }
 
   @override

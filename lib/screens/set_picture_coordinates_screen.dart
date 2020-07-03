@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
-import 'dart:convert';
 import 'dart:math';
 import 'package:image/image.dart' as IMG;
 import 'package:flutter/painting.dart';
@@ -28,11 +27,11 @@ class SetPictureCoordinatesScreen extends StatefulWidget {
   bool coordinatesSet;
   bool editing;
 
-  SetPictureCoordinatesScreen(Picture newPicture, {isNamed, coordinatesSet}) {
+  SetPictureCoordinatesScreen(Picture newPicture,
+      {isNamed = false, coordinatesSet = false}) {
     this.newPicture = newPicture;
-    this.isNamed = isNamed ?? false;
-    this.coordinatesSet = coordinatesSet ?? false;
-    this.editing = isNamed || coordinatesSet ? true : false;
+    this.editing = false;
+    // this.editing = isNamed || coordinatesSet ? true : false;
   }
 
   @override
@@ -49,6 +48,7 @@ class _SetPictureCoordinatesScreenState
   // Canvas pixels
   List<double> touchedXY = [0.0, 0.0];
   ui.Image magnifiedImage;
+  // for moving all coordinates with mouth center.
   List<double> mouthStartingPosition = [0.0, 0.0];
   List<double> mouthLeftStartingPosition = [0.0, 0.0];
   List<double> mouthRightStartingPosition = [0.0, 0.0];
@@ -84,43 +84,8 @@ class _SetPictureCoordinatesScreenState
     print("imageSizeDifference: $imageSizeDifference");
   }
 
-  Map setMissingCoordinatesToDefault(puppetCoordinates) {
-    if (puppetCoordinates["leftEye"] == null)
-      puppetCoordinates["leftEye"] = [-0.2, 0.2];
-
-    if (puppetCoordinates["rightEye"] == null)
-      puppetCoordinates["rightEye"] = [0.2, 0.2];
-
-    if (puppetCoordinates["mouth"] == null)
-      puppetCoordinates["mouth"] = [0.0, 0.0];
-
-    if (puppetCoordinates["mouthLeft"] == null)
-      puppetCoordinates["mouthLeft"] = [-0.1, 0.0];
-
-    if (puppetCoordinates["mouthRight"] == null)
-      puppetCoordinates["mouthRight"] = [0.1, 0.0];
-
-    if (puppetCoordinates["headTop"] == null)
-      puppetCoordinates["headTop"] = [0.0, .4];
-
-    if (puppetCoordinates["headRight"] == null)
-      puppetCoordinates["headRight"] = [0.3, .0];
-
-    if (puppetCoordinates["headBottom"] == null)
-      puppetCoordinates["headBottom"] = [0.0, -.4];
-
-    if (puppetCoordinates["headLeft"] == null)
-      puppetCoordinates["headLeft"] = [-0.3, .0];
-
-    return puppetCoordinates;
-  }
-
   Map<String, List<double>> getCoordinatesForCanvas() {
     if (canvasCoordinates.length != 0) return canvasCoordinates;
-
-    Map puppetCoordinates = json.decode(widget.newPicture.coordinates);
-
-    puppetCoordinates = setMissingCoordinatesToDefault(puppetCoordinates);
 
     _puppetXtoCanvasX(x) {
       double offset = x * middle * 2;
@@ -136,7 +101,7 @@ class _SetPictureCoordinatesScreenState
       return offset + middle;
     }
 
-    puppetCoordinates.forEach((key, xy) {
+    widget.newPicture.coordinates.forEach((key, xy) {
       canvasCoordinates[key] = [
         _puppetXtoCanvasX(xy[0]),
         _puppetYtoCanvasY(xy[1])
@@ -146,7 +111,7 @@ class _SetPictureCoordinatesScreenState
     return canvasCoordinates;
   }
 
-  canvasToPuppetCoordinates() {
+  saveCanvasToPictureCoordinates() {
     _canvasXToPuppetX(x) {
       double centered = x - middle;
       return centered / middle / 2;
@@ -161,19 +126,17 @@ class _SetPictureCoordinatesScreenState
       return centered / middle / 2;
     }
 
-    Map<String, List<double>> puppetCoordinates = {};
-    canvasCoordinates.forEach((String key, List xy) {
-      puppetCoordinates[key] = [
-        _canvasXToPuppetX(xy[0]),
-        _canvasYToPuppetY(xy[1])
-      ];
+    setState(() {
+      canvasCoordinates.forEach((String key, List xy) {
+        widget.newPicture.coordinates[key] = [
+          _canvasXToPuppetX(xy[0]),
+          _canvasYToPuppetY(xy[1])
+        ];
+      });
     });
-
-    return json.encode(puppetCoordinates);
   }
 
   void _submitPicture() {
-    widget.newPicture.coordinates = canvasToPuppetCoordinates();
     widget.newPicture.uploadPictureAndSaveToServer();
     pictures.add(widget.newPicture);
     card.setPicture(widget.newPicture);
@@ -223,20 +186,13 @@ class _SetPictureCoordinatesScreenState
     return posY;
   }
 
-  // double _getTextFormFieldLength() {
-  //   int nameLength = widget.newPicture.name.length;
-  //   int correctedLength = nameLength == 0 ? 1 : nameLength;
-  //   return correctedLength * 10.0;
-  // }
-
   void _submitEditedPicture() {
     if (widget.isNamed) {
-      widget.newPicture.coordinates = canvasToPuppetCoordinates();
+      saveCanvasToPictureCoordinates();
     }
     RestAPI.updateImageOnServer(widget.newPicture);
-    card.setPicture(widget.newPicture);
-    imageController.createDog(widget.newPicture);
-
+    imageController.setFace();
+    imageController.setMouthColor();
     Navigator.popUntil(
       context,
       ModalRoute.withName("/"),

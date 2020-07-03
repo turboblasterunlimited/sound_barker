@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:gcloud/storage.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
@@ -85,30 +87,43 @@ class Picture with ChangeNotifier, Gcloud {
   String fileUrl;
   String filePath;
   String fileId;
-  String coordinates;
+  Map<String, List> coordinates;
   bool creationAnimation;
   DateTime created;
-  List<double> mouthColor;
 
   Picture({
     String name,
     String filePath,
     String fileUrl,
     String fileId,
-    String coordinates = "{}",
+    Map<String, List> coordinates,
     DateTime created,
-    List<double> mouthColor,
   }) {
-    this.coordinates = coordinates;
+    this.coordinates = coordinates ??= {
+      "leftEye": [-0.2, 0.2],
+      "rightEye": [0.2, 0.2],
+      "mouth": [0.0, 0.0],
+      "mouthLeft": [-0.1, 0.0],
+      "mouthRight": [0.1, 0.0],
+      "headTop": [0.0, 0.4],
+      "headRight": [0.3, 0.0],
+      "headBottom": [0.0, -0.4],
+      "headLeft": [-0.3, 0.0],
+      "mouthColor": [0.5686274509, 0.39607843137, 0.43137254902],
+    };
     this.name = "Name";
     this.filePath = filePath;
     this.fileUrl = fileUrl;
     this.fileId = fileId ??= Uuid().v4();
     this.creationAnimation = true;
     this.created = created;
-    this.mouthColor = mouthColor ??= [0.5686274509, 0.39607843137, 0.43137254902];
-
   }
+
+  // Future addMouthColor(color) async {
+  //   Map tempCoordinates = await json.decode(coordinates);
+  //   tempCoordinates["mouthColor"] = color;
+  //   await RestAPI.updateImageOnServer(this);
+  // }
 
   Future<void> uploadPictureAndSaveToServer() async {
     this.fileUrl = await Gcloud.uploadAsset(fileId, filePath, true);

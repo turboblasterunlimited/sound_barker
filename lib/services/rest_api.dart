@@ -89,7 +89,7 @@ class RestAPI {
     return response.data;
   }
 
-  static void renameSongOnServer(Song song, String newName) async {
+  static Future<void> renameSongOnServer(Song song, String newName) async {
     Map body = {'name': newName};
     print(body);
     final url = 'http://165.227.178.14/sequence/${song.fileId}';
@@ -100,7 +100,7 @@ class RestAPI {
     print("Edit bark name response body: ${response.data}");
   }
 
-  static void updateImageOnServer(Picture image) async {
+  static Future<void> updateImageOnServer(Picture image) async {
     Map body = {
       'name': image.name,
       'coordinates_json': image.coordinates,
@@ -119,7 +119,6 @@ class RestAPI {
       'uuid': image.fileId,
       'name': image.name,
       'coordinates_json': image.coordinates,
-      'mouth_color': image.mouthColor,
     };
     print("Image upload body: $body");
     final url = 'http://165.227.178.14/image';

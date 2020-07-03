@@ -13,12 +13,11 @@ class MouthToneSlider extends StatefulWidget {
 class _MouthToneSliderState extends State<MouthToneSlider> {
   KaraokeCard card;
   CurrentActivity currentActivity;
-  // final pinkMouthTone = [0.5686274509, 0.39607843137, 0.43137254902];
-  List<double> mouthToneAsDecimal = [
-    0.5686274509,
-    0.39607843137,
-    0.43137254902
-  ];
+  // List<double> mouthToneAsDecimal = [
+  //   0.5686274509,
+  //   0.39607843137,
+  //   0.43137254902
+  // ];
   List<int> pinkMouthTone = [145, 101, 110];
   List<int> mouthTone = [145, 101, 110];
   ImageController imageController;
@@ -123,6 +122,7 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
             ),
             RawMaterialButton(
               onPressed: () {
+                card.picture.updateMouthColor(mouthColorToDecimal());
                 currentActivity.setCardCreationStep(CardCreationSteps.song);
               },
               child: Icon(
