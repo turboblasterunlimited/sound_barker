@@ -13,8 +13,7 @@ class SingingImage extends StatefulWidget {
   _SingingImageState createState() => _SingingImageState();
 }
 
-class _SingingImageState extends State<SingingImage>
-    with AutomaticKeepAliveClientMixin {
+class _SingingImageState extends State<SingingImage> {
   WebViewController webviewController;
   ImageController imageController;
 
@@ -72,6 +71,4 @@ class _SingingImageState extends State<SingingImage>
     );
   }
 
-  @override
-  bool get wantKeepAlive => true;
 }

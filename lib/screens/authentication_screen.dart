@@ -93,11 +93,20 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     return Scaffold(
       backgroundColor: Colors.amber[50],
       resizeToAvoidBottomPadding: false,
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).backgroundColor,
-        elevation: 0,
-        centerTitle: true,
-        leading: Image.asset("assets/images/K9_logotype.png", width: 300),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(60.0),
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          automaticallyImplyLeading: false, // Don't show the leading button
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Image.asset("assets/images/K9_logotype.png", width: 100),
+            ],
+          ),
+        ),
       ),
       body: Builder(
         builder: (ctx) => Column(
@@ -110,7 +119,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.only(
-                          left: 30.0, right: 30, bottom: 30),
+                          left: 30, right: 30, bottom: 15),
                       child: TextField(
                         obscureText: true,
                         decoration: InputDecoration(
@@ -139,7 +148,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: FlatButton(
-                            padding: EdgeInsets.all(10),
+                            padding: EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 20),
                             child:
                                 Text("Sign In", style: TextStyle(fontSize: 20)),
                             color: Theme.of(context).primaryColor,
@@ -152,7 +162,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: FlatButton(
-                            padding: EdgeInsets.all(10),
+                            padding: EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 20),
                             child:
                                 Text("Sign Up", style: TextStyle(fontSize: 20)),
                             color: Theme.of(context).primaryColor,

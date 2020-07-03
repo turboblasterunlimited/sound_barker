@@ -178,7 +178,6 @@ class _SetPictureCoordinatesScreenState
     widget.newPicture.uploadPictureAndSaveToServer();
     pictures.add(widget.newPicture);
     card.setPicture(widget.newPicture);
-    currentActivity.setCardCreationStep(CardCreationSteps.song);
     imageController.createDog(widget.newPicture);
     Navigator.popUntil(
       context,

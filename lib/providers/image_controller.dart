@@ -14,6 +14,7 @@ class ImageController with ChangeNotifier {
   bool isInit = false;
   bool isReady = false;
   Timer randomGestureTimer;
+  Timer mouthOpenAndClose;
 
   void makeReady() {
     isReady = true;
@@ -46,16 +47,27 @@ class ImageController with ChangeNotifier {
     webViewController.evaluateJavascript("mouth_open($width)");
   }
 
-  void mouthTrackSound(
-      {String filePath, List amplitudes}) async {
+  void mouthTrackSound({String filePath, List amplitudes}) async {
     stopAnimation();
     if (filePath != null) {
       List amplitudes = await AmplitudeExtractor.fileToList(filePath);
-      webViewController
-          .evaluateJavascript("mouth_track_sound($amplitudes)");
+      webViewController.evaluateJavascript("mouth_track_sound($amplitudes)");
     } else if (amplitudes != null) {
       webViewController.evaluateJavascript("mouth_track_sound($amplitudes)");
     }
+  }
+
+  void startMouthOpenAndClose() {
+    if (mouthOpenAndClose != null) return;
+    bool mouthOpen = true;
+    mouthOpenAndClose = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (mouthOpen) {
+        webViewController.evaluateJavascript("mouth_open(1)");
+      } else {
+        webViewController.evaluateJavascript("mouth_open(0)");
+      }
+      mouthOpen = !mouthOpen;
+    });
   }
 
   Timer startRandomGesture() {
@@ -142,5 +154,10 @@ class ImageController with ChangeNotifier {
         "set_position('headLeft', ${coordinates['headLeft'][0]}, ${coordinates['headLeft'][1]})");
     print("done setting face");
     // var result = await webViewController.evaluateJavascript("mouth_color(0.5058823529, 0.1372549019, 0.0588235294);");
+  }
+
+  void setMouthColor(rgb) {
+    webViewController
+        .evaluateJavascript("mouth_color(${rgb[0]}, ${rgb[1]}, ${rgb[2]});");
   }
 }
