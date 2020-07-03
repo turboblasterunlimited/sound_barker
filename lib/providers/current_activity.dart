@@ -7,11 +7,18 @@ enum CardCreationSteps {
   style,
 }
 
+enum CardCreationSubSteps {
+  one,
+  two,
+  three,
+}
+
 class CurrentActivity with ChangeNotifier {
   bool cardCreation = false;
   bool songLibrary = false;
   bool barkLibrary = false;
   CardCreationSteps cardCreationStep;
+  CardCreationSubSteps cardCreationSubStep;
 
   bool activitySelected() {
     return cardCreation || songLibrary || barkLibrary;
@@ -35,6 +42,11 @@ class CurrentActivity with ChangeNotifier {
 
   void setCardCreationStep(CardCreationSteps step) {
     cardCreationStep = step;
+    notifyListeners();
+  }
+
+  void setCardCreationSubStep(CardCreationSubSteps subStep) {
+    cardCreationSubStep = subStep;
     notifyListeners();
   }
 

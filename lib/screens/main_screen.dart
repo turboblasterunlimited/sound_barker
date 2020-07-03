@@ -15,7 +15,6 @@ import 'package:K9_Karaoke/providers/image_controller.dart';
 import '../providers/pictures.dart';
 import '../providers/barks.dart';
 import '../providers/songs.dart';
-import '../widgets/interface_selector.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/singing_image.dart';
 import 'authentication_screen.dart';
@@ -185,6 +184,7 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                   ),
                   CardProgressBar(),
+                  CardCreationInterface(),
                 ],
               ),
               Visibility(
