@@ -49,7 +49,7 @@ class Pictures with ChangeNotifier {
         // SERVER IS NOT PROVIDING A FILE URL ATM....
         // fileUrl: serverImage["bucket_fp"],
         fileId: serverImage["uuid"],
-        coordinates: serverImage["coordinates_json"],
+        coordinates: json.decode(serverImage["coordinates_json"]),
         created: DateTime.parse(serverImage["created"]),
       );
       pic.fileUrl = "images/${pic.fileId}.jpg";
@@ -119,11 +119,10 @@ class Picture with ChangeNotifier, Gcloud {
     this.created = created;
   }
 
-  // Future addMouthColor(color) async {
-  //   Map tempCoordinates = await json.decode(coordinates);
-  //   tempCoordinates["mouthColor"] = color;
-  //   await RestAPI.updateImageOnServer(this);
-  // }
+  Future updateMouthColor(color) async {
+    coordinates["mouthColor"] = color;
+    await RestAPI.updateImageOnServer(this);
+  }
 
   Future<void> uploadPictureAndSaveToServer() async {
     this.fileUrl = await Gcloud.uploadAsset(fileId, filePath, true);

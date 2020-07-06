@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:uuid/uuid.dart';
 
 import '../services/http_controller.dart';
@@ -103,7 +105,7 @@ class RestAPI {
   static Future<void> updateImageOnServer(Picture image) async {
     Map body = {
       'name': image.name,
-      'coordinates_json': image.coordinates,
+      'coordinates_json': json.encode(image.coordinates),
     };
     print("Image update body: $body");
     final url = 'http://165.227.178.14/image/${image.fileId}';
@@ -118,7 +120,7 @@ class RestAPI {
     Map body = {
       'uuid': image.fileId,
       'name': image.name,
-      'coordinates_json': image.coordinates,
+      'coordinates_json': json.encode(image.coordinates),
     };
     print("Image upload body: $body");
     final url = 'http://165.227.178.14/image';

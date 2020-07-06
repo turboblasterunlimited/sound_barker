@@ -24,11 +24,6 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
   double _sliderValue = 0.5;
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   void dispose() {
     imageController.mouthOpenAndClose.cancel();
     super.dispose();
@@ -36,10 +31,17 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
 
   List<double> mouthColorToDecimal() {
     List<double> result = [0.0, 0.0, 0.0];
+    print("mouth tone as map: $mouthTone.asMap()}");
     mouthTone.asMap().forEach((i, val) {
+      print("color step: $i, value: $val");
       result[i] = val / 255;
     });
     return result;
+  }
+
+  void handleSubmitButton() {
+    card.picture.updateMouthColor(mouthColorToDecimal());
+    currentActivity.setCardCreationStep(CardCreationSteps.song);
   }
 
   @override
@@ -99,8 +101,9 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        SetPictureCoordinatesScreen(card.picture, isNamed: true, coordinatesSet: true),
+                    builder: (context) => SetPictureCoordinatesScreen(
+                        card.picture,
+                        editing: true),
                   ),
                 );
               },
@@ -121,10 +124,7 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
               padding: EdgeInsets.all(10),
             ),
             RawMaterialButton(
-              onPressed: () {
-                card.picture.updateMouthColor(mouthColorToDecimal());
-                currentActivity.setCardCreationStep(CardCreationSteps.song);
-              },
+              onPressed: handleSubmitButton,
               child: Icon(
                 Icons.check,
                 color: Colors.white,

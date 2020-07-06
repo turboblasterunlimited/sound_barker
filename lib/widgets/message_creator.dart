@@ -159,7 +159,7 @@ class MessageCreatorState extends State<MessageCreator> {
   //   print("filepath exists: ${File(filePath).existsSync()}");
   // }
 
-  // pitched/stretched recroding or normal recording
+  // pitched/stretched recroding or unaltered recording
   String resultPath() {
     if (File(alteredFilePath).existsSync()) {
       return alteredFilePath;

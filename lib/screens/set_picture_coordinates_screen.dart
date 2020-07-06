@@ -23,15 +23,14 @@ int magImageSize = 550;
 
 class SetPictureCoordinatesScreen extends StatefulWidget {
   Picture newPicture;
+  bool editing;
   bool isNamed;
   bool coordinatesSet;
-  bool editing;
 
-  SetPictureCoordinatesScreen(Picture newPicture,
-      {isNamed = false, coordinatesSet = false}) {
-    this.newPicture = newPicture;
-    this.editing = false;
-    // this.editing = isNamed || coordinatesSet ? true : false;
+  SetPictureCoordinatesScreen(this.newPicture, {this.editing = false}) {
+    this.editing;
+    this.isNamed = editing ? true : false;
+    this.coordinatesSet = editing ? true : false;
   }
 
   @override
@@ -67,7 +66,16 @@ class _SetPictureCoordinatesScreenState
   }
 
   @override
+  void initState() {
+    print("init state set picture coordinates screen");
+
+    super.initState();
+  }
+
+  @override
   void didChangeDependencies() {
+    print("did change dep set picture coordinates screen");
+
     _tempName = widget.newPicture.name;
     _instructionalText = _getInstructionalText();
 
@@ -136,17 +144,6 @@ class _SetPictureCoordinatesScreenState
     });
   }
 
-  void _submitPicture() {
-    widget.newPicture.uploadPictureAndSaveToServer();
-    pictures.add(widget.newPicture);
-    card.setPicture(widget.newPicture);
-    imageController.createDog(widget.newPicture);
-    Navigator.popUntil(
-      context,
-      ModalRoute.withName("/"),
-    );
-  }
-
   bool _inProximity(existingXY, touchedXY) {
     if ((existingXY[0] - touchedXY[0]).abs() < 10.0 &&
         (existingXY[1] - touchedXY[1]).abs() < 10.0) return true;
@@ -186,17 +183,17 @@ class _SetPictureCoordinatesScreenState
     return posY;
   }
 
+  void _submitPicture() {
+    widget.newPicture.uploadPictureAndSaveToServer();
+    pictures.add(widget.newPicture);
+    card.setPicture(widget.newPicture);
+    imageController.createDog(widget.newPicture);
+  }
+
   void _submitEditedPicture() {
-    if (widget.isNamed) {
-      saveCanvasToPictureCoordinates();
-    }
     RestAPI.updateImageOnServer(widget.newPicture);
     imageController.setFace();
     imageController.setMouthColor();
-    Navigator.popUntil(
-      context,
-      ModalRoute.withName("/"),
-    );
   }
 
   void highlightNameField() {
@@ -209,8 +206,22 @@ class _SetPictureCoordinatesScreenState
     );
   }
 
+  void handleSubmitButton() {
+    if (widget.editing || (widget.isNamed & widget.coordinatesSet)) {
+      saveCanvasToPictureCoordinates();
+      widget.editing ? _submitEditedPicture() : _submitPicture();
+      Navigator.popUntil(
+        context,
+        ModalRoute.withName("/"),
+      );
+    } else {
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    print("building set picture coordinates screen");
     pictures = Provider.of<Pictures>(context, listen: false);
     imageController = Provider.of<ImageController>(context, listen: false);
     card = Provider.of<KaraokeCards>(context, listen: false).currentCard;
@@ -426,11 +437,7 @@ class _SetPictureCoordinatesScreenState
                       padding: EdgeInsets.all(10),
                     ),
                     RawMaterialButton(
-                      onPressed: widget.coordinatesSet
-                          ? () => widget.editing
-                              ? _submitEditedPicture()
-                              : _submitPicture()
-                          : null,
+                      onPressed: handleSubmitButton,
                       child: Icon(
                         Icons.check,
                         color: Colors.white,
@@ -440,7 +447,8 @@ class _SetPictureCoordinatesScreenState
                         borderRadius: BorderRadius.circular(30.0),
                       ),
                       elevation: 2.0,
-                      fillColor: widget.coordinatesSet
+                      fillColor: widget.editing ||
+                              (widget.isNamed & widget.coordinatesSet)
                           ? Theme.of(context).primaryColor
                           : Colors.grey,
                       padding: const EdgeInsets.symmetric(

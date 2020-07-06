@@ -18,7 +18,7 @@ class ImageController with ChangeNotifier {
 
   void setPicture(Picture pic) {
     picture = pic;
-  } 
+  }
 
   void makeReady() {
     isReady = true;
@@ -137,7 +137,7 @@ class ImageController with ChangeNotifier {
   }
 
   Future<void> setFace() async {
-    var coordinates = await json.decode(picture.coordinates);
+    var coordinates = picture.coordinates;
     print("setting face");
     await webViewController.evaluateJavascript(
         "set_position('rightEyePosition', ${coordinates['rightEye'][0]}, ${coordinates['rightEye'][1]})");
@@ -158,12 +158,12 @@ class ImageController with ChangeNotifier {
     await webViewController.evaluateJavascript(
         "set_position('headLeft', ${coordinates['headLeft'][0]}, ${coordinates['headLeft'][1]})");
     print("done setting face");
-    // var result = await webViewController.evaluateJavascript("mouth_color(0.5058823529, 0.1372549019, 0.0588235294);");
   }
 
   Future setMouthColor([rgb]) async {
-    rgb ??= picture.mouthColor;
+    rgb ??= picture.coordinates["mouthColor"];
     await webViewController
         .evaluateJavascript("mouth_color(${rgb[0]}, ${rgb[1]}, ${rgb[2]});");
+    print("done setting mouth color");
   }
 }

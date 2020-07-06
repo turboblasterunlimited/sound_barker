@@ -58,7 +58,7 @@ class _PictureCardState extends State<PictureCard>
         context,
         MaterialPageRoute(
           builder: (context) =>
-              SetPictureCoordinatesScreen(widget.picture, isNamed: true),
+              SetPictureCoordinatesScreen(widget.picture, editing: true),
         ),
       );
     } else if (action == "RENAME") {
@@ -66,7 +66,7 @@ class _PictureCardState extends State<PictureCard>
         context,
         MaterialPageRoute(
           builder: (context) =>
-              SetPictureCoordinatesScreen(widget.picture, coordinatesSet: true),
+              SetPictureCoordinatesScreen(widget.picture, editing: true),
         ),
       );
     }
