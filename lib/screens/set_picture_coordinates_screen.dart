@@ -59,6 +59,7 @@ class _SetPictureCoordinatesScreenState
   Pictures pictures;
   ImageController imageController;
   String _tempName;
+  KaraokeCards cards;
   KaraokeCard card;
   CurrentActivity currentActivity;
 
@@ -69,7 +70,6 @@ class _SetPictureCoordinatesScreenState
   @override
   void initState() {
     print("init state set picture coordinates screen");
-    print("Picture coordinates..: ${widget.newPicture.coordinates}");
     super.initState();
   }
 
@@ -79,8 +79,6 @@ class _SetPictureCoordinatesScreenState
 
     _tempName = widget.newPicture.name;
     _instructionalText = _getInstructionalText();
-
-    if (!widget.isNamed) highlightNameField();
 
     canvasLength ??= MediaQuery.of(context).size.width;
     middle ??= canvasLength / 2;
@@ -191,7 +189,7 @@ class _SetPictureCoordinatesScreenState
   void _submitPicture() {
     widget.newPicture.uploadPictureAndSaveToServer();
     pictures.add(widget.newPicture);
-    card.setPicture(widget.newPicture);
+    cards.setCurrentCardPicture(widget.newPicture);
     imageController.createDog(widget.newPicture);
   }
 
@@ -199,16 +197,6 @@ class _SetPictureCoordinatesScreenState
     RestAPI.updateImageOnServer(widget.newPicture);
     imageController.setFace();
     imageController.setMouthColor();
-  }
-
-  void highlightNameField() {
-    String tempText =
-        widget.newPicture.name == "Name" ? "" : widget.newPicture.name;
-    _nameTextController.text = tempText;
-    _nameTextController.selection = TextSelection(
-      baseOffset: 0,
-      extentOffset: tempText.length,
-    );
   }
 
   void handleSubmitButton() {
@@ -231,6 +219,7 @@ class _SetPictureCoordinatesScreenState
     imageController = Provider.of<ImageController>(context, listen: false);
     card = Provider.of<KaraokeCards>(context, listen: false).currentCard;
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
+    cards = Provider.of<KaraokeCards>(context, listen: false);
 
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
@@ -255,7 +244,6 @@ class _SetPictureCoordinatesScreenState
                   child: Container(
                     width: 170,
                     child: TextFormField(
-                      controller: _nameTextController,
                       autofocus: widget.isNamed ? false : true,
                       style: TextStyle(color: Colors.grey[600], fontSize: 20),
                       maxLength: 12,
@@ -273,6 +261,7 @@ class _SetPictureCoordinatesScreenState
                       onFieldSubmitted: (_) {
                         setState(() {
                           widget.newPicture.name = _tempName;
+                          cards.setCurrentCardName(_tempName);
                           widget.isNamed = true;
                           _instructionalText = _getInstructionalText();
                         });

@@ -8,6 +8,24 @@ class KaraokeCards with ChangeNotifier {
   List<KaraokeCard> all = [];
   KaraokeCard currentCard;
 
+  String get currentCardName {
+    if (currentCard == null || currentCard.picture == null)
+      return "test";
+    else
+      return currentCard.picture.name;
+  }
+
+  void setCurrentCardName(newName) {
+    print("Calling set current card name: $newName");
+    currentCard.picture.name = newName;
+    notifyListeners();
+  }
+
+  void setCurrentCardPicture(newPicture) {
+    currentCard.picture = newPicture;
+    notifyListeners();
+  }
+
   void setCurrentCard(card) {
     currentCard = card;
     all.add(currentCard);

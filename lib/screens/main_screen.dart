@@ -112,7 +112,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     card = cards.currentCard;
-    
+
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       resizeToAvoidBottomPadding: false,
@@ -129,26 +129,34 @@ class _MainScreenState extends State<MainScreen> {
               Image.asset("assets/images/K9_logotype.png", width: 80),
               Expanded(
                 child: Center(
-                  child: Container(
-                    width: 170,
-                    // This rename field works differently than on the coordinates setting page.
-                    child: TextFormField(
-                      initialValue: card?.picture?.name ?? "",
-                      style: TextStyle(color: Colors.grey[600], fontSize: 20),
-                      maxLength: 12,
-                      textAlign: TextAlign.right,
-                      decoration: InputDecoration(
-                          counterText: "",
-                          suffixIcon: Icon(LineAwesomeIcons.edit),
-                          border: InputBorder.none),
-                      // onChanged: (val) {
+                  child: Consumer<KaraokeCards>(
+                    builder: (_, daCards, ch) {
+                      print("rebuilding consumer");
+                      print("current card name: ${daCards.currentCardName}");
+                      String _pictureName = daCards.currentCardName;
+                      return Container(
+                        width: 170,
+                        child: TextFormField(
+                          style:
+                              TextStyle(color: Colors.grey[600], fontSize: 20),
+                          maxLength: 12,
+                          textAlign: TextAlign.right,
+                          decoration: InputDecoration(
+                              hintText: daCards.currentCardName,
+                              counterText: "",
+                              suffixIcon: Icon(LineAwesomeIcons.edit),
+                              border: InputBorder.none),
+                          // onChanged: (val) {
 
-                      // },
-                      onFieldSubmitted: (val) {
-                        card?.picture?.setName(val);
-                        FocusScope.of(context).unfocus();
-                      },
-                    ),
+                          // },
+                          onFieldSubmitted: (val) {
+                            cards.setCurrentCardName(val);
+                            FocusScope.of(context).unfocus();
+                          },
+                        ),
+                      );
+                    },
+                    // This rename field works differently than on the coordinates setting page.
                   ),
                 ),
               ),
