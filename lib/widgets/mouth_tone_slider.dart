@@ -55,13 +55,14 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
     card = Provider.of<KaraokeCards>(context).currentCard;
     currentActivity = Provider.of<CurrentActivity>(context);
     imageController = Provider.of<ImageController>(context);
-    imageController.startMouthOpenAndClose();
     mouthTone = mouthColorToInt(card.picture.mouthColor());
     _sliderValue = mouthTone[0] / pinkMouthTone[0];
   }
 
   @override
   Widget build(BuildContext context) {
+    imageController.startMouthOpenAndClose();
+
     return Column(
       children: <Widget>[
         Padding(

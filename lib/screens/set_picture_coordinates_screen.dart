@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
+import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/widgets/card_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
@@ -421,7 +422,8 @@ class _SetPictureCoordinatesScreenState
                   children: <Widget>[
                     RawMaterialButton(
                       onPressed: () {
-                        Navigator.pop(context);
+                        // Navigator.pop(context);
+                        Navigator.popAndPushNamed(context, MenuScreen.routeName);
                       },
                       child: Icon(
                         Icons.close,

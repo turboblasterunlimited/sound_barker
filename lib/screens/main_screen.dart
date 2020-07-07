@@ -39,7 +39,7 @@ class _MainScreenState extends State<MainScreen> {
   CurrentActivity currentActivity;
   bool everythingDownloaded = false;
   KaraokeCards cards;
-  String _tempName = "Name";
+  KaraokeCard card;
 
   bool noAssets() {
     return barks.all.isEmpty && songs.all.isEmpty && pictures.all.isEmpty;
@@ -93,8 +93,8 @@ class _MainScreenState extends State<MainScreen> {
     await pictures.retrieveAll();
   }
 
-  @override
-  Widget build(BuildContext context) {
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     user = Provider.of<User>(context);
     barks = Provider.of<Barks>(context, listen: false);
     songs = Provider.of<Songs>(context, listen: false);
@@ -107,7 +107,12 @@ class _MainScreenState extends State<MainScreen> {
     Future.delayed(Duration.zero, () {
       signInIfNeeded(context);
     });
+  }
 
+  @override
+  Widget build(BuildContext context) {
+    card = cards.currentCard;
+    
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       resizeToAvoidBottomPadding: false,
@@ -128,7 +133,7 @@ class _MainScreenState extends State<MainScreen> {
                     width: 170,
                     // This rename field works differently than on the coordinates setting page.
                     child: TextFormField(
-                      initialValue: cards.currentCard?.picture?.name ?? "Name",
+                      initialValue: card?.picture?.name ?? "",
                       style: TextStyle(color: Colors.grey[600], fontSize: 20),
                       maxLength: 12,
                       textAlign: TextAlign.right,
@@ -137,10 +142,10 @@ class _MainScreenState extends State<MainScreen> {
                           suffixIcon: Icon(LineAwesomeIcons.edit),
                           border: InputBorder.none),
                       // onChanged: (val) {
-                      
+
                       // },
                       onFieldSubmitted: (val) {
-                        cards.currentCard?.picture?.setName(val);
+                        card?.picture?.setName(val);
                         FocusScope.of(context).unfocus();
                       },
                     ),

@@ -41,6 +41,7 @@ class Pictures with ChangeNotifier {
     List tempPics = [];
     List response = await RestAPI.retrieveAllImagesFromServer();
     response.forEach((serverImage) async {
+      print("server Image iteration: ${serverImage["coordinates_json"]}, ${serverImage["coordinates_json"].runtimeType}");
       if (serverImage["hidden"] == 1) return;
       if (serverImage["uuid"] == null) return;
 
@@ -49,7 +50,7 @@ class Pictures with ChangeNotifier {
         // SERVER IS NOT PROVIDING A FILE URL ATM....
         // fileUrl: serverImage["bucket_fp"],
         fileId: serverImage["uuid"],
-        coordinates: json.decode(serverImage["coordinates_json"]),
+        coordinates: jsonDecode(serverImage["coordinates_json"]),
         created: DateTime.parse(serverImage["created"]),
       );
       pic.fileUrl = "images/${pic.fileId}.jpg";
@@ -87,7 +88,7 @@ class Picture with ChangeNotifier, Gcloud {
   String fileUrl;
   String filePath;
   String fileId;
-  Map<String, List> coordinates;
+  Map<String, dynamic> coordinates;
   bool creationAnimation;
   DateTime created;
 
