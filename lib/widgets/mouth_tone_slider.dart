@@ -19,7 +19,7 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
   //   0.43137254902
   // ];
   List<int> pinkMouthTone = [145, 101, 110];
-  List<int> mouthTone = [145, 101, 110];
+  List<int> mouthTone;
   ImageController imageController;
   double _sliderValue = 0.5;
 
@@ -31,10 +31,16 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
 
   List<double> mouthColorToDecimal() {
     List<double> result = [0.0, 0.0, 0.0];
-    print("mouth tone as map: $mouthTone.asMap()}");
     mouthTone.asMap().forEach((i, val) {
-      print("color step: $i, value: $val");
       result[i] = val / 255;
+    });
+    return result;
+  }
+
+  List<int> mouthColorToInt(List doubles) {
+    List<int> result = [0, 0, 0];
+    doubles.asMap().forEach((i, val) {
+      result[i] = (val * 255).round();
     });
     return result;
   }
@@ -44,13 +50,18 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
     currentActivity.setCardCreationStep(CardCreationSteps.song);
   }
 
-  @override
-  Widget build(BuildContext context) {
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     card = Provider.of<KaraokeCards>(context).currentCard;
     currentActivity = Provider.of<CurrentActivity>(context);
     imageController = Provider.of<ImageController>(context);
     imageController.startMouthOpenAndClose();
+    mouthTone = mouthColorToInt(card.picture.mouthColor());
+    _sliderValue = mouthTone[0] / pinkMouthTone[0];
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
         Padding(

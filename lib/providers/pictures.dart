@@ -120,6 +120,10 @@ class Picture with ChangeNotifier, Gcloud {
     this.created = created;
   }
 
+  List mouthColor() {
+    return coordinates["mouthColor"];
+  }
+
   void setName(String newName) {
     this.name = newName;
     RestAPI.updateImageOnServer(this);
