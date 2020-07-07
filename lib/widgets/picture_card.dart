@@ -23,7 +23,7 @@ class _PictureCardState extends State<PictureCard>
     with TickerProviderStateMixin {
   ImageController imageController;
   AnimationController animationController;
-  KaraokeCard card;
+  KaraokeCards cards;
 
   @override
   void initState() {
@@ -81,7 +81,7 @@ class _PictureCardState extends State<PictureCard>
             children: <Widget>[
               GestureDetector(
                 onTap: () {
-                  card.setPicture(widget.picture);
+                  cards.setCurrentCardPicture(widget.picture);
                   imageController.createDog(widget.picture);
                   Navigator.popUntil(context, ModalRoute.withName("/"));
                 },
@@ -142,7 +142,7 @@ class _PictureCardState extends State<PictureCard>
 
   @override
   Widget build(BuildContext context) {
-    card = Provider.of<KaraokeCards>(context, listen: false).currentCard;
+    cards = Provider.of<KaraokeCards>(context, listen: false);
 
     Animation animation = Tween(begin: 0.0, end: 1.0).animate(
         new CurvedAnimation(parent: animationController, curve: Curves.ease));

@@ -1,20 +1,20 @@
 import 'package:K9_Karaoke/providers/songs.dart';
 import 'package:flutter/material.dart';
+import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/widgets/creatable_song_card.dart';
 import '../providers/sound_controller.dart';
 
-class CreatableSongSelectScreen extends StatefulWidget {
-  static const routeName = 'creatable-song-select-screen';
+class SongStoreScreen extends StatefulWidget {
+  static const routeName = 'song-store-screen';
 
-  CreatableSongSelectScreen();
+  SongStoreScreen();
 
   @override
-  _CreatableSongSelectScreenState createState() =>
-      _CreatableSongSelectScreenState();
+  _SongStoreScreenState createState() => _SongStoreScreenState();
 }
 
-class _CreatableSongSelectScreenState extends State<CreatableSongSelectScreen> {
+class _SongStoreScreenState extends State<SongStoreScreen> {
   SoundController soundController;
   List creatableSongs;
 
@@ -50,6 +50,27 @@ class _CreatableSongSelectScreenState extends State<CreatableSongSelectScreen> {
       ),
       body: Column(
         children: <Widget>[
+          // title
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Stack(
+              children: <Widget>[
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Row(children: <Widget>[
+                    Icon(LineAwesomeIcons.angle_left),
+                    Text('Back'),
+                  ]),
+                ),
+                Center(
+                  child: Text('Song Store',
+                      style: TextStyle(fontSize: 20, color: Colors.grey[600])),
+                ),
+              ],
+            ),
+          ),
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.all(10),

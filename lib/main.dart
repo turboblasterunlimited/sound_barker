@@ -15,7 +15,7 @@ import 'package:K9_Karaoke/providers/active_wave_streamer.dart';
 import 'package:K9_Karaoke/services/http_controller.dart';
 import './screens/main_screen.dart';
 import './screens/authentication_screen.dart';
-import './screens/creatable_song_select_screen.dart';
+import 'screens/song_store_screen.dart';
 
 import './providers/pictures.dart';
 import './providers/barks.dart';
@@ -106,8 +106,8 @@ class MyApp extends StatelessWidget {
           home: MainScreen(),
           routes: {
             MainScreen.routeName: (ctx) => MainScreen(),
-            CreatableSongSelectScreen.routeName: (ctx) =>
-                CreatableSongSelectScreen(),
+            SongStoreScreen.routeName: (ctx) =>
+                SongStoreScreen(),
             MenuScreen.routeName: (ctx) => MenuScreen(),
             PictureMenuScreen.routeName: (ctx) => PictureMenuScreen(),
             PhotoLibraryScreen.routeName: (ctx) => PhotoLibraryScreen(),

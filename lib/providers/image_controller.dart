@@ -40,6 +40,11 @@ class ImageController with ChangeNotifier {
     print("Controller set...");
     notifyListeners();
   }
+  
+  void cancelMouthOpenAndClose() {
+    mouthOpenAndClose.cancel();
+    mouthOpenAndClose = null;
+  }
 
   void stopAnimation() {
     // Pass false to keep headsway alive
@@ -62,6 +67,7 @@ class ImageController with ChangeNotifier {
   }
 
   void startMouthOpenAndClose() {
+
     if (mouthOpenAndClose != null) return;
     bool mouthOpen = true;
     mouthOpenAndClose = Timer.periodic(Duration(seconds: 1), (timer) {

@@ -25,7 +25,7 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
 
   @override
   void dispose() {
-    imageController.mouthOpenAndClose.cancel();
+    imageController.cancelMouthOpenAndClose();
     super.dispose();
   }
 

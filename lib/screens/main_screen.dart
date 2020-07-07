@@ -20,6 +20,7 @@ import '../widgets/app_drawer.dart';
 import '../widgets/singing_image.dart';
 import 'authentication_screen.dart';
 
+// AKA CARD CREATION SCREEN
 class MainScreen extends StatefulWidget {
   // routeName seems to be '/' in some cases.
   static const routeName = 'main-screen';
@@ -39,7 +40,6 @@ class _MainScreenState extends State<MainScreen> {
   CurrentActivity currentActivity;
   bool everythingDownloaded = false;
   KaraokeCards cards;
-  KaraokeCard card;
 
   bool noAssets() {
     return barks.all.isEmpty && songs.all.isEmpty && pictures.all.isEmpty;
@@ -111,7 +111,6 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    card = cards.currentCard;
 
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,

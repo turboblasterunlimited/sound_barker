@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
+import 'package:K9_Karaoke/screens/picture_menu_screen.dart';
 import 'package:K9_Karaoke/widgets/card_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
@@ -212,6 +213,17 @@ class _SetPictureCoordinatesScreenState
     }
   }
 
+  void handleNameChange(_) {
+    setState(() {
+      widget.newPicture.name = _tempName;
+      widget.isNamed = true;
+      print("instructional text: _getInstructionalText()");
+      print("is named: ${widget.isNamed}");
+      _instructionalText = _getInstructionalText();
+    });
+    FocusScope.of(context).unfocus();
+  }
+
   @override
   Widget build(BuildContext context) {
     print("building set picture coordinates screen");
@@ -254,19 +266,13 @@ class _SetPictureCoordinatesScreenState
                           suffixIcon: Icon(LineAwesomeIcons.edit),
                           border: InputBorder.none),
                       onChanged: (val) {
+                        print("Changed: $val");
                         setState(() {
                           _tempName = val;
                         });
                       },
-                      onFieldSubmitted: (_) {
-                        setState(() {
-                          widget.newPicture.name = _tempName;
-                          cards.setCurrentCardName(_tempName);
-                          widget.isNamed = true;
-                          _instructionalText = _getInstructionalText();
-                        });
-                        FocusScope.of(context).unfocus();
-                      },
+                      // onEditingComplete: handleNameChange,
+                      onFieldSubmitted: handleNameChange,
                     ),
                   ),
                 ),
@@ -411,8 +417,9 @@ class _SetPictureCoordinatesScreenState
                   children: <Widget>[
                     RawMaterialButton(
                       onPressed: () {
-                        // Navigator.pop(context);
-                        Navigator.popAndPushNamed(context, MenuScreen.routeName);
+                        cards.setCurrentCardName(_tempName);
+                        Navigator.popAndPushNamed(
+                            context, PictureMenuScreen.routeName);
                       },
                       child: Icon(
                         Icons.close,

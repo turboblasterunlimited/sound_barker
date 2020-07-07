@@ -67,6 +67,10 @@ class _MenuState extends State<MenuScreen> {
             GestureDetector(
               onTap: () {
                 currentActivity.startCreateCard(cards.newCurrentCard);
+                Navigator.popUntil(
+                  context,
+                  ModalRoute.withName("/"),
+                );
                 Navigator.of(context).pushNamed(PictureMenuScreen.routeName);
               },
               child: Padding(
