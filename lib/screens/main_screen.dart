@@ -39,6 +39,7 @@ class _MainScreenState extends State<MainScreen> {
   CurrentActivity currentActivity;
   bool everythingDownloaded = false;
   KaraokeCards cards;
+  String _tempName = "Name";
 
   bool noAssets() {
     return barks.all.isEmpty && songs.all.isEmpty && pictures.all.isEmpty;
@@ -117,10 +118,35 @@ class _MainScreenState extends State<MainScreen> {
           elevation: 0,
           automaticallyImplyLeading: false, // Don't show the leading button
           title: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Image.asset("assets/images/K9_logotype.png", width: 100),
+              Image.asset("assets/images/K9_logotype.png", width: 80),
+              Expanded(
+                child: Center(
+                  child: Container(
+                    width: 170,
+                    // This rename field works differently than on the coordinates setting page.
+                    child: TextFormField(
+                      initialValue: cards.currentCard?.picture?.name ?? "Name",
+                      style: TextStyle(color: Colors.grey[600], fontSize: 20),
+                      maxLength: 12,
+                      textAlign: TextAlign.right,
+                      decoration: InputDecoration(
+                          counterText: "",
+                          suffixIcon: Icon(LineAwesomeIcons.edit),
+                          border: InputBorder.none),
+                      // onChanged: (val) {
+                      
+                      // },
+                      onFieldSubmitted: (val) {
+                        cards.currentCard?.picture?.setName(val);
+                        FocusScope.of(context).unfocus();
+                      },
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
           actions: <Widget>[

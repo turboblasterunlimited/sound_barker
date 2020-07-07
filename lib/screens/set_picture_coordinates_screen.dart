@@ -68,7 +68,7 @@ class _SetPictureCoordinatesScreenState
   @override
   void initState() {
     print("init state set picture coordinates screen");
-
+    print("Picture coordinates..: ${widget.newPicture.coordinates}");
     super.initState();
   }
 
@@ -84,12 +84,12 @@ class _SetPictureCoordinatesScreenState
     canvasLength ??= MediaQuery.of(context).size.width;
     middle ??= canvasLength / 2;
     super.didChangeDependencies();
+    imageSizeDifference = magImageSize - canvasLength;
+    print("imageSizeDifference: $imageSizeDifference");
     imageData =
         IMG.decodeImage(File(widget.newPicture.filePath).readAsBytesSync());
     imageDataBytes =
         IMG.encodePng(IMG.copyResize(imageData, width: magImageSize));
-    imageSizeDifference = magImageSize - canvasLength;
-    print("imageSizeDifference: $imageSizeDifference");
   }
 
   Map<String, List<double>> getCoordinatesForCanvas() {
@@ -110,6 +110,8 @@ class _SetPictureCoordinatesScreenState
     }
 
     widget.newPicture.coordinates.forEach((key, xy) {
+      if (key == "mouthColor") return;
+
       canvasCoordinates[key] = [
         _puppetXtoCanvasX(xy[0]),
         _puppetYtoCanvasY(xy[1])
@@ -136,6 +138,8 @@ class _SetPictureCoordinatesScreenState
 
     setState(() {
       canvasCoordinates.forEach((String key, List xy) {
+        if (key == "mouthColor") return;
+
         widget.newPicture.coordinates[key] = [
           _canvasXToPuppetX(xy[0]),
           _canvasYToPuppetY(xy[1])
@@ -145,8 +149,8 @@ class _SetPictureCoordinatesScreenState
   }
 
   bool _inProximity(existingXY, touchedXY) {
-    if ((existingXY[0] - touchedXY[0]).abs() < 10.0 &&
-        (existingXY[1] - touchedXY[1]).abs() < 10.0) return true;
+    if ((existingXY[0] - touchedXY[0]).abs() < 20.0 &&
+        (existingXY[1] - touchedXY[1]).abs() < 20.0) return true;
     return false;
   }
 
@@ -256,7 +260,7 @@ class _SetPictureCoordinatesScreenState
                       maxLength: 12,
                       textAlign: TextAlign.right,
                       decoration: InputDecoration(
-                          hintText: "Name",
+                          hintText: widget.newPicture.name ?? "Name",
                           counterText: "",
                           suffixIcon: Icon(LineAwesomeIcons.edit),
                           border: InputBorder.none),
@@ -290,7 +294,6 @@ class _SetPictureCoordinatesScreenState
                 ),
                 shape: CircleBorder(),
                 elevation: 2.0,
-                // fillColor: Theme.of(context).accentColor,
                 onPressed: () {
                   Navigator.of(context).pop();
                 },

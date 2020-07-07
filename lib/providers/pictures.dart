@@ -92,25 +92,26 @@ class Picture with ChangeNotifier, Gcloud {
   DateTime created;
 
   Picture({
-    String name,
-    String filePath,
-    String fileUrl,
-    String fileId,
-    Map<String, List> coordinates,
-    DateTime created,
+    this.name,
+    this.filePath,
+    this.fileUrl,
+    this.fileId,
+    this.coordinates,
+    this.created,
   }) {
-    this.coordinates = coordinates ??= {
-      "leftEye": [-0.2, 0.2],
-      "rightEye": [0.2, 0.2],
-      "mouth": [0.0, 0.0],
-      "mouthLeft": [-0.1, 0.0],
-      "mouthRight": [0.1, 0.0],
-      "headTop": [0.0, 0.4],
-      "headRight": [0.3, 0.0],
-      "headBottom": [0.0, -0.4],
-      "headLeft": [-0.3, 0.0],
-      "mouthColor": [0.5686274509, 0.39607843137, 0.43137254902],
-    };
+    this.coordinates = coordinates ??
+        {
+          "leftEye": [-0.2, 0.2],
+          "rightEye": [0.2, 0.2],
+          "mouth": [0.0, 0.0],
+          "mouthLeft": [-0.1, 0.0],
+          "mouthRight": [0.1, 0.0],
+          "headTop": [0.0, 0.4],
+          "headRight": [0.3, 0.0],
+          "headBottom": [0.0, -0.4],
+          "headLeft": [-0.3, 0.0],
+          "mouthColor": [0.5686274509, 0.39607843137, 0.43137254902],
+        };
     this.name = "Name";
     this.filePath = filePath;
     this.fileUrl = fileUrl;
@@ -119,7 +120,13 @@ class Picture with ChangeNotifier, Gcloud {
     this.created = created;
   }
 
-  Future updateMouthColor(color) async {
+  void setName(String newName) {
+    this.name = newName;
+    RestAPI.updateImageOnServer(this);
+    notifyListeners();
+  }
+
+  Future<void> updateMouthColor(color) async {
     coordinates["mouthColor"] = color;
     await RestAPI.updateImageOnServer(this);
   }
