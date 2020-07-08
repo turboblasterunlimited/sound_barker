@@ -111,6 +111,13 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    bool everythingReady() {
+      return imageController.isReady &&
+          everythingDownloaded &&
+          user.isSignedIn();
+    }
+
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       resizeToAvoidBottomPadding: false,
@@ -120,42 +127,45 @@ class _MainScreenState extends State<MainScreen> {
           backgroundColor: Colors.transparent,
           elevation: 0,
           automaticallyImplyLeading: false, // Don't show the leading button
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Image.asset("assets/images/K9_logotype.png", width: 80),
-              Expanded(
-                child: Center(
-                  // child: Consumer<KaraokeCards>(
-                  //   builder: (_, daCards, ch) {
-                  //     print("rebuilding consumer");
-                  //     print("current card name: ${daCards.currentCardName}");
-                  //     String _pictureName = daCards.currentCardName;
-                  child: Container(
-                    width: 170,
-                    child: TextFormField(
-                      style: TextStyle(color: Colors.grey[600], fontSize: 20),
-                      maxLength: 12,
-                      textAlign: TextAlign.right,
-                      decoration: InputDecoration(
-                          hintText: cards.currentCardName,
-                          counterText: "",
-                          suffixIcon: Icon(LineAwesomeIcons.edit),
-                          border: InputBorder.none),
-                      // onChanged: (val) {
+          title: Visibility(
+            visible: everythingReady(),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Image.asset("assets/images/K9_logotype.png", width: 80),
+                Expanded(
+                  child: Center(
+                    // child: Consumer<KaraokeCards>(
+                    //   builder: (_, daCards, ch) {
+                    //     print("rebuilding consumer");
+                    //     print("current card name: ${daCards.currentCardName}");
+                    //     String _pictureName = daCards.currentCardName;
+                    child: Container(
+                      width: 170,
+                      child: TextFormField(
+                        style: TextStyle(color: Colors.grey[600], fontSize: 20),
+                        maxLength: 12,
+                        textAlign: TextAlign.right,
+                        decoration: InputDecoration(
+                            hintText: cards.currentCardName,
+                            counterText: "",
+                            suffixIcon: Icon(LineAwesomeIcons.edit),
+                            border: InputBorder.none),
+                        // onChanged: (val) {
 
-                      // },
-                      onFieldSubmitted: (val) {
-                        cards.setCurrentCardName(val);
-                        FocusScope.of(context).unfocus();
-                      },
+                        // },
+                        onFieldSubmitted: (val) {
+                          cards.setCurrentCardName(val);
+                          FocusScope.of(context).unfocus();
+                        },
+                      ),
+                      // This rename field works differently than on the coordinates setting page.
                     ),
-                    // This rename field works differently than on the coordinates setting page.
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           actions: <Widget>[
             Padding(
@@ -225,7 +235,7 @@ class _MainScreenState extends State<MainScreen> {
               ),
               Visibility(
                 visible: !imageController.isReady,
-                child: SpinnerWidget('Loading...'),
+                child: SpinnerWidget('Loading animation engine...'),
               ),
               Visibility(
                 visible: !everythingDownloaded,
@@ -233,7 +243,7 @@ class _MainScreenState extends State<MainScreen> {
               ),
               Visibility(
                 visible: !user.isSignedIn(),
-                child: SpinnerWidget('Main screen spinner...'),
+                child: SpinnerWidget('Signing in...'),
               ),
             ],
           ),
