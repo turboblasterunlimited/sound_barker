@@ -12,6 +12,7 @@ class CardCreationInterface extends StatelessWidget {
   Widget build(BuildContext context) {
     card = Provider.of<KaraokeCards>(context).currentCard;
     currentActivity = Provider.of<CurrentActivity>(context);
+    print("current activity is song: ${currentActivity.isSong}");
     
     return Column(
         children: <Widget>[

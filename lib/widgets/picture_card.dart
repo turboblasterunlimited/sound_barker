@@ -1,3 +1,4 @@
+import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/screens/main_screen.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,7 @@ class _PictureCardState extends State<PictureCard>
   ImageController imageController;
   AnimationController animationController;
   KaraokeCards cards;
+  CurrentActivity currentActivity;
 
   @override
   void initState() {
@@ -72,7 +74,15 @@ class _PictureCardState extends State<PictureCard>
     }
   }
 
-  pictureCard(animation) {
+  void handleTap() {
+    print("dog name: ${widget.picture.name}");
+    cards.setCurrentCardPicture(widget.picture);
+    currentActivity.setCardCreationStep(CardCreationSteps.song);
+    imageController.createDog(widget.picture);
+    Navigator.popUntil(context, ModalRoute.withName("/"));
+  }
+
+  Widget pictureCard(animation) {
     return Container(
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
@@ -80,11 +90,7 @@ class _PictureCardState extends State<PictureCard>
           child: Stack(
             children: <Widget>[
               GestureDetector(
-                onTap: () {
-                  cards.setCurrentCardPicture(widget.picture);
-                  imageController.createDog(widget.picture);
-                  Navigator.popUntil(context, ModalRoute.withName("/"));
-                },
+                onTap: handleTap,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Image.file(
@@ -143,6 +149,7 @@ class _PictureCardState extends State<PictureCard>
   @override
   Widget build(BuildContext context) {
     cards = Provider.of<KaraokeCards>(context, listen: false);
+    currentActivity = Provider.of<CurrentActivity>(context, listen: false);
 
     Animation animation = Tween(begin: 0.0, end: 1.0).animate(
         new CurvedAnimation(parent: animationController, curve: Curves.ease));

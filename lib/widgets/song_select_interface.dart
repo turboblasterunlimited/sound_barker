@@ -21,58 +21,60 @@ class _SongSelectInterfaceState extends State<SongSelectInterface> {
     final soundController = Provider.of<SoundController>(context);
     final spinnerState = Provider.of<SpinnerState>(context, listen: true);
 
-    return Column(
-      children: <Widget>[
-        Row(
-          children: <Widget>[
-            RawMaterialButton(
-              onPressed: () {},
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(40.0),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 20.0),
+      child: Column(
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              RawMaterialButton(
+                onPressed: () {},
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(40.0),
+                ),
+                elevation: 2.0,
+                fillColor: Theme.of(context).primaryColor,
+                padding: const EdgeInsets.symmetric(horizontal: 30.0),
               ),
-              elevation: 2.0,
-              fillColor: Theme.of(context).primaryColor,
-              padding: const EdgeInsets.symmetric(horizontal: 30.0),
-            ),
-            RawMaterialButton(
-              onPressed: spinnerState.songLoading
-                  ? null
-                  : () {
-                      Navigator.pushNamed(context, SongStoreScreen.routeName);
-                    },
-              child: spinnerState.songLoading
-                  ? SpinKitWave(
-                      color: Colors.white,
-                      size: 20,
-                    )
-                  : Text(
-                      "Song Store",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.white),
-                    ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(40.0),
+              RawMaterialButton(
+                onPressed: spinnerState.songLoading
+                    ? null
+                    : () {
+                        Navigator.pushNamed(context, SongStoreScreen.routeName);
+                      },
+                child: spinnerState.songLoading
+                    ? SpinKitWave(
+                        color: Colors.white,
+                        size: 20,
+                      )
+                    : Text(
+                        "Song Store",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.white),
+                      ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(40.0),
+                ),
+                elevation: 2.0,
+                fillColor: Theme.of(context).primaryColor,
+                padding: const EdgeInsets.symmetric(horizontal: 30.0),
               ),
-              elevation: 2.0,
-              fillColor: Theme.of(context).primaryColor,
-              padding: const EdgeInsets.symmetric(horizontal: 30.0),
-            ),
-          ],
-        ),
-        Visibility(
-          visible: songs.all.isNotEmpty,
-          child: Expanded(
-            child: AnimatedList(
-              key: songs.listKey,
-              initialItemCount: songs.all.length,
-              padding: const EdgeInsets.all(0),
-              itemBuilder: (ctx, i, Animation<double> animation) =>
-                  SongPlaybackCard(
-                      i, songs.all[i], songs, soundController, animation),
-            ),
+            ],
           ),
-        ),
-      ],
+          // Visibility(
+          //   visible: songs.all.isNotEmpty,
+          //   child: AnimatedList(
+          //       key: songs.listKey,
+          //       initialItemCount: songs.all.length,
+          //       padding: const EdgeInsets.all(0),
+          //       itemBuilder: (ctx, i, Animation<double> animation) =>
+          //           SongPlaybackCard(
+          //               i, songs.all[i], songs, soundController, animation),
+          //     ),
+            
+          // ),
+        ],
+      ),
     );
   }
 }
