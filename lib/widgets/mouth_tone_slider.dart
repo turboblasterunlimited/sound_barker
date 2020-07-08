@@ -46,7 +46,7 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
   }
 
   void handleSubmitButton() {
-    imageController.cancelMouthOpenAndClose()
+    imageController.cancelMouthOpenAndClose();
     card.picture.updateMouthColor(mouthColorToDecimal());
     currentActivity.setCardCreationStep(CardCreationSteps.song);
   }
