@@ -409,7 +409,8 @@ class _SetPictureCoordinatesScreenState
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0, bottom: 20),
                   child: Text(_instructionalText,
-                      style: TextStyle(fontSize: 20, color: Colors.grey[600])),
+                      style: TextStyle(
+                          fontSize: 20, color: Theme.of(context).primaryColor)),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
