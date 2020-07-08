@@ -16,7 +16,7 @@ class SongSelectInterface extends StatefulWidget {
 class _SongSelectInterfaceState extends State<SongSelectInterface> {
 //
   Widget build(BuildContext context) {
-    // print("song list building");
+    print("song select interface building");
     final songs = Provider.of<Songs>(context);
     final soundController = Provider.of<SoundController>(context);
     final spinnerState = Provider.of<SpinnerState>(context, listen: true);

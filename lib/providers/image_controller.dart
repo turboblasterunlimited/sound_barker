@@ -40,8 +40,9 @@ class ImageController with ChangeNotifier {
     print("Controller set...");
     notifyListeners();
   }
-  
+
   void cancelMouthOpenAndClose() {
+    webViewController.evaluateJavascript("mouth_to_pos(1, 0, 60)");
     mouthOpenAndClose.cancel();
     mouthOpenAndClose = null;
   }
@@ -67,7 +68,6 @@ class ImageController with ChangeNotifier {
   }
 
   void startMouthOpenAndClose() {
-
     if (mouthOpenAndClose != null) return;
     bool mouthOpen = true;
     mouthOpenAndClose = Timer.periodic(Duration(seconds: 1), (timer) {
