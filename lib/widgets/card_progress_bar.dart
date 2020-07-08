@@ -1,5 +1,6 @@
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
+import 'package:K9_Karaoke/screens/set_picture_coordinates_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,12 +13,10 @@ class CardProgressBar extends StatelessWidget {
     currentActivity = Provider.of<CurrentActivity>(context);
 
     Widget progressButton(
-        String stepText, bool stepIsCompleted, bool isCurrentStep, nextStep) {
+        String stepText, bool stepIsCompleted, bool isCurrentStep, Function navigateHere) {
       return RawMaterialButton(
         onPressed: stepIsCompleted
-            ? () {
-                // NAVIGATE to variable nextStep
-              }
+            ? navigateHere
             : null,
         child: Text(stepText,
             style: TextStyle(
@@ -38,17 +37,26 @@ class CardProgressBar extends StatelessWidget {
       );
     }
 
+    void navigateToSnap() {
+      currentActivity.setCardCreationStep(CardCreationSteps.snap);
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => SetPictureCoordinatesScreen(card.picture, editing: true),
+        ),
+      );
+    }
+
     return Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           progressButton(
-              "SNAP", card.hasPicture, currentActivity.isSnap, "SOME LOGIC"),
+              "SNAP", card.hasPicture, currentActivity.isSnap, navigateToSnap),
           progressButton(
-              "SONG", card.hasSong, currentActivity.isSong, "SOME LOGIC"),
+              "SONG", card.hasSong, currentActivity.isSong, () {}),
           progressButton(
-              "SPEAK", card.hasBarks, currentActivity.isSpeak, "SOME LOGIC"),
+              "SPEAK", card.hasBarks, currentActivity.isSpeak, () {}),
           progressButton(
-              "STYLE", card.hasDecoration, currentActivity.isStyle, "LOGIC"),
+              "STYLE", card.hasDecoration, currentActivity.isStyle, () {}),
         ]);
   }
 }

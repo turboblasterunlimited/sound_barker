@@ -67,6 +67,11 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
     return Column(
       children: <Widget>[
         Padding(
+                  padding: const EdgeInsets.only(top: 20.0, bottom: 20),
+                  child: Text("CHOOSE MOUTH TONE",
+                      style: TextStyle(fontSize: 20, color: Colors.grey[600])),
+                ),
+        Padding(
           padding: const EdgeInsets.symmetric(vertical: 20.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,

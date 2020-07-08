@@ -22,20 +22,30 @@ class _SongSelectInterfaceState extends State<SongSelectInterface> {
     final spinnerState = Provider.of<SpinnerState>(context, listen: true);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20.0),
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: Column(
         children: <Widget>[
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               RawMaterialButton(
                 onPressed: () {},
+                child: Text("Song Library",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).backgroundColor,
+                        fontSize: 16)),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(40.0),
+                  side: BorderSide(
+                      color: Theme.of(context).primaryColor, width: 3),
                 ),
                 elevation: 2.0,
                 fillColor: Theme.of(context).primaryColor,
-                padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 13, horizontal: 22.0),
               ),
+              Padding(padding: EdgeInsets.all(10)),
               RawMaterialButton(
                 onPressed: spinnerState.songLoading
                     ? null
@@ -47,17 +57,20 @@ class _SongSelectInterfaceState extends State<SongSelectInterface> {
                         color: Colors.white,
                         size: 20,
                       )
-                    : Text(
-                        "Song Store",
+                    : Text("Song Store",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.white),
-                      ),
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 16,
+                        )),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(40.0),
+                  side: BorderSide(
+                      color: Theme.of(context).primaryColor, width: 3),
                 ),
                 elevation: 2.0,
-                fillColor: Theme.of(context).primaryColor,
-                padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 13, horizontal: 22.0),
               ),
             ],
           ),
@@ -71,7 +84,7 @@ class _SongSelectInterfaceState extends State<SongSelectInterface> {
           //           SongPlaybackCard(
           //               i, songs.all[i], songs, soundController, animation),
           //     ),
-            
+
           // ),
         ],
       ),

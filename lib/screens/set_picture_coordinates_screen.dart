@@ -65,7 +65,7 @@ class _SetPictureCoordinatesScreenState
   CurrentActivity currentActivity;
 
   String _getInstructionalText() {
-    return widget.isNamed ? "Align Face Markers" : "Name Your Photo";
+    return widget.isNamed ? "ALIGN FACE MARKERS" : "NAME YOUR PHOTO";
   }
 
   @override
