@@ -172,27 +172,39 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    String loadingMessage() {
+      if (!imageController.isReady) {
+        return 'Loading animation engine...';
+      } else if (!everythingDownloaded) {
+        return 'Downloading content...';
+      } else if (!user.isSignedIn()) {
+        return 'Signing in...';
+      }
+    }
+
     bool everythingReady() {
       return imageController.isReady &&
           everythingDownloaded &&
           user.isSignedIn();
     }
 
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage("assets/backgrounds/create_background.png"),
-          fit: BoxFit.cover,
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      resizeToAvoidBottomPadding: false,
+      appBar: everythingReady() ? mainAppBar() : null,
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/backgrounds/create_background.png"),
+            fit: BoxFit.cover,
+          ),
         ),
-      ),
-      child: Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
-        resizeToAvoidBottomPadding: false,
-        appBar: everythingReady() ? mainAppBar() : null,
-        body: Container(
-          child: Stack(
-            children: <Widget>[
-              Column(
+        child: Stack(
+          children: <Widget>[
+            Container(
+              // WebView
+              padding: EdgeInsets.only(top: 80),
+              child: Column(
                 children: <Widget>[
                   GestureDetector(
                     behavior: HitTestBehavior.opaque,
@@ -200,7 +212,6 @@ class _MainScreenState extends State<MainScreen> {
                       // used to play and stop
                       print("Tapping webview!");
                     },
-                    // WebView
                     child: IgnorePointer(
                       ignoring: true,
                       child: Padding(
@@ -226,20 +237,13 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                 ],
               ),
-              Visibility(
-                visible: !imageController.isReady,
-                child: SpinnerWidget('Loading animation engine...'),
-              ),
-              Visibility(
-                visible: !everythingDownloaded,
-                child: SpinnerWidget('Downloading content...'),
-              ),
-              Visibility(
-                visible: !user.isSignedIn(),
-                child: SpinnerWidget('Signing in...'),
-              ),
-            ],
-          ),
+            ),
+            // Spinner
+            Visibility(
+              visible: !everythingReady(),
+              child: SpinnerWidget(loadingMessage()),
+            ),
+          ],
         ),
       ),
     );

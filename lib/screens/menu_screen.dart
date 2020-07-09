@@ -32,54 +32,56 @@ class _MenuState extends State<MenuScreen> {
   Widget build(BuildContext context) {
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
     cards = Provider.of<KaraokeCards>(context, listen: false);
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage("assets/backgrounds/menu_background.png"),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
-        resizeToAvoidBottomPadding: false,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(60.0),
-          child: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            automaticallyImplyLeading: false, // Don't show the leading button
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Image.asset("assets/logos/K9_logotype.png", width: 100),
-              ],
-            ),
-            // Can only close if activity already selected
-            actions: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(top: 5),
-                child: RawMaterialButton(
-                  child: Visibility(
-                    visible: currentActivity.activitySelected(),
-                    child: Icon(
-                      Icons.close,
-                      color: Colors.black,
-                      size: 30,
-                    ),
-                  ),
-                  shape: CircleBorder(),
-                  elevation: 2.0,
-                  // fillColor: Theme.of(context).accentColor,
-                  onPressed: currentActivity.activitySelected()
-                      ? () => Navigator.of(context).pop()
-                      : null,
-                ),
-              ),
+
+    return Scaffold(
+      resizeToAvoidBottomPadding: false,
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(60.0),
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          automaticallyImplyLeading: false, // Don't show the leading button
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Image.asset("assets/logos/K9_logotype.png", width: 100),
             ],
           ),
+          // Can only close if activity already selected
+          actions: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(top: 5),
+              child: RawMaterialButton(
+                child: Visibility(
+                  visible: currentActivity.activitySelected(),
+                  child: Icon(
+                    Icons.close,
+                    color: Colors.black,
+                    size: 30,
+                  ),
+                ),
+                shape: CircleBorder(),
+                elevation: 2.0,
+                // fillColor: Theme.of(context).accentColor,
+                onPressed: currentActivity.activitySelected()
+                    ? () => Navigator.of(context).pop()
+                    : null,
+              ),
+            ),
+          ],
         ),
-        body: Center(
+      ),
+      body: Container(
+        padding: EdgeInsets.only(top: 60),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/backgrounds/menu_background.png"),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,

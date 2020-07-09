@@ -234,7 +234,7 @@ class _SetPictureCoordinatesScreenState
     cards = Provider.of<KaraokeCards>(context, listen: false);
 
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      extendBodyBehindAppBar: true,
       resizeToAvoidBottomPadding: false,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(60.0),
@@ -298,7 +298,15 @@ class _SetPictureCoordinatesScreenState
           ],
         ),
       ),
-      body: SingleChildScrollView(
+      body: Container(
+        // appbar offset
+        padding: EdgeInsets.only(top: 80),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/backgrounds/create_background.png"),
+            fit: BoxFit.cover,
+          ),
+        ),
         child: Column(
           children: <Widget>[
             GestureDetector(

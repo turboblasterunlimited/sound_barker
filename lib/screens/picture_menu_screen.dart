@@ -48,7 +48,7 @@ class _PictureMenuScreenState extends State<PictureMenuScreen> {
   Widget build(BuildContext context) {
     pictures = Provider.of<Pictures>(context, listen: false);
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      extendBodyBehindAppBar: true,
       resizeToAvoidBottomPadding: false,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(60.0),
@@ -83,51 +83,59 @@ class _PictureMenuScreenState extends State<PictureMenuScreen> {
           ],
         ),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: FlatButton(
-                padding: EdgeInsets.all(10),
-                child: Text("Take A Picture", style: TextStyle(fontSize: 20)),
-                color: Theme.of(context).primaryColor,
-                onPressed: () => getImage(ImageSource.camera),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(22.0),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/backgrounds/create_background.png"),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: FlatButton(
+                  padding: EdgeInsets.all(10),
+                  child: Text("Take A Picture", style: TextStyle(fontSize: 20)),
+                  color: Theme.of(context).primaryColor,
+                  onPressed: () => getImage(ImageSource.camera),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(22.0),
+                  ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: FlatButton(
-                padding: EdgeInsets.all(10),
-                child: Text("Phone Storage", style: TextStyle(fontSize: 20)),
-                color: Theme.of(context).primaryColor,
-                onPressed: () => getImage(ImageSource.gallery),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(22.0),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: FlatButton(
+                  padding: EdgeInsets.all(10),
+                  child: Text("Phone Storage", style: TextStyle(fontSize: 20)),
+                  color: Theme.of(context).primaryColor,
+                  onPressed: () => getImage(ImageSource.gallery),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(22.0),
+                  ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: FlatButton(
-                padding: EdgeInsets.all(10),
-                child: Text("Photo Library", style: TextStyle(fontSize: 20)),
-                color: Theme.of(context).primaryColor,
-                onPressed: pictures.all.isEmpty
-                    ? null
-                    : () => Navigator.of(context)
-                        .pushNamed(PhotoLibraryScreen.routeName),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(22.0),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: FlatButton(
+                  padding: EdgeInsets.all(10),
+                  child: Text("Photo Library", style: TextStyle(fontSize: 20)),
+                  color: Theme.of(context).primaryColor,
+                  onPressed: pictures.all.isEmpty
+                      ? null
+                      : () => Navigator.of(context)
+                          .pushNamed(PhotoLibraryScreen.routeName),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(22.0),
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
