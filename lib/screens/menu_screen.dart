@@ -16,6 +16,19 @@ class _MenuState extends State<MenuScreen> {
   KaraokeCards cards;
   CurrentActivity currentActivity;
 
+  void handleCreateNewCard() {
+    if (currentActivity.cardCreation) {
+      Navigator.of(context).pop();
+    } else {
+      currentActivity.startCreateCard(cards.newCurrentCard);
+      Navigator.popUntil(
+        context,
+        ModalRoute.withName("/"),
+      );
+      Navigator.of(context).pushNamed(PictureMenuScreen.routeName);
+    }
+  }
+
   Widget build(BuildContext context) {
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
     cards = Provider.of<KaraokeCards>(context, listen: false);
@@ -65,14 +78,7 @@ class _MenuState extends State<MenuScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             GestureDetector(
-              onTap: () {
-                currentActivity.startCreateCard(cards.newCurrentCard);
-                Navigator.popUntil(
-                  context,
-                  ModalRoute.withName("/"),
-                );
-                Navigator.of(context).pushNamed(PictureMenuScreen.routeName);
-              },
+              onTap: handleCreateNewCard,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text("Create New Card",

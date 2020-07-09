@@ -48,7 +48,7 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
                 shape: CircleBorder(),
                 elevation: 2.0,
                 onPressed: () {
-                  Navigator.of(context).pushNamed(MenuScreen.routeName);
+                  Navigator.of(context).popAndPushNamed(MenuScreen.routeName);
                 },
               ),
             ),

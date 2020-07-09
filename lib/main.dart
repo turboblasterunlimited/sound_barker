@@ -14,7 +14,6 @@ import 'package:flutter/rendering.dart';
 import 'package:K9_Karaoke/providers/active_wave_streamer.dart';
 import 'package:K9_Karaoke/services/http_controller.dart';
 import './screens/main_screen.dart';
-import './screens/authentication_screen.dart';
 import 'screens/song_store_screen.dart';
 
 import './providers/pictures.dart';
@@ -87,15 +86,14 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'Song Barker',
+          title: 'K-9 Karaoke',
           theme: ThemeData(
             backgroundColor: Colors.amber[50],
             primarySwatch: MaterialColor(0xff234498, color),
             accentColor: Colors.purple[200],
             highlightColor: MaterialColor(0xff44bba4, color),
             errorColor: MaterialColor(0xff9a2020, color),
-            // backgroundColor: MaterialColor(0xff367b92, color),
-            fontFamily: 'Lato',
+            fontFamily: 'Museo',
             buttonTheme: ButtonThemeData(
               minWidth: 200.0,
               height: 50.0,
