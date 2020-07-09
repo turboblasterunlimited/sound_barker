@@ -42,9 +42,9 @@ class ImageController with ChangeNotifier {
   }
 
   void cancelMouthOpenAndClose() {
-    webViewController.evaluateJavascript("mouth_to_pos(1, 0, 60)");
     mouthOpenAndClose.cancel();
     mouthOpenAndClose = null;
+    stopAnimation();
   }
 
   void stopAnimation() {
