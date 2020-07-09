@@ -14,7 +14,6 @@ class SongSelectInterface extends StatefulWidget {
 }
 
 class _SongSelectInterfaceState extends State<SongSelectInterface> {
-//
   Widget build(BuildContext context) {
     final songs = Provider.of<Songs>(context);
     final soundController = Provider.of<SoundController>(context);
@@ -73,17 +72,24 @@ class _SongSelectInterfaceState extends State<SongSelectInterface> {
               ),
             ],
           ),
-          Expanded(
-            child: Text("Hola"),
-
-            // child: AnimatedList(
-            //   key: songs.listKey,
-            //   initialItemCount: songs.all.length,
-            //   padding: const EdgeInsets.all(0),
-            //   itemBuilder: (ctx, i, Animation<double> animation) =>
-            //       SongPlaybackCard(
-            //           i, songs.all[i], songs, soundController, animation),
-            // ),
+          // AnimatedList(
+          //   key: songs.listKey,
+          //   initialItemCount: songs.all.length,
+          //   padding: const EdgeInsets.all(0),
+          //   itemBuilder: (ctx, i, Animation<double> animation) =>
+          //       SongPlaybackCard(
+          //           i, songs.all[i], songs, soundController, animation),
+          // ),
+          SizedBox(
+            height: 300,
+            child: AnimatedList(
+              key: songs.listKey,
+              initialItemCount: songs.all.length,
+              padding: const EdgeInsets.all(0),
+              itemBuilder: (ctx, i, Animation<double> animation) =>
+                  SongPlaybackCard(
+                      i, songs.all[i], songs, soundController, animation),
+            ),
           ),
         ],
       ),

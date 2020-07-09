@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'dart:async';
 
 import '../providers/sound_controller.dart';
 import '../providers/songs.dart';
