@@ -50,6 +50,8 @@ class Pictures with ChangeNotifier {
         // SERVER IS NOT PROVIDING A FILE URL ATM....
         // fileUrl: serverImage["bucket_fp"],
         fileId: serverImage["uuid"],
+
+        // need to use mouth_color instad of coordinates_json.
         coordinates: jsonDecode(serverImage["coordinates_json"]),
         created: DateTime.parse(serverImage["created"]),
       );

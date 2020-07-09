@@ -16,7 +16,6 @@ import 'package:K9_Karaoke/providers/image_controller.dart';
 import '../providers/pictures.dart';
 import '../providers/barks.dart';
 import '../providers/songs.dart';
-import '../widgets/app_drawer.dart';
 import '../widgets/singing_image.dart';
 import 'authentication_screen.dart';
 
@@ -109,103 +108,97 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+  Widget mainAppBar() {
+    return PreferredSize(
+      preferredSize: Size.fromHeight(60.0),
+      child: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        automaticallyImplyLeading: false, // Don't show the leading button
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Image.asset("assets/logos/K9_logotype.png", width: 80),
+            Expanded(
+              child: Center(
+                // child: Consumer<KaraokeCards>(
+                //   builder: (_, daCards, ch) {
+                //     print("rebuilding consumer");
+                //     print("current card name: ${daCards.currentCardName}");
+                //     String _pictureName = daCards.currentCardName;
+                child: Container(
+                  width: 170,
+                  child: TextFormField(
+                    style: TextStyle(color: Colors.grey[600], fontSize: 20),
+                    maxLength: 12,
+                    textAlign: TextAlign.right,
+                    decoration: InputDecoration(
+                        hintText: cards.currentCardName,
+                        counterText: "",
+                        suffixIcon: Icon(LineAwesomeIcons.edit),
+                        border: InputBorder.none),
+                    onFieldSubmitted: (val) {
+                      cards.setCurrentCardName(val);
+                      FocusScope.of(context).unfocus();
+                    },
+                  ),
+                  // This rename field works differently than on the coordinates setting page.
+                ),
+              ),
+            ),
+          ],
+        ),
+        actions: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(top: 5),
+            child: RawMaterialButton(
+              child: Icon(
+                Icons.menu,
+                color: Colors.black,
+                size: 30,
+              ),
+              shape: CircleBorder(),
+              elevation: 2.0,
+              onPressed: () {
+                Navigator.of(context).pushNamed(MenuScreen.routeName);
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-
     bool everythingReady() {
       return imageController.isReady &&
           everythingDownloaded &&
           user.isSignedIn();
     }
 
-    return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
-      resizeToAvoidBottomPadding: false,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(60.0),
-        child: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          automaticallyImplyLeading: false, // Don't show the leading button
-          title: Visibility(
-            visible: everythingReady(),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Image.asset("assets/images/K9_logotype.png", width: 80),
-                Expanded(
-                  child: Center(
-                    // child: Consumer<KaraokeCards>(
-                    //   builder: (_, daCards, ch) {
-                    //     print("rebuilding consumer");
-                    //     print("current card name: ${daCards.currentCardName}");
-                    //     String _pictureName = daCards.currentCardName;
-                    child: Container(
-                      width: 170,
-                      child: TextFormField(
-                        style: TextStyle(color: Colors.grey[600], fontSize: 20),
-                        maxLength: 12,
-                        textAlign: TextAlign.right,
-                        decoration: InputDecoration(
-                            hintText: cards.currentCardName,
-                            counterText: "",
-                            suffixIcon: Icon(LineAwesomeIcons.edit),
-                            border: InputBorder.none),
-                        // onChanged: (val) {
-
-                        // },
-                        onFieldSubmitted: (val) {
-                          cards.setCurrentCardName(val);
-                          FocusScope.of(context).unfocus();
-                        },
-                      ),
-                      // This rename field works differently than on the coordinates setting page.
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(top: 5),
-              child: RawMaterialButton(
-                child: Icon(
-                  Icons.menu,
-                  color: Colors.black,
-                  size: 30,
-                ),
-                shape: CircleBorder(),
-                elevation: 2.0,
-                // fillColor: Theme.of(context).accentColor,
-                onPressed: () {
-                  Navigator.of(context).pushNamed(MenuScreen.routeName);
-                },
-              ),
-            ),
-          ],
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage("assets/backgrounds/create_background.png"),
+          fit: BoxFit.cover,
         ),
       ),
-      drawer: AppDrawer(),
-      body: Builder(
-        builder: (ctx) => Container(
+      child: Scaffold(
+        backgroundColor: Theme.of(context).backgroundColor,
+        resizeToAvoidBottomPadding: false,
+        appBar: everythingReady() ? mainAppBar() : null,
+        body: Container(
           child: Stack(
             children: <Widget>[
               Column(
                 children: <Widget>[
                   GestureDetector(
                     behavior: HitTestBehavior.opaque,
-                    onVerticalDragStart: (details) {
-                      return null;
-                      // Scaffold.of(context).openEndDrawer();
-                    },
-                    onHorizontalDragStart: (details) {
-                      Scaffold.of(ctx).openEndDrawer();
-                    },
                     onTap: () {
+                      // used to play and stop
                       print("Tapping webview!");
-                      Scaffold.of(ctx).openEndDrawer();
                     },
                     // WebView
                     child: IgnorePointer(

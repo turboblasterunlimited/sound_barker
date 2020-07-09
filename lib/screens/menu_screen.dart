@@ -32,128 +32,136 @@ class _MenuState extends State<MenuScreen> {
   Widget build(BuildContext context) {
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
     cards = Provider.of<KaraokeCards>(context, listen: false);
-    return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
-      resizeToAvoidBottomPadding: false,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(60.0),
-        child: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          automaticallyImplyLeading: false, // Don't show the leading button
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Image.asset("assets/images/K9_logotype.png", width: 100),
-            ],
-          ),
-          // Can only close if activity already selected
-          actions: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(top: 5),
-              child: RawMaterialButton(
-                child: Visibility(
-                  visible: currentActivity.activitySelected(),
-                  child: Icon(
-                    Icons.close,
-                    color: Colors.black,
-                    size: 30,
-                  ),
-                ),
-                shape: CircleBorder(),
-                elevation: 2.0,
-                // fillColor: Theme.of(context).accentColor,
-                onPressed: currentActivity.activitySelected()
-                    ? () => Navigator.of(context).pop()
-                    : null,
-              ),
-            ),
-          ],
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage("assets/backgrounds/menu_background.png"),
+          fit: BoxFit.cover,
         ),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            GestureDetector(
-              onTap: handleCreateNewCard,
-              child: Padding(
+      child: Scaffold(
+        backgroundColor: Theme.of(context).backgroundColor,
+        resizeToAvoidBottomPadding: false,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(60.0),
+          child: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            automaticallyImplyLeading: false, // Don't show the leading button
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Image.asset("assets/logos/K9_logotype.png", width: 100),
+              ],
+            ),
+            // Can only close if activity already selected
+            actions: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(top: 5),
+                child: RawMaterialButton(
+                  child: Visibility(
+                    visible: currentActivity.activitySelected(),
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.black,
+                      size: 30,
+                    ),
+                  ),
+                  shape: CircleBorder(),
+                  elevation: 2.0,
+                  // fillColor: Theme.of(context).accentColor,
+                  onPressed: currentActivity.activitySelected()
+                      ? () => Navigator.of(context).pop()
+                      : null,
+                ),
+              ),
+            ],
+          ),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              GestureDetector(
+                onTap: handleCreateNewCard,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("Create New Card",
+                      style: TextStyle(
+                          fontSize: 40, color: Theme.of(context).primaryColor)),
+                ),
+              ),
+              Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text("Create New Card",
+                child: Text("View Cards",
                     style: TextStyle(
                         fontSize: 40, color: Theme.of(context).primaryColor)),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text("View Cards",
-                  style: TextStyle(
-                      fontSize: 40, color: Theme.of(context).primaryColor)),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text("Photo Library",
-                  style: TextStyle(
-                      fontSize: 40, color: Theme.of(context).primaryColor)),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text("Song Library",
-                  style: TextStyle(
-                      fontSize: 40, color: Theme.of(context).primaryColor)),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text("Bark Library",
-                  style: TextStyle(
-                      fontSize: 40, color: Theme.of(context).primaryColor)),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text("Account",
-                  style: TextStyle(
-                      fontSize: 40, color: Theme.of(context).primaryColor)),
-            ),
-            Container(
-              width: 120,
-              child: Divider(
-                color: Theme.of(context).primaryColor,
-                height: 10,
-                thickness: 3,
-                indent: 20,
-                endIndent: 20,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text("Photo Library",
+                    style: TextStyle(
+                        fontSize: 40, color: Theme.of(context).primaryColor)),
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: IconButton(
-                      icon: Icon(LineAwesomeIcons.facebook,
-                          size: 40, color: Theme.of(context).primaryColor),
-                      onPressed: null),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text("Song Library",
+                    style: TextStyle(
+                        fontSize: 40, color: Theme.of(context).primaryColor)),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text("Bark Library",
+                    style: TextStyle(
+                        fontSize: 40, color: Theme.of(context).primaryColor)),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text("Account",
+                    style: TextStyle(
+                        fontSize: 40, color: Theme.of(context).primaryColor)),
+              ),
+              Container(
+                width: 120,
+                child: Divider(
+                  color: Theme.of(context).primaryColor,
+                  height: 10,
+                  thickness: 3,
+                  indent: 20,
+                  endIndent: 20,
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: IconButton(
-                      icon: Icon(LineAwesomeIcons.instagram,
-                          size: 40, color: Theme.of(context).primaryColor),
-                      onPressed: null),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: IconButton(
-                      icon: Icon(LineAwesomeIcons.twitter,
-                          size: 40, color: Theme.of(context).primaryColor),
-                      onPressed: null),
-                ),
-              ],
-            ),
-          ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: IconButton(
+                        icon: Icon(LineAwesomeIcons.facebook,
+                            size: 40, color: Theme.of(context).primaryColor),
+                        onPressed: null),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: IconButton(
+                        icon: Icon(LineAwesomeIcons.instagram,
+                            size: 40, color: Theme.of(context).primaryColor),
+                        onPressed: null),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: IconButton(
+                        icon: Icon(LineAwesomeIcons.twitter,
+                            size: 40, color: Theme.of(context).primaryColor),
+                        onPressed: null),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

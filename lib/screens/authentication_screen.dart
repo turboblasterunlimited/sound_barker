@@ -90,122 +90,132 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   @override
   Widget build(BuildContext context) {
     print("building auth screen...");
-    return Scaffold(
-      backgroundColor: Colors.amber[50],
-      resizeToAvoidBottomPadding: false,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(60.0),
-        child: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          automaticallyImplyLeading: false, // Don't show the leading button
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Image.asset("assets/images/K9_logotype.png", width: 100),
-            ],
-          ),
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage("assets/backgrounds/create_background.png"),
+          fit: BoxFit.cover,
         ),
       ),
-      body: Builder(
-        builder: (ctx) => Column(
-          children: <Widget>[
-            Visibility(
-              visible: !loading,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 100.0),
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left: 30, right: 30, bottom: 15),
-                      child: TextField(
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          border: OutlineInputBorder(),
-                          labelText: 'Email',
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                      child: TextField(
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          border: OutlineInputBorder(),
-                          labelText: 'Password',
-                        ),
-                      ),
-                    ),
-                    ButtonBar(
-                      alignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: FlatButton(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 20),
-                            child:
-                                Text("Sign In", style: TextStyle(fontSize: 20)),
-                            color: Theme.of(context).primaryColor,
-                            onPressed: () {},
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(22.0),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: FlatButton(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 20),
-                            child:
-                                Text("Sign Up", style: TextStyle(fontSize: 20)),
-                            color: Theme.of(context).primaryColor,
-                            onPressed: () {},
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(22.0),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Container(
-                      width: 200,
-                      padding: EdgeInsets.symmetric(vertical: 20),
-                      child: Divider(
-                        color: Colors.black,
-                        thickness: 2,
-                      ),
-                    ),
-                    Center(
-                      child: GoogleSignInButton(
-                        text: "Continue with Google",
-                        onPressed: () {
-                          handleAuthentication();
-                        },
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: FacebookSignInButton(
-                        onPressed: () {},
-                      ),
-                    ),
-                  ],
+      child: Scaffold(
+        resizeToAvoidBottomPadding: false,
+        appBar: loading
+            ? null
+            : PreferredSize(
+                preferredSize: Size.fromHeight(60.0),
+                child: AppBar(
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  automaticallyImplyLeading:
+                      false, // Don't show the leading button
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Image.asset("assets/logos/K9_logotype.png", width: 100),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            Visibility(
-              visible: loading,
-              child: SpinnerWidget("Signing in..."),
-            ),
-          ],
+        body: Builder(
+          builder: (ctx) => Column(
+            children: <Widget>[
+              Visibility(
+                visible: !loading,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 100.0),
+                  child: Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            left: 30, right: 30, bottom: 15),
+                        child: TextField(
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(),
+                            labelText: 'Email',
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                        child: TextField(
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(),
+                            labelText: 'Password',
+                          ),
+                        ),
+                      ),
+                      ButtonBar(
+                        alignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: FlatButton(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              child: Text("Sign In",
+                                  style: TextStyle(fontSize: 20)),
+                              color: Theme.of(context).primaryColor,
+                              onPressed: () {},
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(22.0),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: FlatButton(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              child: Text("Sign Up",
+                                  style: TextStyle(fontSize: 20)),
+                              color: Theme.of(context).primaryColor,
+                              onPressed: () {},
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(22.0),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Container(
+                        width: 200,
+                        padding: EdgeInsets.symmetric(vertical: 20),
+                        child: Divider(
+                          color: Colors.black,
+                          thickness: 2,
+                        ),
+                      ),
+                      Center(
+                        child: GoogleSignInButton(
+                          text: "Continue with Google",
+                          onPressed: () {
+                            handleAuthentication();
+                          },
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: FacebookSignInButton(
+                          onPressed: () {},
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Visibility(
+                visible: loading,
+                child: SpinnerWidget("Signing in..."),
+              ),
+            ],
+          ),
         ),
       ),
     );

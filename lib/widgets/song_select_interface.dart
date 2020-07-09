@@ -16,11 +16,10 @@ class SongSelectInterface extends StatefulWidget {
 class _SongSelectInterfaceState extends State<SongSelectInterface> {
 //
   Widget build(BuildContext context) {
-    print("song select interface building");
     final songs = Provider.of<Songs>(context);
     final soundController = Provider.of<SoundController>(context);
     final spinnerState = Provider.of<SpinnerState>(context, listen: true);
-
+    print("song count: ${songs.all.length}");
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: Column(
@@ -74,18 +73,18 @@ class _SongSelectInterfaceState extends State<SongSelectInterface> {
               ),
             ],
           ),
-          // Visibility(
-          //   visible: songs.all.isNotEmpty,
-          //   child: AnimatedList(
-          //       key: songs.listKey,
-          //       initialItemCount: songs.all.length,
-          //       padding: const EdgeInsets.all(0),
-          //       itemBuilder: (ctx, i, Animation<double> animation) =>
-          //           SongPlaybackCard(
-          //               i, songs.all[i], songs, soundController, animation),
-          //     ),
+          Expanded(
+            child: Text("Hola"),
 
-          // ),
+            // child: AnimatedList(
+            //   key: songs.listKey,
+            //   initialItemCount: songs.all.length,
+            //   padding: const EdgeInsets.all(0),
+            //   itemBuilder: (ctx, i, Animation<double> animation) =>
+            //       SongPlaybackCard(
+            //           i, songs.all[i], songs, soundController, animation),
+            // ),
+          ),
         ],
       ),
     );

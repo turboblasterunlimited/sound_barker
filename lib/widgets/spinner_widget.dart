@@ -12,14 +12,21 @@ class SpinnerWidget extends StatefulWidget {
 class _SpinnerWidgetState extends State<SpinnerWidget> {
   Widget build(BuildContext context) {
     return Container(
-      // width: MediaQuery.of(context).size.width,
-      // height: MediaQuery.of(context).size.height,
-      color: Colors.white,
+      height: MediaQuery.of(context).size.height,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage("assets/backgrounds/menu_background.png"),
+          fit: BoxFit.cover,
+        ),
+      ),
       child: Expanded(
-              child: Column(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
+            Padding(
+                child: Image.asset("assets/logos/K9_logotype.png", width: 200),
+                padding: EdgeInsets.all(20)),
             SpinKitWave(
               // color: Theme.of(context).primaryColor,
               color: Colors.blue,

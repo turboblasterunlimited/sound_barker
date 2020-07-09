@@ -250,7 +250,7 @@ class _SetPictureCoordinatesScreenState
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Image.asset("assets/images/K9_logotype.png", width: 80),
+              Image.asset("assets/logos/K9_logotype.png", width: 80),
               Expanded(
                 child: Center(
                   child: Container(

@@ -32,7 +32,7 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Image.asset("assets/images/K9_logotype.png", width: 100),
+              Image.asset("assets/logos/K9_logotype.png", width: 100),
               // Your widgets here
             ],
           ),
