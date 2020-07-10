@@ -21,6 +21,12 @@ class KaraokeCards with ChangeNotifier {
     notifyListeners();
   }
 
+  void setCurrentCardSong(newSong) {
+    print("Calling set current card song: $newSong");
+    currentCard.song = newSong;
+    notifyListeners();
+  }
+
   void setCurrentCardPicture(newPicture) {
     currentCard.picture = newPicture;
     notifyListeners();

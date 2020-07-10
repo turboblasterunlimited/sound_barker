@@ -1,3 +1,5 @@
+import 'package:K9_Karaoke/providers/current_activity.dart';
+import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -28,6 +30,8 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
   bool _isPlaying = false;
   final _controller = TextEditingController();
   String tempName;
+  CurrentActivity currentActivity;
+  KaraokeCards cards;
 
   @override
   void initState() {
@@ -159,66 +163,76 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
     );
   }
 
+  selectSong() {
+    cards.setCurrentCardSong(widget.song);
+    currentActivity.setCardCreationStep(CardCreationSteps.speak);
+  }
+
   @override
   Widget build(BuildContext context) {
+    cards = Provider.of<KaraokeCards>(context, listen: false);
+    currentActivity = Provider.of<CurrentActivity>(context, listen: false);
+
     return SizeTransition(
       sizeFactor: widget.animation,
-      child: GestureDetector(
-        onTap: () => renameSong(),
-        child: Card(
-          margin: EdgeInsets.symmetric(
-            horizontal: 0,
-            vertical: 0,
+      child: Row(
+        // crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          // Playback button
+          IconButton(
+            color: Colors.blue,
+            onPressed: () {
+              if (_isPlaying) {
+                stopAll();
+              } else {
+                startAll();
+              }
+            },
+            icon: Icon(_isPlaying ? Icons.stop : Icons.play_arrow,
+                color: Theme.of(context).primaryColor, size: 30),
           ),
-          child: Padding(
-            padding: EdgeInsets.all(0),
-            child: ListTile(
-              leading: IconButton(
-                color: Colors.blue,
-                onPressed: () {
-                  if (_isPlaying) {
-                    stopAll();
-                  } else {
-                    startAll();
-                  }
-                },
-                icon: Icon(_isPlaying ? Icons.stop : Icons.play_arrow,
-                    color: Colors.black, size: 30),
-              ),
-              title: Center(
-                child: FadeTransition(
-                  opacity: renameAnimationController,
-                  child: RichText(
-                    text: TextSpan(
-                      style: TextStyle(fontSize: 18),
-                      children: [
-                        WidgetSpan(
-                          child: Text(
-                            widget.song.getName,
-                            // style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        // WidgetSpan(
-                        //   child: Padding(
-                        //     padding:
-                        //         const EdgeInsets.symmetric(horizontal: 2.0),
-                        //     child: Icon(Icons.edit,
-                        //         color: Colors.grey[400], size: 16),
-                        //   ),
-                        // ),
-                      ],
+          // Select song button
+          Expanded(
+            child: RawMaterialButton(
+              onPressed: selectSong,
+              child: FadeTransition(
+                opacity: renameAnimationController,
+                child: Column(
+                  children: <Widget>[
+                    // Title
+                    Center(
+                      child: Text(widget.song.songFamily,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).primaryColor,
+                              fontSize: 16)),
                     ),
-                  ),
+                    // Subtitle
+                    // Center(
+                    //     child: Text(widget.song.getName,
+                    //         style:
+                    //             TextStyle(color: Colors.white, fontSize: 16)))
+                  ],
                 ),
               ),
-              subtitle: Center(child: Text(widget.song.songFamily)),
-              trailing: IconButton(
-                onPressed: deleteSong,
-                icon: Icon(Icons.delete, color: Colors.redAccent, size: 30),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(40.0),
+                side:
+                    BorderSide(color: Theme.of(context).primaryColor, width: 3),
               ),
+              elevation: 2.0,
+              // fillColor: Theme.of(context).primaryColor,
+              padding:
+                  const EdgeInsets.symmetric(vertical: 13, horizontal: 22.0),
             ),
           ),
-        ),
+          // Menu button
+          IconButton(
+            onPressed: deleteSong,
+            icon: Icon(Icons.more_vert,
+                color: Theme.of(context).primaryColor, size: 30),
+          ),
+        ],
       ),
     );
   }

@@ -28,7 +28,7 @@ class _SongSelectInterfaceState extends State<SongSelectInterface> {
             children: <Widget>[
               RawMaterialButton(
                 onPressed: () {},
-                child: Text("Song Library",
+                child: Text("My Songs",
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Theme.of(context).backgroundColor,
@@ -55,7 +55,7 @@ class _SongSelectInterfaceState extends State<SongSelectInterface> {
                         color: Colors.white,
                         size: 20,
                       )
-                    : Text("Song Store",
+                    : Text("Song Library",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Theme.of(context).primaryColor,
@@ -72,6 +72,7 @@ class _SongSelectInterfaceState extends State<SongSelectInterface> {
               ),
             ],
           ),
+          Padding(padding: EdgeInsets.only(top: 20)),
           Expanded(
             child: AnimatedList(
               key: songs.listKey,

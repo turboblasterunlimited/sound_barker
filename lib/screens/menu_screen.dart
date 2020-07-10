@@ -97,25 +97,25 @@ class _MenuState extends State<MenuScreen> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text("View Cards",
+                child: Text("My Cards",
                     style: TextStyle(
                         fontSize: 40, color: Theme.of(context).primaryColor)),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text("Photo Library",
+                child: Text("My Photos",
                     style: TextStyle(
                         fontSize: 40, color: Theme.of(context).primaryColor)),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text("Song Library",
+                child: Text("My Songs",
                     style: TextStyle(
                         fontSize: 40, color: Theme.of(context).primaryColor)),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text("Bark Library",
+                child: Text("My Barks",
                     style: TextStyle(
                         fontSize: 40, color: Theme.of(context).primaryColor)),
               ),
