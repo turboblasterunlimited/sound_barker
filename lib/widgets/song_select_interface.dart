@@ -19,9 +19,9 @@ class _SongSelectInterfaceState extends State<SongSelectInterface> {
     final soundController = Provider.of<SoundController>(context);
     final spinnerState = Provider.of<SpinnerState>(context, listen: true);
     print("song count: ${songs.all.length}");
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10.0),
+    return Expanded(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -72,16 +72,7 @@ class _SongSelectInterfaceState extends State<SongSelectInterface> {
               ),
             ],
           ),
-          // AnimatedList(
-          //   key: songs.listKey,
-          //   initialItemCount: songs.all.length,
-          //   padding: const EdgeInsets.all(0),
-          //   itemBuilder: (ctx, i, Animation<double> animation) =>
-          //       SongPlaybackCard(
-          //           i, songs.all[i], songs, soundController, animation),
-          // ),
-          SizedBox(
-            height: 300,
+          Expanded(
             child: AnimatedList(
               key: songs.listKey,
               initialItemCount: songs.all.length,

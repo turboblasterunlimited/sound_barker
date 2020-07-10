@@ -192,7 +192,9 @@ class _MainScreenState extends State<MainScreen> {
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomPadding: false,
       appBar: everythingReady() ? mainAppBar() : null,
+      // Background image
       body: Container(
+        height: MediaQuery.of(context).size.height,
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage("assets/backgrounds/create_background.png"),
@@ -201,12 +203,13 @@ class _MainScreenState extends State<MainScreen> {
         ),
         child: Stack(
           children: <Widget>[
-            Container(
-              // WebView
-              padding: EdgeInsets.only(top: 80),
-              child: Column(
-                children: <Widget>[
-                  GestureDetector(
+            Column(
+              children: <Widget>[
+                // Appbar and horizontal padding.
+                Padding(
+                  padding: EdgeInsets.only(top: 80, left: 22, right: 22),
+                  // WebView
+                  child: GestureDetector(
                     behavior: HitTestBehavior.opaque,
                     onTap: () {
                       // used to play and stop
@@ -214,35 +217,28 @@ class _MainScreenState extends State<MainScreen> {
                     },
                     child: IgnorePointer(
                       ignoring: true,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 22.0),
-                        child: AspectRatio(
-                          aspectRatio: 1 / 1,
-                          child: Stack(
-                            children: <Widget>[
-                              SingingImage(),
-                            ],
-                          ),
+                      child: AspectRatio(
+                        aspectRatio: 1 / 1,
+                        child: Stack(
+                          children: <Widget>[
+                            SingingImage(),
+                            // add decoration canvas for currentActivity.isStyle
+                          ],
                         ),
                       ),
                     ),
                   ),
-                  Visibility(
-                    visible: cards.currentCard != null,
-                    child: CardProgressBar(),
-                  ),
-                  Visibility(
-                    visible: cards.currentCard != null,
-                    child: CardCreationInterface(),
-                  ),
-                ],
-              ),
+                ),
+                if (cards.currentCard != null)
+                  CardProgressBar(),
+                if (cards.currentCard != null)
+                  CardCreationInterface(),
+              ],
             ),
+
             // Spinner
-            Visibility(
-              visible: !everythingReady(),
-              child: SpinnerWidget(loadingMessage()),
-            ),
+            if (!everythingReady())
+              SpinnerWidget(loadingMessage()),
           ],
         ),
       ),

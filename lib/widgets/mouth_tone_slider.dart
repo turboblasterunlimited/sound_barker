@@ -64,102 +64,104 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
   Widget build(BuildContext context) {
     imageController.startMouthOpenAndClose();
 
-    return Column(
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(top: 20.0, bottom: 10),
-          child: Text("CHOOSE MOUTH TONE",
-              style: TextStyle(
-                  fontSize: 20, color: Theme.of(context).primaryColor)),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              ClipOval(
-                child: Material(
-                  color: Colors.black,
-                  child: InkWell(
-                    child: SizedBox(width: 56, height: 56),
+    return Expanded(
+          child: Column(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(top: 10.0, bottom: 10),
+            child: Text("CHOOSE MOUTH TONE",
+                style: TextStyle(
+                    fontSize: 20, color: Theme.of(context).primaryColor)),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                ClipOval(
+                  child: Material(
+                    color: Colors.black,
+                    child: InkWell(
+                      child: SizedBox(width: 56, height: 56),
+                    ),
                   ),
                 ),
-              ),
-              Slider.adaptive(
-                value: _sliderValue,
-                min: 0,
-                max: 1,
-                onChanged: (double sliderVal) {
-                  setState(() {
-                    _sliderValue = sliderVal;
-                    pinkMouthTone.asMap().forEach((i, value) {
-                      mouthTone[i] = (value * sliderVal).round();
+                Slider.adaptive(
+                  value: _sliderValue,
+                  min: 0,
+                  max: 1,
+                  onChanged: (double sliderVal) {
+                    setState(() {
+                      _sliderValue = sliderVal;
+                      pinkMouthTone.asMap().forEach((i, value) {
+                        mouthTone[i] = (value * sliderVal).round();
+                      });
                     });
-                  });
-                  imageController.setMouthColor(mouthColorToDecimal());
-                },
-                onChangeEnd: (_) {},
-              ),
-              ClipOval(
-                child: Material(
-                  color: Color(0xff91656e),
-                  child: InkWell(
-                    child: SizedBox(width: 56, height: 56),
+                    imageController.setMouthColor(mouthColorToDecimal());
+                  },
+                  onChangeEnd: (_) {},
+                ),
+                ClipOval(
+                  child: Material(
+                    color: Color(0xff91656e),
+                    child: InkWell(
+                      child: SizedBox(width: 56, height: 56),
+                    ),
                   ),
                 ),
+              ],
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              RawMaterialButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SetPictureCoordinatesScreen(
+                          card.picture,
+                          editing: true),
+                    ),
+                  );
+                },
+                child: Icon(
+                  Icons.close,
+                  color: Colors.white,
+                  size: 40,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+                elevation: 2.0,
+                fillColor: Theme.of(context).errorColor,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
+              ),
+              Padding(
+                padding: EdgeInsets.all(10),
+              ),
+              RawMaterialButton(
+                onPressed: handleSubmitButton,
+                child: Icon(
+                  Icons.check,
+                  color: Colors.white,
+                  size: 40,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+                elevation: 2.0,
+                fillColor: Theme.of(context).primaryColor,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
               ),
             ],
           ),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            RawMaterialButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => SetPictureCoordinatesScreen(
-                        card.picture,
-                        editing: true),
-                  ),
-                );
-              },
-              child: Icon(
-                Icons.close,
-                color: Colors.white,
-                size: 40,
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30.0),
-              ),
-              elevation: 2.0,
-              fillColor: Theme.of(context).errorColor,
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
-            ),
-            Padding(
-              padding: EdgeInsets.all(10),
-            ),
-            RawMaterialButton(
-              onPressed: handleSubmitButton,
-              child: Icon(
-                Icons.check,
-                color: Colors.white,
-                size: 40,
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30.0),
-              ),
-              elevation: 2.0,
-              fillColor: Theme.of(context).primaryColor,
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
-            ),
-          ],
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
