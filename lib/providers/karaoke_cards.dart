@@ -48,6 +48,9 @@ class KaraokeCards with ChangeNotifier {
 class KaraokeCard with ChangeNotifier {
   String fileId;
   Picture picture;
+  // This is a creatable song id that gets sent to the server with the bark ids to create an actual song.
+  String songFormulaId;
+  // This is an actual song
   Song song;
   List<String> barks = [];
   // if editing a previously generated card
@@ -77,6 +80,10 @@ class KaraokeCard with ChangeNotifier {
 
   bool get hasSong {
     return song != null;
+  }
+
+  bool get hasSongFormula {
+    return songFormulaId != null;
   }
 
   bool get hasDecoration {

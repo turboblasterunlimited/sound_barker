@@ -165,7 +165,7 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
 
   selectSong() {
     cards.setCurrentCardSong(widget.song);
-    currentActivity.setCardCreationStep(CardCreationSteps.speak);
+    currentActivity.setCardCreationStep(CardCreationSteps.style);
   }
 
   @override
@@ -176,7 +176,6 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
     return SizeTransition(
       sizeFactor: widget.animation,
       child: Row(
-        // crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           // Playback button
           IconButton(
@@ -222,8 +221,8 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
               ),
               elevation: 2.0,
               // fillColor: Theme.of(context).primaryColor,
-              padding:
-                  const EdgeInsets.symmetric(vertical: 13, horizontal: 22.0),
+              // padding:
+              //     const EdgeInsets.symmetric(vertical: 0, horizontal: 22.0),
             ),
           ),
           // Menu button

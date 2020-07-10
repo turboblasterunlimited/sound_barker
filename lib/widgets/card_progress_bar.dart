@@ -68,16 +68,18 @@ class CardProgressBar extends StatelessWidget {
     }
 
     return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          progressButton("SNAP", card.hasPicture, currentActivity.isSnap,
-              navigateToSnap, true),
-          progressButton("SONG", card.hasSong, currentActivity.isSong,
-              navigateToSong, card.hasPicture),
-          progressButton("SPEAK", card.hasBarks, currentActivity.isSpeak,
-              navigateToSpeak, card.hasSong),
-          progressButton("STYLE", card.hasDecoration, currentActivity.isStyle,
-              navigateToStyle, card.hasBarks),
-        ]);
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+        progressButton("SNAP", card.hasPicture, currentActivity.isSnap,
+            navigateToSnap, true),
+        progressButton("SONG", card.hasSong || card.hasSongFormula,
+            currentActivity.isSong, navigateToSong, card.hasPicture),
+        // Can click only if creating a new song
+        progressButton("SPEAK", card.hasBarks || card.hasSong,
+            currentActivity.isSpeak, navigateToSpeak, card.hasSongFormula),
+        progressButton("STYLE", card.hasDecoration, currentActivity.isStyle,
+            navigateToStyle, card.hasSong),
+      ],
+    );
   }
 }
