@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:openid_client/openid_client_io.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:flutter_bcrypt/flutter_bcrypt.dart';
 
 import 'package:K9_Karaoke/services/http_controller.dart';
-import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 import '../services/authenticate_user.dart';
 
@@ -22,55 +22,19 @@ class AuthenticationScreen extends StatefulWidget {
 
 class _AuthenticationScreenState extends State<AuthenticationScreen> {
   bool loading = true;
+  FocusNode passwordFocusNode;
+  String email;
+  String password;
 
   void _showError(message) {
     setState(() {
-        loading = false;
-        Scaffold.of(context).showSnackBar(
-          SnackBar(
-            content:
-                Text("The following error occured: $message"),
-          ),
-        );
-      });
-  }
-
-  _sendFacebookTokenToServer(String token) async {
-    Map tokenData = {"facebook_token": token};
-    var response = await HttpController.dio.post(
-      'http://165.227.178.14/facebook-token',
-      data: tokenData,
-    );
-    return response.data;
-  }
-
-  handleFacebookAuthentication() async {
-    final facebookLogin = FacebookLogin();
-    facebookLogin.currentAccessToken;
-    var result = await facebookLogin.logIn(['email', 'public_profile']);
-    var responseData;
-    print("Result you want: ${result.status}");
-    print("access token: ${result.accessToken.token}");
-    switch (result.status) {
-      case FacebookLoginStatus.loggedIn:
-        responseData = await _sendFacebookTokenToServer(result.accessToken.token);
-        handleServerResponse(responseData);
-        break;
-      case FacebookLoginStatus.cancelledByUser:
-        _showError("To sign in with Facebook, accept Facebook's permission request");
-        break;
-      case FacebookLoginStatus.error:
-        _showError("Facebook credentials denied");
-        break;
-    }
-  }
-
-  String getGoogleClientID() {
-    if (Platform.isAndroid) {
-      return "885484185769-05vl2rnlup9a9hdkrs78ao1jvmn1804t.apps.googleusercontent.com";
-    } else if (Platform.isIOS) {
-      return "885484185769-b78ks9n5vlka0enrl33p6hkmahhg5o7i.apps.googleusercontent.com";
-    }
+      loading = false;
+      Scaffold.of(context).showSnackBar(
+        SnackBar(
+          content: Text("The following error occured: $message"),
+        ),
+      );
+    });
   }
 
   Future<Map> checkIfSignedIn() async {
@@ -103,6 +67,48 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     }
   }
 
+  // ALL FACEBOOK
+  _sendFacebookTokenToServer(String token) async {
+    Map tokenData = {"facebook_token": token};
+    var response = await HttpController.dio.post(
+      'http://165.227.178.14/facebook-token',
+      data: tokenData,
+    );
+    return response.data;
+  }
+
+  handleFacebookAuthentication() async {
+    final facebookLogin = FacebookLogin();
+    facebookLogin.currentAccessToken;
+    var result = await facebookLogin.logIn(['email', 'public_profile']);
+    var responseData;
+    print("Result you want: ${result.status}");
+    print("access token: ${result.accessToken.token}");
+    switch (result.status) {
+      case FacebookLoginStatus.loggedIn:
+        responseData =
+            await _sendFacebookTokenToServer(result.accessToken.token);
+        handleServerResponse(responseData);
+        break;
+      case FacebookLoginStatus.cancelledByUser:
+        _showError(
+            "To sign in with Facebook, accept Facebook's permission request");
+        break;
+      case FacebookLoginStatus.error:
+        _showError("Facebook credentials denied");
+        break;
+    }
+  }
+
+  // ALL GOOGLE
+  String getGoogleClientID() {
+    if (Platform.isAndroid) {
+      return "885484185769-05vl2rnlup9a9hdkrs78ao1jvmn1804t.apps.googleusercontent.com";
+    } else if (Platform.isIOS) {
+      return "885484185769-b78ks9n5vlka0enrl33p6hkmahhg5o7i.apps.googleusercontent.com";
+    }
+  }
+
   void handleGoogleAuthentication() async {
     setState(() => loading = true);
     var token;
@@ -112,28 +118,40 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     // hardcoded for google right now.
     var issuer = Issuer.google;
 
-    if (issuer == Issuer.facebook) {
-      clientId = "2622706171384608";
-      token = await authenticate(issuer, clientId, ['email', 'public_profile']);
-      response = await HttpController.dio.post(
-        'http://165.227.178.14/facebook-token',
-        data: token,
-      );
-    } else if (issuer == Issuer.google) {
-      clientId = getGoogleClientID();
-      token =
-          await authenticate(issuer, clientId, ['email', 'openid', 'profile']);
-      response = await HttpController.dio.post(
-        'http://165.227.178.14/openid-token/${platform}',
-        data: token,
-      );
-    }
+    clientId = getGoogleClientID();
+    token =
+        await authenticate(issuer, clientId, ['email', 'openid', 'profile']);
+    response = await HttpController.dio.post(
+      'http://165.227.178.14/openid-token/${platform}',
+      data: token,
+    );
+
     handleServerResponse(response.data);
+  }
+
+  void _handleManualSignUp(String email, String password) async {
+    // Need to agree on salt with server and finish this implementation.
+    var response;
+    String hashedPassword =
+        await FlutterBcrypt.hashPw(password: password, salt: "salt");
+    Map data = {email: email, password: hashedPassword};
+    response = await HttpController.dio.post(
+      'http://165.227.178.14/manual-login',
+      data: data,
+    );
+    print(response);
   }
 
   @override
   void initState() {
     super.initState();
+    passwordFocusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    passwordFocusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -190,6 +208,14 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                             left: 30, right: 30, bottom: 15),
                         child: TextField(
                           obscureText: true,
+                          onChanged: (emailValue) {
+                            setState(() {
+                              email = emailValue;
+                            });
+                          },
+                          onSubmitted: (_) {
+                            passwordFocusNode.requestFocus();
+                          },
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: Colors.white,
@@ -202,6 +228,10 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 30.0),
                         child: TextField(
                           obscureText: true,
+                          focusNode: passwordFocusNode,
+                          onSubmitted: (passwordValue) {
+                            _handleManualSignUp(email, passwordValue);
+                          },
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: Colors.white,
