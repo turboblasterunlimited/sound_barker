@@ -3,6 +3,8 @@ import 'package:K9_Karaoke/providers/user.dart';
 import 'package:K9_Karaoke/widgets/spinner_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
+import 'package:openid_client/openid_client_io.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 
 import 'package:K9_Karaoke/services/http_controller.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
@@ -19,19 +21,55 @@ class AuthenticationScreen extends StatefulWidget {
 }
 
 class _AuthenticationScreenState extends State<AuthenticationScreen> {
-  String clientId;
-  String platform;
   bool loading = true;
 
-  void setPlatformClientId() {
+  void _showError(message) {
+    setState(() {
+        loading = false;
+        Scaffold.of(context).showSnackBar(
+          SnackBar(
+            content:
+                Text("The following error occured: $message"),
+          ),
+        );
+      });
+  }
+
+  _sendFacebookTokenToServer(String token) async {
+    Map tokenData = {"facebook_token": token};
+    var response = await HttpController.dio.post(
+      'http://165.227.178.14/facebook-token',
+      data: tokenData,
+    );
+    return response.data;
+  }
+
+  handleFacebookAuthentication() async {
+    final facebookLogin = FacebookLogin();
+    facebookLogin.currentAccessToken;
+    var result = await facebookLogin.logIn(['email', 'public_profile']);
+    var responseData;
+    print("Result you want: ${result.status}");
+    print("access token: ${result.accessToken.token}");
+    switch (result.status) {
+      case FacebookLoginStatus.loggedIn:
+        responseData = await _sendFacebookTokenToServer(result.accessToken.token);
+        handleServerResponse(responseData);
+        break;
+      case FacebookLoginStatus.cancelledByUser:
+        _showError("To sign in with Facebook, accept Facebook's permission request");
+        break;
+      case FacebookLoginStatus.error:
+        _showError("Facebook credentials denied");
+        break;
+    }
+  }
+
+  String getGoogleClientID() {
     if (Platform.isAndroid) {
-      clientId =
-          "885484185769-05vl2rnlup9a9hdkrs78ao1jvmn1804t.apps.googleusercontent.com";
-      platform = "android";
+      return "885484185769-05vl2rnlup9a9hdkrs78ao1jvmn1804t.apps.googleusercontent.com";
     } else if (Platform.isIOS) {
-      clientId =
-          "885484185769-b78ks9n5vlka0enrl33p6hkmahhg5o7i.apps.googleusercontent.com";
-      platform = "ios";
+      return "885484185769-b78ks9n5vlka0enrl33p6hkmahhg5o7i.apps.googleusercontent.com";
     }
   }
 
@@ -47,33 +85,54 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     Navigator.of(context).pop();
   }
 
-  void handleAuthentication() async {
-    setState(() => loading = true);
-    var token = await authenticate(clientId, ['email', 'openid', 'profile']);
-    var response = await HttpController.dio.post(
-      'http://165.227.178.14/openid-token/$platform',
-      data: token,
-    );
-    print("Sign in response data: ${response.data}");
-    if (response.data["success"]) {
-      print("the response data: ${response.data}");
-      handleSignedIn(response.data["payload"]["email"]);
-    } else {
-      setState(() {
-        loading = false;
-        Scaffold.of(context).showSnackBar(
-          SnackBar(
-            content:
-                Text("The following error occured: ${response.data["error"]}"),
-          ),
-        );
-      });
+  String get platform {
+    if (Platform.isAndroid) {
+      return "android";
+    } else if (Platform.isIOS) {
+      return "ios";
     }
+  }
+
+  handleServerResponse(responseData) {
+    print("Sign in response data: $responseData");
+    if (responseData["success"]) {
+      print("the response data: $responseData");
+      handleSignedIn(responseData["payload"]["email"]);
+    } else {
+      _showError(responseData["error"]);
+    }
+  }
+
+  void handleGoogleAuthentication() async {
+    setState(() => loading = true);
+    var token;
+    var response;
+    String clientId;
+
+    // hardcoded for google right now.
+    var issuer = Issuer.google;
+
+    if (issuer == Issuer.facebook) {
+      clientId = "2622706171384608";
+      token = await authenticate(issuer, clientId, ['email', 'public_profile']);
+      response = await HttpController.dio.post(
+        'http://165.227.178.14/facebook-token',
+        data: token,
+      );
+    } else if (issuer == Issuer.google) {
+      clientId = getGoogleClientID();
+      token =
+          await authenticate(issuer, clientId, ['email', 'openid', 'profile']);
+      response = await HttpController.dio.post(
+        'http://165.227.178.14/openid-token/${platform}',
+        data: token,
+      );
+    }
+    handleServerResponse(response.data);
   }
 
   @override
   void initState() {
-    setPlatformClientId();
     super.initState();
   }
 
@@ -196,14 +255,16 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                         child: GoogleSignInButton(
                           text: "Continue with Google",
                           onPressed: () {
-                            handleAuthentication();
+                            handleGoogleAuthentication();
                           },
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(20.0),
                         child: FacebookSignInButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            handleFacebookAuthentication();
+                          },
                         ),
                       ),
                     ],

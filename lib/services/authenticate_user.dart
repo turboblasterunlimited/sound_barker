@@ -1,10 +1,11 @@
 import 'package:openid_client/openid_client_io.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-authenticate(String clientId, List<String> scopes) async {
+authenticate(Uri issuer, String clientId, List<String> scopes) async {
   // create the client
-  var issuer = await Issuer.discover(Issuer.google);
-  var client = new Client(issuer, clientId);
+  print("Authentication: issuer: $issuer, clientId: $clientId, scopes: $scopes");
+  var discoveredIssuer = await Issuer.discover(issuer);
+  var client = new Client(discoveredIssuer, clientId);
 
   // create a function to open a browser with an url
   urlLauncher(String url) async {

@@ -27,14 +27,14 @@ class CardCreationInterface extends StatelessWidget {
           visible: currentActivity.isSong,
           child: SongSelectInterface(),
         ),
-        Visibility(
-          visible: currentActivity.isSpeak,
-          child: SongSelectInterface(),
-        ),
-        Visibility(
-          visible: currentActivity.isStyle,
-          child: SongSelectInterface(),
-        ),
+        // Visibility(
+        //   visible: currentActivity.isSpeak,
+        //   child: BarkSelectInterface(),
+        // ),
+        // Visibility(
+        //   visible: currentActivity.isStyle,
+        //   child: DecorationInterface(),
+        // ),
       ]),
     );
   }

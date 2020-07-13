@@ -27,7 +27,6 @@ dependencies:
   gcloud: ^0.6.3
   googleapis_auth: ^0.2.11+1
   provider: ^4.0.4
-  grouped_buttons: ^1.0.4
   path_provider: ^1.6.0
   webview_flutter: ^0.3.19+8
   flutter_spinkit: ^4.1.2
@@ -35,7 +34,7 @@ dependencies:
   csv: ^4.0.3
   image_cropper: ^1.2.1
   openid_client: ^0.2.5
-  url_launcher: ^5.4.7  
+  url_launcher: ^5.4.7
   dio: ^3.0.9
   cookie_jar: ^1.0.1
   dio_cookie_manager: ^1.0.0
@@ -43,9 +42,9 @@ dependencies:
   shared_preferences: ^0.5.7+3
   storage_path: ^0.2.0
   line_awesome_icons: ^1.0.4+2
-  visibility_detector: ^0.1.5
   permission_handler: ^5.0.1
   image_picker: ^0.6.7+2
+  flutter_facebook_login: ^3.0.0
 
 
   # The following adds the Cupertino Icons font to your application.
