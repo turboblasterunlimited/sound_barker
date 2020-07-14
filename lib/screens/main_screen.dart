@@ -20,7 +20,6 @@ import '../widgets/singing_image.dart';
 
 // AKA CARD CREATION SCREEN
 class MainScreen extends StatefulWidget {
-  // routeName seems to be '/' in some cases.
   static const routeName = 'main-screen';
 
   @override
@@ -28,7 +27,6 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   User user;
   Barks barks;
   Songs songs;
@@ -36,16 +34,23 @@ class _MainScreenState extends State<MainScreen> {
   ImageController imageController;
   SpinnerState spinnerState;
   CurrentActivity currentActivity;
-  bool everythingDownloaded = false;
+  bool everythingDownloaded = true;
   KaraokeCards cards;
+  bool didFirstThing = false;
 
   bool noAssets() {
     return barks.all.isEmpty && songs.all.isEmpty && pictures.all.isEmpty;
   }
 
-  Future<void> signInCallback() async {
-    if (noAssets()) await downloadEverything();
-    setState(() => everythingDownloaded = true);
+  Future<void> _firstThing() async {
+    if (didFirstThing == true) return;
+    print("calling firstThing");
+    if (noAssets()) {
+      setState(() => everythingDownloaded = false);
+      await downloadEverything();
+      setState(() => everythingDownloaded = true);
+    }
+    didFirstThing = true;
     if (pictures.all.isEmpty)
       startCreateCard();
     else
@@ -75,6 +80,9 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Future<void> downloadEverything() async {
+    // await pictures.retrieveAll();
+
+    // need creatableSongData to get songIds
     await songs.retrieveCreatableSongsData();
     await barks.retrieveAll();
     await songs.retrieveAll();
@@ -82,6 +90,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void didChangeDependencies() {
+    print("Did change Dep");
     super.didChangeDependencies();
     user = Provider.of<User>(context);
     barks = Provider.of<Barks>(context, listen: false);
@@ -91,6 +100,7 @@ class _MainScreenState extends State<MainScreen> {
     spinnerState = Provider.of<SpinnerState>(context);
     currentActivity = Provider.of<CurrentActivity>(context);
     cards = Provider.of<KaraokeCards>(context);
+    _firstThing();
   }
 
   Widget mainAppBar() {
@@ -158,17 +168,16 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     String loadingMessage() {
-      if (!imageController.isReady) {
+      if (!everythingDownloaded) {
+        return 'Getting your stuff!...';
+      } else if (!imageController.isReady) {
         return 'Loading animation engine...';
-      } else if (!everythingDownloaded) {
-        return 'Downloading content...';
       }
+      return "Loading...";
     }
 
     bool everythingReady() {
-      return imageController.isReady &&
-          everythingDownloaded &&
-          user.isSignedIn();
+      return imageController.isReady && everythingDownloaded;
     }
 
     return Scaffold(

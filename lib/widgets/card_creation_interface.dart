@@ -12,7 +12,6 @@ class CardCreationInterface extends StatelessWidget {
   Widget build(BuildContext context) {
     card = Provider.of<KaraokeCards>(context).currentCard;
     currentActivity = Provider.of<CurrentActivity>(context);
-    print("current activity is song: ${currentActivity.isSong}");
 
     return Expanded(
       child: Column(children: <Widget>[
@@ -20,7 +19,7 @@ class CardCreationInterface extends StatelessWidget {
           padding: const EdgeInsets.only(top: 10.0),
         ),
         Visibility(
-          visible: currentActivity.isSnap,
+          visible: currentActivity.isSnap && card.hasPicture,
           child: MouthToneSlider(),
         ),
         Visibility(
