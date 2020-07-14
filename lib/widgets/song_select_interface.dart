@@ -31,7 +31,7 @@ class _SongSelectInterfaceState extends State<SongSelectInterface> {
                 child: Text("My Songs",
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Theme.of(context).backgroundColor,
+                        color: Colors.white,
                         fontSize: 16)),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(40.0),

@@ -1,6 +1,5 @@
 import 'dart:io' show Platform;
 import 'package:K9_Karaoke/providers/barks.dart';
-import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:K9_Karaoke/providers/pictures.dart';
 import 'package:K9_Karaoke/providers/songs.dart';
 import 'package:K9_Karaoke/providers/user.dart';
@@ -187,7 +186,6 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     await songs.retrieveCreatableSongsData();
     await barks.retrieveAll();
     await songs.retrieveAll();
-    setState(() => everythingDownloaded = true);
   }
 
   @override

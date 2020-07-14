@@ -16,6 +16,8 @@ class KaraokeCards with ChangeNotifier {
   }
 
   void setCurrentCardSongFormulaId(int id) {
+    // also remove song if that is selected
+    currentCard.song = null;
     currentCard.songFormulaId = id.toString();
     notifyListeners();
   }
@@ -26,6 +28,8 @@ class KaraokeCards with ChangeNotifier {
   }
 
   void setCurrentCardSong(newSong) {
+    // also remove song if that is selected
+    currentCard.songFormulaId = null;
     currentCard.song = newSong;
     notifyListeners();
   }
