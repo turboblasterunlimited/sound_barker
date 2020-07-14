@@ -36,21 +36,20 @@ class _MainScreenState extends State<MainScreen> {
   CurrentActivity currentActivity;
   bool everythingDownloaded = true;
   KaraokeCards cards;
-  bool didFirstThing = false;
 
   bool noAssets() {
     return barks.all.isEmpty && songs.all.isEmpty && pictures.all.isEmpty;
   }
 
   Future<void> _firstThing() async {
-    if (didFirstThing == true) return;
-    print("calling firstThing");
+    // download files
+    user.setLoadFilesTrue();
     if (noAssets()) {
       setState(() => everythingDownloaded = false);
       await downloadEverything();
       setState(() => everythingDownloaded = true);
     }
-    didFirstThing = true;
+    // Navigate
     if (pictures.all.isEmpty)
       startCreateCard();
     else
@@ -80,13 +79,11 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Future<void> downloadEverything() async {
-    // await pictures.retrieveAll();
-
+    await pictures.retrieveAll();
     // need creatableSongData to get songIds
     await songs.retrieveCreatableSongsData();
     await barks.retrieveAll();
     await songs.retrieveAll();
-    await pictures.retrieveAll();
   }
 
   void didChangeDependencies() {
@@ -100,7 +97,7 @@ class _MainScreenState extends State<MainScreen> {
     spinnerState = Provider.of<SpinnerState>(context);
     currentActivity = Provider.of<CurrentActivity>(context);
     cards = Provider.of<KaraokeCards>(context);
-    _firstThing();
+    if (!user.filesLoaded) _firstThing();
   }
 
   Widget mainAppBar() {
