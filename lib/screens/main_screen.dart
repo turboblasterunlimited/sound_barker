@@ -8,6 +8,7 @@ import 'package:K9_Karaoke/widgets/card_creation_interface.dart';
 import 'package:K9_Karaoke/widgets/card_progress_bar.dart';
 import 'package:K9_Karaoke/widgets/spinner_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
@@ -34,21 +35,9 @@ class _MainScreenState extends State<MainScreen> {
   ImageController imageController;
   SpinnerState spinnerState;
   CurrentActivity currentActivity;
-  bool everythingDownloaded = true;
   KaraokeCards cards;
 
-  bool noAssets() {
-    return barks.all.isEmpty && songs.all.isEmpty && pictures.all.isEmpty;
-  }
-
   Future<void> _firstThing() async {
-    // download files
-    user.setLoadFilesTrue();
-    if (noAssets()) {
-      setState(() => everythingDownloaded = false);
-      await downloadEverything();
-      setState(() => everythingDownloaded = true);
-    }
     // Navigate
     if (pictures.all.isEmpty)
       startCreateCard();
@@ -70,20 +59,15 @@ class _MainScreenState extends State<MainScreen> {
     print("INITING MAIN SCREEN");
     super.initState();
     SystemChrome.setEnabledSystemUIOverlays([]);
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      _firstThing();
+    });
   }
 
   @override
   void dispose() {
     print("DISPOSING MAIN SCREEN");
     super.dispose();
-  }
-
-  Future<void> downloadEverything() async {
-    await pictures.retrieveAll();
-    // need creatableSongData to get songIds
-    await songs.retrieveCreatableSongsData();
-    await barks.retrieveAll();
-    await songs.retrieveAll();
   }
 
   void didChangeDependencies() {
@@ -97,7 +81,6 @@ class _MainScreenState extends State<MainScreen> {
     spinnerState = Provider.of<SpinnerState>(context);
     currentActivity = Provider.of<CurrentActivity>(context);
     cards = Provider.of<KaraokeCards>(context);
-    if (!user.filesLoaded) _firstThing();
   }
 
   Widget mainAppBar() {
@@ -164,17 +147,10 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String loadingMessage() {
-      if (!everythingDownloaded) {
-        return 'Getting your stuff!...';
-      } else if (!imageController.isReady) {
-        return 'Loading animation engine...';
-      }
-      return "Loading...";
-    }
+    print("Building main screen");
 
     bool everythingReady() {
-      return imageController.isReady && everythingDownloaded;
+      return imageController.isReady;
     }
 
     return Scaffold(
@@ -227,7 +203,7 @@ class _MainScreenState extends State<MainScreen> {
 
             // Spinner
             if (!everythingReady())
-              SpinnerWidget(loadingMessage()),
+              SpinnerWidget("Loading animation engine..."),
           ],
         ),
       ),

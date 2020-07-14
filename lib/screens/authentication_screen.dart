@@ -1,4 +1,8 @@
 import 'dart:io' show Platform;
+import 'package:K9_Karaoke/providers/barks.dart';
+import 'package:K9_Karaoke/providers/image_controller.dart';
+import 'package:K9_Karaoke/providers/pictures.dart';
+import 'package:K9_Karaoke/providers/songs.dart';
 import 'package:K9_Karaoke/providers/user.dart';
 import 'package:K9_Karaoke/screens/main_screen.dart';
 import 'package:K9_Karaoke/widgets/spinner_widget.dart';
@@ -22,12 +26,17 @@ class AuthenticationScreen extends StatefulWidget {
 }
 
 class _AuthenticationScreenState extends State<AuthenticationScreen> {
-  bool loading = false;
+  bool loading = true;
   FocusNode passwordFocusNode;
   String email;
   String password;
   bool obscurePassword = true;
-  BuildContext context;
+
+  User user;
+  Barks barks;
+  Songs songs;
+  Pictures pictures;
+  bool everythingDownloaded = true;
 
   void _showError(message) {
     setState(() {
@@ -46,8 +55,10 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     return response.data;
   }
 
-  void _handleSignedIn(email) {
-    Provider.of<User>(context, listen: false).signIn(email);
+  void _handleSignedIn(email) async {
+    print("handlesignedin");
+    user.signIn(email);
+    await downloadEverything();
     Navigator.of(context).popAndPushNamed(MainScreen.routeName);
   }
 
@@ -59,7 +70,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     }
   }
 
-  handleServerResponse(responseData) {
+  handleServerResponse(responseData) async {
     print("Sign in response data: $responseData");
     if (responseData["success"]) {
       print("the response data: $responseData");
@@ -154,7 +165,6 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     handleServerResponse(response.data);
   }
 
-
   @override
   void initState() {
     super.initState();
@@ -167,19 +177,34 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     super.dispose();
   }
 
-  @override
-  void didChangeDependencies() async {
-    super.didChangeDependencies();
-    var responseData = await checkIfSignedIn();
-    if (responseData["logged_in"]) {
-      _handleSignedIn(responseData["user_id"]);
-    }
-    // setState(() => loading = false);
+  Future<void> downloadEverything() async {
+    setState(() => everythingDownloaded = false);
+    await pictures.retrieveAll();
+    // need creatableSongData to get songIds
+    await songs.retrieveCreatableSongsData();
+    await barks.retrieveAll();
+    await songs.retrieveAll();
+    setState(() => everythingDownloaded = true);
   }
 
   @override
-  Widget build(BuildContext ctx) {
-    context = ctx;
+  void didChangeDependencies() async {
+    super.didChangeDependencies();
+    user = Provider.of<User>(context, listen: false);
+    barks = Provider.of<Barks>(context, listen: false);
+    songs = Provider.of<Songs>(context, listen: false);
+    pictures = Provider.of<Pictures>(context, listen: false);
+
+    var responseData = await checkIfSignedIn();
+    if (responseData["logged_in"]) {
+      _handleSignedIn(responseData["user_id"]);
+    } else {
+      setState(() => loading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     print("building auth screen...");
     return Scaffold(
       resizeToAvoidBottomPadding: false,
@@ -209,15 +234,12 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
             fit: BoxFit.cover,
           ),
         ),
-        child: Column(
+        child: Stack(
           children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(top: 80),
-            ),
             Visibility(
               visible: !loading,
               child: Padding(
-                padding: const EdgeInsets.only(top: 100.0),
+                padding: const EdgeInsets.only(top: 180.0),
                 child: Column(
                   children: <Widget>[
                     Padding(
@@ -332,8 +354,9 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
               ),
             ),
             Visibility(
-              visible: loading,
-              child: SpinnerWidget("Signing in..."),
+              visible: loading || !everythingDownloaded,
+              child: SpinnerWidget(
+                  loading ? "Signing in..." : "Getting your stuff!"),
             ),
           ],
         ),

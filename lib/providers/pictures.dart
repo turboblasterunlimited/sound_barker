@@ -52,6 +52,7 @@ class Pictures with ChangeNotifier {
         fileId: serverImage["uuid"],
 
         // need to use mouth_color instad of coordinates_json.
+        // something is wrong with this
         coordinates: jsonDecode(serverImage["coordinates_json"]),
         created: DateTime.parse(serverImage["created"]),
       );
