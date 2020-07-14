@@ -23,7 +23,7 @@ class _MenuState extends State<MenuScreen> {
       currentActivity.startCreateCard(cards.newCurrentCard);
       Navigator.popUntil(
         context,
-        ModalRoute.withName("/"),
+        ModalRoute.withName("main-screen"),
       );
       Navigator.of(context).pushNamed(PictureMenuScreen.routeName);
     }

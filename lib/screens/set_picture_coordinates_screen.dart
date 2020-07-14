@@ -206,7 +206,7 @@ class _SetPictureCoordinatesScreenState
       widget.editing ? _submitEditedPicture() : _submitPicture();
       Navigator.popUntil(
         context,
-        ModalRoute.withName("/"),
+        ModalRoute.withName("main-screen"),
       );
     } else {
       return null;

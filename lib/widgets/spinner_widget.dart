@@ -19,27 +19,25 @@ class _SpinnerWidgetState extends State<SpinnerWidget> {
           fit: BoxFit.cover,
         ),
       ),
-      child: Expanded(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-                child: Image.asset("assets/logos/K9_logotype.png", width: 200),
-                padding: EdgeInsets.all(20)),
-            SpinKitWave(
-              // color: Theme.of(context).primaryColor,
-              color: Colors.blue,
-              size: 100,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Padding(
+              child: Image.asset("assets/logos/K9_logotype.png", width: 200),
+              padding: EdgeInsets.all(20)),
+          SpinKitWave(
+            // color: Theme.of(context).primaryColor,
+            color: Colors.blue,
+            size: 100,
+          ),
+          Center(
+            child: Text(
+              // toString incase null
+              widget.messageText.toString(),
             ),
-            Center(
-              child: Text(
-                // toString incase null
-                widget.messageText.toString(),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

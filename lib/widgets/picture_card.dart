@@ -79,7 +79,7 @@ class _PictureCardState extends State<PictureCard>
     cards.setCurrentCardPicture(widget.picture);
     currentActivity.setCardCreationStep(CardCreationSteps.song);
     imageController.createDog(widget.picture);
-    Navigator.popUntil(context, ModalRoute.withName("/"));
+    Navigator.popUntil(context, ModalRoute.withName("main-screen"));
   }
 
   Widget pictureCard(animation) {

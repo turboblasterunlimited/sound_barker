@@ -52,19 +52,19 @@ class CardProgressBar extends StatelessWidget {
     void navigateToSong() {
       currentActivity.setCardCreationStep(CardCreationSteps.song);
       // This is in case SetCoordinatesScreen is on the stack.
-      Navigator.of(context).popUntil(ModalRoute.withName("/"));
+      Navigator.of(context).popUntil(ModalRoute.withName("main-screen"));
     }
 
     void navigateToSpeak() {
       currentActivity.setCardCreationStep(CardCreationSteps.speak);
       // This is in case SetCoordinatesScreen is on the stack.
-      Navigator.of(context).popUntil(ModalRoute.withName("/"));
+      Navigator.of(context).popUntil(ModalRoute.withName("main-screen"));
     }
 
     void navigateToStyle() {
       currentActivity.setCardCreationStep(CardCreationSteps.style);
       // This is in case SetCoordinatesScreen is on the stack.
-      Navigator.of(context).popUntil(ModalRoute.withName("/"));
+      Navigator.of(context).popUntil(ModalRoute.withName("main-screen"));
     }
 
     return Row(

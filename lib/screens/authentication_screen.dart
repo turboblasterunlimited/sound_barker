@@ -1,11 +1,12 @@
 import 'dart:io' show Platform;
 import 'package:K9_Karaoke/providers/user.dart';
+import 'package:K9_Karaoke/screens/main_screen.dart';
 import 'package:K9_Karaoke/widgets/spinner_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
+import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:openid_client/openid_client_io.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
-import 'package:flutter_bcrypt/flutter_bcrypt.dart';
 
 import 'package:K9_Karaoke/services/http_controller.dart';
 import 'package:provider/provider.dart';
@@ -14,17 +15,19 @@ import '../services/authenticate_user.dart';
 class AuthenticationScreen extends StatefulWidget {
   Function callback;
   static const routeName = 'authentication-screen';
-  AuthenticationScreen(this.callback);
+  AuthenticationScreen([this.callback]);
 
   @override
   _AuthenticationScreenState createState() => _AuthenticationScreenState();
 }
 
 class _AuthenticationScreenState extends State<AuthenticationScreen> {
-  bool loading = true;
+  bool loading = false;
   FocusNode passwordFocusNode;
   String email;
   String password;
+  bool obscurePassword = true;
+  BuildContext context;
 
   void _showError(message) {
     setState(() {
@@ -43,10 +46,9 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     return response.data;
   }
 
-  void handleSignedIn(email) {
+  void _handleSignedIn(email) {
     Provider.of<User>(context, listen: false).signIn(email);
-    widget.callback();
-    Navigator.of(context).pop();
+    Navigator.of(context).popAndPushNamed(MainScreen.routeName);
   }
 
   String get platform {
@@ -61,7 +63,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     print("Sign in response data: $responseData");
     if (responseData["success"]) {
       print("the response data: $responseData");
-      handleSignedIn(responseData["payload"]["email"]);
+      _handleSignedIn(responseData["payload"]["email"]);
     } else {
       _showError(responseData["error"]);
     }
@@ -125,22 +127,33 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       'http://165.227.178.14/openid-token/${platform}',
       data: token,
     );
-
     handleServerResponse(response.data);
   }
 
-  void _handleManualSignUp(String email, String password) async {
-    // Need to agree on salt with server and finish this implementation.
+  void _handleManualSignUp() async {
     var response;
-    String hashedPassword =
-        await FlutterBcrypt.hashPw(password: password, salt: "salt");
-    Map data = {email: email, password: hashedPassword};
+    Map data = {"email": email, "password": password};
+    print("before sending sign up: $data");
+    response = await HttpController.dio.post(
+      'http://165.227.178.14/create-account',
+      data: data,
+    );
+    print(response);
+    handleServerResponse(response.data);
+  }
+
+  void _handleManualSignIn() async {
+    var response;
+    Map data = {"email": email, "password": password};
+    print("before sending sign in: $data");
     response = await HttpController.dio.post(
       'http://165.227.178.14/manual-login',
       data: data,
     );
     print(response);
+    handleServerResponse(response.data);
   }
+
 
   @override
   void initState() {
@@ -159,154 +172,170 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     super.didChangeDependencies();
     var responseData = await checkIfSignedIn();
     if (responseData["logged_in"]) {
-      handleSignedIn(responseData["user_id"]);
+      _handleSignedIn(responseData["user_id"]);
     }
-    setState(() => loading = false);
+    // setState(() => loading = false);
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext ctx) {
+    context = ctx;
     print("building auth screen...");
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage("assets/backgrounds/create_background.png"),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Scaffold(
-        resizeToAvoidBottomPadding: false,
-        appBar: loading
-            ? null
-            : PreferredSize(
-                preferredSize: Size.fromHeight(60.0),
-                child: AppBar(
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
-                  automaticallyImplyLeading:
-                      false, // Don't show the leading button
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Image.asset("assets/logos/K9_logotype.png", width: 100),
-                    ],
-                  ),
+    return Scaffold(
+      resizeToAvoidBottomPadding: false,
+      extendBodyBehindAppBar: true,
+      appBar: loading
+          ? null
+          : PreferredSize(
+              preferredSize: Size.fromHeight(60.0),
+              child: AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                automaticallyImplyLeading:
+                    false, // Don't show the leading button
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Image.asset("assets/logos/K9_logotype.png", width: 100),
+                  ],
                 ),
               ),
-        body: Builder(
-          builder: (ctx) => Column(
-            children: <Widget>[
-              Visibility(
-                visible: !loading,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 100.0),
-                  child: Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            left: 30, right: 30, bottom: 15),
-                        child: TextField(
-                          obscureText: true,
-                          onChanged: (emailValue) {
-                            setState(() {
-                              email = emailValue;
-                            });
-                          },
-                          onSubmitted: (_) {
-                            passwordFocusNode.requestFocus();
-                          },
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            border: OutlineInputBorder(),
-                            labelText: 'Email',
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                        child: TextField(
-                          obscureText: true,
-                          focusNode: passwordFocusNode,
-                          onSubmitted: (passwordValue) {
-                            _handleManualSignUp(email, passwordValue);
-                          },
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            border: OutlineInputBorder(),
-                            labelText: 'Password',
-                          ),
-                        ),
-                      ),
-                      ButtonBar(
-                        alignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: FlatButton(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 20),
-                              child: Text("Sign In",
-                                  style: TextStyle(fontSize: 20)),
-                              color: Theme.of(context).primaryColor,
-                              onPressed: () {},
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(22.0),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: FlatButton(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 20),
-                              child: Text("Sign Up",
-                                  style: TextStyle(fontSize: 20)),
-                              color: Theme.of(context).primaryColor,
-                              onPressed: () {},
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(22.0),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Container(
-                        width: 200,
-                        padding: EdgeInsets.symmetric(vertical: 20),
-                        child: Divider(
-                          color: Colors.black,
-                          thickness: 2,
-                        ),
-                      ),
-                      Center(
-                        child: GoogleSignInButton(
-                          text: "Continue with Google",
-                          onPressed: () {
-                            handleGoogleAuthentication();
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: FacebookSignInButton(
-                          onPressed: () {
-                            handleFacebookAuthentication();
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Visibility(
-                visible: loading,
-                child: SpinnerWidget("Signing in..."),
-              ),
-            ],
+            ),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/backgrounds/menu_background.png"),
+            fit: BoxFit.cover,
           ),
+        ),
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(top: 80),
+            ),
+            Visibility(
+              visible: !loading,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 100.0),
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 30, right: 30, bottom: 15),
+                      child: TextField(
+                        onChanged: (emailValue) {
+                          setState(() {
+                            email = emailValue;
+                          });
+                        },
+                        onSubmitted: (_) {
+                          passwordFocusNode.requestFocus();
+                        },
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(),
+                          labelText: 'Email',
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                      child: TextField(
+                        obscureText: obscurePassword,
+                        focusNode: passwordFocusNode,
+                        onChanged: (passwordValue) {
+                          setState(() => password = passwordValue);
+                        },
+                        onSubmitted: (_) {
+                          FocusScope.of(context).unfocus();
+                        },
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(),
+                          labelText: 'Password',
+                          suffixIcon: GestureDetector(
+                            onTap: () => setState(
+                                () => obscurePassword = !obscurePassword),
+                            child: Icon(obscurePassword
+                                ? LineAwesomeIcons.eye_slash
+                                : LineAwesomeIcons.eye),
+                          ),
+                        ),
+                      ),
+                    ),
+                    ButtonBar(
+                      alignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: FlatButton(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 20),
+                            child:
+                                Text("Sign In", style: TextStyle(fontSize: 20)),
+                            color: Theme.of(context).primaryColor,
+                            onPressed: () {
+                              _handleManualSignIn();
+                            },
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(22.0),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: FlatButton(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 20),
+                            child:
+                                Text("Sign Up", style: TextStyle(fontSize: 20)),
+                            color: Theme.of(context).primaryColor,
+                            onPressed: () {
+                              _handleManualSignUp();
+                            },
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(22.0),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Container(
+                      width: 200,
+                      padding: EdgeInsets.symmetric(vertical: 20),
+                      child: Divider(
+                        color: Colors.black,
+                        thickness: 2,
+                      ),
+                    ),
+                    Center(
+                      child: GoogleSignInButton(
+                        text: "Continue with Google",
+                        onPressed: () {
+                          handleGoogleAuthentication();
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: FacebookSignInButton(
+                        onPressed: () {
+                          handleFacebookAuthentication();
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Visibility(
+              visible: loading,
+              child: SpinnerWidget("Signing in..."),
+            ),
+          ],
         ),
       ),
     );

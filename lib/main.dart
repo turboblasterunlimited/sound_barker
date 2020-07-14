@@ -1,6 +1,7 @@
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/user.dart';
+import 'package:K9_Karaoke/screens/authentication_screen.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/screens/picture_menu_screen.dart';
@@ -101,7 +102,7 @@ class MyApp extends StatelessWidget {
               buttonColor: Colors.amber[200],
             ),
           ),
-          home: MainScreen(),
+          home: AuthenticationScreen(),
           routes: {
             MainScreen.routeName: (ctx) => MainScreen(),
             SongStoreScreen.routeName: (ctx) =>

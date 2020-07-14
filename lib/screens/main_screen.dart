@@ -17,7 +17,6 @@ import '../providers/pictures.dart';
 import '../providers/barks.dart';
 import '../providers/songs.dart';
 import '../widgets/singing_image.dart';
-import 'authentication_screen.dart';
 
 // AKA CARD CREATION SCREEN
 class MainScreen extends StatefulWidget {
@@ -62,16 +61,6 @@ class _MainScreenState extends State<MainScreen> {
     Navigator.of(context).pushNamed(MenuScreen.routeName);
   }
 
-  void signInIfNeeded(context) {
-    print("sign in if needed screen");
-    print("user is signed in: ${user.isSignedIn()}");
-    if (user.isSignedIn()) return;
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => AuthenticationScreen(signInCallback)));
-  }
-
   @override
   void initState() {
     print("INITING MAIN SCREEN");
@@ -102,10 +91,6 @@ class _MainScreenState extends State<MainScreen> {
     spinnerState = Provider.of<SpinnerState>(context);
     currentActivity = Provider.of<CurrentActivity>(context);
     cards = Provider.of<KaraokeCards>(context);
-
-    Future.delayed(Duration.zero, () {
-      signInIfNeeded(context);
-    });
   }
 
   Widget mainAppBar() {
@@ -177,8 +162,6 @@ class _MainScreenState extends State<MainScreen> {
         return 'Loading animation engine...';
       } else if (!everythingDownloaded) {
         return 'Downloading content...';
-      } else if (!user.isSignedIn()) {
-        return 'Signing in...';
       }
     }
 
