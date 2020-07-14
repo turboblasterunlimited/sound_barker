@@ -187,7 +187,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
                 onPressed: () {
                   playBark();
                 },
-                icon: Icon(Icons.play_arrow, color: Colors.black, size: 30),
+                icon: Icon(Icons.play_arrow, color: Theme.of(context).primaryColor, size: 30),
               ),
               title: Center(
                 child: FadeTransition(

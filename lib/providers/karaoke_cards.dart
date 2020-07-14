@@ -15,8 +15,8 @@ class KaraokeCards with ChangeNotifier {
       return currentCard.picture.name;
   }
 
-  void setCurrentCardSongFormulaId(id) {
-    currentCard.songFormulaId = id;
+  void setCurrentCardSongFormulaId(int id) {
+    currentCard.songFormulaId = id.toString();
     notifyListeners();
   }
 

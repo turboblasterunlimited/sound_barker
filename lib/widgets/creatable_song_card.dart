@@ -13,7 +13,8 @@ class CreatableSongCard extends StatefulWidget {
   final KaraokeCards cards;
   final CurrentActivity currentActivity;
 
-  CreatableSongCard(this.creatableSong, this.soundController, this.cards, this.currentActivity);
+  CreatableSongCard(this.creatableSong, this.soundController, this.cards,
+      this.currentActivity);
 
   @override
   _CreatableSongCardState createState() => _CreatableSongCardState();
@@ -54,7 +55,6 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
 
   @override
   Widget build(BuildContext context) {
-
     return Row(
       children: <Widget>[
         // Playback button
@@ -71,8 +71,8 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
             }
           },
           icon: isPlaying
-              ? Icon(Icons.stop, color: Colors.blueGrey, size: 30)
-              : Icon(Icons.play_arrow, color: Colors.blueGrey, size: 30),
+              ? Icon(Icons.stop, color: Theme.of(context).errorColor, size: 30)
+              : Icon(Icons.play_arrow, color: Theme.of(context).primaryColor, size: 30),
         ),
         // Select song button
         Expanded(
@@ -91,11 +91,13 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
                 ),
                 // Subtitle
                 Center(
-                  child: Text(widget.creatableSong["name"],
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 16)),
+                  child: Text(
+                    widget.creatableSong["name"],
+                    style: TextStyle(
+                        fontWeight: FontWeight.w200,
+                        color: Colors.grey,
+                        fontSize: 11),
+                  ),
                 ),
                 // Center(
                 //     child: Text(widget.song.getName,

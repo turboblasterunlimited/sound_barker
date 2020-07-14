@@ -179,17 +179,20 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
         children: <Widget>[
           // Playback button
           IconButton(
-            color: Colors.blue,
-            onPressed: () {
-              if (_isPlaying) {
-                stopAll();
-              } else {
-                startAll();
-              }
-            },
-            icon: Icon(_isPlaying ? Icons.stop : Icons.play_arrow,
-                color: Theme.of(context).primaryColor, size: 30),
-          ),
+              color: Colors.blue,
+              onPressed: () {
+                if (_isPlaying) {
+                  stopAll();
+                } else {
+                  startAll();
+                }
+              },
+              icon: _isPlaying
+                  ? Icon(Icons.stop,
+                      color: Theme.of(context).errorColor, size: 30)
+                  : Icon(Icons.play_arrow,
+                      color: Theme.of(context).primaryColor, size: 30)),
+
           // Select song button
           Expanded(
             child: RawMaterialButton(

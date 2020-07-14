@@ -89,9 +89,8 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'K-9 Karaoke',
           theme: ThemeData(
-            backgroundColor: Colors.amber[50],
             primarySwatch: MaterialColor(0xff234498, color),
-            accentColor: Colors.purple[200],
+            accentColor: MaterialColor(0xff605a5a, color),
             highlightColor: MaterialColor(0xff44bba4, color),
             errorColor: MaterialColor(0xff9a2020, color),
             fontFamily: 'Museo',

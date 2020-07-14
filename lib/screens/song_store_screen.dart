@@ -44,6 +44,7 @@ class _SongStoreScreenState extends State<SongStoreScreen> {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
+      resizeToAvoidBottomPadding: false,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(60.0),
         child: AppBar(
@@ -72,9 +73,13 @@ class _SongStoreScreenState extends State<SongStoreScreen> {
         ),
         child: Column(
           children: <Widget>[
+            // top padding
+            Padding(
+              padding: EdgeInsets.only(top: 100),
+            ),
             // title
             Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: EdgeInsets.all(20.0),
               child: Stack(
                 children: <Widget>[
                   GestureDetector(
@@ -82,14 +87,18 @@ class _SongStoreScreenState extends State<SongStoreScreen> {
                       Navigator.of(context).pop();
                     },
                     child: Row(children: <Widget>[
-                      Icon(LineAwesomeIcons.angle_left),
-                      Text('Back'),
+                      Icon(LineAwesomeIcons.angle_left, color: Colors.grey),
+                      Text(
+                        'Back',
+                        style: TextStyle(color: Theme.of(context).accentColor),
+                      ),
                     ]),
                   ),
                   Center(
                     child: Text(
                       'Song Library',
-                      style: TextStyle(fontSize: 20, color: Colors.grey[600]),
+                      style: TextStyle(
+                          fontSize: 20, color: Theme.of(context).primaryColor),
                     ),
                   ),
                 ],
@@ -99,8 +108,8 @@ class _SongStoreScreenState extends State<SongStoreScreen> {
               child: ListView.builder(
                 padding: const EdgeInsets.all(10),
                 itemCount: creatableSongs.length,
-                itemBuilder: (ctx, i) =>
-                    CreatableSongCard(creatableSongs[i], soundController, cards, currentActivity),
+                itemBuilder: (ctx, i) => CreatableSongCard(
+                    creatableSongs[i], soundController, cards, currentActivity),
               ),
             ),
           ],
