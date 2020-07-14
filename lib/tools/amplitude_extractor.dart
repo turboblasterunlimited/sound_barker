@@ -36,9 +36,10 @@ class AmplitudeExtractor {
     while ((i + sampleChunk - 1) < sampleData["samplesLength"]) {
       tempSubList = sampleData["waveSamples"].sublist(i, (i + sampleChunk - 1));
       // amplitude from 0 to 1 (now 0 to .5 [divisor * 2])
-      _amplitude =
-          tempSubList.reduce((a, b) => a.abs() + b.abs()) / (divisor * 2);
-      result.add(_amplitude > 0.5 ? 0.5 : _amplitude);
+      _amplitude = tempSubList.reduce((a, b) => a.abs() + b.abs()) / divisor;
+
+      // tempSubList.reduce((a, b) => a.abs() + b.abs()) / (divisor * 2);
+      result.add(_amplitude > 1 ? 1 : _amplitude);
       i += (sampleChunk - 1);
     }
     // Close the mouth
@@ -70,7 +71,7 @@ class AmplitudeExtractor {
         .transform(utf8.decoder)
         .transform(CsvToListConverter(shouldParseNumbers: true))
         .toList();
-        print("Amplitudes: $amplitudes");
+    print("Amplitudes: $amplitudes");
     return amplitudes[0];
   }
 }

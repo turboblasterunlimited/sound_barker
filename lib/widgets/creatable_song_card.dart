@@ -1,3 +1,5 @@
+import 'package:K9_Karaoke/providers/current_activity.dart';
+import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:flutter/material.dart';
 import 'package:K9_Karaoke/screens/bark_select_screen.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
@@ -6,10 +8,12 @@ import '../widgets/error_dialog.dart';
 import '../providers/sound_controller.dart';
 
 class CreatableSongCard extends StatefulWidget {
-  final creatableSong;
+  final Map creatableSong;
   final SoundController soundController;
+  final KaraokeCards cards;
+  final CurrentActivity currentActivity;
 
-  CreatableSongCard(this.creatableSong, this.soundController);
+  CreatableSongCard(this.creatableSong, this.soundController, this.cards, this.currentActivity);
 
   @override
   _CreatableSongCardState createState() => _CreatableSongCardState();
@@ -42,55 +46,75 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
     }
   }
 
+  void _selectSongFormula() {
+    widget.cards.setCurrentCardSongFormulaId(widget.creatableSong["id"]);
+    widget.currentActivity.setCardCreationStep(CardCreationSteps.speak);
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.all(Radius.circular(5)),
-      child: Container(
-        child: GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    BarkSelectScreen(widget.creatableSong, selectedBarkIds: []),
-              ),
-            );
+
+    return Row(
+      children: <Widget>[
+        // Playback button
+        IconButton(
+          color: Colors.blue,
+          onPressed: () {
+            if (isPlaying) {
+              widget.soundController.stopPlayer();
+            } else {
+              playSong();
+              Future.delayed(Duration(milliseconds: 50), () {
+                setState(() => isPlaying = true);
+              });
+            }
           },
-          child: Card(
-            margin: EdgeInsets.symmetric(
-              horizontal: 5,
-              vertical: 3,
-            ),
-            child: Padding(
-              padding: EdgeInsets.all(4),
-              child: ListTile(
-                leading:
-                    Icon(LineAwesomeIcons.music, color: Colors.black, size: 40),
-                title: Text(widget.creatableSong["song_family"]),
-                subtitle: Text(widget.creatableSong["name"]),
-                trailing: IconButton(
-                  color: Colors.blue,
-                  onPressed: () {
-                    if (isPlaying) {
-                      widget.soundController.stopPlayer();
-                    } else {
-                      playSong();
-                      Future.delayed(Duration(milliseconds: 50), () {
-                        setState(() => isPlaying = true);
-                      });
-                    }
-                  },
-                  icon: isPlaying
-                      ? Icon(Icons.stop, color: Colors.blueGrey, size: 30)
-                      : Icon(Icons.play_arrow,
-                          color: Colors.blueGrey, size: 30),
+          icon: isPlaying
+              ? Icon(Icons.stop, color: Colors.blueGrey, size: 30)
+              : Icon(Icons.play_arrow, color: Colors.blueGrey, size: 30),
+        ),
+        // Select song button
+        Expanded(
+          child: RawMaterialButton(
+            onPressed: _selectSongFormula,
+            child: Column(
+              children: <Widget>[
+                // Title
+
+                Center(
+                  child: Text(widget.creatableSong["song_family"],
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 16)),
                 ),
-              ),
+                // Subtitle
+                Center(
+                  child: Text(widget.creatableSong["name"],
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 16)),
+                ),
+                // Center(
+                //     child: Text(widget.song.getName,
+                //         style:
+                //             TextStyle(color: Colors.white, fontSize: 16)))
+              ],
             ),
+
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(40.0),
+              side: BorderSide(color: Theme.of(context).primaryColor, width: 3),
+            ),
+            elevation: 2.0,
+            // fillColor: Theme.of(context).primaryColor,
+            // padding:
+            //     const EdgeInsets.symmetric(vertical: 0, horizontal: 22.0),
           ),
         ),
-      ),
+      ],
     );
   }
 }

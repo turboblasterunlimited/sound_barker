@@ -15,14 +15,17 @@ class KaraokeCards with ChangeNotifier {
       return currentCard.picture.name;
   }
 
+  void setCurrentCardSongFormulaId(id) {
+    currentCard.songFormulaId = id;
+    notifyListeners();
+  }
+
   void setCurrentCardName(newName) {
-    print("Calling set current card name: $newName");
     currentCard.picture.name = newName;
     notifyListeners();
   }
 
   void setCurrentCardSong(newSong) {
-    print("Calling set current card song: $newSong");
     currentCard.song = newSong;
     notifyListeners();
   }
@@ -61,6 +64,7 @@ class KaraokeCard with ChangeNotifier {
       {this.fileId,
       this.picture,
       this.song,
+      this.songFormulaId,
       this.barks,
       this.cardDecoration,
       this.decorationImagePath});

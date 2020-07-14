@@ -178,7 +178,10 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   }
 
   Future<void> downloadEverything() async {
-    setState(() => everythingDownloaded = false);
+    setState(() {
+      everythingDownloaded = false;
+      loading = false;
+    });
     await pictures.retrieveAll();
     // need creatableSongData to get songIds
     await songs.retrieveCreatableSongsData();
