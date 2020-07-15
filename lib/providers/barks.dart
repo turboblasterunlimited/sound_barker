@@ -20,6 +20,18 @@ class Barks with ChangeNotifier {
     notifyListeners();
   }
 
+  List<Bark> get shortBarks {
+    all.where((bark) => bark.length == "short");
+  }
+
+  List<Bark> get mediumBarks {
+    all.where((bark) => bark.length == "medium");
+  }
+
+  List<Bark> get longBarks {
+    all.where((bark) => bark.length == "long");
+  }
+
   Future retrieveAll() async {
     List barks = await RestAPI.retrieveAllBarksFromServer();
     print("all barks response: $barks");
@@ -132,7 +144,7 @@ class Bark with ChangeNotifier {
       this.length = "medium";
     else
       this.length = "long";
-    print("Bark length: ${length}");
+    print("Bark length: $length");
     notifyListeners();
   }
 
