@@ -13,6 +13,53 @@ import '../services/rest_api.dart';
 class Barks with ChangeNotifier {
   List<Bark> all = [];
   final listKey = GlobalKey<AnimatedListState>();
+  List<Bark> stockBarks = [];
+
+  void initStockBarks() async {
+    // Need to replace uuid and filepath with uuid for each
+    List stockBarkData = [
+      {
+        "name": "boston_terrier",
+        "filePath": "assets/barks/short_boston_terrier.aac",
+        "fileId": "short_boston_terrier",
+        "length": "short",
+        "amplitudesPath": "assets/barks/short_boston_terrier.csv",
+      },
+      {
+        "name": "boston_terrier2",
+        "filePath": "assets/barks/short_boston_terrier2.aac",
+        "fileId": "short_boston_terrier",
+        "length": "short",
+        "amplitudesPath": "assets/barks/short_boston_terrier2.csv",
+      },
+      {
+        "name": "boston_terrier3",
+        "filePath": "assets/barks/medium_boston_terrier.aac",
+        "fileId": "medium_boston_terrier",
+        "length": "medium",
+        "amplitudesPath": "assets/barks/medium_boston_terrier.csv",
+      },
+      {
+        "name": "boston_terrier4",
+        "filePath": "assets/barks/long_boston_terrier.aac",
+        "fileId": "long_boston_terrier",
+        "length": "long",
+        "amplitudesPath": "assets/barks/long_boston_terrier.csv",
+      },
+      {
+        "name": "boston_terrier5",
+        "filePath": "assets/barks/long_boston_terrier2.aac",
+        "fileId": "long_boston_terrier2",
+        "length": "long",
+        "amplitudesPath": "assets/barks/long_boston_terrier2.csv",
+      }
+    ];
+
+    stockBarkData.forEach((b) { 
+      var bark = Bark(name: b["name"], filePath: b["filePath"], fileId: b["uuid"], length: b["length"], amplitudesPath: b["amplitduesPath"], );
+      stockBarks.add(bark);
+    });
+  }
 
   void addBark(bark) {
     all.insert(0, bark);

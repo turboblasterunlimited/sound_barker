@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:typed_data';
 import 'package:K9_Karaoke/tools/amplitude_extractor.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:convert';
 import 'dart:io';
@@ -130,15 +132,21 @@ class ImageController with ChangeNotifier {
     print("picture from within createDog: ${picture.name}");
     setPicture(picture);
     await webViewController
-        .evaluateJavascript("create_puppet('${_base64Image(picture)}')");
+        .evaluateJavascript("create_puppet('${await _base64Image(picture)}')");
     // webViewController
     //     .evaluateJavascript("test('dog1.jpg')");
   }
 
-  String _base64Image(picture) {
+  Future<String> _base64Image(picture) async {
     String encodingPrefix = "data:image/png;base64,";
-    String base64Image =
-        base64.encode(File(picture.filePath).readAsBytesSync());
+    String base64Image;
+    if (picture.isStock) {
+      ByteData bytes = await rootBundle.load(picture.filePath);
+      Uint8List intList = bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes);
+      base64Image = base64.encode(intList);
+    } else {
+      base64Image = base64.encode(File(picture.filePath).readAsBytesSync());
+    }
     return '$encodingPrefix$base64Image';
   }
 

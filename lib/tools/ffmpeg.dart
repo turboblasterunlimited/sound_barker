@@ -6,5 +6,5 @@ class FFMpeg {
   static final FlutterFFmpeg process = FlutterFFmpeg();
   static final FlutterFFprobe probe = FlutterFFprobe();
 
-  static final logLevel = config.setLogLevel(LogLevel.AV_LOG_WARNING);
+  static final logLevel = config.setLogLevel(LogLevel.AV_LOG_QUIET);
 }

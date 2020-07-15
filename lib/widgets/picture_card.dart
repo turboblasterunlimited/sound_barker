@@ -1,6 +1,5 @@
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
-import 'package:K9_Karaoke/screens/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
@@ -93,50 +92,53 @@ class _PictureCardState extends State<PictureCard>
                 onTap: handleTap,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Image.file(
+                  child: widget.picture.isStock ? Image.asset(widget.picture.filePath) : Image.file(
                     File(widget.picture.filePath),
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
-              Positioned(
-                right: -25,
-                top: -5,
-                child: Stack(
-                  children: <Widget>[
-                    PopupMenuButton(
-                      onSelected: imageActions,
-                      child: RawMaterialButton(
-                        child: Icon(
-                          Icons.more_vert,
-                          color: Colors.black38,
-                          size: 20,
+              Visibility(
+                visible: !widget.picture.isStock,
+                child: Positioned(
+                  right: -25,
+                  top: -5,
+                  child: Stack(
+                    children: <Widget>[
+                      PopupMenuButton(
+                        onSelected: imageActions,
+                        child: RawMaterialButton(
+                          child: Icon(
+                            Icons.more_vert,
+                            color: Colors.black38,
+                            size: 20,
+                          ),
+                          shape: CircleBorder(),
+                          elevation: 2.0,
+                          fillColor: Colors.white,
                         ),
-                        shape: CircleBorder(),
-                        elevation: 2.0,
-                        fillColor: Colors.white,
-                      ),
-                      itemBuilder: (BuildContext context) {
-                        return [
-                          PopupMenuItem<String>(
-                            value: "RENAME",
-                            child: Text("Rename"),
-                          ),
-                          PopupMenuItem<String>(
-                            value: "SET FACE",
-                            child: Text("Set face"),
-                          ),
-                          PopupMenuItem<String>(
-                            value: "DELETE",
-                            child: Text(
-                              "Delete",
-                              style: TextStyle(color: Colors.redAccent),
+                        itemBuilder: (BuildContext context) {
+                          return [
+                            PopupMenuItem<String>(
+                              value: "RENAME",
+                              child: Text("Rename"),
                             ),
-                          ),
-                        ];
-                      },
-                    ),
-                  ],
+                            PopupMenuItem<String>(
+                              value: "SET FACE",
+                              child: Text("Set face"),
+                            ),
+                            PopupMenuItem<String>(
+                              value: "DELETE",
+                              child: Text(
+                                "Delete",
+                                style: TextStyle(color: Colors.redAccent),
+                              ),
+                            ),
+                          ];
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],

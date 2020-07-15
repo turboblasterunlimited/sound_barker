@@ -87,16 +87,16 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
                 ],
               ),
             ),
+
             Expanded(
               child: Center(
                 child: GridView.builder(
-                  controller: null,
                   padding: const EdgeInsets.all(10),
-                  itemCount: pictures.all.length,
+                  itemCount: pictures.combinedPictures.length,
                   itemBuilder: (_, i) => ChangeNotifierProvider.value(
-                    value: pictures.all[i],
+                    value: pictures.combinedPictures[i],
                     key: UniqueKey(),
-                    child: PictureCard(i, pictures.all[i], pictures),
+                    child: PictureCard(i, pictures.combinedPictures[i], pictures),
                   ),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,
@@ -107,6 +107,8 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
                 ),
               ),
             ),
+            Text("Stock K-9s", style: TextStyle(fontSize: 20, color: Theme.of(context).primaryColor)),
+            
           ],
         ),
       ),

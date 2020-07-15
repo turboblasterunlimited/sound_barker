@@ -68,8 +68,14 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - assets/logos/
     - credentials/gcloud_credentials.json
-    - assets/
+    - assets/backgrounds/
+    - assets/fonts/
+    - assets/icons/
+    - assets/images/
+    - assets/barks/
+
 
 
   #  - images/a_dot_ham.jpeg

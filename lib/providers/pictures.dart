@@ -1,18 +1,79 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:gcloud/storage.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:io';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../services/gcloud.dart';
 import '../services/rest_api.dart';
 
 class Pictures with ChangeNotifier {
   List<Picture> all = [];
+  List<Picture> stockPictures = [];
+
+  List<Picture> get combinedPictures {
+    return all + stockPictures;
+  }
+
+  void initStockPictures() {
+    // need to replace ids and filepaths with uuids
+    List stockPictureData = [
+      {
+        "name": "Benjamin",
+        "filePath": "assets/images/benjamin.jpg",
+        "fileId": "benjamin",
+        "coordinates": {
+          "leftEye": [-0.1494140625, 0.08738878038194445],
+          "rightEye": [0.2060546875, 0.08244086371527778],
+          "mouth": [0.035400390625, -0.2714301215277778],
+          "mouthLeft": [-0.0732421875, -0.3060574001736111],
+          "mouthRight": [0.114013671875, -0.3026150173611111],
+          "headTop": [0.0, 0.4],
+          "headRight": [0.3, 0.0],
+          "headBottom": [0.045654296875, -0.39380967881944445],
+          "headLeft": [-0.3, 0.0],
+          "mouthColor": [
+            0.4666666666666667,
+            0.3254901960784314,
+            0.35294117647058826
+          ]
+        }
+      },
+      {
+        "name": "Snow",
+        "filePath": "assets/images/snow.jpg",
+        "fileId": "snow",
+        "coordinates": {
+          "leftEye": [-0.2, 0.2],
+          "rightEye": [0.2, 0.2],
+          "mouth": [-0.004579518636067724, -0.24205881754557293],
+          "mouthLeft": [-0.10457951863606772, -0.24205881754557293],
+          "mouthRight": [0.09542048136393227, -0.24205881754557293],
+          "headTop": [0.0, 0.4],
+          "headRight": [0.3, 0.0],
+          "headBottom": [0.0, -0.4],
+          "headLeft": [-0.3, 0.0],
+          "mouthColor": [
+            0.3137254901960784,
+            0.21568627450980393,
+            0.23529411764705882
+          ]
+        }
+      },
+    ];
+    stockPictureData.forEach((b) {
+      var picture = Picture(
+        name: b["name"],
+        filePath: b["filePath"],
+        fileId: b["uuid"],
+        coordinates: b["coordinates"],
+        isStock: true,
+      );
+      stockPictures.add(picture);
+    });
+  }
 
   Picture findById(String id) {
     return all.firstWhere((test) {
@@ -41,7 +102,6 @@ class Pictures with ChangeNotifier {
     List tempPics = [];
     List response = await RestAPI.retrieveAllImagesFromServer();
     response.forEach((serverImage) async {
-      print("server Image iteration: ${serverImage["coordinates_json"]}, ${serverImage["coordinates_json"].runtimeType}");
       if (serverImage["hidden"] == 1) return;
       if (serverImage["uuid"] == null) return;
 
@@ -94,6 +154,7 @@ class Picture with ChangeNotifier, Gcloud {
   Map<String, dynamic> coordinates;
   bool creationAnimation;
   DateTime created;
+  bool isStock;
 
   Picture({
     this.name,
@@ -102,6 +163,7 @@ class Picture with ChangeNotifier, Gcloud {
     this.fileId,
     this.coordinates,
     this.created,
+    this.isStock,
   }) {
     this.coordinates = coordinates ??
         {
@@ -122,6 +184,7 @@ class Picture with ChangeNotifier, Gcloud {
     this.fileId = fileId ??= Uuid().v4();
     this.creationAnimation = true;
     this.created = created;
+    this.isStock = isStock ?? false;
   }
 
   List mouthColor() {
