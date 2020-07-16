@@ -72,7 +72,6 @@ flutter:
     - credentials/gcloud_credentials.json
     - assets/backgrounds/
     - assets/fonts/
-    - assets/icons/
     - assets/images/
     - assets/barks/
 
