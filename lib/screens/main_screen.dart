@@ -37,8 +37,7 @@ class _MainScreenState extends State<MainScreen> {
   CurrentActivity currentActivity;
   KaraokeCards cards;
 
-  Future<void> _firstThing() async {
-    // Navigate
+  Future<void> _navigate() async {
     if (pictures.all.isEmpty)
       startCreateCard();
     else
@@ -60,7 +59,7 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
     SystemChrome.setEnabledSystemUIOverlays([]);
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      _firstThing();
+      _navigate();
     });
   }
 
@@ -97,11 +96,6 @@ class _MainScreenState extends State<MainScreen> {
             Image.asset("assets/logos/K9_logotype.png", width: 80),
             Expanded(
               child: Center(
-                // child: Consumer<KaraokeCards>(
-                //   builder: (_, daCards, ch) {
-                //     print("rebuilding consumer");
-                //     print("current card name: ${daCards.currentCardName}");
-                //     String _pictureName = daCards.currentCardName;
                 child: Container(
                   width: 170,
                   child: TextFormField(
