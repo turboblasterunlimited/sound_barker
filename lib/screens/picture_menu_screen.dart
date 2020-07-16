@@ -125,9 +125,7 @@ class _PictureMenuScreenState extends State<PictureMenuScreen> {
                   padding: EdgeInsets.all(10),
                   child: Text("Photo Library", style: TextStyle(fontSize: 20)),
                   color: Theme.of(context).primaryColor,
-                  onPressed: pictures.all.isEmpty
-                      ? null
-                      : () => Navigator.of(context)
+                  onPressed: () => Navigator.of(context)
                           .pushNamed(PhotoLibraryScreen.routeName),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(22.0),

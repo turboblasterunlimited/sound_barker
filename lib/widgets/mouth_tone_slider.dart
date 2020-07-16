@@ -56,7 +56,7 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
     card = Provider.of<KaraokeCards>(context).currentCard;
     currentActivity = Provider.of<CurrentActivity>(context);
     imageController = Provider.of<ImageController>(context);
-    mouthTone = mouthColorToInt(card.picture.mouthColor());
+    mouthTone = mouthColorToInt(card.picture.mouthColor);
     _sliderValue = mouthTone[0] / pinkMouthTone[0];
   }
 

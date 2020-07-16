@@ -110,8 +110,6 @@ class _SetPictureCoordinatesScreenState
     }
 
     widget.newPicture.coordinates.forEach((key, xy) {
-      if (key == "mouthColor") return;
-
       canvasCoordinates[key] = [
         _puppetXtoCanvasX(xy[0]),
         _puppetYtoCanvasY(xy[1])
@@ -138,8 +136,6 @@ class _SetPictureCoordinatesScreenState
 
     setState(() {
       canvasCoordinates.forEach((String key, List xy) {
-        if (key == "mouthColor") return;
-
         widget.newPicture.coordinates[key] = [
           _canvasXToPuppetX(xy[0]),
           _canvasYToPuppetY(xy[1])

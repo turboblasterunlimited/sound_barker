@@ -57,7 +57,6 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   void _handleSignedIn(email) async {
     print("handlesignedin");
     user.signIn(email);
-    loadStockAssets();
     await downloadEverything();
     Navigator.of(context).popAndPushNamed(MainScreen.routeName);
   }
@@ -175,11 +174,6 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   void dispose() {
     passwordFocusNode.dispose();
     super.dispose();
-  }
-
-  Future<void> loadStockAssets() {
-    barks.initStockBarks();
-    pictures.initStockPictures();
   }
 
   Future<void> downloadEverything() async {

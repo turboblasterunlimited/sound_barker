@@ -175,7 +175,7 @@ class ImageController with ChangeNotifier {
   }
 
   Future setMouthColor([rgb]) async {
-    rgb ??= picture.coordinates["mouthColor"];
+    rgb ??= picture.mouthColor;
     print("Mouth color: $rgb");
     await webViewController
         .evaluateJavascript("mouth_color(${rgb[0]}, ${rgb[1]}, ${rgb[2]});");
