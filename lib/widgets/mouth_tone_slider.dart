@@ -13,12 +13,19 @@ class MouthToneSlider extends StatefulWidget {
 class _MouthToneSliderState extends State<MouthToneSlider> {
   KaraokeCard card;
   CurrentActivity currentActivity;
-  // List<double> mouthToneAsDecimal = [
+  // List<double> pinkMouthToneAsDecimal = [
   //   0.5686274509,
   //   0.39607843137,
   //   0.43137254902
   // ];
+  //  List<double> redMouthToneAsDecimal = [
+  //   0.60392156,
+  //   0.12549019607,
+  //   0.12549019607
+  // ];
   List<int> pinkMouthTone = [145, 101, 110];
+  List<int> redMouthTone = [154, 32, 32];
+
   List<int> mouthTone;
   ImageController imageController;
   double _sliderValue = 0.5;
@@ -57,7 +64,7 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
     currentActivity = Provider.of<CurrentActivity>(context);
     imageController = Provider.of<ImageController>(context);
     mouthTone = mouthColorToInt(card.picture.mouthColor);
-    _sliderValue = mouthTone[0] / pinkMouthTone[0];
+    _sliderValue = mouthTone[0] / redMouthTone[0];
   }
 
   @override
@@ -65,7 +72,7 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
     imageController.startMouthOpenAndClose();
 
     return Expanded(
-          child: Column(
+      child: Column(
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.only(top: 10.0, bottom: 10),
@@ -93,7 +100,7 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
                   onChanged: (double sliderVal) {
                     setState(() {
                       _sliderValue = sliderVal;
-                      pinkMouthTone.asMap().forEach((i, value) {
+                      redMouthTone.asMap().forEach((i, value) {
                         mouthTone[i] = (value * sliderVal).round();
                       });
                     });
@@ -103,7 +110,7 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
                 ),
                 ClipOval(
                   child: Material(
-                    color: Color(0xff91656e),
+                    color: Color(0xff9a2020),
                     child: InkWell(
                       child: SizedBox(width: 56, height: 56),
                     ),

@@ -50,15 +50,14 @@ class Pictures with ChangeNotifier {
       Picture pic = Picture(
         isStock: serverImage["is_stock"],
         name: serverImage["name"],
-        // SERVER IS NOT PROVIDING A FILE URL ATM....
-        // fileUrl: serverImage["bucket_fp"],
+        fileUrl: serverImage["bucket_fp"],
         fileId: serverImage["uuid"],
         // something is wrong with this
         coordinates: jsonDecode(serverImage["coordinates_json"].toString()),
         mouthColor: jsonDecode(serverImage["mouth_color"]),
         created: DateTime.parse(serverImage["created"]),
       );
-      pic.fileUrl = "images/${pic.fileId}.jpg";
+      print("imageUrl: ${pic.fileUrl}");
       tempPics.add(pic);
     });
     await downloadAllImagesFromBucket(tempPics);
@@ -121,7 +120,7 @@ class Picture with ChangeNotifier, Gcloud {
           "headBottom": [0.0, -0.4],
           "headLeft": [-0.3, 0.0],
         };
-    this.mouthColor = mouthColor ?? [0.5686274509, 0.39607843137, 0.43137254902];
+    this.mouthColor = mouthColor ?? [0.60392156, 0.12549019607, 0.12549019607];
     this.name = name ?? "Name";
     this.filePath = filePath;
     this.fileUrl = fileUrl;

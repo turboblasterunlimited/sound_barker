@@ -358,6 +358,7 @@ class _SetPictureCoordinatesScreenState
                   children: <Widget>[
                     Container(
                       width: MediaQuery.of(context).size.width,
+                      // possible issue
                       child: FittedBox(
                         fit: BoxFit.fill,
                         child: Image.file(
