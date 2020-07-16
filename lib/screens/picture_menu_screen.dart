@@ -99,7 +99,7 @@ class _PictureMenuScreenState extends State<PictureMenuScreen> {
                 padding: const EdgeInsets.all(8.0),
                 child: FlatButton(
                   padding: EdgeInsets.all(10),
-                  child: Text("Take A Picture", style: TextStyle(fontSize: 20)),
+                  child: Text("Camera", style: TextStyle(fontSize: 20)),
                   color: Theme.of(context).primaryColor,
                   onPressed: () => getImage(ImageSource.camera),
                   shape: RoundedRectangleBorder(
@@ -111,7 +111,7 @@ class _PictureMenuScreenState extends State<PictureMenuScreen> {
                 padding: const EdgeInsets.all(8.0),
                 child: FlatButton(
                   padding: EdgeInsets.all(10),
-                  child: Text("Phone Storage", style: TextStyle(fontSize: 20)),
+                  child: Text("Phone Pictures", style: TextStyle(fontSize: 20)),
                   color: Theme.of(context).primaryColor,
                   onPressed: () => getImage(ImageSource.gallery),
                   shape: RoundedRectangleBorder(
@@ -123,7 +123,7 @@ class _PictureMenuScreenState extends State<PictureMenuScreen> {
                 padding: const EdgeInsets.all(8.0),
                 child: FlatButton(
                   padding: EdgeInsets.all(10),
-                  child: Text("Photo Library", style: TextStyle(fontSize: 20)),
+                  child: Text("My K-9s", style: TextStyle(fontSize: 20)),
                   color: Theme.of(context).primaryColor,
                   onPressed: () => Navigator.of(context)
                           .pushNamed(PhotoLibraryScreen.routeName),

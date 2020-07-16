@@ -67,11 +67,15 @@ class CardProgressBar extends StatelessWidget {
       Navigator.of(context).popUntil(ModalRoute.withName("main-screen"));
     }
 
+    bool cardPictureIsStock() {
+      return card.hasPicture ? !card.picture.isStock : false;
+    }
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
         progressButton("SNAP", card.hasPicture, currentActivity.isSnap,
-            navigateToSnap, !card.picture.isStock),
+            navigateToSnap, cardPictureIsStock()),
         progressButton("SONG", card.hasSong || card.hasSongFormula,
             currentActivity.isSong, navigateToSong, card.hasPicture),
         // Can click only if creating a new song
