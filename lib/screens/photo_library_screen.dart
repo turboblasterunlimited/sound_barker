@@ -107,8 +107,6 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
                 ),
               ),
             ),
-            Text("Stock K-9s", style: TextStyle(fontSize: 20, color: Theme.of(context).primaryColor)),
-            
           ],
         ),
       ),

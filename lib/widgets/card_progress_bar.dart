@@ -71,7 +71,7 @@ class CardProgressBar extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
         progressButton("SNAP", card.hasPicture, currentActivity.isSnap,
-            navigateToSnap, true),
+            navigateToSnap, !card.picture.isStock),
         progressButton("SONG", card.hasSong || card.hasSongFormula,
             currentActivity.isSong, navigateToSong, card.hasPicture),
         // Can click only if creating a new song
