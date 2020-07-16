@@ -140,13 +140,7 @@ class ImageController with ChangeNotifier {
   Future<String> _base64Image(picture) async {
     String encodingPrefix = "data:image/png;base64,";
     String base64Image;
-    if (picture.isStock) {
-      ByteData bytes = await rootBundle.load(picture.filePath);
-      Uint8List intList = bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes);
-      base64Image = base64.encode(intList);
-    } else {
-      base64Image = base64.encode(File(picture.filePath).readAsBytesSync());
-    }
+    base64Image = base64.encode(File(picture.filePath).readAsBytesSync());
     return '$encodingPrefix$base64Image';
   }
 

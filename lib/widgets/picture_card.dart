@@ -92,7 +92,7 @@ class _PictureCardState extends State<PictureCard>
                 onTap: handleTap,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: widget.picture.isStock ? Image.asset(widget.picture.filePath) : Image.file(
+                  child: Image.file(
                     File(widget.picture.filePath),
                     fit: BoxFit.cover,
                   ),

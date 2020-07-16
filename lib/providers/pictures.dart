@@ -48,6 +48,7 @@ class Pictures with ChangeNotifier {
       if (serverImage["uuid"] == null) return;
 
       Picture pic = Picture(
+        isStock: serverImage["is_stock"],
         name: serverImage["name"],
         // SERVER IS NOT PROVIDING A FILE URL ATM....
         // fileUrl: serverImage["bucket_fp"],
@@ -65,7 +66,7 @@ class Pictures with ChangeNotifier {
       return bark1.created.compareTo(bark2.created);
     });
     tempPics.forEach((pic) {
-      add(pic);
+      pic.isStock ? stockPictures.add(pic) : add(pic);
     });
     // Important
     if (tempPics.isEmpty) return null;

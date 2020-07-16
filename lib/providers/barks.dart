@@ -41,6 +41,7 @@ class Barks with ChangeNotifier {
     barks.forEach((serverBark) async {
       if (serverBark["hidden"] == 1) return;
       Bark bark = Bark(
+        isStock: serverBark["is_stock"],
         name: serverBark["name"],
         fileUrl: serverBark["bucket_fp"],
         fileId: serverBark["uuid"],
@@ -53,7 +54,7 @@ class Barks with ChangeNotifier {
       return bark1.created.compareTo(bark2.created);
     });
     tempBarks.forEach((bark) {
-      addBark(bark);
+      bark.isStock ? stockBarks.add(bark) : addBark(bark);
     });
   }
 
@@ -114,6 +115,7 @@ class Bark with ChangeNotifier {
   DateTime created;
   String amplitudesPath;
   String length;
+  bool isStock;
 
   Bark({
     String name,
@@ -123,6 +125,7 @@ class Bark with ChangeNotifier {
     DateTime created,
     String amplitudesPath,
     String length,
+    bool isStock,
   }) {
     this.name = name;
     this.filePath = filePath;
@@ -131,6 +134,7 @@ class Bark with ChangeNotifier {
     this.created = created ??= DateTime.now();
     this.amplitudesPath = amplitudesPath;
     this.length = length;
+    this.isStock = isStock ??= false;
   }
 
   String get getName {
