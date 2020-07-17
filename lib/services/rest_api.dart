@@ -13,15 +13,15 @@ class RestAPI {
     print("logging out...");
     var response;
     try {
-      response = await HttpController.dio.post(
+      response = await HttpController.dio.get(
         "http://165.227.178.14/logout"
       );
     } catch (e) {
       print("logout error: ${e.message}");
       return e.message;
     }
-    print("logout response body: ${response.data}");
-    return response.data;
+    print("logout: ${response.data["success"]}");
+    return response.data["success"];
   }
 
   static Future<String> createCardOnServer(
