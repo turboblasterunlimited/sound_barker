@@ -1,3 +1,4 @@
+import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:flutter/material.dart';
 
 class User with ChangeNotifier {
@@ -6,9 +7,8 @@ class User with ChangeNotifier {
 
   User({this.email});
 
-  void setLoadFilesTrue() {
-    filesLoaded = true;
-    notifyListeners();
+  void logout() {
+    RestAPI.logoutUser(email);
   }
 
   bool isSignedIn() {

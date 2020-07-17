@@ -16,8 +16,8 @@ import 'package:provider/provider.dart';
 import '../services/authenticate_user.dart';
 
 class AuthenticationScreen extends StatefulWidget {
+  static const routeName = '/';
   Function callback;
-  static const routeName = 'authentication-screen';
   AuthenticationScreen([this.callback]);
 
   @override

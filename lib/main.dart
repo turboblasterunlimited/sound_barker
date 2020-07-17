@@ -1,6 +1,8 @@
+import 'package:K9_Karaoke/providers/creatable_songs.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/user.dart';
+import 'package:K9_Karaoke/screens/account_screen.dart';
 import 'package:K9_Karaoke/screens/authentication_screen.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
@@ -84,6 +86,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(
           value: KaraokeCards(),
         ),
+        ChangeNotifierProvider.value(
+          value: CreatableSongs(),
+        ),
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -103,9 +108,9 @@ class MyApp extends StatelessWidget {
           ),
           home: AuthenticationScreen(),
           routes: {
+            AccountScreen.routeName: (ctx) => AccountScreen(),
             MainScreen.routeName: (ctx) => MainScreen(),
-            SongStoreScreen.routeName: (ctx) =>
-                SongStoreScreen(),
+            SongStoreScreen.routeName: (ctx) => SongStoreScreen(),
             MenuScreen.routeName: (ctx) => MenuScreen(),
             PictureMenuScreen.routeName: (ctx) => PictureMenuScreen(),
             PhotoLibraryScreen.routeName: (ctx) => PhotoLibraryScreen(),

@@ -17,6 +17,7 @@ class RestAPI {
         "http://165.227.178.14/logout"
       );
     } catch (e) {
+      print("logout error: ${e.message}");
       return e.message;
     }
     print("logout response body: ${response.data}");

@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 
+import 'main_screen.dart';
+
 class AccountScreen extends StatefulWidget {
   static const routeName = 'account-screen';
 
@@ -18,7 +20,8 @@ class _AccountState extends State<AccountScreen> {
 
   void _handleLogout() {
     user.logout();
-    Navigator.pushNamedAndRemoveUntil(context, AuthenticationScreen.routeName, (route) => false);
+      Navigator.of(context).popUntil(ModalRoute.withName("main-screen"));
+      Navigator.of(context).popAndPushNamed(AuthenticationScreen.routeName);
   }
 
   Widget build(BuildContext context) {
