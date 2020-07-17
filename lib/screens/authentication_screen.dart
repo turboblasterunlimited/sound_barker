@@ -95,13 +95,12 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     }
   }
 
-  handleFacebookAuthentication() async {
+  _handleFacebookAuthentication() async {
+    try {
     final facebookLogin = FacebookLogin();
     facebookLogin.currentAccessToken;
     var result = await facebookLogin.logIn(['email', 'public_profile']);
     var responseData;
-    print("Result you want: ${result.status}");
-    print("access token: ${result.accessToken.token}");
     switch (result.status) {
       case FacebookLoginStatus.loggedIn:
         responseData =
@@ -116,6 +115,9 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         _showError("Facebook credentials denied");
         break;
     }
+    } catch(e) {
+      // webview will inform user if no internet
+    }
   }
 
   // ALL GOOGLE
@@ -127,16 +129,16 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     }
   }
 
-  void handleGoogleAuthentication() async {
-    setState(() => loading = true);
+  void _handleGoogleAuthentication() async {
+    // setState(() => loading = true);
     var token;
     var response;
     String clientId;
 
     // hardcoded for google right now.
     var issuer = Issuer.google;
-
     clientId = getGoogleClientID();
+    try {
     token =
         await authenticate(issuer, clientId, ['email', 'openid', 'profile']);
     response = await HttpController.dio.post(
@@ -144,6 +146,9 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       data: token,
     );
     _handleServerResponse(response.data);
+    } catch(e) {
+      _showError();
+    }
   }
 
   void _handleManualSignUp() async {
@@ -348,7 +353,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                       child: GoogleSignInButton(
                         text: "Continue with Google",
                         onPressed: () {
-                          handleGoogleAuthentication();
+                          _handleGoogleAuthentication();
                         },
                       ),
                     ),
@@ -356,7 +361,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                       padding: const EdgeInsets.all(20.0),
                       child: FacebookSignInButton(
                         onPressed: () {
-                          handleFacebookAuthentication();
+                          _handleFacebookAuthentication();
                         },
                       ),
                     ),
