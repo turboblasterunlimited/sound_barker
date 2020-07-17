@@ -8,6 +8,21 @@ import '../providers/barks.dart';
 import '../providers/pictures.dart';
 
 class RestAPI {
+
+  static Future<String> logoutUser(email) async {
+    print("logging out...");
+    var response;
+    try {
+      response = await HttpController.dio.post(
+        "http://165.227.178.14/logout"
+      );
+    } catch (e) {
+      return e.message;
+    }
+    print("logout response body: ${response.data}");
+    return response.data;
+  }
+
   static Future<String> createCardOnServer(
       String decorationImageId, String audioId, amplitudes, String imageId) async {
     String cardId = Uuid().v4();

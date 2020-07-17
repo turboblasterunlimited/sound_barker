@@ -1,37 +1,28 @@
-import 'package:K9_Karaoke/providers/current_activity.dart';
-import 'package:K9_Karaoke/providers/karaoke_cards.dart';
-import 'package:K9_Karaoke/screens/picture_menu_screen.dart';
+import 'package:K9_Karaoke/providers/user.dart';
+import 'package:K9_Karaoke/screens/authentication_screen.dart';
+import 'package:K9_Karaoke/services/http_controller.dart';
+import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 
-class MenuScreen extends StatefulWidget {
-  static const routeName = 'menu-screen';
+class AccountScreen extends StatefulWidget {
+  static const routeName = 'account-screen';
 
   @override
-  _MenuState createState() => _MenuState();
+  _AccountState createState() => _AccountState();
 }
 
-class _MenuState extends State<MenuScreen> {
-  KaraokeCards cards;
-  CurrentActivity currentActivity;
+class _AccountState extends State<AccountScreen> {
+  User user;
 
-  void handleCreateNewCard() {
-    if (currentActivity.cardCreation) {
-      Navigator.of(context).pop();
-    } else {
-      currentActivity.startCreateCard(cards.newCurrentCard);
-      Navigator.popUntil(
-        context,
-        ModalRoute.withName("main-screen"),
-      );
-      Navigator.of(context).pushNamed(PictureMenuScreen.routeName);
-    }
+  void _handleLogout() {
+    user.logout();
+    Navigator.pushNamedAndRemoveUntil(context, AuthenticationScreen.routeName, (route) => false);
   }
 
   Widget build(BuildContext context) {
-    currentActivity = Provider.of<CurrentActivity>(context, listen: false);
-    cards = Provider.of<KaraokeCards>(context, listen: false);
+    user = Provider.of<User>(context, listen: false);
 
     return Scaffold(
       resizeToAvoidBottomPadding: false,
@@ -49,25 +40,18 @@ class _MenuState extends State<MenuScreen> {
               Image.asset("assets/logos/K9_logotype.png", width: 100),
             ],
           ),
-          // Can only close if activity already selected
           actions: <Widget>[
             Padding(
               padding: const EdgeInsets.only(top: 5),
               child: RawMaterialButton(
-                child: Visibility(
-                  visible: currentActivity.activitySelected(),
-                  child: Icon(
-                    Icons.close,
-                    color: Colors.black,
-                    size: 30,
-                  ),
+                child: Icon(
+                  Icons.close,
+                  color: Colors.black,
+                  size: 30,
                 ),
                 shape: CircleBorder(),
                 elevation: 2.0,
-                // fillColor: Theme.of(context).accentColor,
-                onPressed: currentActivity.activitySelected()
-                    ? () => Navigator.of(context).pop()
-                    : null,
+                onPressed: Navigator.of(context).pop,
               ),
             ),
           ],
@@ -87,46 +71,25 @@ class _MenuState extends State<MenuScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               GestureDetector(
-                onTap: handleCreateNewCard,
+                onTap: _handleLogout,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text("Create New Card",
+                  child: Text("Logout",
                       style: TextStyle(
                           fontSize: 40, color: Theme.of(context).primaryColor)),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text("My Cards",
+                child: Text("Purchases",
                     style: TextStyle(
                         fontSize: 40, color: Theme.of(context).primaryColor)),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text("My Photos",
+                child: Text("Subscription",
                     style: TextStyle(
                         fontSize: 40, color: Theme.of(context).primaryColor)),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("My Songs",
-                    style: TextStyle(
-                        fontSize: 40, color: Theme.of(context).primaryColor)),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("My Barks",
-                    style: TextStyle(
-                        fontSize: 40, color: Theme.of(context).primaryColor)),
-              ),
-              GestureDetector(
-                onTap: Navigator.of(context).pushNamed(AccountScreen.routeName),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text("Account",
-                      style: TextStyle(
-                          fontSize: 40, color: Theme.of(context).primaryColor)),
-                ),
               ),
               Container(
                 width: 120,

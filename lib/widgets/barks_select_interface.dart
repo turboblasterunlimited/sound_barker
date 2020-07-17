@@ -93,13 +93,13 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
             ),
           ),
           Visibility(
-            visible: !viewingStockBarks,
+            visible: viewingStockBarks,
             child: Expanded(child: Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.all(10),
-                itemCount: stockBarks.length,
-                itemBuilder: (ctx, i) => CreatableSongCard(
-                    creatableSongs[i], soundController, cards, currentActivity),
+                itemCount: barks.stockBarks.length,
+                itemBuilder: (ctx, i) => BarkPlaybackCard(
+                        i, barks.all[i], barks, soundController),
               ),
             ),),
           ),

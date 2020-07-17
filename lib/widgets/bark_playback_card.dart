@@ -14,7 +14,7 @@ class BarkPlaybackCard extends StatefulWidget {
   final SoundController soundController;
   final Animation<double> animation;
   BarkPlaybackCard(
-      this.index, this.bark, this.barks, this.soundController, this.animation);
+      this.index, this.bark, this.barks, this.soundController, [this.animation]);
 
   @override
   _BarkPlaybackCardState createState() => _BarkPlaybackCardState();
