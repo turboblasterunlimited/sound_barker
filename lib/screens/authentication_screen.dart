@@ -26,31 +26,34 @@ class AuthenticationScreen extends StatefulWidget {
 
 class _AuthenticationScreenState extends State<AuthenticationScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-
   bool loading = true;
   FocusNode passwordFocusNode;
   String email;
   String password;
   bool obscurePassword = true;
-
   User user;
   Barks barks;
   Songs songs;
   Pictures pictures;
   bool everythingDownloaded = true;
 
-  void _showError(message) {
+  void _showError([message = "You must be connected to the internet"]) {
     _scaffoldKey.currentState.showSnackBar(
       SnackBar(
-        content: Text("The following error occured: $message"),
+        content: Text(message),
       ),
     );
   }
 
   Future<Map> checkIfSignedIn() async {
-    var response =
-        await HttpController.dio.get('http://165.227.178.14/is-logged-in');
-    return response.data;
+    try {
+      return (await HttpController.dio
+              .get('http://165.227.178.14/is-logged-in'))
+          .data;
+    } catch (e) {
+      _showError();
+      return {};
+    }
   }
 
   void _handleSignedIn(email) async {
@@ -68,7 +71,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     }
   }
 
-  handleServerResponse(responseData) async {
+  _handleServerResponse(responseData) async {
     print("Sign in response data: $responseData");
     if (responseData["success"]) {
       print("the response data: $responseData");
@@ -81,11 +84,15 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   // ALL FACEBOOK
   _sendFacebookTokenToServer(String token) async {
     Map tokenData = {"facebook_token": token};
-    var response = await HttpController.dio.post(
-      'http://165.227.178.14/facebook-token',
-      data: tokenData,
-    );
-    return response.data;
+    try {
+      var response = await HttpController.dio.post(
+        'http://165.227.178.14/facebook-token',
+        data: tokenData,
+      );
+      return response.data;
+    } catch (e) {
+      _showError("");
+    }
   }
 
   handleFacebookAuthentication() async {
@@ -99,7 +106,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       case FacebookLoginStatus.loggedIn:
         responseData =
             await _sendFacebookTokenToServer(result.accessToken.token);
-        handleServerResponse(responseData);
+        _handleServerResponse(responseData);
         break;
       case FacebookLoginStatus.cancelledByUser:
         _showError(
@@ -136,31 +143,34 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       'http://165.227.178.14/openid-token/${platform}',
       data: token,
     );
-    handleServerResponse(response.data);
+    _handleServerResponse(response.data);
   }
 
   void _handleManualSignUp() async {
-    var response;
     Map data = {"email": email, "password": password};
-    print("before sending sign up: $data");
-    response = await HttpController.dio.post(
-      'http://165.227.178.14/create-account',
-      data: data,
-    );
-    print(response);
-    handleServerResponse(response.data);
+    try {
+      var response = await HttpController.dio.post(
+        'http://165.227.178.14/create-account',
+        data: data,
+      );
+      _handleServerResponse(response.data);
+    } catch (e) {
+      _showError();
+    }
   }
 
   void _handleManualSignIn() async {
-    var response;
     Map data = {"email": email, "password": password};
-    print("before sending sign in: $data");
-    response = await HttpController.dio.post(
-      'http://165.227.178.14/manual-login',
-      data: data,
-    );
-    print(response);
-    handleServerResponse(response.data);
+    try {
+      var response = await HttpController.dio.post(
+        'http://165.227.178.14/manual-login',
+        data: data,
+      );
+      print(response);
+      _handleServerResponse(response.data);
+    } catch (e) {
+      _showError();
+    }
   }
 
   @override
@@ -196,7 +206,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     pictures = Provider.of<Pictures>(context, listen: false);
 
     var responseData = await checkIfSignedIn();
-    if (responseData["logged_in"]) {
+    if (responseData["logged_in"] == true) {
       _handleSignedIn(responseData["user_id"]);
     } else {
       setState(() => loading = false);
