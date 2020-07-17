@@ -25,6 +25,8 @@ class AuthenticationScreen extends StatefulWidget {
 }
 
 class _AuthenticationScreenState extends State<AuthenticationScreen> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   bool loading = true;
   FocusNode passwordFocusNode;
   String email;
@@ -38,14 +40,11 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   bool everythingDownloaded = true;
 
   void _showError(message) {
-    setState(() {
-      loading = false;
-      Scaffold.of(context).showSnackBar(
-        SnackBar(
-          content: Text("The following error occured: $message"),
-        ),
-      );
-    });
+    _scaffoldKey.currentState.showSnackBar(
+      SnackBar(
+        content: Text("The following error occured: $message"),
+      ),
+    );
   }
 
   Future<Map> checkIfSignedIn() async {
@@ -208,6 +207,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   Widget build(BuildContext context) {
     print("building auth screen...");
     return Scaffold(
+      key: _scaffoldKey,
       resizeToAvoidBottomPadding: false,
       extendBodyBehindAppBar: true,
       appBar: loading

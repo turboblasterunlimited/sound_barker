@@ -9,7 +9,7 @@ import '../providers/pictures.dart';
 
 class RestAPI {
 
-  static Future<String> logoutUser(email) async {
+  static Future<dynamic> logoutUser(email) async {
     print("logging out...");
     var response;
     try {

@@ -1,12 +1,8 @@
 import 'package:K9_Karaoke/providers/user.dart';
 import 'package:K9_Karaoke/screens/authentication_screen.dart';
-import 'package:K9_Karaoke/services/http_controller.dart';
-import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
-
-import 'main_screen.dart';
 
 class AccountScreen extends StatefulWidget {
   static const routeName = 'account-screen';
@@ -17,17 +13,31 @@ class AccountScreen extends StatefulWidget {
 
 class _AccountState extends State<AccountScreen> {
   User user;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  void _handleLogout() {
-    user.logout();
+  void _showError(message) {
+    _scaffoldKey.currentState.showSnackBar(
+      SnackBar(
+        content: Text("The following error occured: $message"),
+      ),
+    );
+  }
+
+  void _handleLogout(c) async {
+    var response = await user.logout();
+    if (response == true) {
       Navigator.of(context).popUntil(ModalRoute.withName("main-screen"));
       Navigator.of(context).popAndPushNamed(AuthenticationScreen.routeName);
+    } else {
+      _showError(response);
+    }
   }
 
   Widget build(BuildContext context) {
     user = Provider.of<User>(context, listen: false);
 
     return Scaffold(
+      key: _scaffoldKey,
       resizeToAvoidBottomPadding: false,
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
@@ -74,7 +84,7 @@ class _AccountState extends State<AccountScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               GestureDetector(
-                onTap: _handleLogout,
+                onTap: () => _handleLogout(context),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text("Logout",

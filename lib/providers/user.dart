@@ -7,8 +7,8 @@ class User with ChangeNotifier {
 
   User({this.email});
 
-  void logout() {
-    RestAPI.logoutUser(email);
+  dynamic logout() async {
+    return await RestAPI.logoutUser(email);
   }
 
   bool isSignedIn() {
