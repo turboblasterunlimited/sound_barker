@@ -1,8 +1,7 @@
 import 'dart:typed_data';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
-import 'package:K9_Karaoke/screens/menu_screen.dart';
-import 'package:K9_Karaoke/screens/picture_menu_screen.dart';
+import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/widgets/card_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
@@ -425,7 +424,7 @@ class _SetPictureCoordinatesScreenState
                       onPressed: () {
                         cards.setCurrentCardName(_tempName);
                         Navigator.popAndPushNamed(
-                            context, PictureMenuScreen.routeName);
+                            context, PhotoLibraryScreen.routeName);
                       },
                       child: Icon(
                         Icons.close,

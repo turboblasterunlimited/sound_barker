@@ -23,8 +23,8 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
   Pictures pictures;
 
   Future<void> _cropAndNavigate(newPicture) async {
-    await cropImage(newPicture, Theme.of(context).backgroundColor,
-        Theme.of(context).primaryColor);
+    await cropImage(newPicture, Theme.of(context).primaryColor,
+        Colors.white);
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -38,13 +38,13 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
     newPicture.filePath = "$myAppStoragePath/${newPicture.fileId}.jpg";
 
     final pickedFile = await ImagePicker().getImage(source: source);
+    if (pickedFile == null) return;
     final bytes = await pickedFile.readAsBytes();
 
     File(newPicture.filePath).writeAsBytesSync(
         bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
     await _cropAndNavigate(newPicture);
   }
-
 
   Widget build(BuildContext context) {
     pictures = Provider.of<Pictures>(context, listen: false);
@@ -101,7 +101,8 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
                 children: <Widget>[
                   GestureDetector(
                     onTap: () {
-                      Navigator.of(context).pop();
+                      Navigator.of(context)
+                          .popAndPushNamed(MenuScreen.routeName);
                     },
                     child: Row(children: <Widget>[
                       Icon(LineAwesomeIcons.angle_left),
@@ -124,7 +125,8 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: FlatButton(
-                      padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 25, vertical: 10),
                       child: Text("Camera", style: TextStyle(fontSize: 20)),
                       // color: Theme.of(context).primaryColor,
                       onPressed: () => getImage(ImageSource.camera),
@@ -140,9 +142,9 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: FlatButton(
-                      padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-                      child: Text("Upload",
-                          style: TextStyle(fontSize: 20)),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+                      child: Text("Upload", style: TextStyle(fontSize: 20)),
                       // color: Theme.of(context).primaryColor,
                       onPressed: () => getImage(ImageSource.gallery),
                       shape: RoundedRectangleBorder(
@@ -154,7 +156,6 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
                       ),
                     ),
                   ),
-                  
                 ],
               ),
             ),

@@ -3,7 +3,7 @@ import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/spinner_state.dart';
 import 'package:K9_Karaoke/providers/user.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
-import 'package:K9_Karaoke/screens/picture_menu_screen.dart';
+import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/widgets/card_creation_interface.dart';
 import 'package:K9_Karaoke/widgets/card_progress_bar.dart';
 import 'package:K9_Karaoke/widgets/spinner_widget.dart';
@@ -46,7 +46,7 @@ class _MainScreenState extends State<MainScreen> {
 
   void startCreateCard() {
     currentActivity.startCreateCard(cards.newCurrentCard);
-    Navigator.of(context).pushNamed(PictureMenuScreen.routeName);
+    Navigator.of(context).pushNamed(PhotoLibraryScreen.routeName);
   }
 
   void showMenu() {

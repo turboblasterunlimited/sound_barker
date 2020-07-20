@@ -6,7 +6,6 @@ import 'package:K9_Karaoke/screens/account_screen.dart';
 import 'package:K9_Karaoke/screens/authentication_screen.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
-import 'package:K9_Karaoke/screens/picture_menu_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -112,7 +111,6 @@ class MyApp extends StatelessWidget {
             MainScreen.routeName: (ctx) => MainScreen(),
             SongStoreScreen.routeName: (ctx) => SongStoreScreen(),
             MenuScreen.routeName: (ctx) => MenuScreen(),
-            PictureMenuScreen.routeName: (ctx) => PictureMenuScreen(),
             PhotoLibraryScreen.routeName: (ctx) => PhotoLibraryScreen(),
           }),
     );

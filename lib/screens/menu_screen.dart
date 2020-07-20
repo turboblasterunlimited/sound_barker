@@ -1,7 +1,7 @@
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/screens/account_screen.dart';
-import 'package:K9_Karaoke/screens/picture_menu_screen.dart';
+import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
@@ -19,14 +19,13 @@ class _MenuState extends State<MenuScreen> {
 
   void handleCreateNewCard() {
     if (currentActivity.cardCreation) {
-      Navigator.of(context).pop();
+      Navigator.of(context).popAndPushNamed(PhotoLibraryScreen.routeName);
     } else {
       currentActivity.startCreateCard(cards.newCurrentCard);
-      Navigator.popUntil(
+      Navigator.popAndPushNamed(
         context,
-        ModalRoute.withName("main-screen"),
+        PhotoLibraryScreen.routeName,
       );
-      Navigator.of(context).pushNamed(PictureMenuScreen.routeName);
     }
   }
 

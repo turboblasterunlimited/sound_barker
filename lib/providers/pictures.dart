@@ -54,7 +54,7 @@ class Pictures with ChangeNotifier {
         fileId: serverImage["uuid"],
         // something is wrong with this
         coordinates: jsonDecode(serverImage["coordinates_json"].toString()),
-        mouthColor: jsonDecode(serverImage["mouth_color"]),
+        mouthColor: jsonDecode(serverImage["mouth_color"].toString()),
         created: DateTime.parse(serverImage["created"]),
       );
       print("imageUrl: ${pic.fileUrl}");
