@@ -50,6 +50,10 @@ class KaraokeCards with ChangeNotifier {
     all.add(currentCard);
     notifyListeners();
   }
+
+  bool get currentPictureIsStock {
+    return currentCard.picture.isStock;
+  }
 }
 
 class KaraokeCard with ChangeNotifier {

@@ -99,13 +99,14 @@ class _MainScreenState extends State<MainScreen> {
                 child: Container(
                   width: 170,
                   child: TextFormField(
+                    enabled: !cards.currentPictureIsStock,
                     style: TextStyle(color: Colors.grey[600], fontSize: 20),
                     maxLength: 12,
-                    textAlign: TextAlign.right,
+                    textAlign: cards.currentPictureIsStock ? TextAlign.center : TextAlign.right,
                     decoration: InputDecoration(
                         hintText: cards.currentCardName,
                         counterText: "",
-                        suffixIcon: Icon(LineAwesomeIcons.edit),
+                        suffixIcon: cards.currentPictureIsStock ? null : Icon(LineAwesomeIcons.edit),
                         border: InputBorder.none),
                     onFieldSubmitted: (val) {
                       cards.setCurrentCardName(val);
