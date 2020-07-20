@@ -5,9 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/sound_controller.dart';
-import 'package:K9_Karaoke/widgets/song_playback_card.dart';
-import '../providers/spinner_state.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class BarkSelectInterface extends StatefulWidget {
   @override
@@ -20,7 +17,6 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
   Widget build(BuildContext context) {
     final barks = Provider.of<Barks>(context);
     final soundController = Provider.of<SoundController>(context);
-    final spinnerState = Provider.of<SpinnerState>(context, listen: true);
 
     return Expanded(
       child: Column(
@@ -50,17 +46,9 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
               ),
               Padding(padding: EdgeInsets.all(10)),
               RawMaterialButton(
-                onPressed: spinnerState.songLoading
-                    ? null
-                    : () {
-                        Navigator.pushNamed(context, SongStoreScreen.routeName);
-                      },
-                child: spinnerState.songLoading
-                    ? SpinKitWave(
-                        color: Colors.white,
-                        size: 20,
-                      )
-                    : Text(
+                onPressed: () =>
+                    Navigator.pushNamed(context, SongStoreScreen.routeName),
+                child: Text(
                         "Stock Barks",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -94,14 +82,16 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
           ),
           Visibility(
             visible: viewingStockBarks,
-            child: Expanded(child: Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.all(10),
-                itemCount: barks.stockBarks.length,
-                itemBuilder: (ctx, i) => BarkPlaybackCard(
-                        i, barks.all[i], barks, soundController),
+            child: Expanded(
+              child: Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(10),
+                  itemCount: barks.stockBarks.length,
+                  itemBuilder: (ctx, i) =>
+                      BarkPlaybackCard(i, barks.all[i], barks, soundController),
+                ),
               ),
-            ),),
+            ),
           ),
         ],
       ),

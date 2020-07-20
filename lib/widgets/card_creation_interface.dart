@@ -1,5 +1,6 @@
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
+import 'package:K9_Karaoke/widgets/bark_select_interface.dart';
 import 'package:K9_Karaoke/widgets/mouth_tone_slider.dart';
 import 'package:K9_Karaoke/widgets/song_select_interface.dart';
 import 'package:flutter/material.dart';
@@ -26,10 +27,10 @@ class CardCreationInterface extends StatelessWidget {
           visible: currentActivity.isSong,
           child: SongSelectInterface(),
         ),
-        // Visibility(
-        //   visible: currentActivity.isSpeak,
-        //   child: BarkSelectInterface(),
-        // ),
+        Visibility(
+          visible: currentActivity.isSpeak,
+          child: BarkSelectInterface(),
+        ),
         // Visibility(
         //   visible: currentActivity.isStyle,
         //   child: DecorationInterface(),

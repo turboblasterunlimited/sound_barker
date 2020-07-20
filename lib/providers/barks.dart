@@ -14,6 +14,13 @@ class Barks with ChangeNotifier {
   List<Bark> all = [];
   final listKey = GlobalKey<AnimatedListState>();
   List<Bark> stockBarks = [];
+  Bark tempRawBark;
+
+  void setTempRawBark(rawBark) {
+    tempRawBark = rawBark;
+    notifyListeners();
+  }
+
 
   void addBark(bark) {
     all.insert(0, bark);
@@ -40,7 +47,6 @@ class Barks with ChangeNotifier {
 
     barks.forEach((serverBark) async {
       if (serverBark["hidden"] == 1) return;
-      print("server bucket fp: ${serverBark["bucket_fp"]}");
       Bark bark = Bark(
         isStock: serverBark["is_stock"] == 1 ? true : false,
         name: serverBark["name"],
@@ -105,6 +111,31 @@ class Barks with ChangeNotifier {
     File(barkToDelete.filePath).delete();
     notifyListeners();
   }
+
+  Future<List> uploadRawBarkAndRetrieveCroppedBarks(imageId) async {
+    await Gcloud.uploadAsset(tempRawBark.fileId, tempRawBark.filePath, false);
+    List responseBody = await RestAPI.splitRawBarkOnServer(tempRawBark.fileId, imageId);
+    List newBarks = await parseCroppedBarks(responseBody);
+    await downloadAllBarksFromBucket(newBarks);
+    int length = newBarks.length;
+    for (var i = 0; i < length; i++) {
+      addBark(newBarks[i]);
+    }
+  }
+
+  Future<List> parseCroppedBarks(List cloudBarkData) async {
+    List newBarks = [];
+    int barkCount = cloudBarkData.length;
+    for (var i = 0; i < barkCount; i++) {
+      newBarks.add(Bark(
+        fileId: cloudBarkData[i]["uuid"],
+        name: cloudBarkData[i]["name"],
+        fileUrl: cloudBarkData[i]["bucket_fp"],
+        created: DateTime.parse(cloudBarkData[i]["created"]),
+      ));
+    }
+    return newBarks;
+  }
 }
 
 class Bark with ChangeNotifier {
@@ -166,26 +197,5 @@ class Bark with ChangeNotifier {
 
   void deleteFromServer() {
     RestAPI.deleteBarkFromServer(this);
-  }
-
-  Future<List> uploadBarkAndRetrieveCroppedBarks(imageId) async {
-    await Gcloud.uploadAsset(fileId, filePath, false);
-    List responseBody = await RestAPI.splitRawBarkOnServer(fileId, imageId);
-    List newBarks = await parseCroppedBarks(responseBody);
-    return newBarks;
-  }
-
-  Future<List> parseCroppedBarks(List cloudBarkData) async {
-    List newBarks = [];
-    int barkCount = cloudBarkData.length;
-    for (var i = 0; i < barkCount; i++) {
-      newBarks.add(Bark(
-        fileId: cloudBarkData[i]["uuid"],
-        name: cloudBarkData[i]["name"],
-        fileUrl: cloudBarkData[i]["bucket_fp"],
-        created: DateTime.parse(cloudBarkData[i]["created"]),
-      ));
-    }
-    return newBarks;
   }
 }
