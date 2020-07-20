@@ -1,8 +1,14 @@
+import 'dart:io';
+
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/pictures.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
+import 'package:K9_Karaoke/screens/set_picture_coordinates_screen.dart';
+import 'package:K9_Karaoke/tools/app_storage_path.dart';
+import 'package:K9_Karaoke/tools/cropper.dart';
 import 'package:K9_Karaoke/widgets/picture_card.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 
@@ -15,6 +21,30 @@ class PhotoLibraryScreen extends StatefulWidget {
 
 class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
   Pictures pictures;
+
+  Future<void> _cropAndNavigate(newPicture) async {
+    await cropImage(newPicture, Theme.of(context).backgroundColor,
+        Theme.of(context).primaryColor);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SetPictureCoordinatesScreen(newPicture),
+      ),
+    );
+  }
+
+  Future getImage(source) async {
+    final newPicture = Picture();
+    newPicture.filePath = "$myAppStoragePath/${newPicture.fileId}.jpg";
+
+    final pickedFile = await ImagePicker().getImage(source: source);
+    final bytes = await pickedFile.readAsBytes();
+
+    File(newPicture.filePath).writeAsBytesSync(
+        bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
+    await _cropAndNavigate(newPicture);
+  }
+
 
   Widget build(BuildContext context) {
     pictures = Provider.of<Pictures>(context, listen: false);
@@ -87,7 +117,47 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
                 ],
               ),
             ),
-
+            Center(
+              child: ButtonBar(
+                alignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: FlatButton(
+                      padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+                      child: Text("Camera", style: TextStyle(fontSize: 20)),
+                      // color: Theme.of(context).primaryColor,
+                      onPressed: () => getImage(ImageSource.camera),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(22.0),
+                        side: BorderSide(
+                          color: Theme.of(context).primaryColor,
+                          width: 3,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: FlatButton(
+                      padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+                      child: Text("Upload",
+                          style: TextStyle(fontSize: 20)),
+                      // color: Theme.of(context).primaryColor,
+                      onPressed: () => getImage(ImageSource.gallery),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(22.0),
+                        side: BorderSide(
+                          color: Theme.of(context).primaryColor,
+                          width: 3,
+                        ),
+                      ),
+                    ),
+                  ),
+                  
+                ],
+              ),
+            ),
             Expanded(
               child: Center(
                 child: GridView.builder(
@@ -96,7 +166,8 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
                   itemBuilder: (_, i) => ChangeNotifierProvider.value(
                     value: pictures.combinedPictures[i],
                     key: UniqueKey(),
-                    child: PictureCard(i, pictures.combinedPictures[i], pictures),
+                    child:
+                        PictureCard(i, pictures.combinedPictures[i], pictures),
                   ),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,

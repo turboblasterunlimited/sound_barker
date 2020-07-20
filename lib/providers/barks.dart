@@ -40,8 +40,9 @@ class Barks with ChangeNotifier {
 
     barks.forEach((serverBark) async {
       if (serverBark["hidden"] == 1) return;
+      print("server bucket fp: ${serverBark["bucket_fp"]}");
       Bark bark = Bark(
-        isStock: serverBark["is_stock"],
+        isStock: serverBark["is_stock"] == 1 ? true : false,
         name: serverBark["name"],
         fileUrl: serverBark["bucket_fp"],
         fileId: serverBark["uuid"],

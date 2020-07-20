@@ -48,7 +48,7 @@ class Pictures with ChangeNotifier {
       if (serverImage["uuid"] == null) return;
 
       Picture pic = Picture(
-        isStock: serverImage["is_stock"],
+        isStock: serverImage["is_stock"] == 1 ? true : false,
         name: serverImage["name"],
         fileUrl: serverImage["bucket_fp"],
         fileId: serverImage["uuid"],
