@@ -41,6 +41,9 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
           "https://storage.googleapis.com/song_barker_sequences/" +
               widget.creatableSong.backingTrackUrl,
           stopPlayerCallBack());
+      Future.delayed(Duration(milliseconds: 50), () {
+        setState(() => isPlaying = true);
+      });
     } catch (e) {
       showErrorDialog(context, e);
     }
@@ -48,9 +51,17 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
 
   void _selectSongFormula() {
     widget.cards.setCurrentCardSongFormulaId(widget.creatableSong.id);
-    
     widget.currentActivity.setCardCreationStep(CardCreationSteps.speak);
     Navigator.pop(context);
+  }
+
+  void _handlePlayStopButton() {
+    if (isPlaying) {
+      widget.soundController.stopPlayer();
+      setState(() => isPlaying = false);
+    } else {
+      playSong();
+    }
   }
 
   @override
@@ -60,19 +71,11 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
         // Playback button
         IconButton(
           color: Colors.blue,
-          onPressed: () {
-            if (isPlaying) {
-              widget.soundController.stopPlayer();
-            } else {
-              playSong();
-              Future.delayed(Duration(milliseconds: 50), () {
-                setState(() => isPlaying = true);
-              });
-            }
-          },
+          onPressed: _handlePlayStopButton,
           icon: isPlaying
               ? Icon(Icons.stop, color: Theme.of(context).errorColor, size: 30)
-              : Icon(Icons.play_arrow, color: Theme.of(context).primaryColor, size: 30),
+              : Icon(Icons.play_arrow,
+                  color: Theme.of(context).primaryColor, size: 30),
         ),
         // Select song button
         Expanded(
@@ -81,7 +84,6 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
             child: Column(
               children: <Widget>[
                 // Title
-
                 Center(
                   child: Text(widget.creatableSong.fullName,
                       style: TextStyle(
@@ -99,7 +101,6 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
                 //         fontSize: 11),
                 //   ),
                 // ),
-           
               ],
             ),
 
