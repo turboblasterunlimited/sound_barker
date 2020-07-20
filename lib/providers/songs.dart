@@ -36,11 +36,6 @@ class Songs with ChangeNotifier {
     File(songToDelete.filePath).delete();
   }
 
-  Future retrieveCreatableSongsData() async {
-    creatableSongs = await RestAPI.retrieveAllCreatableSongsFromServer();
-    notifyListeners();
-  }
-
   String getSongFamily(String id) {
     int i = creatableSongs.indexWhere((element) => element["id"].toString() == id);
     Map result = creatableSongs[i];
@@ -49,7 +44,6 @@ class Songs with ChangeNotifier {
 
   // ALL SONGS THAT AREN'T HIDDEN UNLESS THEY ALREADY EXIST ON THE CLIENT
   Future retrieveAll() async {
-    await retrieveCreatableSongsData();
     List tempSongs = [];
     Bucket bucket = await Gcloud.accessBucket();
     List serverSongs = await RestAPI.retrieveAllSongsFromServer();

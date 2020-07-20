@@ -1,14 +1,13 @@
+import 'package:K9_Karaoke/providers/creatable_songs.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:flutter/material.dart';
-import 'package:K9_Karaoke/screens/bark_select_screen.dart';
-import 'package:line_awesome_icons/line_awesome_icons.dart';
 
 import '../widgets/error_dialog.dart';
 import '../providers/sound_controller.dart';
 
 class CreatableSongCard extends StatefulWidget {
-  final Map creatableSong;
+  final CreatableSong creatableSong;
   final SoundController soundController;
   final KaraokeCards cards;
   final CurrentActivity currentActivity;
@@ -40,7 +39,7 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
     try {
       await widget.soundController.startPlayer(
           "https://storage.googleapis.com/song_barker_sequences/" +
-              widget.creatableSong["backing_track_bucket_fp"],
+              widget.creatableSong.backingTrackUrl,
           stopPlayerCallBack());
     } catch (e) {
       showErrorDialog(context, e);
@@ -48,7 +47,8 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
   }
 
   void _selectSongFormula() {
-    widget.cards.setCurrentCardSongFormulaId(widget.creatableSong["id"]);
+    widget.cards.setCurrentCardSongFormulaId(widget.creatableSong.id);
+    
     widget.currentActivity.setCardCreationStep(CardCreationSteps.speak);
     Navigator.pop(context);
   }
@@ -83,26 +83,23 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
                 // Title
 
                 Center(
-                  child: Text(widget.creatableSong["song_family"],
+                  child: Text(widget.creatableSong.fullName,
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Theme.of(context).primaryColor,
                           fontSize: 16)),
                 ),
                 // Subtitle
-                Center(
-                  child: Text(
-                    widget.creatableSong["name"],
-                    style: TextStyle(
-                        fontWeight: FontWeight.w200,
-                        color: Colors.grey,
-                        fontSize: 11),
-                  ),
-                ),
                 // Center(
-                //     child: Text(widget.song.getName,
-                //         style:
-                //             TextStyle(color: Colors.white, fontSize: 16)))
+                //   child: Text(
+                //     widget.creatableSong["name"],
+                //     style: TextStyle(
+                //         fontWeight: FontWeight.w200,
+                //         color: Colors.grey,
+                //         fontSize: 11),
+                //   ),
+                // ),
+           
               ],
             ),
 

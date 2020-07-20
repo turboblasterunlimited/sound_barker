@@ -4,18 +4,20 @@ import 'package:flutter/material.dart';
 class CreatableSongs with ChangeNotifier {
   List all = [];
 
-  bool dataMatchesSong(data) {
+  CreatableSong dataMatchesSong(data) {
     return all.firstWhere(
-        (existing) => existing.fullName == data["name"] + " " + data["style"],
+        (existing) => existing.fullName == (data["name"] + " " + data["style"]),
         orElse: () => null);
   }
 
   void createNewSong(data) {
     var newSong = CreatableSong(
-        name: data["name"],
-        style: data["style"],
-        arrangement: {data["arrangement"]: data["id"]}
-        );
+      id: data["id"],
+      name: data["name"],
+      style: data["style"],
+      arrangement: {data["arrangement"]: data["id"]},
+      backingTrackUrl: "backing_tracks/${data["backing_track"]}/0.aac",
+    );
     all.add(newSong);
   }
 
@@ -25,10 +27,10 @@ class CreatableSongs with ChangeNotifier {
     existing.arrangement[newArrangement] = newId;
   }
 
-  void retrieveFromServer() async {
+  Future<void> retrieveFromServer() async {
     List data = await RestAPI.retrieveAllCreatableSongsFromServer();
     data.forEach((songData) {
-      var existing = dataMatchesSong(songData);
+      CreatableSong existing = dataMatchesSong(songData);
       if (existing == null) {
         createNewSong(songData);
       } else {
@@ -40,11 +42,14 @@ class CreatableSongs with ChangeNotifier {
 }
 
 class CreatableSong {
+  final int id;
   final String name;
   final String style;
+  final String backingTrackUrl;
   final Map arrangement; // {"harmonized": "someId", "pitched": "someId"}
 
-  CreatableSong({this.name, this.style, this.arrangement});
+  CreatableSong(
+      {this.id, this.name, this.style, this.backingTrackUrl, this.arrangement});
 
   String get fullName {
     return name + " " + style;

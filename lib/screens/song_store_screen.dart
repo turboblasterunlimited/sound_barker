@@ -1,3 +1,4 @@
+import 'package:K9_Karaoke/providers/creatable_songs.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/songs.dart';
@@ -19,22 +20,10 @@ class SongStoreScreen extends StatefulWidget {
 
 class _SongStoreScreenState extends State<SongStoreScreen> {
   SoundController soundController;
-  List creatableSongs;
+  CreatableSongs creatableSongs;
   KaraokeCards cards;
   CurrentActivity currentActivity;
 
-  List collectCreatableSongs() {
-    print("result1: $creatableSongs");
-    if (creatableSongs != null) return creatableSongs;
-    creatableSongs = Provider.of<Songs>(context, listen: false).creatableSongs;
-    creatableSongs.forEach((cs) {
-      cs["backing_track_bucket_fp"] =
-          "backing_tracks/${cs["backing_track"]}/0.aac";
-    });
-    creatableSongs.sort((a, b) => a['song_family'].compareTo(b['song_family']));
-    print("result: $creatableSongs");
-    return creatableSongs;
-  }
 
   void initState() {
     super.initState();
@@ -43,10 +32,10 @@ class _SongStoreScreenState extends State<SongStoreScreen> {
 
   @override
   Widget build(BuildContext context) {
-    creatableSongs = collectCreatableSongs();
     soundController = Provider.of<SoundController>(context);
     cards = Provider.of<KaraokeCards>(context, listen: false);
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
+    creatableSongs = Provider.of<CreatableSongs>(context, listen: false);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -113,9 +102,9 @@ class _SongStoreScreenState extends State<SongStoreScreen> {
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.all(10),
-                itemCount: creatableSongs.length,
+                itemCount: creatableSongs.all.length,
                 itemBuilder: (ctx, i) => CreatableSongCard(
-                    creatableSongs[i], soundController, cards, currentActivity),
+                    creatableSongs.all[i], soundController, cards, currentActivity),
               ),
             ),
           ],
