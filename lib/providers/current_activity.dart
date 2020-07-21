@@ -24,6 +24,20 @@ class CurrentActivity with ChangeNotifier {
     return cardCreation || songLibrary || barkLibrary;
   }
 
+  // Substeps
+  bool get isOne {
+    return cardCreationSubStep == CardCreationSubSteps.one;
+  }
+
+  bool get isTwo {
+    return cardCreationSubStep == CardCreationSubSteps.two;
+  }
+
+  bool get isThree {
+    return cardCreationSubStep == CardCreationSubSteps.three;
+  }
+
+  // Steps
   bool get isSnap {
     return cardCreationStep == CardCreationSteps.snap;
   }
@@ -42,6 +56,7 @@ class CurrentActivity with ChangeNotifier {
 
   void setCardCreationStep(CardCreationSteps step) {
     cardCreationStep = step;
+    cardCreationSubStep = CardCreationSubSteps.one;
     notifyListeners();
   }
 

@@ -74,57 +74,63 @@ class BarkRecorderState extends State<BarkRecorder> {
   }
 
   onStartRecorderPressed() {
-    return soundController.recorder.isRecording ? stopRecorder : startRecorder;
+    print("recorder pressed");
+    soundController.recorder.isRecording ? stopRecorder() : startRecorder();
   }
 
   @override
   Widget build(BuildContext context) {
-    final cards = Provider.of<KaraokeCards>(context);
-    final soundController = Provider.of<SoundController>(context);
-    final barks = Provider.of<Barks>(context, listen: false);
+    cards = Provider.of<KaraokeCards>(context);
+    soundController = Provider.of<SoundController>(context);
+    barks = Provider.of<Barks>(context, listen: false);
+    spinnerState = Provider.of<SpinnerState>(context);
 
     return Column(
       children: <Widget>[
-        Row(
+        ButtonBar(
+          alignment: MainAxisAlignment.center,
+          layoutBehavior: ButtonBarLayoutBehavior.padded,
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: RawMaterialButton(
-                onPressed:
-                    spinnerState.barksLoading ? null : onStartRecorderPressed(),
-                child: spinnerState.barksLoading
-                    ? SpinKitWave(
-                        color: Colors.white,
-                        size: 20,
-                      )
-                    : Text(
-                        _isRecording
-                            ? "RECORDING... TAP TO STOP"
-                            : "RECORD BARKS",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.white),
-                      ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: _isRecording
-                      ? BorderRadius.circular(1.0)
-                      : BorderRadius.circular(40.0),
-                  // side: BorderSide(color: Colors.red),
+            Column(
+              children: <Widget>[
+                RawMaterialButton(
+                  onPressed:
+                      spinnerState.barksLoading ? null : onStartRecorderPressed,
+                  child: spinnerState.barksLoading
+                      ? SpinKitWave(
+                          color: Colors.white,
+                          size: 20,
+                        )
+                      : Icon(
+                          _isRecording ? Icons.stop : Icons.fiber_manual_record,
+                          size: 30,
+                          color: Colors.white,
+                        ),
+                  shape:
+                      _isRecording ? RoundedRectangleBorder() : CircleBorder(),
+                  elevation: 2.0,
+                  fillColor: Theme.of(context).errorColor,
+                  padding: const EdgeInsets.all(20.0),
                 ),
-                elevation: 2.0,
-                fillColor: _isRecording
-                    ? Theme.of(context).errorColor
-                    : Theme.of(context).primaryColor,
-                padding: const EdgeInsets.symmetric(horizontal: 30.0),
-              ),
+                Padding(padding: EdgeInsets.only(top: 10)),
+                Text(
+                    _isRecording ? "RECORDING...\nTAP TO STOP" : "RECORD BARKS",
+                    style: TextStyle(fontSize: 20, color: Theme.of(context).errorColor))
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: IconButton(
-                icon: Icon(Icons.music_note),
-                onPressed: () {
-                  // cards
-                },
-              ),
+            Column(
+              children: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.music_note),
+                  iconSize: 70,
+                  // padding: EdgeInsets.only(top: 10),
+                  onPressed: () {
+                    // cards
+                  },
+                ),
+                // Padding(padding: EdgeInsets.only(top: 10)),
+                Text("SELECT BARKS", style: TextStyle(fontSize: 20))
+              ],
             ),
           ],
         ),

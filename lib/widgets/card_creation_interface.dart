@@ -1,5 +1,6 @@
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
+import 'package:K9_Karaoke/widgets/bark_recorder.dart';
 import 'package:K9_Karaoke/widgets/bark_select_interface.dart';
 import 'package:K9_Karaoke/widgets/mouth_tone_slider.dart';
 import 'package:K9_Karaoke/widgets/song_select_interface.dart';
@@ -29,7 +30,9 @@ class CardCreationInterface extends StatelessWidget {
         ),
         Visibility(
           visible: currentActivity.isSpeak,
-          child: BarkSelectInterface(),
+          child: currentActivity.isOne ?
+            BarkRecorder() : BarkSelectInterface(),
+            
         ),
         // Visibility(
         //   visible: currentActivity.isStyle,

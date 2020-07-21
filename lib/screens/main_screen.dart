@@ -73,7 +73,7 @@ class _MainScreenState extends State<MainScreen> {
     print("Did change Dep");
     super.didChangeDependencies();
     user = Provider.of<User>(context);
-    barks = Provider.of<Barks>(context, listen: false);
+    barks = Provider.of<Barks>(context);
     songs = Provider.of<Songs>(context, listen: false);
     pictures = Provider.of<Pictures>(context, listen: true);
     imageController = Provider.of<ImageController>(context);
@@ -102,11 +102,15 @@ class _MainScreenState extends State<MainScreen> {
                     enabled: !cards.currentPictureIsStock,
                     style: TextStyle(color: Colors.grey[600], fontSize: 20),
                     maxLength: 12,
-                    textAlign: cards.currentPictureIsStock ? TextAlign.center : TextAlign.right,
+                    textAlign: cards.currentPictureIsStock
+                        ? TextAlign.center
+                        : TextAlign.right,
                     decoration: InputDecoration(
                         hintText: cards.currentCardName,
                         counterText: "",
-                        suffixIcon: cards.currentPictureIsStock ? null : Icon(LineAwesomeIcons.edit),
+                        suffixIcon: cards.currentPictureIsStock
+                            ? null
+                            : Icon(LineAwesomeIcons.edit),
                         border: InputBorder.none),
                     onFieldSubmitted: (val) {
                       cards.setCurrentCardName(val);
@@ -182,6 +186,19 @@ class _MainScreenState extends State<MainScreen> {
                         child: Stack(
                           children: <Widget>[
                             SingingImage(),
+                            Container(
+                              child: currentActivity.isSpeak && barks.tempRawBark != null ? Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    IconButton(
+                                        icon: Icon(Icons.play_arrow),
+                                        onPressed: null),
+                                  ],
+                                ),
+                              ) : Center(),
+                            ),
+
                             // add decoration canvas for currentActivity.isStyle
                           ],
                         ),
