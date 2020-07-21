@@ -91,46 +91,61 @@ class BarkRecorderState extends State<BarkRecorder> {
           alignment: MainAxisAlignment.spaceEvenly,
           // layoutBehavior: ButtonBarLayoutBehavior.padded,
           children: <Widget>[
-            Column(
-              children: <Widget>[
-                RawMaterialButton(
-                  onPressed:
-                      spinnerState.barksLoading ? null : onStartRecorderPressed,
-                  child: spinnerState.barksLoading
-                      ? SpinKitWave(
-                          color: Colors.white,
-                          size: 20,
-                        )
-                      : Icon(
-                          _isRecording ? Icons.stop : Icons.fiber_manual_record,
-                          size: 30,
-                          color: Colors.white,
-                        ),
-                  shape:
-                      _isRecording ? RoundedRectangleBorder() : CircleBorder(),
-                  elevation: 2.0,
-                  fillColor: Theme.of(context).errorColor,
-                  padding: const EdgeInsets.all(20.0),
-                ),
-                Padding(padding: EdgeInsets.only(top: 16)),
-                Text(
-                    _isRecording ? "RECORDING...\nTAP TO STOP" : "RECORD BARKS",
-                    style: TextStyle(fontSize: 16, color: Theme.of(context).errorColor))
-              ],
+            SizedBox(
+              height: 200,
+              width: 150,
+              child: Column(
+                children: <Widget>[
+                  RawMaterialButton(
+                    onPressed: spinnerState.barksLoading
+                        ? null
+                        : onStartRecorderPressed,
+                    child: spinnerState.barksLoading
+                        ? SpinKitWave(
+                            color: Colors.white,
+                            size: 20,
+                          )
+                        : Icon(
+                            _isRecording
+                                ? Icons.stop
+                                : Icons.fiber_manual_record,
+                            size: 30,
+                            color: Colors.white,
+                          ),
+                    shape: _isRecording
+                        ? RoundedRectangleBorder()
+                        : CircleBorder(),
+                    elevation: 2.0,
+                    fillColor: Theme.of(context).errorColor,
+                    padding: const EdgeInsets.all(20.0),
+                  ),
+                  Padding(padding: EdgeInsets.only(top: 16)),
+                  Text(
+                      _isRecording
+                          ? "RECORDING...  \nTAP TO STOP"
+                          : "RECORD BARKS",
+                      style: TextStyle(
+                          fontSize: 16, color: Theme.of(context).errorColor))
+                ],
+              ),
             ),
-            Column(
-              children: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.music_note),
-                  iconSize: 70,
-                  // padding: EdgeInsets.only(top: 10),
-                  onPressed: () {
-                    // cards
-                  },
-                ),
-                // Padding(padding: EdgeInsets.only(top: 10)),
-                Text("SELECT BARKS", style: TextStyle(fontSize: 16))
-              ],
+            SizedBox(
+              height: 200,
+              width: 150,
+              child: Column(
+                children: <Widget>[
+                  IconButton(
+                    icon: Icon(Icons.arrow_forward),
+                    iconSize: 70,
+                    // padding: EdgeInsets.only(top: 10),
+                    onPressed: () {
+                      // cards
+                    },
+                  ),
+                  // Padding(padding: EdgeInsets.only(top: 10)),
+                  Text("SELECT BARKS", style: TextStyle(fontSize: 16))
+                ],
+              ),
             ),
           ],
         ),
