@@ -22,7 +22,7 @@ class SoundController with ChangeNotifier {
     }
   }
 
-  Future<void> startPlayer(path, [Function callback]) async {
+  Future<void> startPlayer(String path, [Function callback]) async {
     if (player.isPlaying) {
       stopPlayer();
     }

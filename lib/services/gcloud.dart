@@ -43,7 +43,7 @@ class Gcloud {
       print(e);
       return e;
     }
-    return info.downloadLink.toString();
+    return bucketWritePath;
   }
 
   static Future<void> uploadCardAssets(

@@ -29,45 +29,48 @@ class _SingingImageState extends State<SingingImage> {
     print("building singing image");
     imageController = Provider.of<ImageController>(context);
 
-    return WebView(
-      gestureRecognizers: null,
-      onWebViewCreated: (WebViewController c) {
-        webviewController = c;
-        // _controller.complete(webviewController);
-        print("WEB VIEW CREATED");
-      },
-      onPageFinished: (_) {
-        print("WEB VIEW \"FINISHED\"");
-        imageController.mountController(webviewController);
-      },
-      initialUrl: "https://thedogbarksthesong.ml/puppet_002/puppet.html",
-      javascriptMode: JavascriptMode.unrestricted,
-      javascriptChannels: Set.from(
-        [
-          JavascriptChannel(
-            name: 'Print',
-            onMessageReceived: (JavascriptMessage message) async {
-              if (message.message == "[puppet.js postMessage] finished init") {
-                imageController.makeInit();
-                print("Made ready");
-                if (widget.picture != null) {
-                  print("pic name: ${widget.picture.name}");
-                  imageController.createDog(widget.picture);
+    return IgnorePointer(
+      ignoring: true,
+      child: WebView(
+        gestureRecognizers: null,
+        onWebViewCreated: (WebViewController c) {
+          webviewController = c;
+          // _controller.complete(webviewController);
+          print("WEB VIEW CREATED");
+        },
+        onPageFinished: (_) {
+          print("WEB VIEW \"FINISHED\"");
+          imageController.mountController(webviewController);
+        },
+        initialUrl: "https://thedogbarksthesong.ml/puppet_002/puppet.html",
+        javascriptMode: JavascriptMode.unrestricted,
+        javascriptChannels: Set.from(
+          [
+            JavascriptChannel(
+              name: 'Print',
+              onMessageReceived: (JavascriptMessage message) async {
+                if (message.message ==
+                    "[puppet.js postMessage] finished init") {
+                  imageController.makeInit();
+                  print("Made ready");
+                  if (widget.picture != null) {
+                    print("pic name: ${widget.picture.name}");
+                    imageController.createDog(widget.picture);
+                  }
                 }
-              }
-              if (message.message ==
-                  "[puppet.js postMessage] create_puppet finished") {
-                print("create puppet finished");
-                imageController.makeReady();
-                await imageController.setFace();
-                await imageController.setMouthColor();
-                imageController.startRandomGesture();
-              }
-            },
-          ),
-        ],
+                if (message.message ==
+                    "[puppet.js postMessage] create_puppet finished") {
+                  print("create puppet finished");
+                  imageController.makeReady();
+                  await imageController.setFace();
+                  await imageController.setMouthColor();
+                  imageController.startRandomGesture();
+                }
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
-
 }

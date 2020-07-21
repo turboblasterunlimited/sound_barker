@@ -85,8 +85,10 @@ class _SetPictureCoordinatesScreenState
     super.didChangeDependencies();
     imageSizeDifference = magImageSize - canvasLength;
     print("imageSizeDifference: $imageSizeDifference");
+    var bytes = File(widget.newPicture.filePath).readAsBytesSync();
+    print("bytes count: ${bytes.length}");
     imageData =
-        IMG.decodeImage(File(widget.newPicture.filePath).readAsBytesSync());
+        IMG.decodeImage(bytes);
     imageDataBytes =
         IMG.encodePng(IMG.copyResize(imageData, width: magImageSize));
   }

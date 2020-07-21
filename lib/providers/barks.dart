@@ -9,18 +9,20 @@ import 'dart:io';
 
 import '../services/gcloud.dart';
 import '../services/rest_api.dart';
+import '../tools/amplitude_extractor.dart';
 
 class Barks with ChangeNotifier {
   List<Bark> all = [];
   final listKey = GlobalKey<AnimatedListState>();
   List<Bark> stockBarks = [];
   Bark tempRawBark;
+  List tempRawBarkAmplitudes;
 
-  void setTempRawBark(rawBark) {
+  Future<void> setTempRawBark(rawBark) async {
     tempRawBark = rawBark;
+    tempRawBarkAmplitudes = await AmplitudeExtractor.getAmplitudes(tempRawBark.filePath);
     notifyListeners();
   }
-
 
   void addBark(bark) {
     all.insert(0, bark);

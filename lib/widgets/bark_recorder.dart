@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
+import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/spinner_state.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +20,8 @@ class BarkRecorder extends StatefulWidget {
   BarkRecorderState createState() => BarkRecorderState();
 }
 
-class BarkRecorderState extends State<BarkRecorder> {
+class BarkRecorderState extends State<BarkRecorder>
+    with TickerProviderStateMixin {
   KaraokeCards cards;
   String filePath;
   bool _isRecording = false;
@@ -28,6 +31,27 @@ class BarkRecorderState extends State<BarkRecorder> {
   Timer _recordingTimer;
   KaraokeCard card;
   Barks barks;
+  CurrentActivity currentActivity;
+  AnimationController _animationController;
+  Animation _animation;
+
+  @override
+  void dispose() {
+    super.dispose();
+    _animationController.stop();
+  }
+
+  @override
+  void initState() {
+    _animationController =
+        AnimationController(vsync: this, duration: Duration(seconds: 1));
+    _animationController.repeat(reverse: true);
+    _animation = CurveTween(curve: Curves.elasticOut).animate(_animationController)
+      ..addListener(() {
+        setState(() {});
+      });
+    super.initState();
+  }
 
   void startRecorder() async {
     Directory tempDir = await getTemporaryDirectory();
@@ -64,7 +88,7 @@ class BarkRecorderState extends State<BarkRecorder> {
     } catch (err) {
       print('stopRecorder error: $err');
     }
-    barks.setTempRawBark(Bark(filePath: filePath));
+    await barks.setTempRawBark(Bark(filePath: filePath));
   }
 
   void addCroppedBarksToAllBarks(Barks barks, croppedBarks) async {
@@ -84,15 +108,15 @@ class BarkRecorderState extends State<BarkRecorder> {
     soundController = Provider.of<SoundController>(context);
     barks = Provider.of<Barks>(context, listen: false);
     spinnerState = Provider.of<SpinnerState>(context);
+    currentActivity = Provider.of<CurrentActivity>(context, listen: false);
 
     return Column(
       children: <Widget>[
         ButtonBar(
-          alignment: MainAxisAlignment.spaceEvenly,
-          // layoutBehavior: ButtonBarLayoutBehavior.padded,
+          alignment: MainAxisAlignment.center,
           children: <Widget>[
             SizedBox(
-              height: 200,
+              height: 130,
               width: 150,
               child: Column(
                 children: <Widget>[
@@ -130,25 +154,57 @@ class BarkRecorderState extends State<BarkRecorder> {
               ),
             ),
             SizedBox(
-              height: 200,
+              height: 130,
               width: 150,
               child: Column(
                 children: <Widget>[
                   IconButton(
                     icon: Icon(Icons.arrow_forward),
                     iconSize: 70,
-                    // padding: EdgeInsets.only(top: 10),
                     onPressed: () {
-                      // cards
+                      // NAV TO SELECT BARKS
                     },
                   ),
-                  // Padding(padding: EdgeInsets.only(top: 10)),
                   Text("SELECT BARKS", style: TextStyle(fontSize: 16))
                 ],
               ),
             ),
           ],
         ),
+        // ADD BARKS BUTTON
+        barks.tempRawBark != null && !_isRecording
+            ? GestureDetector(
+                onTap: () async {
+                  await barks.uploadRawBarkAndRetrieveCroppedBarks(
+                      cards.currentCard.picture.fileId);
+                  currentActivity
+                      .setCardCreationSubStep(CardCreationSubSteps.two);
+                },
+                child: Transform.rotate(
+                  angle: -pi * _animation.value * 0.1,
+                  child: Container(
+                    margin: EdgeInsets.symmetric(horizontal: 24.0),
+                    padding: EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      shape: BoxShape.rectangle,
+                      color: Theme.of(context).primaryColor,
+                      // boxShadow: [
+                      //   BoxShadow(
+                      //       color: Colors.green,
+                      //       blurRadius: _animation.value,
+                      //       spreadRadius: _animation.value)
+                      // ]
+                    ),
+                    child: Text(
+                      "ADD BARKS\nAND CONTINUE",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              )
+            : Center(),
       ],
     );
   }

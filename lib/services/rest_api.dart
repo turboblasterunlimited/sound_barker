@@ -139,7 +139,8 @@ class RestAPI {
       'name': image.name,
       'coordinates_json': json.encode(image.coordinates),
       'mouth_color': image.mouthColor,
-      'bucket_fp': image.fileUrl
+      'bucket_fp': image.fileUrl,
+
     };
     print("Image upload body: $body");
     final url = 'http://165.227.178.14/image';
@@ -147,7 +148,6 @@ class RestAPI {
       url,
       data: body,
     );
-    print("create Image on server response body: ${response.data}");
     return response.data;
   }
 

@@ -61,8 +61,8 @@ class Pictures with ChangeNotifier {
       tempPics.add(pic);
     });
     await downloadAllImagesFromBucket(tempPics);
-    tempPics.sort((bark1, bark2) {
-      return bark1.created.compareTo(bark2.created);
+    tempPics.sort((pic1, pic2) {
+      return pic1.created.compareTo(pic2.created);
     });
     tempPics.forEach((pic) {
       pic.isStock ? stockPictures.add(pic) : add(pic);
@@ -143,6 +143,7 @@ class Picture with ChangeNotifier, Gcloud {
 
   Future<void> uploadPictureAndSaveToServer() async {
     this.fileUrl = await Gcloud.uploadAsset(fileId, filePath, true);
+    print("File url from uploadpictureandsavetoserver: $fileUrl");
     Map body = await RestAPI.createImageOnServer(this);
     created = DateTime.parse(body["created"]);
   }

@@ -1,5 +1,6 @@
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
+import 'package:K9_Karaoke/providers/sound_controller.dart';
 import 'package:K9_Karaoke/providers/spinner_state.dart';
 import 'package:K9_Karaoke/providers/user.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
@@ -36,6 +37,8 @@ class _MainScreenState extends State<MainScreen> {
   SpinnerState spinnerState;
   CurrentActivity currentActivity;
   KaraokeCards cards;
+  SoundController soundController;
+  bool _isPlaying = false;
 
   Future<void> _navigate() async {
     if (pictures.all.isEmpty)
@@ -69,6 +72,7 @@ class _MainScreenState extends State<MainScreen> {
     super.dispose();
   }
 
+  @override
   void didChangeDependencies() {
     print("Did change Dep");
     super.didChangeDependencies();
@@ -77,9 +81,25 @@ class _MainScreenState extends State<MainScreen> {
     songs = Provider.of<Songs>(context, listen: false);
     pictures = Provider.of<Pictures>(context, listen: true);
     imageController = Provider.of<ImageController>(context);
+    soundController = Provider.of<SoundController>(context);
     spinnerState = Provider.of<SpinnerState>(context);
     currentActivity = Provider.of<CurrentActivity>(context);
     cards = Provider.of<KaraokeCards>(context);
+  }
+
+  void stopAll() {
+    if (_isPlaying) {
+      setState(() => _isPlaying = false);
+      imageController.stopAnimation();
+      soundController.stopPlayer();
+    }
+  }
+
+  void startAll() async {
+    print("start all");
+    setState(() => _isPlaying = true);
+    imageController.mouthTrackSound(amplitudes: barks.tempRawBarkAmplitudes);
+    await soundController.startPlayer(barks.tempRawBark.filePath, stopAll);
   }
 
   Widget mainAppBar() {
@@ -176,32 +196,42 @@ class _MainScreenState extends State<MainScreen> {
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,
                     onTap: () {
-                      // used to play and stop
+                      if (currentActivity.isSpeak && barks.tempRawBark != null)
+                        _isPlaying ? stopAll() : startAll();
                       print("Tapping webview!");
                     },
-                    child: IgnorePointer(
-                      ignoring: true,
-                      child: AspectRatio(
-                        aspectRatio: 1 / 1,
-                        child: Stack(
-                          children: <Widget>[
-                            SingingImage(),
-                            Container(
-                              child: currentActivity.isSpeak && barks.tempRawBark != null ? Center(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    IconButton(
-                                        icon: Icon(Icons.play_arrow),
-                                        onPressed: null),
-                                  ],
-                                ),
-                              ) : Center(),
-                            ),
+                    child: AspectRatio(
+                      aspectRatio: 1 / 1,
+                      child: Stack(
+                        children: <Widget>[
+                          SingingImage(),
+                          Container(
+                            child: !_isPlaying &&
+                                    currentActivity.isSpeak &&
+                                    barks.tempRawBark != null
+                                ? Center(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        RawMaterialButton(
+                                          elevation: 2.0,
+                                          fillColor: Theme.of(context).primaryColor,
+                                          child: Icon(
+                                            Icons.play_arrow,
+                                            size: 60,
+                                            color: Colors.white,
+                                          ),
+                                          shape: CircleBorder(),
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                : Center(),
+                          ),
 
-                            // add decoration canvas for currentActivity.isStyle
-                          ],
-                        ),
+                          // add decoration canvas for currentActivity.isStyle
+                        ],
                       ),
                     ),
                   ),
