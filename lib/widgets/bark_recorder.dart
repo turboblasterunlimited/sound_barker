@@ -88,8 +88,8 @@ class BarkRecorderState extends State<BarkRecorder> {
     return Column(
       children: <Widget>[
         ButtonBar(
-          alignment: MainAxisAlignment.center,
-          layoutBehavior: ButtonBarLayoutBehavior.padded,
+          alignment: MainAxisAlignment.spaceEvenly,
+          // layoutBehavior: ButtonBarLayoutBehavior.padded,
           children: <Widget>[
             Column(
               children: <Widget>[
@@ -112,10 +112,10 @@ class BarkRecorderState extends State<BarkRecorder> {
                   fillColor: Theme.of(context).errorColor,
                   padding: const EdgeInsets.all(20.0),
                 ),
-                Padding(padding: EdgeInsets.only(top: 10)),
+                Padding(padding: EdgeInsets.only(top: 16)),
                 Text(
                     _isRecording ? "RECORDING...\nTAP TO STOP" : "RECORD BARKS",
-                    style: TextStyle(fontSize: 20, color: Theme.of(context).errorColor))
+                    style: TextStyle(fontSize: 16, color: Theme.of(context).errorColor))
               ],
             ),
             Column(
@@ -129,7 +129,7 @@ class BarkRecorderState extends State<BarkRecorder> {
                   },
                 ),
                 // Padding(padding: EdgeInsets.only(top: 10)),
-                Text("SELECT BARKS", style: TextStyle(fontSize: 20))
+                Text("SELECT BARKS", style: TextStyle(fontSize: 16))
               ],
             ),
           ],
