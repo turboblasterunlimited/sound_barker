@@ -8,6 +8,7 @@ import 'package:K9_Karaoke/providers/spinner_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -37,8 +38,8 @@ class BarkRecorderState extends State<BarkRecorder>
 
   @override
   void dispose() {
+    _animationController.dispose();
     super.dispose();
-    _animationController.stop();
   }
 
   @override
@@ -46,10 +47,11 @@ class BarkRecorderState extends State<BarkRecorder>
     _animationController =
         AnimationController(vsync: this, duration: Duration(seconds: 1));
     _animationController.repeat(reverse: true);
-    _animation = CurveTween(curve: Curves.elasticOut).animate(_animationController)
-      ..addListener(() {
-        setState(() {});
-      });
+    _animation =
+        CurveTween(curve: Curves.elasticIn).animate(_animationController)
+          ..addListener(() {
+            setState(() {});
+          });
     super.initState();
   }
 
@@ -92,7 +94,7 @@ class BarkRecorderState extends State<BarkRecorder>
   }
 
   void addCroppedBarksToAllBarks(Barks barks, croppedBarks) async {
-    spinnerState.loadBarks();
+    spinnerState.startLoading();
     await barks.uploadRawBarkAndRetrieveCroppedBarks(card.picture.fileId);
     spinnerState.stopLoading();
   }
@@ -121,10 +123,11 @@ class BarkRecorderState extends State<BarkRecorder>
               child: Column(
                 children: <Widget>[
                   RawMaterialButton(
-                    onPressed: spinnerState.barksLoading
+                    onPressed: spinnerState.isLoading ||
+                            soundController.player.isPlaying
                         ? null
                         : onStartRecorderPressed,
-                    child: spinnerState.barksLoading
+                    child: spinnerState.isLoading
                         ? SpinKitWave(
                             color: Colors.white,
                             size: 20,
@@ -163,25 +166,30 @@ class BarkRecorderState extends State<BarkRecorder>
                     iconSize: 70,
                     onPressed: () {
                       // NAV TO SELECT BARKS
+                      currentActivity
+                          .setCardCreationSubStep(CardCreationSubSteps.two);
                     },
                   ),
-                  Text("SELECT BARKS", style: TextStyle(fontSize: 16))
+                  Text("Skip", style: TextStyle(fontSize: 16))
                 ],
               ),
             ),
           ],
         ),
         // ADD BARKS BUTTON
+
         barks.tempRawBark != null && !_isRecording
             ? GestureDetector(
                 onTap: () async {
+                  spinnerState.startLoading();
                   await barks.uploadRawBarkAndRetrieveCroppedBarks(
                       cards.currentCard.picture.fileId);
+                  spinnerState.stopLoading();
                   currentActivity
                       .setCardCreationSubStep(CardCreationSubSteps.two);
                 },
                 child: Transform.rotate(
-                  angle: -pi * _animation.value * 0.1,
+                  angle: _animation.value * 0.1,
                   child: Container(
                     margin: EdgeInsets.symmetric(horizontal: 24.0),
                     padding: EdgeInsets.all(15),

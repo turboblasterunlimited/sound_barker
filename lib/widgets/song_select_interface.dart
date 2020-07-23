@@ -45,12 +45,12 @@ class _SongSelectInterfaceState extends State<SongSelectInterface> {
               ),
               Padding(padding: EdgeInsets.all(10)),
               RawMaterialButton(
-                onPressed: spinnerState.songLoading
+                onPressed: spinnerState.isLoading
                     ? null
                     : () {
                         Navigator.pushNamed(context, SongStoreScreen.routeName);
                       },
-                child: spinnerState.songLoading
+                child: spinnerState.isLoading
                     ? SpinKitWave(
                         color: Colors.white,
                         size: 20,

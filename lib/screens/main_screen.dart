@@ -7,6 +7,7 @@ import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/widgets/card_creation_interface.dart';
 import 'package:K9_Karaoke/widgets/card_progress_bar.dart';
+import 'package:K9_Karaoke/widgets/spinner_half_screen_widget.dart';
 import 'package:K9_Karaoke/widgets/spinner_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -216,7 +217,8 @@ class _MainScreenState extends State<MainScreen> {
                                       children: <Widget>[
                                         RawMaterialButton(
                                           elevation: 2.0,
-                                          fillColor: Theme.of(context).primaryColor,
+                                          fillColor:
+                                              Theme.of(context).primaryColor,
                                           child: Icon(
                                             Icons.play_arrow,
                                             size: 60,
@@ -229,17 +231,18 @@ class _MainScreenState extends State<MainScreen> {
                                   )
                                 : Center(),
                           ),
-
                           // add decoration canvas for currentActivity.isStyle
                         ],
                       ),
                     ),
                   ),
                 ),
-                if (cards.currentCard != null)
-                  CardProgressBar(),
-                if (cards.currentCard != null)
-                  CardCreationInterface(),
+                
+                    if (cards.currentCard != null) CardProgressBar(),
+                    if (!spinnerState.isLoading && cards.currentCard != null) CardCreationInterface(),
+                    if (spinnerState.isLoading) SpinnerHalfScreenWidget(),
+                  
+                
               ],
             ),
 

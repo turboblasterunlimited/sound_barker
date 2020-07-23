@@ -1,29 +1,18 @@
 import 'package:flutter/material.dart';
 
 class SpinnerState with ChangeNotifier {
-  bool barksLoading = false;
-  bool songLoading = false;
-  bool signingIn = true;
+  bool isLoading = false;
+  String loadingMessage = "Loading...";
 
-  loadBarks() {
-    barksLoading = true;
+  void startLoading([String message]) {
+    if (message != null) loadingMessage = message;
+    isLoading = true;
     notifyListeners();
   }
 
-  stopLoading() {
-    barksLoading = false;
-    songLoading = false;
-    signingIn = false;
-    notifyListeners();
-  }
-
-  loadSongs() {
-    songLoading = true;
-    notifyListeners();
-  }
-
-  loadSignIn() {
-    signingIn = true;
+  void stopLoading() {
+    loadingMessage = "Loading...";
+    isLoading = false;
     notifyListeners();
   }
 }
