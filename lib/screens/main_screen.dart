@@ -165,6 +165,17 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
+  bool get _canPlayRawBark {
+    return currentActivity.isSpeak &&
+        currentActivity.isOne &&
+        barks.tempRawBark != null;
+  }
+
+  void _handleTapPuppet() {
+    print("Tapping webview!");
+    if (_canPlayRawBark) _isPlaying ? stopAll() : startAll();
+  }
+
   @override
   Widget build(BuildContext context) {
     print("Building main screen");
@@ -196,20 +207,14 @@ class _MainScreenState extends State<MainScreen> {
                   // WebView
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,
-                    onTap: () {
-                      if (currentActivity.isSpeak && barks.tempRawBark != null)
-                        _isPlaying ? stopAll() : startAll();
-                      print("Tapping webview!");
-                    },
+                    onTap: _handleTapPuppet,
                     child: AspectRatio(
                       aspectRatio: 1 / 1,
                       child: Stack(
                         children: <Widget>[
                           SingingImage(),
                           Container(
-                            child: !_isPlaying &&
-                                    currentActivity.isSpeak &&
-                                    barks.tempRawBark != null
+                            child: !_isPlaying && _canPlayRawBark
                                 ? Center(
                                     child: Row(
                                       mainAxisAlignment:
@@ -237,15 +242,15 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                   ),
                 ),
-                
-                    if (cards.currentCard != null) CardProgressBar(),
-                    if (!spinnerState.isLoading && cards.currentCard != null) CardCreationInterface(),
-                    if (spinnerState.isLoading) SpinnerHalfScreenWidget(),
-                  
-                
+                if (cards.currentCard != null)
+                  CardProgressBar(),
+                if (!spinnerState.isLoading && cards.currentCard != null)
+                  CardCreationInterface(),
+                // Half screen spinner
+                if (spinnerState.isLoading)
+                  SpinnerHalfScreenWidget(),
               ],
             ),
-
             // Spinner
             if (!everythingReady())
               SpinnerWidget("Loading animation engine..."),

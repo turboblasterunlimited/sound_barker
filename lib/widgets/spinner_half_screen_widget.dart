@@ -6,20 +6,22 @@ import 'package:provider/provider.dart';
 class SpinnerHalfScreenWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final spinnerState = Provider.of<SpinnerState>(context);
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        SpinKitWave(
-          color: Colors.blue,
-          size: 100,
-        ),
-        Center(
-          child: Text(
-            spinnerState.loadingMessage,
+    return Expanded(
+          child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          SpinKitWave(
+            color: Colors.blue,
+            size: 100,
           ),
-        ),
-      ],
+          Center(
+            child: Text(
+              spinnerState.loadingMessage,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
