@@ -94,7 +94,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
                   "My Barks",
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: viewingStockBarks ? Theme.of(context).primaryColor : Colors.white,
                       fontSize: 16),
                 ),
                 shape: RoundedRectangleBorder(
@@ -103,7 +103,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
                       color: Theme.of(context).primaryColor, width: 3),
                 ),
                 elevation: 2.0,
-                fillColor: Theme.of(context).primaryColor,
+                fillColor: viewingStockBarks ? null : Theme.of(context).primaryColor,
                 padding:
                     const EdgeInsets.symmetric(vertical: 13, horizontal: 22.0),
               ),
@@ -116,7 +116,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
                   "Stock Barks",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Theme.of(context).primaryColor,
+                    color: viewingStockBarks ? Colors.white : Theme.of(context).primaryColor,
                     fontSize: 16,
                   ),
                 ),
@@ -126,6 +126,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
                       color: Theme.of(context).primaryColor, width: 3),
                 ),
                 elevation: 2.0,
+                fillColor: viewingStockBarks ? Theme.of(context).primaryColor : null,
                 padding:
                     const EdgeInsets.symmetric(vertical: 13, horizontal: 22.0),
               ),
