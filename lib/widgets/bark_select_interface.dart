@@ -87,7 +87,9 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               RawMaterialButton(
-                onPressed: () {},
+                onPressed: () {
+                  setState(() => viewingStockBarks = false);
+                },
                 child: Text(
                   "My Barks",
                   style: TextStyle(
@@ -107,8 +109,9 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
               ),
               Padding(padding: EdgeInsets.all(10)),
               RawMaterialButton(
-                onPressed: () =>
-                    Navigator.pushNamed(context, SongStoreScreen.routeName),
+                onPressed: () {
+                  setState(() => viewingStockBarks = true);
+                },
                 child: Text(
                   "Stock Barks",
                   style: TextStyle(
@@ -129,9 +132,8 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
             ],
           ),
           Padding(padding: EdgeInsets.only(top: 20)),
-          Visibility(
-            visible: !viewingStockBarks,
-            child: Expanded(
+          if (!viewingStockBarks)
+            Expanded(
               child: AnimatedList(
                 key: barks.listKey,
                 initialItemCount: barks.all.length,
@@ -140,20 +142,15 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
                         i, barks.all[i], barks, soundController, animation),
               ),
             ),
-          ),
-          Visibility(
-            visible: viewingStockBarks,
-            child: Expanded(
-              child: Expanded(
-                child: ListView.builder(
-                  padding: const EdgeInsets.all(10),
-                  itemCount: barks.stockBarks.length,
-                  itemBuilder: (ctx, i) =>
-                      BarkPlaybackCard(i, barks.all[i], barks, soundController),
-                ),
+          if (viewingStockBarks)
+            Expanded(
+              child: AnimatedList(
+                key: barks.listKeyStock,
+                initialItemCount: barks.stockBarks.length,
+                itemBuilder: (ctx, i, Animation<double> animation) =>
+                    BarkPlaybackCard(i, barks.stockBarks[i], barks, soundController, animation),
               ),
             ),
-          ),
         ],
       ),
     );

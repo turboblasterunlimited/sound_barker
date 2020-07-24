@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:flutter/material.dart';
@@ -15,8 +14,8 @@ class BarkPlaybackCard extends StatefulWidget {
   final Barks barks;
   final SoundController soundController;
   final Animation<double> animation;
-  BarkPlaybackCard(this.index, this.bark, this.barks, this.soundController,
-      [this.animation]);
+  BarkPlaybackCard(
+      this.index, this.bark, this.barks, this.soundController, this.animation);
 
   @override
   _BarkPlaybackCardState createState() => _BarkPlaybackCardState();
@@ -239,11 +238,12 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
             ),
           ),
           // Menu button
-          IconButton(
+          if (!widget.bark.isStock) IconButton(
             onPressed: deleteBark,
             icon: Icon(Icons.more_vert,
                 color: Theme.of(context).primaryColor, size: 30),
           ),
+          if (widget.bark.isStock) Padding(padding: EdgeInsets.only(left: 20),)
         ],
       ),
     );

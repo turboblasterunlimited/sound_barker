@@ -13,14 +13,16 @@ import '../tools/amplitude_extractor.dart';
 
 class Barks with ChangeNotifier {
   List<Bark> all = [];
-  final listKey = GlobalKey<AnimatedListState>();
   List<Bark> stockBarks = [];
+  final listKey = GlobalKey<AnimatedListState>();
+  final listKeyStock = GlobalKey<AnimatedListState>();
   Bark tempRawBark;
   List tempRawBarkAmplitudes;
 
   Future<void> setTempRawBark(rawBark) async {
     tempRawBark = rawBark;
-    tempRawBarkAmplitudes = await AmplitudeExtractor.getAmplitudes(tempRawBark.filePath);
+    tempRawBarkAmplitudes =
+        await AmplitudeExtractor.getAmplitudes(tempRawBark.filePath);
     notifyListeners();
   }
 
@@ -30,16 +32,26 @@ class Barks with ChangeNotifier {
     notifyListeners();
   }
 
-  List<Bark> get shortBarks {
-    all.where((bark) => bark.length == "short");
+  void addStockBark(bark) {
+    stockBarks.insert(0, bark);
+    if (listKeyStock.currentState != null)
+      listKeyStock.currentState.insertItem(0);
+    notifyListeners();
   }
 
-  List<Bark> get mediumBarks {
-    all.where((bark) => bark.length == "medium");
+  List<Bark> shortBarks([bool getStock]) {
+    List<Bark> barks = getStock ? stockBarks : all;
+    return barks.where((bark) => bark.length == "short");
   }
 
-  List<Bark> get longBarks {
-    all.where((bark) => bark.length == "long");
+  List<Bark> mediumBarks([bool getStock = false]) {
+    List<Bark> barks = getStock ? stockBarks : all;
+    return barks.where((bark) => bark.length == "medium");
+  }
+
+  List<Bark> longBarks([bool getStock]) {
+    List<Bark> barks = getStock ? stockBarks : all;
+    return barks.where((bark) => bark.length == "long");
   }
 
   Future retrieveAll() async {
@@ -63,7 +75,7 @@ class Barks with ChangeNotifier {
       return bark1.created.compareTo(bark2.created);
     });
     tempBarks.forEach((bark) {
-      bark.isStock ? stockBarks.add(bark) : addBark(bark);
+      bark.isStock ? addStockBark(bark) : addBark(bark);
     });
   }
 
@@ -108,6 +120,8 @@ class Barks with ChangeNotifier {
   }
 
   void remove(barkToDelete) {
+    if (barkToDelete.isStock)
+      return print("can't delete stock bark"); // should throw error
     barkToDelete.deleteFromServer();
     all.remove(barkToDelete);
     File(barkToDelete.filePath).delete();
@@ -116,7 +130,8 @@ class Barks with ChangeNotifier {
 
   Future<List> uploadRawBarkAndRetrieveCroppedBarks(imageId) async {
     await Gcloud.uploadAsset(tempRawBark.fileId, tempRawBark.filePath, false);
-    List responseBody = await RestAPI.splitRawBarkOnServer(tempRawBark.fileId, imageId);
+    List responseBody =
+        await RestAPI.splitRawBarkOnServer(tempRawBark.fileId, imageId);
     List newBarks = await parseCroppedBarks(responseBody);
     await downloadAllBarksFromBucket(newBarks);
     int length = newBarks.length;
