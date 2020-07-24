@@ -122,7 +122,7 @@ class RestAPI {
     Map body = {
       'name': image.name,
       'coordinates_json': json.encode(image.coordinates),
-      'mouth_color': image.mouthColor,
+      'mouth_color': image.mouthColor.toString(),
     };
     print("Image update body: $body");
     final url = 'http://165.227.178.14/image/${image.fileId}';

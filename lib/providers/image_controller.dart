@@ -44,9 +44,11 @@ class ImageController with ChangeNotifier {
   }
 
   void cancelMouthOpenAndClose() {
-    mouthOpenAndClose.cancel();
-    mouthOpenAndClose = null;
-    stopAnimation();
+    if (mouthOpenAndClose != null) {
+      mouthOpenAndClose.cancel();
+      mouthOpenAndClose = null;
+      stopAnimation();
+    }
   }
 
   void stopAnimation() {

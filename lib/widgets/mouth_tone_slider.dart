@@ -5,6 +5,24 @@ import 'package:K9_Karaoke/screens/set_picture_coordinates_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+int hexOfRGB(int r, int g, int b) {
+  r = (r < 0) ? -r : r;
+  g = (g < 0) ? -g : g;
+  b = (b < 0) ? -b : b;
+  r = (r > 255) ? 255 : r;
+  g = (g > 255) ? 255 : g;
+  b = (b > 255) ? 255 : b;
+  var rRad = r.toRadixString(16);
+  var gRad = g.toRadixString(16);
+  var bRad = b.toRadixString(16);
+  rRad = rRad.length == 1 ? "0$rRad" : rRad;
+  gRad = gRad.length == 1 ? "0$gRad" : gRad;
+  bRad = bRad.length == 1 ? "0$bRad" : bRad;
+
+  print("R: $rRad, G: $gRad, B: $bRad");
+  return int.parse('0xff$rRad$gRad$bRad');
+}
+
 class MouthToneSlider extends StatefulWidget {
   @override
   _MouthToneSliderState createState() => _MouthToneSliderState();
@@ -23,12 +41,15 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
   //   0.12549019607,
   //   0.12549019607
   // ];
-  List<int> pinkMouthTone = [145, 101, 110];
-  List<int> redMouthTone = [154, 32, 32];
 
-  List<int> mouthTone;
+  List<int> fleshMouthTone = [145, 101, 110];
+  List<int> pinkMouthTone = [145, 55, 55];
+  List<int> redMouthTone = [100, 10, 10];
+
+  List<int> startingMouthTone;
+  List<int> currentMouthTone;
   ImageController imageController;
-  double _sliderValue = 0.5;
+  double _sliderValue = 0.0;
 
   @override
   void dispose() {
@@ -38,7 +59,7 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
 
   List<double> mouthColorToDecimal() {
     List<double> result = [0.0, 0.0, 0.0];
-    mouthTone.asMap().forEach((i, val) {
+    currentMouthTone.asMap().forEach((i, val) {
       result[i] = val / 255;
     });
     return result;
@@ -63,8 +84,17 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
     card = Provider.of<KaraokeCards>(context).currentCard;
     currentActivity = Provider.of<CurrentActivity>(context);
     imageController = Provider.of<ImageController>(context);
-    mouthTone = mouthColorToInt(card.picture.mouthColor);
-    _sliderValue = mouthTone[0] / redMouthTone[0];
+    currentMouthTone = mouthColorToInt(card.picture.mouthColor);
+  }
+
+  List get sliderMouthTone {
+    if (_sliderValue > 2) {
+      return fleshMouthTone;
+    } else if (_sliderValue > 1) {
+      return pinkMouthTone;
+    } else if (_sliderValue >= 0) {
+      return redMouthTone;
+    }
   }
 
   @override
@@ -96,12 +126,28 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
                 Slider.adaptive(
                   value: _sliderValue,
                   min: 0,
-                  max: 1,
+                  max: 3,
                   onChanged: (double sliderVal) {
                     setState(() {
                       _sliderValue = sliderVal;
-                      redMouthTone.asMap().forEach((i, value) {
-                        mouthTone[i] = (value * sliderVal).round();
+                      sliderMouthTone.asMap().forEach((i, value) {
+                        double adjustedVal;
+                        if (sliderVal > 2) {
+                          adjustedVal = sliderVal - 2;
+                        } else if (sliderVal > 1) {
+                          adjustedVal = sliderVal - 1;
+                        } else if (sliderVal > 0) {
+                          adjustedVal = sliderVal;
+                        }
+                        print("Hex of rgba: ${hexOfRGB(
+                          sliderMouthTone[0],
+                          sliderMouthTone[1],
+                          sliderMouthTone[2],
+                        )}");
+                        // var tempVal = _sliderValue;
+                        // if (i == 0 && sliderVal > .5) tempVal /= _sliderValue;
+                        // else if (sliderVal < .5) value *= 2;
+                        currentMouthTone[i] = (value * adjustedVal).round();
                       });
                     });
                     imageController.setMouthColor(mouthColorToDecimal());
@@ -110,7 +156,13 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
                 ),
                 ClipOval(
                   child: Material(
-                    color: Color(0xff9a2020),
+                    color: Color(
+                      hexOfRGB(
+                        sliderMouthTone[0],
+                        sliderMouthTone[1],
+                        sliderMouthTone[2],
+                      ),
+                    ),
                     child: InkWell(
                       child: SizedBox(width: 56, height: 56),
                     ),
