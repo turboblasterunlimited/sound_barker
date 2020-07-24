@@ -11,6 +11,7 @@ enum CardCreationSubSteps {
   one,
   two,
   three,
+  four,
 }
 
 class CurrentActivity with ChangeNotifier {
@@ -63,6 +64,14 @@ class CurrentActivity with ChangeNotifier {
   void setCardCreationSubStep(CardCreationSubSteps subStep) {
     cardCreationSubStep = subStep;
     notifyListeners();
+  }
+
+  void setPreviousSubStep() {
+    setCardCreationSubStep(CardCreationSubSteps.values[cardCreationSubStep.index - 1]);
+  }
+
+    void setNextSubStep() {
+    setCardCreationSubStep(CardCreationSubSteps.values[cardCreationSubStep.index + 1]);
   }
 
   void startCreateCard(Function setCurrentCardCallback) {

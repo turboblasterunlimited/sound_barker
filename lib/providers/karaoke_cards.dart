@@ -1,4 +1,5 @@
 import 'package:K9_Karaoke/classes/card_decoration.dart';
+import 'package:K9_Karaoke/providers/barks.dart';
 import 'package:K9_Karaoke/providers/pictures.dart';
 import 'package:K9_Karaoke/providers/songs.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +32,21 @@ class KaraokeCards with ChangeNotifier {
     // also remove song if that is selected
     currentCard.songFormulaId = null;
     currentCard.song = newSong;
+    notifyListeners();
+  }
+
+  void setCurrentCardShortBark(bark) {
+    currentCard.shortBark = bark;
+    notifyListeners();
+  }
+
+  void setCurrentCardMediumBark(bark) {
+    currentCard.mediumBark = bark;
+    notifyListeners();
+  }
+
+  void setCurrentCardLongBark(bark) {
+    currentCard.longBark = bark;
     notifyListeners();
   }
 
@@ -68,12 +84,18 @@ class KaraokeCard with ChangeNotifier {
   String decorationImagePath;
   // if making a new card
   CardDecoration cardDecoration;
+  Bark shortBark;
+  Bark mediumBark;
+  Bark longBark;
+
   KaraokeCard(
       {this.fileId,
       this.picture,
       this.song,
       this.songFormulaId,
-      this.barks,
+      this.shortBark,
+      this.mediumBark,
+      this.longBark,
       this.cardDecoration,
       this.decorationImagePath});
 
@@ -87,7 +109,7 @@ class KaraokeCard with ChangeNotifier {
   }
 
   bool get hasBarks {
-    return barks != null;
+    return shortBark != null;
   }
 
   bool get hasSong {

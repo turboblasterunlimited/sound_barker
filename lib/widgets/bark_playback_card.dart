@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:K9_Karaoke/providers/current_activity.dart';
+import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -13,8 +15,8 @@ class BarkPlaybackCard extends StatefulWidget {
   final Barks barks;
   final SoundController soundController;
   final Animation<double> animation;
-  BarkPlaybackCard(
-      this.index, this.bark, this.barks, this.soundController, [this.animation]);
+  BarkPlaybackCard(this.index, this.bark, this.barks, this.soundController,
+      [this.animation]);
 
   @override
   _BarkPlaybackCardState createState() => _BarkPlaybackCardState();
@@ -29,6 +31,8 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
   bool _isPlaying = false;
   final _controller = TextEditingController();
   String tempName;
+  KaraokeCards cards;
+  CurrentActivity currentActivity;
 
   @override
   void initState() {
@@ -168,55 +172,79 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
     );
   }
 
+  selectBark() {
+    if (currentActivity.isOne) {
+      cards.setCurrentCardShortBark(widget.bark);
+      currentActivity.setCardCreationSubStep(CardCreationSubSteps.two);
+    } else if (currentActivity.isTwo) {
+      cards.setCurrentCardMediumBark(widget.bark);
+      currentActivity.setCardCreationSubStep(CardCreationSubSteps.three);
+    } else if (currentActivity.isThree) {
+      cards.setCurrentCardLongBark(widget.bark);
+      currentActivity.setCardCreationSubStep(CardCreationSubSteps.four);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    cards = Provider.of<KaraokeCards>(context, listen: false);
+    currentActivity = Provider.of<CurrentActivity>(context, listen: false);
+
     return SizeTransition(
       sizeFactor: widget.animation,
-      child: GestureDetector(
-        onTap: () => renameBark(),
-        child: Card(
-          margin: EdgeInsets.symmetric(
-            horizontal: 0,
-            vertical: 0,
-          ),
-          child: Padding(
-            padding: EdgeInsets.all(0),
-            child: ListTile(
-              leading: IconButton(
-                color: Colors.blue,
-                onPressed: () {
-                  playBark();
-                },
-                icon: Icon(Icons.play_arrow, color: Theme.of(context).primaryColor, size: 30),
-              ),
-              title: Center(
-                child: FadeTransition(
-                  opacity: renameAnimationController,
-                  child: RichText(
-                    text: TextSpan(
-                      style: TextStyle(fontSize: 18),
-                      children: [
-                        WidgetSpan(
-                          child: Text(
-                            widget.bark.getName,
-                            // style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ],
+      child: Row(
+        children: <Widget>[
+          // Playback button
+          IconButton(
+              color: Colors.blue,
+              onPressed: playBark,
+              icon: _isPlaying
+                  ? Icon(Icons.stop,
+                      color: Theme.of(context).errorColor, size: 30)
+                  : Icon(Icons.play_arrow,
+                      color: Theme.of(context).primaryColor, size: 30)),
+          // Select bark button
+          Expanded(
+            child: RawMaterialButton(
+              onPressed: selectBark,
+              child: FadeTransition(
+                opacity: renameAnimationController,
+                child: Column(
+                  children: <Widget>[
+                    // Title
+                    Center(
+                      child: Text(widget.bark.name,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).primaryColor,
+                              fontSize: 16)),
                     ),
-                  ),
+                    // Subtitle
+                    // Center(
+                    //     child: Text(widget.song.getName,
+                    //         style:
+                    //             TextStyle(color: Colors.white, fontSize: 16)))
+                  ],
                 ),
               ),
-              subtitle: Center(child: Text(widget.bark.length)),
-              trailing: IconButton(
-                onPressed: () {
-                  deleteBark();
-                },
-                icon: Icon(Icons.delete, color: Colors.redAccent, size: 30),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(40.0),
+                side:
+                    BorderSide(color: Theme.of(context).primaryColor, width: 3),
               ),
+              elevation: 2.0,
+              // fillColor: Theme.of(context).primaryColor,
+              // padding:
+              //     const EdgeInsets.symmetric(vertical: 0, horizontal: 22.0),
             ),
           ),
-        ),
+          // Menu button
+          IconButton(
+            onPressed: deleteBark,
+            icon: Icon(Icons.more_vert,
+                color: Theme.of(context).primaryColor, size: 30),
+          ),
+        ],
       ),
     );
   }
