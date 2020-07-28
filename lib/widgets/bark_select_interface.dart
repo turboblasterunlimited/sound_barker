@@ -18,9 +18,10 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
   Barks barks;
   List<Bark> displayedBarks;
   List<Bark> displayedBarksStock;
-  SoundController soundController;
   final _listKey = GlobalKey<AnimatedListState>();
   final _stockListKey = GlobalKey<AnimatedListState>();
+  SoundController soundController;
+  bool _isFirstLoad = true;
 
   String _barkSelectInstruction() {
     print(
@@ -62,8 +63,8 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
       shownBarks.removeAt(i);
       listKey.currentState.removeItem(
           i,
-          (context, animation) =>
-              BarkPlaybackCard(i, shownBarks[i], barks, soundController, animation));
+          (context, animation) => BarkPlaybackCard(
+              i, shownBarks[i], barks, soundController, animation));
     });
     // add barks
     newBarks.forEach((newBark) {
@@ -74,19 +75,22 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
     });
   }
 
+  _updateDisplayBarks() {
+    if (_isFirstLoad) {
+      displayedBarks = getBarksOfCurrentLength();
+      displayedBarksStock = getBarksOfCurrentLength(true);
+      _isFirstLoad = false;
+    } else {
+      updateDisplayedBarks();
+      updateDisplayedBarks(true);
+    }
+  }
+
   Widget build(BuildContext context) {
     barks = Provider.of<Barks>(context);
     soundController = Provider.of<SoundController>(context);
     currentActivity = Provider.of<CurrentActivity>(context);
-
-    // if medium or finale bark
-    if (currentActivity.isThree || currentActivity.isFour) {
-      updateDisplayedBarks();
-      updateDisplayedBarks(true);
-    } else {
-      displayedBarks = getBarksOfCurrentLength();
-      displayedBarksStock = getBarksOfCurrentLength(true);
-    }
+    _updateDisplayBarks();
 
     return Expanded(
       child: Column(
