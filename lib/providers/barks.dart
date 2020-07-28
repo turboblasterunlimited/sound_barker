@@ -14,8 +14,6 @@ import '../tools/amplitude_extractor.dart';
 class Barks with ChangeNotifier {
   List<Bark> all = [];
   List<Bark> stockBarks = [];
-  final listKey = GlobalKey<AnimatedListState>();
-  final listKeyStock = GlobalKey<AnimatedListState>();
   Bark tempRawBark;
   List tempRawBarkAmplitudes;
 
@@ -28,14 +26,11 @@ class Barks with ChangeNotifier {
 
   void addBark(bark) {
     all.insert(0, bark);
-    if (listKey.currentState != null) listKey.currentState.insertItem(0);
     notifyListeners();
   }
 
   void addStockBark(bark) {
     stockBarks.insert(0, bark);
-    if (listKeyStock.currentState != null)
-      listKeyStock.currentState.insertItem(0);
     notifyListeners();
   }
 

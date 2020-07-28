@@ -69,7 +69,9 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
     // add barks
     newBarks.forEach((newBark) {
       if (shownBarks.indexOf(newBark) == -1) {
+        print("checkpoint before: ${listKey}, ${listKey.currentState}");
         listKey.currentState.insertItem(0);
+        print("checkpoint after");
         shownBarks.insert(0, newBark);
       }
     });
@@ -84,6 +86,22 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
       updateDisplayedBarks();
       updateDisplayedBarks(true);
     }
+  }
+
+  deleteBark(Bark bark, num displayInt) {
+    displayedBarks.removeAt(displayInt);
+    _listKey.currentState.removeItem(
+      displayInt,
+      (context, animation) => BarkPlaybackCard(
+        displayInt,
+        bark,
+        barks,
+        soundController,
+        animation,
+      ),
+    );
+    barks.remove(bark);
+    print("${bark.name} deleted...");
   }
 
   Widget build(BuildContext context) {
@@ -111,7 +129,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
                       ]),
                     ),
                     Center(
-                      child: Text(_barkSelectInstruction(),
+                      child: Text("PICK " + _barkSelectInstruction(),
                           style: TextStyle(
                               fontSize: 20,
                               color: Theme.of(context).primaryColor)),
@@ -203,6 +221,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
                   barks,
                   soundController,
                   animation,
+                  deleteCallback: deleteBark,
                 ),
               ),
             ),

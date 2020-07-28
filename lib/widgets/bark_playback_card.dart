@@ -14,8 +14,9 @@ class BarkPlaybackCard extends StatefulWidget {
   final Barks barks;
   final SoundController soundController;
   final Animation<double> animation;
+  final Function deleteCallback;
   BarkPlaybackCard(
-      this.index, this.bark, this.barks, this.soundController, this.animation);
+      this.index, this.bark, this.barks, this.soundController, this.animation, {this.deleteCallback});
 
   @override
   _BarkPlaybackCardState createState() => _BarkPlaybackCardState();
@@ -89,20 +90,8 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
           FlatButton(
               child: Text('Yes. Delete it.'),
               onPressed: () {
+                widget.deleteCallback(widget.bark, widget.index);
                 Navigator.of(ctx).pop();
-                try {
-                  widget.barks.remove(widget.bark);
-                  AnimatedList.of(context).removeItem(
-                      widget.index,
-                      (context, animation) => BarkPlaybackCard(
-                          widget.index,
-                          widget.bark,
-                          widget.barks,
-                          widget.soundController,
-                          animation));
-                } catch (e) {
-                  showErrorDialog(context, e);
-                }
               })
         ],
       ),
