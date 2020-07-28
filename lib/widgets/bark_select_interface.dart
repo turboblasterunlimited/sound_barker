@@ -1,6 +1,5 @@
 import 'package:K9_Karaoke/providers/barks.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
-import 'package:K9_Karaoke/screens/song_store_screen.dart';
 import 'package:K9_Karaoke/widgets/bark_playback_card.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
@@ -16,15 +15,15 @@ class BarkSelectInterface extends StatefulWidget {
 class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
   bool viewingStockBarks = false;
   CurrentActivity currentActivity;
+  Barks barks;
 
   String _barkSelectInstruction() {
-    if (currentActivity.cardCreationSubStep == CardCreationSubSteps.two) {
+    print("activity within instructions call: ${currentActivity.cardCreationSubStep}");
+    if (currentActivity.isTwo) {
       return "SHORT BARK";
-    } else if (currentActivity.cardCreationSubStep ==
-        CardCreationSubSteps.three) {
+    } else if (currentActivity.isThree) {
       return "MEDIUM BARK";
-    } else if (currentActivity.cardCreationSubStep ==
-        CardCreationSubSteps.four) {
+    } else if (currentActivity.isFour) {
       return "FINALE BARK";
     }
   }
@@ -34,10 +33,24 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
     return currentActivity.cardCreationSubStep == CardCreationSubSteps.three;
   }
 
+  getBarksOfCurrentLength([bool isStock = false]) {
+    if (currentActivity.isTwo) {
+      return barks.short(isStock);
+    } else if (currentActivity.isThree) {
+      return barks.medium(isStock) + barks.short(isStock);
+    } else if (currentActivity.isFour) {
+      return barks.long(isStock) + barks.medium(isStock) + barks.short(isStock);
+    }
+  }
+
   Widget build(BuildContext context) {
-    final barks = Provider.of<Barks>(context);
+  
+    barks = Provider.of<Barks>(context);
     final soundController = Provider.of<SoundController>(context);
     currentActivity = Provider.of<CurrentActivity>(context);
+    print("activity substep: ${currentActivity.cardCreationSubStep}");
+    // List<Bark> barksOfCurrentLength = getBarksOfCurrentLength();
+    // List<Bark> barksOfCurrentLengthStock = getBarksOfCurrentLength(true);
 
     return Expanded(
       child: Column(
@@ -94,7 +107,9 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
                   "My Barks",
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: viewingStockBarks ? Theme.of(context).primaryColor : Colors.white,
+                      color: viewingStockBarks
+                          ? Theme.of(context).primaryColor
+                          : Colors.white,
                       fontSize: 16),
                 ),
                 shape: RoundedRectangleBorder(
@@ -103,7 +118,8 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
                       color: Theme.of(context).primaryColor, width: 3),
                 ),
                 elevation: 2.0,
-                fillColor: viewingStockBarks ? null : Theme.of(context).primaryColor,
+                fillColor:
+                    viewingStockBarks ? null : Theme.of(context).primaryColor,
                 padding:
                     const EdgeInsets.symmetric(vertical: 13, horizontal: 22.0),
               ),
@@ -116,7 +132,9 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
                   "Stock Barks",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: viewingStockBarks ? Colors.white : Theme.of(context).primaryColor,
+                    color: viewingStockBarks
+                        ? Colors.white
+                        : Theme.of(context).primaryColor,
                     fontSize: 16,
                   ),
                 ),
@@ -126,7 +144,8 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
                       color: Theme.of(context).primaryColor, width: 3),
                 ),
                 elevation: 2.0,
-                fillColor: viewingStockBarks ? Theme.of(context).primaryColor : null,
+                fillColor:
+                    viewingStockBarks ? Theme.of(context).primaryColor : null,
                 padding:
                     const EdgeInsets.symmetric(vertical: 13, horizontal: 22.0),
               ),
@@ -137,19 +156,30 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
             Expanded(
               child: AnimatedList(
                 key: barks.listKey,
-                initialItemCount: barks.all.length,
+                initialItemCount: getBarksOfCurrentLength().length,
                 itemBuilder: (ctx, i, Animation<double> animation) =>
                     BarkPlaybackCard(
-                        i, barks.all[i], barks, soundController, animation),
+                  i,
+                  getBarksOfCurrentLength()[i],
+                  barks,
+                  soundController,
+                  animation,
+                ),
               ),
             ),
           if (viewingStockBarks)
             Expanded(
               child: AnimatedList(
                 key: barks.listKeyStock,
-                initialItemCount: barks.stockBarks.length,
+                initialItemCount: getBarksOfCurrentLength(true).length,
                 itemBuilder: (ctx, i, Animation<double> animation) =>
-                    BarkPlaybackCard(i, barks.stockBarks[i], barks, soundController, animation),
+                    BarkPlaybackCard(
+                  i,
+                  getBarksOfCurrentLength(true)[i],
+                  barks,
+                  soundController,
+                  animation,
+                ),
               ),
             ),
         ],

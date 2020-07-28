@@ -189,7 +189,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
     cards = Provider.of<KaraokeCards>(context, listen: false);
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
 
-    return SizeTransition(
+    if (true) return SizeTransition(
       sizeFactor: widget.animation,
       child: Row(
         children: <Widget>[
@@ -219,10 +219,10 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
                               fontSize: 16)),
                     ),
                     // Subtitle
-                    // Center(
-                    //     child: Text(widget.song.getName,
-                    //         style:
-                    //             TextStyle(color: Colors.white, fontSize: 16)))
+                    Center(
+                        child: Text(widget.bark.length,
+                            style:
+                                TextStyle(color: Colors.grey, fontSize: 10)))
                   ],
                 ),
               ),

@@ -39,9 +39,21 @@ class Barks with ChangeNotifier {
     notifyListeners();
   }
 
-  List<Bark> shortBarks([bool getStock]) {
-    List<Bark> barks = getStock ? stockBarks : all;
-    return barks.where((bark) => bark.length == "short");
+  List<Bark> barksOfLength(String length, [bool stock = false]) {
+    List<Bark> barks = stock ? stockBarks : all;
+    return List.from(barks.where((bark) => bark.length == length));
+  }
+
+  List<Bark> short([bool isStock = false]) {
+    return barksOfLength("short", isStock);
+  }
+
+  List<Bark> medium([bool isStock = false]) {
+    return barksOfLength("medium", isStock);
+  }
+
+  List<Bark> long([bool isStock = false]) {
+    return barksOfLength("long", isStock);
   }
 
   List<Bark> mediumBarks([bool getStock = false]) {
@@ -49,7 +61,7 @@ class Barks with ChangeNotifier {
     return barks.where((bark) => bark.length == "medium");
   }
 
-  List<Bark> longBarks([bool getStock]) {
+  List<Bark> longBarks([bool getStock = false]) {
     List<Bark> barks = getStock ? stockBarks : all;
     return barks.where((bark) => bark.length == "long");
   }

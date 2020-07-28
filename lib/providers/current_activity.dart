@@ -38,6 +38,10 @@ class CurrentActivity with ChangeNotifier {
     return cardCreationSubStep == CardCreationSubSteps.three;
   }
 
+  bool get isFour {
+    return cardCreationSubStep == CardCreationSubSteps.four;
+  }
+
   // Steps
   bool get isSnap {
     return cardCreationStep == CardCreationSteps.snap;
@@ -67,11 +71,13 @@ class CurrentActivity with ChangeNotifier {
   }
 
   void setPreviousSubStep() {
-    setCardCreationSubStep(CardCreationSubSteps.values[cardCreationSubStep.index - 1]);
+    setCardCreationSubStep(
+        CardCreationSubSteps.values[cardCreationSubStep.index - 1]);
   }
 
-    void setNextSubStep() {
-    setCardCreationSubStep(CardCreationSubSteps.values[cardCreationSubStep.index + 1]);
+  void setNextSubStep() {
+    setCardCreationSubStep(
+        CardCreationSubSteps.values[cardCreationSubStep.index + 1]);
   }
 
   void startCreateCard(Function setCurrentCardCallback) {
