@@ -14,7 +14,7 @@ Future<void> cropImage(picture, toolbarColor, widgetColor) async {
   File newFile = await ImageCropper.cropImage(
     sourcePath: picture.filePath,
     aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
-    compressQuality: 100,
+    compressQuality: 80,
     androidUiSettings: AndroidUiSettings(
         toolbarTitle: 'Now crop it!',
         toolbarColor: toolbarColor,

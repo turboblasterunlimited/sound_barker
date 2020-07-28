@@ -120,7 +120,7 @@ class Picture with ChangeNotifier, Gcloud {
           "headBottom": [0.0, -0.4],
           "headLeft": [-0.3, 0.0],
         };
-    this.mouthColor = mouthColor ?? [0.60392156, 0.12549019607, 0.12549019607];
+    this.mouthColor = mouthColor ?? [0.0, 0.0, 0.0];
     this.name = name ?? "Name";
     this.filePath = filePath;
     this.fileUrl = fileUrl;

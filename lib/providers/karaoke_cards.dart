@@ -24,7 +24,7 @@ class KaraokeCards with ChangeNotifier {
   }
 
   void setCurrentCardName(newName) {
-    currentCard.picture.name = newName;
+    currentCard.picture.setName(newName);
     notifyListeners();
   }
 
