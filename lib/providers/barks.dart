@@ -56,16 +56,6 @@ class Barks with ChangeNotifier {
     return barksOfLength("long", isStock);
   }
 
-  List<Bark> mediumBarks([bool getStock = false]) {
-    List<Bark> barks = getStock ? stockBarks : all;
-    return barks.where((bark) => bark.length == "medium");
-  }
-
-  List<Bark> longBarks([bool getStock = false]) {
-    List<Bark> barks = getStock ? stockBarks : all;
-    return barks.where((bark) => bark.length == "long");
-  }
-
   Future retrieveAll() async {
     List barks = await RestAPI.retrieveAllBarksFromServer();
     print("all barks response: $barks");

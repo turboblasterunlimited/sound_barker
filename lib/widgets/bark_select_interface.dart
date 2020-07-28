@@ -16,9 +16,15 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
   bool viewingStockBarks = false;
   CurrentActivity currentActivity;
   Barks barks;
+  List<Bark> displayedBarks;
+  List<Bark> displayedBarksStock;
+  SoundController soundController;
+  final _listKey = GlobalKey<AnimatedListState>();
+  final _stockListKey = GlobalKey<AnimatedListState>();
 
   String _barkSelectInstruction() {
-    print("activity within instructions call: ${currentActivity.cardCreationSubStep}");
+    print(
+        "activity within instructions call: ${currentActivity.cardCreationSubStep}");
     if (currentActivity.isTwo) {
       return "SHORT BARK";
     } else if (currentActivity.isThree) {
@@ -43,14 +49,44 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
     }
   }
 
+  updateDisplayedBarks([bool isStock = false]) {
+    List newBarks = getBarksOfCurrentLength(isStock);
+    List shownBarks = isStock ? displayedBarksStock : displayedBarks;
+    var listKey = isStock ? _stockListKey : _listKey;
+    List toRemove = [];
+    // remove barks
+    shownBarks.asMap().forEach((i, bark) {
+      if (newBarks.indexOf(bark) == -1) toRemove.add(i);
+    });
+    toRemove.reversed.forEach((i) {
+      shownBarks.removeAt(i);
+      listKey.currentState.removeItem(
+          i,
+          (context, animation) =>
+              BarkPlaybackCard(i, shownBarks[i], barks, soundController, animation));
+    });
+    // add barks
+    newBarks.forEach((newBark) {
+      if (shownBarks.indexOf(newBark) == -1) {
+        listKey.currentState.insertItem(0);
+        shownBarks.insert(0, newBark);
+      }
+    });
+  }
+
   Widget build(BuildContext context) {
-  
     barks = Provider.of<Barks>(context);
-    final soundController = Provider.of<SoundController>(context);
+    soundController = Provider.of<SoundController>(context);
     currentActivity = Provider.of<CurrentActivity>(context);
-    print("activity substep: ${currentActivity.cardCreationSubStep}");
-    // List<Bark> barksOfCurrentLength = getBarksOfCurrentLength();
-    // List<Bark> barksOfCurrentLengthStock = getBarksOfCurrentLength(true);
+
+    // if medium or finale bark
+    if (currentActivity.isThree || currentActivity.isFour) {
+      updateDisplayedBarks();
+      updateDisplayedBarks(true);
+    } else {
+      displayedBarks = getBarksOfCurrentLength();
+      displayedBarksStock = getBarksOfCurrentLength(true);
+    }
 
     return Expanded(
       child: Column(
@@ -152,15 +188,14 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
             ],
           ),
           Padding(padding: EdgeInsets.only(top: 20)),
-          if (!viewingStockBarks)
+          if (!viewingStockBarks && currentActivity.isTwo)
             Expanded(
               child: AnimatedList(
-                key: barks.listKey,
-                initialItemCount: getBarksOfCurrentLength().length,
-                itemBuilder: (ctx, i, Animation<double> animation) =>
-                    BarkPlaybackCard(
+                key: _listKey,
+                initialItemCount: displayedBarks.length,
+                itemBuilder: (ctx, i, animation) => BarkPlaybackCard(
                   i,
-                  getBarksOfCurrentLength()[i],
+                  displayedBarks[i],
                   barks,
                   soundController,
                   animation,
@@ -170,12 +205,11 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
           if (viewingStockBarks)
             Expanded(
               child: AnimatedList(
-                key: barks.listKeyStock,
-                initialItemCount: getBarksOfCurrentLength(true).length,
-                itemBuilder: (ctx, i, Animation<double> animation) =>
-                    BarkPlaybackCard(
+                key: _stockListKey,
+                initialItemCount: displayedBarksStock.length,
+                itemBuilder: (ctx, i, animation) => BarkPlaybackCard(
                   i,
-                  getBarksOfCurrentLength(true)[i],
+                  displayedBarksStock[i],
                   barks,
                   soundController,
                   animation,
