@@ -12,7 +12,6 @@ class CreatableSongs with ChangeNotifier {
 
   void createNewSong(data) {
     var newSong = CreatableSong(
-      id: data["id"],
       name: data["name"],
       style: data["style"],
       arrangement: {data["arrangement"]: data["id"]},
@@ -42,14 +41,13 @@ class CreatableSongs with ChangeNotifier {
 }
 
 class CreatableSong {
-  final int id;
   final String name;
   final String style;
   final String backingTrackUrl;
   final Map arrangement; // {"harmonized": "someId", "pitched": "someId"}
 
   CreatableSong(
-      {this.id, this.name, this.style, this.backingTrackUrl, this.arrangement});
+      {this.name, this.style, this.backingTrackUrl, this.arrangement});
 
   String get fullName {
     return name + " " + style;

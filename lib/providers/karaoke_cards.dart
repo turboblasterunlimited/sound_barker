@@ -1,5 +1,6 @@
 import 'package:K9_Karaoke/classes/card_decoration.dart';
 import 'package:K9_Karaoke/providers/barks.dart';
+import 'package:K9_Karaoke/providers/creatable_songs.dart';
 import 'package:K9_Karaoke/providers/pictures.dart';
 import 'package:K9_Karaoke/providers/songs.dart';
 import 'package:flutter/material.dart';
@@ -16,10 +17,10 @@ class KaraokeCards with ChangeNotifier {
       return currentCard.picture.name;
   }
 
-  void setCurrentCardSongFormulaId(int id) {
+  void setCurrentCardSongFormula(CreatableSong creatableSong) {
     // also remove song if that is selected
     currentCard.song = null;
-    currentCard.songFormulaId = id.toString();
+    currentCard.songFormula = creatableSong;
     notifyListeners();
   }
 
@@ -30,7 +31,7 @@ class KaraokeCards with ChangeNotifier {
 
   void setCurrentCardSong(newSong) {
     // also remove song if that is selected
-    currentCard.songFormulaId = null;
+    currentCard.songFormula = null;
     currentCard.song = newSong;
     notifyListeners();
   }
@@ -75,8 +76,8 @@ class KaraokeCards with ChangeNotifier {
 class KaraokeCard with ChangeNotifier {
   String fileId;
   Picture picture;
-  // This is a creatable song id that gets sent to the server with the bark ids to create an actual song.
-  String songFormulaId;
+  // This is a creatable song, which has two arrangments. One of the arrangement ids gets sent to the server with the bark ids to create an actual song.
+  CreatableSong songFormula;
   // This is an actual song
   Song song;
   List<String> barks = [];
@@ -92,7 +93,7 @@ class KaraokeCard with ChangeNotifier {
       {this.fileId,
       this.picture,
       this.song,
-      this.songFormulaId,
+      this.songFormula,
       this.shortBark,
       this.mediumBark,
       this.longBark,
@@ -102,6 +103,10 @@ class KaraokeCard with ChangeNotifier {
   void setPicture(Picture newPicture) {
     picture = newPicture;
     notifyListeners();
+  }
+
+  List<String> get barkIds {
+    return [shortBark.fileId, mediumBark.fileId, longBark.fileId];
   }
 
   bool get hasPicture {
@@ -117,7 +122,7 @@ class KaraokeCard with ChangeNotifier {
   }
 
   bool get hasSongFormula {
-    return songFormulaId != null;
+    return songFormula != null;
   }
 
   bool get hasDecoration {

@@ -81,7 +81,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
         shownBarks.insert(0, newBark);
       }
     });
-    print("user's displayed barks: ${displayedBarks.map((el)=>el.length)}");
+    print("user's displayed barks: ${displayedBarks.map((el) => el.length)}");
   }
 
   _updateDisplayBarks() {
@@ -115,6 +115,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
     barks = Provider.of<Barks>(context);
     soundController = Provider.of<SoundController>(context);
     currentActivity = Provider.of<CurrentActivity>(context);
+    print("Bark select interface and Substep: ${currentActivity.cardCreationSubStep}");
     _updateDisplayBarks();
 
     return Expanded(

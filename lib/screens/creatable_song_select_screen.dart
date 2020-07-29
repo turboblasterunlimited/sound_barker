@@ -89,7 +89,7 @@ class _CreatableSongSelectScreenState extends State<CreatableSongSelectScreen> {
                   ),
                   Center(
                     child: Text(
-                      'Select Accompaniment',
+                      'Pick Song',
                       style: TextStyle(
                           fontSize: 20, color: Theme.of(context).primaryColor),
                     ),
