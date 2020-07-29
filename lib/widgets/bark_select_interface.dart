@@ -59,29 +59,36 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
     shownBarks.asMap().forEach((i, bark) {
       if (newBarks.indexOf(bark) == -1) toRemove.add(i);
     });
+    print("toRemove: $toRemove");
+    print("shownBarks before removal: $shownBarks");
+
     toRemove.reversed.forEach((i) {
       shownBarks.removeAt(i);
-      listKey.currentState.removeItem(
+      listKey.currentState?.removeItem(
           i,
           (context, animation) => BarkPlaybackCard(
               i, shownBarks[i], barks, soundController, animation));
     });
     // add barks
+    print("newBarks: $newBarks");
+    print("shownBarks $isStock: $shownBarks");
+
     newBarks.forEach((newBark) {
       if (shownBarks.indexOf(newBark) == -1) {
         print("checkpoint before: ${listKey}, ${listKey.currentState}");
-        listKey.currentState.insertItem(0);
+        listKey.currentState?.insertItem(0);
         print("checkpoint after");
         shownBarks.insert(0, newBark);
       }
     });
+    print("user's displayed barks: ${displayedBarks.map((el)=>el.length)}");
   }
 
   _updateDisplayBarks() {
     if (_isFirstLoad) {
       displayedBarks = getBarksOfCurrentLength();
       displayedBarksStock = getBarksOfCurrentLength(true);
-      _isFirstLoad = false;
+      setState(() => _isFirstLoad = false);
     } else {
       updateDisplayedBarks();
       updateDisplayedBarks(true);
@@ -210,7 +217,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
             ],
           ),
           Padding(padding: EdgeInsets.only(top: 20)),
-          if (!viewingStockBarks && currentActivity.isTwo)
+          if (!viewingStockBarks)
             Expanded(
               child: AnimatedList(
                 key: _listKey,
