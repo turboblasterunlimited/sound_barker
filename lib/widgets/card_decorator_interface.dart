@@ -9,18 +9,18 @@ import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:uuid/uuid.dart';
 
-class CardDecorator extends StatefulWidget {
+class CardDecoratorInterface extends StatefulWidget {
   final cardAudioFilePath;
   final cardAudioId;
   final cardAmplitudes;
   final pictureId;
-  CardDecorator(this.cardAudioFilePath, this.cardAudioId, this.cardAmplitudes, this.pictureId);
+  CardDecoratorInterface(this.cardAudioFilePath, this.cardAudioId, this.cardAmplitudes, this.pictureId);
 
   @override
-  _CardDecoratorState createState() => _CardDecoratorState();
+  _CardDecoratorInterfaceState createState() => _CardDecoratorInterfaceState();
 }
 
-class _CardDecoratorState extends State<CardDecorator> {
+class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
   SoundController soundController;
   KaraokeCardDecorator karaokeCardDecorator;
   ImageController imageController;

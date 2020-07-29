@@ -162,20 +162,14 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
   }
 
   selectBark() {
-    if (currentActivity.isOne) {
+    if (currentActivity.isTwo)
       cards.setCurrentCardShortBark(widget.bark);
-      currentActivity.setCardCreationSubStep(CardCreationSubSteps.two);
-    } else if (currentActivity.isTwo) {
+    else if (currentActivity.isThree)
       cards.setCurrentCardMediumBark(widget.bark);
-      currentActivity.setCardCreationSubStep(CardCreationSubSteps.three);
-    } else if (currentActivity.isThree) {
+    else if (currentActivity.isFour)
       cards.setCurrentCardLongBark(widget.bark);
-      currentActivity.setCardCreationSubStep(CardCreationSubSteps.four);
-    } else if (currentActivity.isFour) {
-      currentActivity.setCardCreationStep(CardCreationSteps.style);
-      currentActivity.setCardCreationSubStep(CardCreationSubSteps.one);
 
-    }
+    currentActivity.setNextSubStep();
   }
 
   @override

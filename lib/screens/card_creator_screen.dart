@@ -5,7 +5,7 @@ import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:K9_Karaoke/tools/ffmpeg.dart';
 import 'package:flutter/material.dart';
 
-import 'package:K9_Karaoke/widgets/card_decorator.dart';
+import 'package:K9_Karaoke/widgets/card_decorator_interface.dart';
 import 'package:K9_Karaoke/widgets/card_decorator_canvas.dart';
 import 'package:K9_Karaoke/widgets/singing_image.dart';
 import 'package:uuid/uuid.dart';
@@ -118,7 +118,7 @@ class _CardCreatorScreenState extends State<CardCreatorScreen> {
           ),
           Visibility(
             visible: _messageIsDone,
-            child: CardDecorator(cardAudioFilePath, cardAudioId, cardAmplitudes, widget.picture.fileId),
+            child: CardDecoratorInterface(cardAudioFilePath, cardAudioId, cardAmplitudes, widget.picture.fileId),
           ),
         ],
       ),

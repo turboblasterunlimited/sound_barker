@@ -1,4 +1,4 @@
-import 'package:K9_Karaoke/screens/song_store_screen.dart';
+import 'package:K9_Karaoke/screens/creatable_song_select_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -48,7 +48,7 @@ class _SongSelectInterfaceState extends State<SongSelectInterface> {
                 onPressed: spinnerState.isLoading
                     ? null
                     : () {
-                        Navigator.pushNamed(context, SongStoreScreen.routeName);
+                        Navigator.pushNamed(context, CreatableSongSelectScreen.routeName);
                       },
                 child: spinnerState.isLoading
                     ? SpinKitWave(

@@ -1,7 +1,6 @@
 import 'package:K9_Karaoke/providers/creatable_songs.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
-import 'package:K9_Karaoke/providers/songs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
@@ -9,16 +8,15 @@ import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/widgets/creatable_song_card.dart';
 import '../providers/sound_controller.dart';
 
-class SongStoreScreen extends StatefulWidget {
+class CreatableSongSelectScreen extends StatefulWidget {
   static const routeName = 'song-store-screen';
-
-  SongStoreScreen();
+  CreatableSongSelectScreen();
 
   @override
-  _SongStoreScreenState createState() => _SongStoreScreenState();
+  _CreatableSongSelectScreenState createState() => _CreatableSongSelectScreenState();
 }
 
-class _SongStoreScreenState extends State<SongStoreScreen> {
+class _CreatableSongSelectScreenState extends State<CreatableSongSelectScreen> {
   SoundController soundController;
   CreatableSongs creatableSongs;
   KaraokeCards cards;
