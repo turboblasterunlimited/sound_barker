@@ -16,7 +16,8 @@ class BarkPlaybackCard extends StatefulWidget {
   final Animation<double> animation;
   final Function deleteCallback;
   BarkPlaybackCard(
-      this.index, this.bark, this.barks, this.soundController, this.animation, {this.deleteCallback});
+      this.index, this.bark, this.barks, this.soundController, this.animation,
+      {this.deleteCallback});
 
   @override
   _BarkPlaybackCardState createState() => _BarkPlaybackCardState();
@@ -170,6 +171,10 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
     } else if (currentActivity.isThree) {
       cards.setCurrentCardLongBark(widget.bark);
       currentActivity.setCardCreationSubStep(CardCreationSubSteps.four);
+    } else if (currentActivity.isFour) {
+      currentActivity.setCardCreationStep(CardCreationSteps.style);
+      currentActivity.setCardCreationSubStep(CardCreationSubSteps.one);
+
     }
   }
 

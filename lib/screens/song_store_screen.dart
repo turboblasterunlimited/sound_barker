@@ -91,7 +91,7 @@ class _SongStoreScreenState extends State<SongStoreScreen> {
                   ),
                   Center(
                     child: Text(
-                      'Song Library',
+                      'Select Accompaniment',
                       style: TextStyle(
                           fontSize: 20, color: Theme.of(context).primaryColor),
                     ),

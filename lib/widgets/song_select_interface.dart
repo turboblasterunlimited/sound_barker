@@ -55,7 +55,7 @@ class _SongSelectInterfaceState extends State<SongSelectInterface> {
                         color: Colors.white,
                         size: 20,
                       )
-                    : Text("Song Library",
+                    : Text("Make Song",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Theme.of(context).primaryColor,
