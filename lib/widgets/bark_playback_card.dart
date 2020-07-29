@@ -72,7 +72,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
     try {
       startAll();
     } catch (e) {
-      showErrorDialog(context, e.toString());
+      showError(context, e.toString());
     }
   }
 

@@ -2,7 +2,7 @@ import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:flutter/material.dart';
 
 class CreatableSongs with ChangeNotifier {
-  List all = [];
+  List<CreatableSong> all = [];
 
   CreatableSong dataMatchesSong(data) {
     return all.firstWhere(
@@ -48,6 +48,10 @@ class CreatableSong {
 
   CreatableSong(
       {this.name, this.style, this.backingTrackUrl, this.arrangement});
+
+  List<int> get ids {
+    return [arrangement["harmonized"], arrangement["pitched"]];
+  }
 
   String get fullName {
     return name + " " + style;

@@ -18,7 +18,7 @@ class KaraokeCards with ChangeNotifier {
   }
 
   void setCurrentCardSongFormula(CreatableSong creatableSong) {
-    // also remove song if that is selected
+    // remove actual song if user changes the song formula
     currentCard.song = null;
     currentCard.songFormula = creatableSong;
     notifyListeners();
@@ -30,8 +30,7 @@ class KaraokeCards with ChangeNotifier {
   }
 
   void setCurrentCardSong(newSong) {
-    // also remove song if that is selected
-    currentCard.songFormula = null;
+    // retain song formula when new song is added, in case user wants to go back and make a new song
     currentCard.song = newSong;
     notifyListeners();
   }
@@ -105,7 +104,14 @@ class KaraokeCard with ChangeNotifier {
     notifyListeners();
   }
 
+  void setSong(Song newSong) {
+    song = newSong;
+    notifyListeners();
+  }
+
   List<String> get barkIds {
+    mediumBark ??= shortBark;
+    longBark ??= mediumBark;
     return [shortBark.fileId, mediumBark.fileId, longBark.fileId];
   }
 

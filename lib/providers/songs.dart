@@ -1,3 +1,4 @@
+import 'package:K9_Karaoke/providers/creatable_songs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:gcloud/storage.dart';
@@ -14,8 +15,12 @@ final captureBackingFileName = RegExp(r'\/([0-9a-zA-Z_ ]*.[a-zA-Z]{3})$');
 class Songs with ChangeNotifier {
   List<Song> all = [];
   final listKey = GlobalKey<AnimatedListState>();
-  List creatableSongs;
+  List<CreatableSong> creatableSongs;
 
+  void setCreatableSongs(List<CreatableSong> creatables) {
+    print("creatables: $creatables");
+    creatableSongs = creatables;
+  }
 
   Song findById(String id) {
     return all.firstWhere((test) {
@@ -37,9 +42,9 @@ class Songs with ChangeNotifier {
   }
 
   String getSongFamily(String id) {
-    int i = creatableSongs.indexWhere((element) => element["id"].toString() == id);
-    Map result = creatableSongs[i];
-    return result['song_family'];
+    int i = creatableSongs
+        .indexWhere((creatable) => creatable.ids.indexOf(int.parse(id)) != -1);
+    return creatableSongs[i].fullName;
   }
 
   // ALL SONGS THAT AREN'T HIDDEN UNLESS THEY ALREADY EXIST ON THE CLIENT

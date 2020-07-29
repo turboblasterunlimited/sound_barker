@@ -99,25 +99,25 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
 
   _handleFacebookAuthentication() async {
     try {
-    final facebookLogin = FacebookLogin();
-    facebookLogin.currentAccessToken;
-    var result = await facebookLogin.logIn(['email', 'public_profile']);
-    var responseData;
-    switch (result.status) {
-      case FacebookLoginStatus.loggedIn:
-        responseData =
-            await _sendFacebookTokenToServer(result.accessToken.token);
-        _handleServerResponse(responseData);
-        break;
-      case FacebookLoginStatus.cancelledByUser:
-        _showError(
-            "To sign in with Facebook, accept Facebook's permission request");
-        break;
-      case FacebookLoginStatus.error:
-        _showError("Facebook credentials denied");
-        break;
-    }
-    } catch(e) {
+      final facebookLogin = FacebookLogin();
+      facebookLogin.currentAccessToken;
+      var result = await facebookLogin.logIn(['email', 'public_profile']);
+      var responseData;
+      switch (result.status) {
+        case FacebookLoginStatus.loggedIn:
+          responseData =
+              await _sendFacebookTokenToServer(result.accessToken.token);
+          _handleServerResponse(responseData);
+          break;
+        case FacebookLoginStatus.cancelledByUser:
+          _showError(
+              "To sign in with Facebook, accept Facebook's permission request");
+          break;
+        case FacebookLoginStatus.error:
+          _showError("Facebook credentials denied");
+          break;
+      }
+    } catch (e) {
       // webview will inform user if no internet
     }
   }
@@ -141,14 +141,14 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     var issuer = Issuer.google;
     clientId = getGoogleClientID();
     try {
-    token =
-        await authenticate(issuer, clientId, ['email', 'openid', 'profile']);
-    response = await HttpController.dio.post(
-      'http://165.227.178.14/openid-token/${platform}',
-      data: token,
-    );
-    _handleServerResponse(response.data);
-    } catch(e) {
+      token =
+          await authenticate(issuer, clientId, ['email', 'openid', 'profile']);
+      response = await HttpController.dio.post(
+        'http://165.227.178.14/openid-token/${platform}',
+        data: token,
+      );
+      _handleServerResponse(response.data);
+    } catch (e) {
       _showError();
     }
   }
@@ -201,6 +201,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     // need creatableSongData to get songIds
     await creatableSongs.retrieveFromServer();
     await barks.retrieveAll();
+    songs.setCreatableSongs(creatableSongs.all);
     await songs.retrieveAll();
   }
 

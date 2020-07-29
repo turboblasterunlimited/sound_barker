@@ -95,7 +95,7 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
                           widget.soundController,
                           animation));
                 } catch (e) {
-                  showErrorDialog(ctx, e.toString());
+                  showError(ctx, e.toString());
                 } finally {}
               })
         ],

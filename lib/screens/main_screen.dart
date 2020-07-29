@@ -41,6 +41,18 @@ class _MainScreenState extends State<MainScreen> {
   SoundController soundController;
   bool _isPlaying = false;
 
+  List get _playbackFiles {
+    if (_canPlayRawBark)
+      return [barks.tempRawBark.filePath, barks.tempRawBarkAmplitudes];
+    else if (_canPlaySong)
+      return [
+        cards.currentCard.song.filePath,
+        cards.currentCard.song.amplitudesPath
+      ];
+    else
+      return null;
+  }
+
   Future<void> _navigate() async {
     if (pictures.all.isEmpty)
       startCreateCard();
@@ -99,8 +111,10 @@ class _MainScreenState extends State<MainScreen> {
   void startAll() async {
     print("start all");
     setState(() => _isPlaying = true);
-    imageController.mouthTrackSound(amplitudes: barks.tempRawBarkAmplitudes);
-    await soundController.startPlayer(barks.tempRawBark.filePath, stopAll);
+    _canPlayRawBark
+        ? imageController.mouthTrackSound(amplitudes: _playbackFiles[1])
+        : imageController.mouthTrackSound(filePath: _playbackFiles[1]);
+    await soundController.startPlayer(_playbackFiles[0], stopAll);
   }
 
   Widget mainAppBar() {
@@ -171,9 +185,17 @@ class _MainScreenState extends State<MainScreen> {
         barks.tempRawBark != null;
   }
 
+  bool get _canPlaySong {
+    return currentActivity.isSpeak && currentActivity.isSix;
+  }
+
   void _handleTapPuppet() {
     print("Tapping webview!");
-    if (_canPlayRawBark) _isPlaying ? stopAll() : startAll();
+    if (canPlay()) _isPlaying ? stopAll() : startAll();
+  }
+
+  bool canPlay() {
+    return !_isPlaying && _playbackFiles != null;
   }
 
   @override
@@ -214,7 +236,7 @@ class _MainScreenState extends State<MainScreen> {
                         children: <Widget>[
                           SingingImage(),
                           Container(
-                            child: !_isPlaying && _canPlayRawBark
+                            child: canPlay()
                                 ? Center(
                                     child: Row(
                                       mainAxisAlignment:

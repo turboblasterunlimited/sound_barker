@@ -40,7 +40,7 @@ class _BarkSelectCardState extends State<BarkSelectCard> {
     try {
       widget.soundController.startPlayer(widget.bark.filePath);
     } catch (e) {
-      showErrorDialog(context, e);
+      showError(context, e);
     }
   }
 

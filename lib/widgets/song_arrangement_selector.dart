@@ -7,7 +7,7 @@ import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/spinner_state.dart';
-
+// cardCreationSubstep.isFive
 class SongArrangementSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -15,11 +15,12 @@ class SongArrangementSelector extends StatelessWidget {
     final spinnerState = Provider.of<SpinnerState>(context, listen: false);
     final cards = Provider.of<KaraokeCards>(context, listen: false);
     final songFormula = cards.currentCard.songFormula;
+    print("song formula ids ${songFormula.ids}");
     final currentActivity =
         Provider.of<CurrentActivity>(context, listen: false);
     final Songs songs = Provider.of<Songs>(context, listen: false);
 
-    void _createSong(String songFormulaId) async {
+    void _createSong(int songFormulaId) async {
       spinnerState.startLoading("Creating your song!..");
       var songData =
           await RestAPI.createSong(cards.currentCard.barkIds, songFormulaId);
@@ -27,6 +28,7 @@ class SongArrangementSelector extends StatelessWidget {
       await song.retrieveSong(songData);
       print("ADDING SONG");
       songs.addSong(song);
+      cards.setCurrentCardSong(song);
       currentActivity.setNextSubStep();
       spinnerState.stopLoading();
     }

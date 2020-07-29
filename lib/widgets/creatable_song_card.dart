@@ -45,7 +45,7 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
         setState(() => isPlaying = true);
       });
     } catch (e) {
-      showErrorDialog(context, e);
+      showError(context, e);
     }
   }
 

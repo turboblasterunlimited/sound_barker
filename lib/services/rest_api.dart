@@ -86,7 +86,7 @@ class RestAPI {
     return response.data.toString();
   }
 
-  static Future<Map> createSong(cropIds, songId) async {
+  static Future<Map> createSong(List<String> cropIds, int songId) async {
     /// "Song" on the server side means "creatable song"
     Map body = {'uuids': cropIds, 'song_id': songId.toString()};
     print("create song on server req body: $body");
