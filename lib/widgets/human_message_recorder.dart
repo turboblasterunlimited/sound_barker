@@ -9,7 +9,6 @@ import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:K9_Karaoke/tools/amplitude_extractor.dart';
 import 'package:K9_Karaoke/tools/ffmpeg.dart';
 import 'dart:async';
@@ -18,12 +17,13 @@ import 'dart:io';
 import '../providers/sound_controller.dart';
 import '../tools/amplitude_extractor.dart';
 
+// cardCreationSubStep.seven
 class HumanMessageRecorder extends StatefulWidget {
   @override
   HumanMessageRecorderState createState() => HumanMessageRecorderState();
 }
 
-class HumanMessageRecorderState extends State<HumanMessageRecorder> {
+class HumanMessageRecorderState extends State<HumanMessageRecorder>     with TickerProviderStateMixin {
   StreamSubscription _recorderSubscription;
   SoundController soundController;
   bool _isPlaying = false;
@@ -40,6 +40,27 @@ class HumanMessageRecorderState extends State<HumanMessageRecorder> {
   SpinnerState spinnerState;
   KaraokeCards cards;
   CardMessage message;
+  AnimationController _animationController;
+  Animation _animation;
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    _animationController =
+        AnimationController(vsync: this, duration: Duration(seconds: 1));
+    _animationController.repeat(reverse: true);
+    _animation =
+        CurveTween(curve: Curves.elasticIn).animate(_animationController)
+          ..addListener(() {
+            setState(() {});
+          });
+    super.initState();
+  }
 
   void startRecorder() async {
     PermissionStatus status = await Permission.microphone.request();
@@ -84,8 +105,8 @@ class HumanMessageRecorderState extends State<HumanMessageRecorder> {
     } catch (err) {
       print('stopRecorder error: $err');
     }
-    message.ampFilePath =
-        await AmplitudeExtractor.createAmplitudeFile(message.filePath);
+    message.amplitudes =
+        await AmplitudeExtractor.getAmplitudes(message.filePath);
   }
 
   onStartRecorderPressed() {
@@ -103,8 +124,8 @@ class HumanMessageRecorderState extends State<HumanMessageRecorder> {
 
     await FFMpeg.process.execute(
         '-i ${message.filePath} -filter:a "asetrate=44100*$pitchChange,aresample=44100,atempo=$speedChange" -vn ${message.alteredFilePath}');
-    message.alteredAmpFilePath =
-        await AmplitudeExtractor.createAmplitudeFile(message.alteredFilePath);
+    message.alteredAmplitudes =
+        await AmplitudeExtractor.getAmplitudes(message.alteredFilePath);
     setState(() => _isProcessingAudio = false);
   }
 
@@ -280,15 +301,15 @@ class HumanMessageRecorderState extends State<HumanMessageRecorder> {
             ),
           ],
         ),
-        message.filePath != null && !_isRecording
+        _messageExists && !_isRecording
             ? GestureDetector(
                 onTap: () async {
                   spinnerState.startLoading();
                   await cards.current
-                      .uploadCardAudio(cards.current.picture.fileId);
+                      .uploadAudio();
                   spinnerState.stopLoading();
                   currentActivity
-                      .setCardCreationSubStep(CardCreationSubSteps.two);
+                      .setCardCreationStep(CardCreationSteps.style);
                 },
                 child: Transform.rotate(
                   angle: _animation.value * 0.1,
@@ -301,7 +322,7 @@ class HumanMessageRecorderState extends State<HumanMessageRecorder> {
                       color: Theme.of(context).primaryColor,
                     ),
                     child: Text(
-                      "ADD BARKS\nAND CONTINUE",
+                      "ADD MESSAGE\nAND CONTINUE",
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.white),
                     ),

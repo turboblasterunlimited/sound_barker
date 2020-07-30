@@ -45,12 +45,10 @@ class _MainScreenState extends State<MainScreen> {
     if (_canPlayRawBark)
       return [barks.tempRawBark.filePath, barks.tempRawBarkAmplitudes];
     else if (_canPlaySong)
-      return [
-        cards.current.song.filePath,
-        cards.current.song.amplitudesPath
-      ];
-    else
-      return null;
+      return [cards.current.song.filePath, cards.current.song.amplitudesPath];
+    else if (_canPlayMessage)
+      return [cards.current.message.path, cards.current.message.ampsPath];
+    return null;
   }
 
   Future<void> _navigate() async {
@@ -111,10 +109,11 @@ class _MainScreenState extends State<MainScreen> {
   void startAll() async {
     print("start all");
     setState(() => _isPlaying = true);
-    _canPlayRawBark
-        ? imageController.mouthTrackSound(amplitudes: _playbackFiles[1])
-        : imageController.mouthTrackSound(filePath: _playbackFiles[1]);
-    await soundController.startPlayer(_playbackFiles[0], stopAll);
+    // Only songs have a .csv amplitude file, barks and message have a List of amplitudes in memory.
+    _canPlaySong
+        ? imageController.mouthTrackSound(filePath: _playbackFiles[1])
+        : imageController.mouthTrackSound(amplitudes: _playbackFiles[1]);
+    soundController.startPlayer(_playbackFiles[0], stopAll);
   }
 
   Widget mainAppBar() {
@@ -186,7 +185,15 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   bool get _canPlaySong {
-    return currentActivity.isSpeak && currentActivity.isSix;
+    return currentActivity.isSpeak &&
+        currentActivity.isSix &&
+        cards.current.song.exists;
+  }
+
+  bool get _canPlayMessage {
+    return currentActivity.isSpeak &&
+        currentActivity.isSeven &&
+        (cards.current.message.exists);
   }
 
   void _handleTapPuppet() {

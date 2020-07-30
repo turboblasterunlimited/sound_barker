@@ -3,6 +3,7 @@ import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/widgets/bark_recorder.dart';
 import 'package:K9_Karaoke/widgets/bark_select_interface.dart';
 import 'package:K9_Karaoke/widgets/card_decorator_interface.dart';
+import 'package:K9_Karaoke/widgets/human_message_recorder.dart';
 import 'package:K9_Karaoke/widgets/mouth_tone_slider.dart';
 import 'package:K9_Karaoke/widgets/song_arrangement_selector.dart';
 import 'package:K9_Karaoke/widgets/song_playback_interface.dart';

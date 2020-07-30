@@ -101,6 +101,10 @@ class Song with ChangeNotifier {
     songFamily = songFamily;
   }
 
+  bool get exists {
+    return File(filePath).existsSync();
+  }
+
   String get getName {
     if (name == "" || name == null) return "Unnamed";
     return name;

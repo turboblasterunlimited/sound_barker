@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:K9_Karaoke/classes/card_decoration.dart';
 import 'package:K9_Karaoke/classes/card_message.dart';
 import 'package:K9_Karaoke/providers/barks.dart';
@@ -6,8 +8,12 @@ import 'package:K9_Karaoke/providers/pictures.dart';
 import 'package:K9_Karaoke/providers/songs.dart';
 import 'package:K9_Karaoke/services/gcloud.dart';
 import 'package:K9_Karaoke/services/rest_api.dart';
+import 'package:K9_Karaoke/tools/amplitude_extractor.dart';
+import 'package:K9_Karaoke/tools/app_storage_path.dart';
+import 'package:K9_Karaoke/tools/ffmpeg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:uuid/uuid.dart';
 
 class KaraokeCards with ChangeNotifier {
   List<KaraokeCard> all = [];
@@ -92,6 +98,7 @@ class KaraokeCard with ChangeNotifier {
   Bark mediumBark;
   Bark longBark;
   String audioFilePath;
+  List amplitudes;
 
   KaraokeCard(
       {this.fileId,
@@ -103,11 +110,27 @@ class KaraokeCard with ChangeNotifier {
       this.longBark,
       this.cardDecoration,
       this.decorationImagePath,
-      this.audioFilePath});
+      this.audioFilePath,
+      this.amplitudes});
 
-  void uploadAudio() {
-    Gcloud.uploadCardAssets(audioFilePath, picture.filePath);
-    RestAPI.createCard(decorationImageId, audioId, amplitudes, imageId)
+  Future<void> combineMessageAndSong() async {
+    String audioKey = Uuid().v4();
+    this.audioFilePath = File("$myAppStoragePath/$audioKey.aac").path;
+    File tempFile = File("$myAppStoragePath/tempFile.wav");
+    // concat and save card audio file
+    await FFMpeg.process.execute(
+        '-i "concat:${message.filePath}|${song.filePath}" -c copy ${tempFile.path}');
+    await FFMpeg.process.execute('-i ${tempFile.path} $audioFilePath');
+    if (tempFile.existsSync()) tempFile.deleteSync();
+    // concat and return amplitudes
+    List songAmplitudes =
+        await AmplitudeExtractor.fileToList(song.amplitudesPath);
+    return message.amplitudesPath + songAmplitudes;
+  }
+
+  Future<void> uploadAudio() async {
+    await Gcloud.uploadCardAssets(audioFilePath, picture.filePath);
+    await RestAPI.createCard(decorationImageId, audioId, amplitudes, imageId)
   }
 
   void setPicture(Picture newPicture) {
