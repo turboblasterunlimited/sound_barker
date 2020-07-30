@@ -1,78 +1,82 @@
 import 'package:K9_Karaoke/classes/card_decoration.dart';
+import 'package:K9_Karaoke/classes/card_message.dart';
 import 'package:K9_Karaoke/providers/barks.dart';
 import 'package:K9_Karaoke/providers/creatable_songs.dart';
 import 'package:K9_Karaoke/providers/pictures.dart';
 import 'package:K9_Karaoke/providers/songs.dart';
+import 'package:K9_Karaoke/services/gcloud.dart';
+import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 
 class KaraokeCards with ChangeNotifier {
   List<KaraokeCard> all = [];
-  KaraokeCard currentCard;
+  KaraokeCard current;
 
-  String get currentCardName {
-    if (currentCard == null || currentCard.picture == null)
+  String get currentName {
+    if (current == null || current.picture == null)
       return "test";
     else
-      return currentCard.picture.name;
+      return current.picture.name;
   }
 
-  void setCurrentCardSongFormula(CreatableSong creatableSong) {
+  void setCurrentSongFormula(CreatableSong creatableSong) {
     // remove actual song if user changes the song formula
-    currentCard.song = null;
-    currentCard.songFormula = creatableSong;
+    current.song = null;
+    current.songFormula = creatableSong;
     notifyListeners();
   }
 
-  void setCurrentCardName(newName) {
-    currentCard.picture.setName(newName);
+  void setCurrentName(newName) {
+    current.picture.setName(newName);
     notifyListeners();
   }
 
-  void setCurrentCardSong(newSong) {
+  void setCurrentSong(newSong) {
     // retain song formula when new song is added, in case user wants to go back and make a new song
-    currentCard.song = newSong;
+    current.song = newSong;
     notifyListeners();
   }
 
-  void setCurrentCardShortBark(bark) {
-    currentCard.shortBark = bark;
+  void setCurrentShortBark(bark) {
+    current.shortBark = bark;
     notifyListeners();
   }
 
-  void setCurrentCardMediumBark(bark) {
-    currentCard.mediumBark = bark;
+  void setCurrentMediumBark(bark) {
+    current.mediumBark = bark;
     notifyListeners();
   }
 
-  void setCurrentCardLongBark(bark) {
-    currentCard.longBark = bark;
+  void setCurrentLongBark(bark) {
+    current.longBark = bark;
     notifyListeners();
   }
 
-  void setCurrentCardPicture(newPicture) {
-    currentCard.picture = newPicture;
+  void setCurrentPicture(newPicture) {
+    current.picture = newPicture;
     notifyListeners();
   }
 
-  void setCurrentCard(card) {
-    currentCard = card;
-    all.add(currentCard);
+  void setCurrent(card) {
+    current = card;
+    all.add(current);
     notifyListeners();
   }
 
-  void newCurrentCard() {
-    currentCard = KaraokeCard();
-    all.add(currentCard);
+  void newCurrent() {
+    current = KaraokeCard();
+    all.add(current);
     notifyListeners();
   }
 
   bool get currentPictureIsStock {
-    return currentCard.picture.isStock;
+    return current.picture.isStock;
   }
 }
 
 class KaraokeCard with ChangeNotifier {
+  final message = CardMessage();
   String fileId;
   Picture picture;
   // This is a creatable song, which has two arrangments. One of the arrangement ids gets sent to the server with the bark ids to create an actual song.
@@ -87,6 +91,7 @@ class KaraokeCard with ChangeNotifier {
   Bark shortBark;
   Bark mediumBark;
   Bark longBark;
+  String audioFilePath;
 
   KaraokeCard(
       {this.fileId,
@@ -97,7 +102,13 @@ class KaraokeCard with ChangeNotifier {
       this.mediumBark,
       this.longBark,
       this.cardDecoration,
-      this.decorationImagePath});
+      this.decorationImagePath,
+      this.audioFilePath});
+
+  void uploadAudio() {
+    Gcloud.uploadCardAssets(audioFilePath, picture.filePath);
+    RestAPI.createCard(decorationImageId, audioId, amplitudes, imageId)
+  }
 
   void setPicture(Picture newPicture) {
     picture = newPicture;

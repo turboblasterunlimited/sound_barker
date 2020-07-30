@@ -27,7 +27,7 @@ class CreatableSongs with ChangeNotifier {
   }
 
   Future<void> retrieveFromServer() async {
-    List data = await RestAPI.retrieveAllCreatableSongsFromServer();
+    List data = await RestAPI.retrieveAllCreatableSongs();
     data.forEach((songData) {
       CreatableSong existing = dataMatchesSong(songData);
       if (existing == null) {

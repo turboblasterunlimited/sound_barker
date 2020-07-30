@@ -30,7 +30,7 @@ class Pictures with ChangeNotifier {
 
   dynamic remove(picture) {
     try {
-      RestAPI.deleteImageFromServer(picture);
+      RestAPI.deleteImage(picture);
     } catch (e) {
       print(e);
       return;
@@ -42,7 +42,7 @@ class Pictures with ChangeNotifier {
 
   Future<Picture> retrieveAll() async {
     List tempPics = [];
-    List response = await RestAPI.retrieveAllImagesFromServer();
+    List response = await RestAPI.retrieveAllImages();
     response.forEach((serverImage) async {
       if (serverImage["hidden"] == 1) return;
       if (serverImage["uuid"] == null) return;
@@ -132,19 +132,19 @@ class Picture with ChangeNotifier, Gcloud {
 
   void setName(String newName) {
     this.name = newName;
-    RestAPI.updateImageOnServer(this);
+    RestAPI.updateImage(this);
     notifyListeners();
   }
 
   Future<void> updateMouthColor(color) async {
     mouthColor = color;
-    await RestAPI.updateImageOnServer(this);
+    await RestAPI.updateImage(this);
   }
 
   Future<void> uploadPictureAndSaveToServer() async {
     this.fileUrl = await Gcloud.uploadAsset(fileId, filePath, true);
     print("File url from uploadpictureandsavetoserver: $fileUrl");
-    Map body = await RestAPI.createImageOnServer(this);
+    Map body = await RestAPI.createImage(this);
     created = DateTime.parse(body["created"]);
   }
 }

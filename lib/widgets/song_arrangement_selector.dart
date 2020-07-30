@@ -14,7 +14,7 @@ class SongArrangementSelector extends StatelessWidget {
     print("Building song arrangement selector");
     final spinnerState = Provider.of<SpinnerState>(context, listen: false);
     final cards = Provider.of<KaraokeCards>(context, listen: false);
-    final songFormula = cards.currentCard.songFormula;
+    final songFormula = cards.current.songFormula;
     print("song formula ids ${songFormula.ids}");
     final currentActivity =
         Provider.of<CurrentActivity>(context, listen: false);
@@ -23,12 +23,12 @@ class SongArrangementSelector extends StatelessWidget {
     void _createSong(int songFormulaId) async {
       spinnerState.startLoading("Creating your song!..");
       var songData =
-          await RestAPI.createSong(cards.currentCard.barkIds, songFormulaId);
+          await RestAPI.createSong(cards.current.barkIds, songFormulaId);
       Song song = Song();
       await song.retrieveSong(songData);
       print("ADDING SONG");
       songs.addSong(song);
-      cards.setCurrentCardSong(song);
+      cards.setCurrentSong(song);
       currentActivity.setNextSubStep();
       spinnerState.stopLoading();
     }

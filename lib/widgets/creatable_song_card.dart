@@ -51,7 +51,7 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
 
   void _selectSongFormula() {
     print("formula selected");
-    widget.cards.setCurrentCardSongFormula(widget.creatableSong);
+    widget.cards.setCurrentSongFormula(widget.creatableSong);
     widget.currentActivity.setCardCreationStep(CardCreationSteps.speak);
     widget.currentActivity.setCardCreationSubStep(CardCreationSubSteps.one);
     Navigator.pop(context);

@@ -163,11 +163,11 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
 
   selectBark() {
     if (currentActivity.isTwo)
-      cards.setCurrentCardShortBark(widget.bark);
+      cards.setCurrentShortBark(widget.bark);
     else if (currentActivity.isThree)
-      cards.setCurrentCardMediumBark(widget.bark);
+      cards.setCurrentMediumBark(widget.bark);
     else if (currentActivity.isFour)
-      cards.setCurrentCardLongBark(widget.bark);
+      cards.setCurrentLongBark(widget.bark);
 
     currentActivity.setNextSubStep();
   }

@@ -46,8 +46,8 @@ class _MainScreenState extends State<MainScreen> {
       return [barks.tempRawBark.filePath, barks.tempRawBarkAmplitudes];
     else if (_canPlaySong)
       return [
-        cards.currentCard.song.filePath,
-        cards.currentCard.song.amplitudesPath
+        cards.current.song.filePath,
+        cards.current.song.amplitudesPath
       ];
     else
       return null;
@@ -61,7 +61,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void startCreateCard() {
-    currentActivity.startCreateCard(cards.newCurrentCard);
+    currentActivity.startCreateCard(cards.newCurrent);
     Navigator.of(context).pushNamed(PhotoLibraryScreen.routeName);
   }
 
@@ -141,14 +141,14 @@ class _MainScreenState extends State<MainScreen> {
                         ? TextAlign.center
                         : TextAlign.right,
                     decoration: InputDecoration(
-                        hintText: cards.currentCardName,
+                        hintText: cards.currentName,
                         counterText: "",
                         suffixIcon: cards.currentPictureIsStock
                             ? null
                             : Icon(LineAwesomeIcons.edit),
                         border: InputBorder.none),
                     onFieldSubmitted: (val) {
-                      cards.setCurrentCardName(val);
+                      cards.setCurrentName(val);
                       FocusScope.of(context).unfocus();
                     },
                   ),
@@ -264,9 +264,9 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                   ),
                 ),
-                if (cards.currentCard != null)
+                if (cards.current != null)
                   CardProgressBar(),
-                if (!spinnerState.isLoading && cards.currentCard != null)
+                if (!spinnerState.isLoading && cards.current != null)
                   CardCreationInterface(),
                 // Half screen spinner
                 if (spinnerState.isLoading)

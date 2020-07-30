@@ -75,7 +75,7 @@ class _PictureCardState extends State<PictureCard>
 
   void handleTap() {
     print("dog name: ${widget.picture.name}");
-    cards.setCurrentCardPicture(widget.picture);
+    cards.setCurrentPicture(widget.picture);
     currentActivity.setCardCreationStep(CardCreationSteps.song);
     imageController.createDog(widget.picture);
     Navigator.popUntil(context, ModalRoute.withName("main-screen"));

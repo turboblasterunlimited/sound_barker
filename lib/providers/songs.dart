@@ -36,7 +36,7 @@ class Songs with ChangeNotifier {
   }
 
   void removeSong(songToDelete) {
-    RestAPI.deleteSongFromServer(songToDelete);
+    RestAPI.deleteSong(songToDelete);
     all.remove(songToDelete);
     File(songToDelete.filePath).delete();
   }
@@ -51,7 +51,7 @@ class Songs with ChangeNotifier {
   Future retrieveAll() async {
     List tempSongs = [];
     Bucket bucket = await Gcloud.accessBucket();
-    List serverSongs = await RestAPI.retrieveAllSongsFromServer();
+    List serverSongs = await RestAPI.retrieveAllSongs();
     print("retriveallsongresponse: $serverSongs");
 
     for (Map<String, dynamic> serverSong in serverSongs) {
@@ -116,7 +116,7 @@ class Song with ChangeNotifier {
 
   Future<void> rename(newName) async {
     try {
-      await RestAPI.renameSongOnServer(this, newName);
+      await RestAPI.renameSong(this, newName);
     } catch (e) {
       throw e;
     }

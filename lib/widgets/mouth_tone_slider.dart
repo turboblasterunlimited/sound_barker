@@ -81,7 +81,7 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
 
   void didChangeDependencies() {
     super.didChangeDependencies();
-    card = Provider.of<KaraokeCards>(context).currentCard;
+    card = Provider.of<KaraokeCards>(context).current;
     currentActivity = Provider.of<CurrentActivity>(context);
     imageController = Provider.of<ImageController>(context);
     currentMouthTone = mouthColorToInt(card.picture.mouthColor);

@@ -68,7 +68,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
     String decorationImageId = Uuid().v4();
     String decorationImageFilePath = await karaokeCardDecorator.cardPainter.capturePNG(decorationImageId);
     await Gcloud.uploadCardAssets(widget.cardAudioFilePath, decorationImageFilePath);
-    await RestAPI.createCardOnServer(decorationImageId, widget.cardAudioId, widget.cardAmplitudes, widget.pictureId);
+    await RestAPI.createCard(decorationImageId, widget.cardAudioId, widget.cardAmplitudes, widget.pictureId);
   }
 
   @override

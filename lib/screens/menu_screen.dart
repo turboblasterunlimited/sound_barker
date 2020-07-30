@@ -21,7 +21,7 @@ class _MenuState extends State<MenuScreen> {
     if (currentActivity.cardCreation) {
       Navigator.of(context).popAndPushNamed(PhotoLibraryScreen.routeName);
     } else {
-      currentActivity.startCreateCard(cards.newCurrentCard);
+      currentActivity.startCreateCard(cards.newCurrent);
       Navigator.popAndPushNamed(
         context,
         PhotoLibraryScreen.routeName,

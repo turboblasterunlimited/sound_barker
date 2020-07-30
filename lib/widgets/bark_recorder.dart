@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
@@ -8,7 +7,6 @@ import 'package:K9_Karaoke/providers/spinner_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -183,7 +181,7 @@ class BarkRecorderState extends State<BarkRecorder>
                 onTap: () async {
                   spinnerState.startLoading();
                   await barks.uploadRawBarkAndRetrieveCroppedBarks(
-                      cards.currentCard.picture.fileId);
+                      cards.current.picture.fileId);
                   spinnerState.stopLoading();
                   currentActivity
                       .setCardCreationSubStep(CardCreationSubSteps.two);

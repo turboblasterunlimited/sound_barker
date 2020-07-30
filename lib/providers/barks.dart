@@ -52,7 +52,7 @@ class Barks with ChangeNotifier {
   }
 
   Future retrieveAll() async {
-    List barks = await RestAPI.retrieveAllBarksFromServer();
+    List barks = await RestAPI.retrieveAllBarks();
     print("all barks response: $barks");
     List tempBarks = [];
 
@@ -128,7 +128,7 @@ class Barks with ChangeNotifier {
   Future<List> uploadRawBarkAndRetrieveCroppedBarks(imageId) async {
     await Gcloud.uploadAsset(tempRawBark.fileId, tempRawBark.filePath, false);
     List responseBody =
-        await RestAPI.splitRawBarkOnServer(tempRawBark.fileId, imageId);
+        await RestAPI.splitRawBark(tempRawBark.fileId, imageId);
     List newBarks = await parseCroppedBarks(responseBody);
     await downloadAllBarksFromBucket(newBarks);
     int length = newBarks.length;
@@ -201,7 +201,7 @@ class Bark with ChangeNotifier {
 
   Future<void> rename(newName) async {
     try {
-      await RestAPI.renameBarkOnServer(this, newName);
+      await RestAPI.renameBark(this, newName);
     } catch (e) {
       throw e;
     }
@@ -210,6 +210,6 @@ class Bark with ChangeNotifier {
   }
 
   void deleteFromServer() {
-    RestAPI.deleteBarkFromServer(this);
+    RestAPI.deleteBark(this);
   }
 }

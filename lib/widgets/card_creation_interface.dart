@@ -15,7 +15,7 @@ class CardCreationInterface extends StatelessWidget {
   CurrentActivity currentActivity;
   @override
   Widget build(BuildContext context) {
-    card = Provider.of<KaraokeCards>(context).currentCard;
+    card = Provider.of<KaraokeCards>(context).current;
     currentActivity = Provider.of<CurrentActivity>(context);
 
     Widget _handleSpeakWidget() {

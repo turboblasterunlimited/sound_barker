@@ -187,12 +187,12 @@ class _SetPictureCoordinatesScreenState
   void _submitPicture() {
     widget.newPicture.uploadPictureAndSaveToServer();
     pictures.add(widget.newPicture);
-    cards.setCurrentCardPicture(widget.newPicture);
+    cards.setCurrentPicture(widget.newPicture);
     imageController.createDog(widget.newPicture);
   }
 
   void _submitEditedPicture() {
-    RestAPI.updateImageOnServer(widget.newPicture);
+    RestAPI.updateImage(widget.newPicture);
     imageController.setFace();
     imageController.setMouthColor();
   }
@@ -226,7 +226,7 @@ class _SetPictureCoordinatesScreenState
     print("building set picture coordinates screen");
     pictures = Provider.of<Pictures>(context, listen: false);
     imageController = Provider.of<ImageController>(context, listen: false);
-    card = Provider.of<KaraokeCards>(context, listen: false).currentCard;
+    card = Provider.of<KaraokeCards>(context, listen: false).current;
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
     cards = Provider.of<KaraokeCards>(context, listen: false);
 
@@ -424,7 +424,7 @@ class _SetPictureCoordinatesScreenState
                   children: <Widget>[
                     RawMaterialButton(
                       onPressed: () {
-                        cards.setCurrentCardName(_tempName);
+                        cards.setCurrentName(_tempName);
                         Navigator.popAndPushNamed(
                             context, PhotoLibraryScreen.routeName);
                       },
