@@ -14,6 +14,7 @@ enum CardCreationSubSteps {
   four,
   five,
   six,
+  seven,
 }
 
 class CurrentActivity with ChangeNotifier {
@@ -50,6 +51,10 @@ class CurrentActivity with ChangeNotifier {
 
   bool get isSix {
     return cardCreationSubStep == CardCreationSubSteps.six;
+  }
+
+  bool get isSeven {
+    return cardCreationSubStep == CardCreationSubSteps.seven;
   }
 
   // Steps
