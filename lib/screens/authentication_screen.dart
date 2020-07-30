@@ -18,8 +18,6 @@ import '../services/authenticate_user.dart';
 
 class AuthenticationScreen extends StatefulWidget {
   static const routeName = '/';
-  Function callback;
-  AuthenticationScreen([this.callback]);
 
   @override
   _AuthenticationScreenState createState() => _AuthenticationScreenState();
@@ -154,7 +152,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   }
 
   void _handleManualSignUp() async {
-    Map data = {"email": email, "password": password};
+    FocusScope.of(context).unfocus();
+    Map data = {"email": email.toLowerCase(), "password": password};
     try {
       var response = await HttpController.dio.post(
         'http://165.227.178.14/create-account',
@@ -167,7 +166,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   }
 
   void _handleManualSignIn() async {
-    Map data = {"email": email, "password": password};
+    FocusScope.of(context).unfocus();
+    Map data = {"email": email.toLowerCase(), "password": password};
     try {
       var response = await HttpController.dio.post(
         'http://165.227.178.14/manual-login',
@@ -176,7 +176,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       print(response);
       _handleServerResponse(response.data);
     } catch (e) {
-      _showError();
+      _showError(e);
     }
   }
 
@@ -319,9 +319,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                             child:
                                 Text("Sign In", style: TextStyle(fontSize: 20)),
                             color: Theme.of(context).primaryColor,
-                            onPressed: () {
-                              _handleManualSignIn();
-                            },
+                            onPressed: _handleManualSignIn,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(22.0),
                             ),
@@ -335,9 +333,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                             child:
                                 Text("Sign Up", style: TextStyle(fontSize: 20)),
                             color: Theme.of(context).primaryColor,
-                            onPressed: () {
-                              _handleManualSignUp();
-                            },
+                            onPressed: _handleManualSignUp,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(22.0),
                             ),
@@ -356,9 +352,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                     Center(
                       child: GoogleSignInButton(
                         text: "Continue with Google",
-                        onPressed: () {
-                          _handleGoogleAuthentication();
-                        },
+                        onPressed: _handleGoogleAuthentication,
                       ),
                     ),
                     Padding(
