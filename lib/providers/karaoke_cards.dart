@@ -6,8 +6,6 @@ import 'package:K9_Karaoke/providers/barks.dart';
 import 'package:K9_Karaoke/providers/creatable_songs.dart';
 import 'package:K9_Karaoke/providers/pictures.dart';
 import 'package:K9_Karaoke/providers/songs.dart';
-import 'package:K9_Karaoke/services/gcloud.dart';
-import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:K9_Karaoke/tools/amplitude_extractor.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:K9_Karaoke/tools/ffmpeg.dart';
@@ -126,7 +124,7 @@ class KaraokeCard with ChangeNotifier {
     // concat and return amplitudes
     List songAmplitudes =
         await AmplitudeExtractor.fileToList(song.amplitudesPath);
-    amplitudes = message.ampsPath + songAmplitudes;
+    amplitudes = message.amps + songAmplitudes;
   }
 
   // Future<void> uploadAudio() async {

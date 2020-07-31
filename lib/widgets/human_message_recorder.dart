@@ -30,7 +30,6 @@ class HumanMessageRecorderState extends State<HumanMessageRecorder>
   SoundController soundController;
   bool _isPlaying = false;
   bool _isRecording = false;
-  bool _messageExists = false;
   bool _hasShifted = false;
   bool _isProcessingAudio = false;
 
@@ -94,7 +93,6 @@ class HumanMessageRecorderState extends State<HumanMessageRecorder>
   void stopRecorder() async {
     setState(() {
       this._isRecording = false;
-      this._messageExists = true;
     });
 
     try {
@@ -168,7 +166,7 @@ class HumanMessageRecorderState extends State<HumanMessageRecorder>
                 onTap: () {
                   if (cards.current.hasSongFormula)
                     currentActivity.setPreviousSubStep();
-                  else 
+                  else
                     currentActivity.setCardCreationStep(CardCreationSteps.song);
                 },
                 child: Row(children: <Widget>[
@@ -202,6 +200,10 @@ class HumanMessageRecorderState extends State<HumanMessageRecorder>
     );
   }
 
+  _canAddMessage() {
+    return message.exists && !_isRecording;
+  }
+
   @override
   Widget build(BuildContext context) {
     imageController = Provider.of<ImageController>(context, listen: false);
@@ -217,34 +219,87 @@ class HumanMessageRecorderState extends State<HumanMessageRecorder>
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         backSkipBar(),
-        ButtonBar(
-          alignment: MainAxisAlignment.center,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            RawMaterialButton(
-              onPressed:
-                  spinnerState.isLoading || soundController.player.isPlaying
-                      ? null
-                      : onStartRecorderPressed,
-              child: spinnerState.isLoading
-                  ? SpinKitWave(
-                      color: Colors.white,
-                      size: 20,
-                    )
-                  : Icon(
-                      _isRecording ? Icons.stop : Icons.fiber_manual_record,
-                      size: 30,
-                      color: Colors.white,
+            Padding(
+              padding: const EdgeInsets.only(top: 22.0),
+              child: SizedBox(
+                height: 120,
+                width: 120,
+                child: Column(
+                  children: <Widget>[
+                    RawMaterialButton(
+                      onPressed: spinnerState.isLoading ||
+                              soundController.player.isPlaying
+                          ? null
+                          : onStartRecorderPressed,
+                      child: spinnerState.isLoading
+                          ? SpinKitWave(
+                              color: Colors.white,
+                              size: 20,
+                            )
+                          : Icon(
+                              _isRecording
+                                  ? Icons.stop
+                                  : Icons.fiber_manual_record,
+                              size: 30,
+                              color: Colors.white,
+                            ),
+                      shape: _isRecording
+                          ? RoundedRectangleBorder()
+                          : CircleBorder(),
+                      elevation: 2.0,
+                      fillColor: Theme.of(context).errorColor,
+                      padding: const EdgeInsets.all(20.0),
                     ),
-              shape: _isRecording ? RoundedRectangleBorder() : CircleBorder(),
-              elevation: 2.0,
-              fillColor: Theme.of(context).errorColor,
-              padding: const EdgeInsets.all(20.0),
+                    Padding(padding: EdgeInsets.only(top: 5)),
+                    Text(
+                      _isRecording ? "RECORDING...  \nTAP TO STOP" : "",
+                      style: TextStyle(
+                          fontSize: 14, color: Theme.of(context).errorColor),
+                    )
+                  ],
+                ),
+              ),
             ),
-            Padding(padding: EdgeInsets.only(top: 16)),
-            Text(
-              _isRecording ? "RECORDING...  \nTAP TO STOP" : "",
-              style:
-                  TextStyle(fontSize: 16, color: Theme.of(context).errorColor),
+            SizedBox(
+              height: 80,
+              width: 150,
+              child: GestureDetector(
+                onTap: _canAddMessage()
+                    ? () async {
+                        spinnerState.startLoading();
+                        await cards.current.combineMessageAndSong();
+                        spinnerState.stopLoading();
+                        currentActivity
+                            .setCardCreationStep(CardCreationSteps.style);
+                      }
+                    : null,
+                child: Transform.rotate(
+                  angle: _canAddMessage() ? _animation.value * 0.1 : 0,
+                  child: Container(
+                    // margin: EdgeInsets.symmetric(horizontal: 24.0),
+                    // padding: EdgeInsets.only(left: 10, right: 10, top: 10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      shape: BoxShape.rectangle,
+                      color: _canAddMessage()
+                          ? Theme.of(context).primaryColor
+                          : Colors.grey,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 20.0),
+                      child: Text(
+                        "ADD MESSAGE\nAND CONTINUE",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             )
           ],
         ),
@@ -252,8 +307,7 @@ class HumanMessageRecorderState extends State<HumanMessageRecorder>
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            SizedBox(
-              width: 150,
+            Expanded(
               child: Column(
                 children: <Widget>[
                   Padding(
@@ -269,7 +323,7 @@ class HumanMessageRecorderState extends State<HumanMessageRecorder>
                     activeColor: Colors.blue,
                     inactiveColor: Colors.grey,
                     onChanged:
-                        _isProcessingAudio || !_messageExists || _isRecording
+                        _isProcessingAudio || !message.exists || _isRecording
                             ? null
                             : (value) {
                                 soundController.stopPlayer();
@@ -290,8 +344,7 @@ class HumanMessageRecorderState extends State<HumanMessageRecorder>
                 ],
               ),
             ),
-            SizedBox(
-              width: 150,
+            Expanded(
               child: Column(
                 children: <Widget>[
                   Padding(
@@ -307,7 +360,7 @@ class HumanMessageRecorderState extends State<HumanMessageRecorder>
                     activeColor: Colors.blue,
                     inactiveColor: Colors.grey,
                     onChanged:
-                        _isProcessingAudio || !_messageExists || _isRecording
+                        _isProcessingAudio || !message.exists || _isRecording
                             ? null
                             : (value) async {
                                 soundController.stopPlayer();
@@ -328,35 +381,45 @@ class HumanMessageRecorderState extends State<HumanMessageRecorder>
                 ],
               ),
             ),
+            Expanded(
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(top: 10),
+                  ),
+                  Text("Effect",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  Slider(
+                    value: messageSpeed,
+                    min: 0,
+                    max: 200,
+                    activeColor: Colors.blue,
+                    inactiveColor: Colors.grey,
+                    onChanged: null,
+                    // _isProcessingAudio || !message.exists || _isRecording
+                    //     ? null
+                    //     : (value) async {
+                    //         soundController.stopPlayer();
+                    //         imageController.stopAnimation();
+                    //         setState(() {
+                    //           messageSpeed = value;
+                    //           _hasShifted = true;
+                    //         });
+                    //       },
+                    onChangeEnd: (value) {
+                      setState(() {
+                        messageSpeed = value;
+                        _isProcessingAudio = true;
+                      });
+                      generateAlteredAudioFiles();
+                    },
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
-        _messageExists && !_isRecording
-            ? GestureDetector(
-                onTap: () async {
-                  spinnerState.startLoading();
-                  await cards.current.combineMessageAndSong();
-                  spinnerState.stopLoading();
-                  currentActivity.setCardCreationStep(CardCreationSteps.style);
-                },
-                child: Transform.rotate(
-                  angle: _animation.value * 0.1,
-                  child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: 24.0),
-                    padding: EdgeInsets.all(15),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      shape: BoxShape.rectangle,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                    child: Text(
-                      "ADD MESSAGE\nAND CONTINUE",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ),
-              )
-            : Center(),
       ],
     );
   }

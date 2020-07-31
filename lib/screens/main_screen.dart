@@ -47,7 +47,7 @@ class _MainScreenState extends State<MainScreen> {
     else if (_canPlaySong)
       return [cards.current.song.filePath, cards.current.song.amplitudesPath];
     else if (_canPlayMessage)
-      return [cards.current.message.path, cards.current.message.ampsPath];
+      return [cards.current.message.path, cards.current.message.amps];
     return null;
   }
 

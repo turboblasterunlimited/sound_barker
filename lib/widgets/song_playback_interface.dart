@@ -33,40 +33,44 @@ class SongPlaybackInterface extends StatelessWidget {
         Padding(
           padding: EdgeInsets.all(20),
         ),
-        ButtonBar(
-          alignment: MainAxisAlignment.center,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            SizedBox(
-              height: 130,
-              width: 150,
-              child: Column(
-                children: <Widget>[
-                  IconButton(
-                    icon: Icon(Icons.arrow_back),
-                    iconSize: 70,
-                    onPressed: () {
-                      _handleButtonPress(currentActivity.setPreviousSubStep);
-                    },
-                  ),
-                  Text("Back", style: TextStyle(fontSize: 16))
-                ],
+            RawMaterialButton(
+              onPressed: () =>
+                  _handleButtonPress(currentActivity.setPreviousSubStep),
+              child: Icon(
+                Icons.close,
+                color: Colors.white,
+                size: 40,
               ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
+              ),
+              elevation: 2.0,
+              fillColor: Theme.of(context).errorColor,
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
             ),
-            SizedBox(
-              height: 130,
-              width: 150,
-              child: Column(
-                children: <Widget>[
-                  IconButton(
-                    icon: Icon(Icons.arrow_forward),
-                    iconSize: 70,
-                    onPressed: () {
-                      _handleButtonPress(currentActivity.setNextSubStep);
-                    },
-                  ),
-                  Text("Next", style: TextStyle(fontSize: 16))
-                ],
+            Padding(
+              padding: EdgeInsets.all(10),
+            ),
+            RawMaterialButton(
+              onPressed: () =>
+                  _handleButtonPress(currentActivity.setNextSubStep),
+              child: Icon(
+                Icons.check,
+                color: Colors.white,
+                size: 40,
               ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
+              ),
+              elevation: 2.0,
+              fillColor: Theme.of(context).primaryColor,
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
             ),
           ],
         ),

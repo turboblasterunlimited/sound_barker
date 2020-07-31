@@ -14,7 +14,7 @@ class CardMessage {
   });
 
   bool get exists {
-    return path != null;
+    return amps != null && path != null;
   }
 
   String get path {
@@ -26,7 +26,7 @@ class CardMessage {
       return null;
   }
 
-  List get ampsPath {
+  List get amps {
     if (alteredAmplitudes != null)
       return alteredAmplitudes;
     else if (amplitudes != null)

@@ -166,8 +166,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
       cards.setCurrentShortBark(widget.bark);
     else if (currentActivity.isThree)
       cards.setCurrentMediumBark(widget.bark);
-    else if (currentActivity.isFour)
-      cards.setCurrentLongBark(widget.bark);
+    else if (currentActivity.isFour) cards.setCurrentLongBark(widget.bark);
 
     currentActivity.setNextSubStep();
   }
@@ -206,16 +205,18 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
                             // Title
 
                             TextSpan(
-                                text: widget.bark.name,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Theme.of(context).primaryColor,
-                                    fontSize: 16)),
+                              text: widget.bark.name,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).primaryColor,
+                                  fontSize: 16),
+                            ),
                             // Subtitle
                             TextSpan(
-                                text: widget.bark.length,
-                                style: TextStyle(
-                                    color: Colors.grey, fontSize: 10)),
+                              text: " " + widget.bark.length,
+                              style:
+                                  TextStyle(color: Colors.grey, fontSize: 10),
+                            ),
                           ],
                         ),
                       )
