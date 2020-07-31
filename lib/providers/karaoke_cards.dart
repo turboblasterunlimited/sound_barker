@@ -31,8 +31,6 @@ class KaraokeCards with ChangeNotifier {
   }
 
   void setCurrentSongFormula(CreatableSong creatableSong) {
-    // remove actual song if user changes the song formula
-    current.song = null;
     current.songFormula = creatableSong;
     notifyListeners();
   }
@@ -42,8 +40,7 @@ class KaraokeCards with ChangeNotifier {
     notifyListeners();
   }
 
-  void setCurrentSong(newSong) {
-    // retain song formula when new song is added, in case user wants to go back and make a new song
+  void setCurrentSong(Song newSong) {
     current.song = newSong;
     notifyListeners();
   }

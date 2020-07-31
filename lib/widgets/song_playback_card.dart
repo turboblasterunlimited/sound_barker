@@ -164,6 +164,7 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
   }
 
   selectSong() {
+    cards.setCurrentSongFormula(null);
     cards.setCurrentSong(widget.song);
     currentActivity.setCardCreationStep(CardCreationSteps.speak);
     currentActivity.setCardCreationSubStep(CardCreationSubSteps.seven);

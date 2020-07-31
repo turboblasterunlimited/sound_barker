@@ -76,9 +76,9 @@ class ImageController with ChangeNotifier {
     bool mouthOpen = true;
     mouthOpenAndClose = Timer.periodic(Duration(seconds: 1), (timer) {
       if (mouthOpen) {
-        webViewController.evaluateJavascript("mouth_to_pos(0, 1, 60)");
+        webViewController.evaluateJavascript("mouth_to_pos(0, .8, 60)");
       } else {
-        webViewController.evaluateJavascript("mouth_to_pos(1, 0, 60)");
+        webViewController.evaluateJavascript("mouth_to_pos(.8, 0, 60)");
       }
       mouthOpen = !mouthOpen;
     });

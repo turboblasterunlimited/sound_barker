@@ -1,4 +1,6 @@
 import 'package:K9_Karaoke/providers/current_activity.dart';
+import 'package:K9_Karaoke/providers/image_controller.dart';
+import 'package:K9_Karaoke/providers/sound_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -8,6 +10,16 @@ class SongPlaybackInterface extends StatelessWidget {
   Widget build(BuildContext context) {
     final currentActivity =
         Provider.of<CurrentActivity>(context, listen: false);
+    final soundController =
+        Provider.of<SoundController>(context, listen: false);
+    final imageController =
+        Provider.of<ImageController>(context, listen: false);
+
+    _handleButtonPress(Function callback) {
+      soundController.stopPlayer();
+      imageController.stopAnimation();
+      callback();
+    }
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -32,7 +44,9 @@ class SongPlaybackInterface extends StatelessWidget {
                   IconButton(
                     icon: Icon(Icons.arrow_back),
                     iconSize: 70,
-                    onPressed: currentActivity.setPreviousSubStep,
+                    onPressed: () {
+                      _handleButtonPress(currentActivity.setPreviousSubStep);
+                    },
                   ),
                   Text("Back", style: TextStyle(fontSize: 16))
                 ],
@@ -46,7 +60,9 @@ class SongPlaybackInterface extends StatelessWidget {
                   IconButton(
                     icon: Icon(Icons.arrow_forward),
                     iconSize: 70,
-                    onPressed: currentActivity.setNextSubStep,
+                    onPressed: () {
+                      _handleButtonPress(currentActivity.setNextSubStep);
+                    },
                   ),
                   Text("Next", style: TextStyle(fontSize: 16))
                 ],

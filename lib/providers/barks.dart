@@ -189,9 +189,9 @@ class Bark with ChangeNotifier {
   }
 
   void setLengthProp(int milliseconds) {
-    if (milliseconds < 600)
+    if (milliseconds < 700)
       this.length = "short";
-    else if (milliseconds < 900)
+    else if (milliseconds < 1100)
       this.length = "medium";
     else
       this.length = "long";
