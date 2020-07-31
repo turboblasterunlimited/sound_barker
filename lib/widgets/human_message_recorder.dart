@@ -175,9 +175,9 @@ class HumanMessageRecorderState extends State<HumanMessageRecorder>
                 ]),
               ),
               Center(
-                child: Text("RECORD HUMAN MESSAGE",
+                child: Text("HUMAN MESSAGE",
                     style: TextStyle(
-                        fontSize: 16, color: Theme.of(context).primaryColor)),
+                        fontSize: 17, color: Theme.of(context).primaryColor)),
               ),
               Positioned(
                 right: 10,
@@ -256,7 +256,7 @@ class HumanMessageRecorderState extends State<HumanMessageRecorder>
                     ),
                     Padding(padding: EdgeInsets.only(top: 5)),
                     Text(
-                      _isRecording ? "RECORDING...  \nTAP TO STOP" : "",
+                      _isRecording ? "RECORDING...  \nTAP TO STOP" : "RECORD",
                       style: TextStyle(
                           fontSize: 14, color: Theme.of(context).errorColor),
                     )
