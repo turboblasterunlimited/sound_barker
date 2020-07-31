@@ -21,7 +21,7 @@ class CardCreationInterface extends StatelessWidget {
 
     Widget _handleSpeakWidget() {
       if (currentActivity.isOne)
-        return BarkRecorder();
+      return BarkRecorder();
       else if (currentActivity.isFive)
         return SongArrangementSelector();
       else if (currentActivity.isSix)
@@ -29,7 +29,7 @@ class CardCreationInterface extends StatelessWidget {
       else if (currentActivity.isSeven)
         return HumanMessageRecorder();
       else
-        BarkSelectInterface();
+        return BarkSelectInterface();
     }
 
     Widget _handleStyleWidget() {
@@ -54,7 +54,6 @@ class CardCreationInterface extends StatelessWidget {
           _handleSpeakWidget()
         else if (currentActivity.isStyle)
           _handleStyleWidget(),
-        
 
         // Visibility(
         //   visible: currentActivity.isStyle,
