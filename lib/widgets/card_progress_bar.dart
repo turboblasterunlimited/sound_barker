@@ -57,6 +57,8 @@ class CardProgressBar extends StatelessWidget {
 
     void navigateToSpeak() {
       currentActivity.setCardCreationStep(CardCreationSteps.speak);
+      if (card.hasSong)
+        currentActivity.setCardCreationSubStep(CardCreationSubSteps.seven);
       // This is in case SetCoordinatesScreen is on the stack.
       Navigator.of(context).popUntil(ModalRoute.withName("main-screen"));
     }
@@ -80,7 +82,7 @@ class CardProgressBar extends StatelessWidget {
             currentActivity.isSong, navigateToSong, card.hasPicture),
         // Can click only if creating a new song
         progressButton("SPEAK", card.hasBarks || card.hasSong,
-            currentActivity.isSpeak, navigateToSpeak, card.hasSongFormula),
+            currentActivity.isSpeak, navigateToSpeak, card.hasSongFormula || card.hasSong),
         progressButton("STYLE", card.hasDecoration, currentActivity.isStyle,
             navigateToStyle, card.hasSong),
       ],

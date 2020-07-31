@@ -202,7 +202,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   bool canPlay() {
-    return !_isPlaying && _playbackFiles != null;
+    return !_isPlaying && (_playbackFiles != null);
   }
 
   @override

@@ -125,13 +125,13 @@ class KaraokeCard with ChangeNotifier {
     // concat and return amplitudes
     List songAmplitudes =
         await AmplitudeExtractor.fileToList(song.amplitudesPath);
-    return message.amplitudesPath + songAmplitudes;
+    amplitudes = message.ampsPath + songAmplitudes;
   }
 
-  Future<void> uploadAudio() async {
-    await Gcloud.uploadCardAssets(audioFilePath, picture.filePath);
-    await RestAPI.createCard(decorationImageId, audioId, amplitudes, imageId)
-  }
+  // Future<void> uploadAudio() async {
+  //   await Gcloud.uploadCardAssets(audioFilePath, decorationImagePath);
+  //   await RestAPI.createCard(decorationImageId, audioId, amplitudes, imageId)
+  // }
 
   void setPicture(Picture newPicture) {
     picture = newPicture;

@@ -6,8 +6,8 @@ class CardMessage {
   List amplitudes;
   List alteredAmplitudes;
   CardMessage({
-    this.filePath,
-    this.alteredFilePath,
+    this.filePath = "",
+    this.alteredFilePath = "",
     this.amplitudes,
     this.alteredAmplitudes,
   });

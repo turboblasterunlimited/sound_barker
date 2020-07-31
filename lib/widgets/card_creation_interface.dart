@@ -47,12 +47,12 @@ class CardCreationInterface extends StatelessWidget {
           padding: const EdgeInsets.only(top: 10.0),
         ),
         if (currentActivity.isSnap && card.hasPicture)
-          MouthToneSlider(),
-        if (currentActivity.isSong)
-          SongSelectInterface(),
-        if (currentActivity.isSpeak)
-          _handleSpeakWidget(),
-        if (currentActivity.isStyle)
+          MouthToneSlider()
+        else if (currentActivity.isSong)
+          SongSelectInterface()
+        else if (currentActivity.isSpeak)
+          _handleSpeakWidget()
+        else if (currentActivity.isStyle)
           _handleStyleWidget(),
         
 

@@ -190,6 +190,7 @@ class HumanMessageRecorderState extends State<HumanMessageRecorder>     with Tic
 
   @override
   Widget build(BuildContext context) {
+    soundController = Provider.of<SoundController>(context);
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
     spinnerState = Provider.of<SpinnerState>(context, listen: false);
     cards = Provider.of<KaraokeCards>(context, listen: false);
@@ -306,7 +307,7 @@ class HumanMessageRecorderState extends State<HumanMessageRecorder>     with Tic
                 onTap: () async {
                   spinnerState.startLoading();
                   await cards.current
-                      .uploadAudio();
+                      .combineMessageAndSong();
                   spinnerState.stopLoading();
                   currentActivity
                       .setCardCreationStep(CardCreationSteps.style);
