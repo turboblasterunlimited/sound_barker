@@ -198,7 +198,7 @@ class _MainScreenState extends State<MainScreen> {
 
   void _handleTapPuppet() {
     print("Tapping webview!");
-    if (canPlay()) _isPlaying ? stopAll() : startAll();
+    if (_playbackFiles != null) _isPlaying ? stopAll() : startAll();
   }
 
   bool canPlay() {

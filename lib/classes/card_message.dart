@@ -5,6 +5,7 @@ class CardMessage {
   String alteredFilePath;
   List amplitudes;
   List alteredAmplitudes;
+  Function notifyCardChanges;
   CardMessage({
     this.filePath = "",
     this.alteredFilePath = "",
@@ -19,17 +20,24 @@ class CardMessage {
   String get path {
     if (File(alteredFilePath).existsSync())
       return alteredFilePath;
-    else if (File(alteredFilePath).existsSync())
+    else if (File(filePath).existsSync())
       return filePath;
     else
       return null;
   }
 
   List get ampsPath {
-    if (amplitudes != null)
+    if (alteredAmplitudes != null)
+      return alteredAmplitudes;
+    else if (amplitudes != null)
       return amplitudes;
     else
-      return alteredAmplitudes;
+      return null;
+  }
+
+  void setFilePath(newFilePath) {
+    filePath = newFilePath;
+    notifyCardChanges();
   }
 
   void deleteEverything() {
@@ -37,6 +45,7 @@ class CardMessage {
     amplitudes = null;
     if (File(alteredFilePath).existsSync()) File(alteredFilePath).deleteSync();
     alteredAmplitudes = null;
+    // notifyCardChanges();
   }
 
   void deleteAlteredFiles() {

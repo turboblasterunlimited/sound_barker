@@ -1,5 +1,6 @@
 import 'package:K9_Karaoke/classes/card_message.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
+import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/spinner_state.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,8 @@ class HumanMessageRecorder extends StatefulWidget {
   HumanMessageRecorderState createState() => HumanMessageRecorderState();
 }
 
-class HumanMessageRecorderState extends State<HumanMessageRecorder>     with TickerProviderStateMixin {
+class HumanMessageRecorderState extends State<HumanMessageRecorder>
+    with TickerProviderStateMixin {
   StreamSubscription _recorderSubscription;
   SoundController soundController;
   bool _isPlaying = false;
@@ -42,6 +44,7 @@ class HumanMessageRecorderState extends State<HumanMessageRecorder>     with Tic
   CardMessage message;
   AnimationController _animationController;
   Animation _animation;
+  ImageController imageController;
 
   @override
   void dispose() {
@@ -63,19 +66,17 @@ class HumanMessageRecorderState extends State<HumanMessageRecorder>     with Tic
   }
 
   void startRecorder() async {
+    print("in start recorder.");
     PermissionStatus status = await Permission.microphone.request();
     if (status != PermissionStatus.granted) {
       throw RecordingPermissionException("Microphone permission not granted");
     }
 
     message.deleteEverything();
-    Directory tempDir = await getTemporaryDirectory();
-    message.filePath =
-        '${tempDir.path}/${soundController.recorder.slotNo}-message.aac}';
+
     try {
       await soundController.recorder.startRecorder(
           toFile: message.filePath, sampleRate: 44100, bitRate: 192000);
-      print('start message recorder: ${message.filePath}');
 
       this.setState(() {
         this._isRecording = true;
@@ -107,11 +108,19 @@ class HumanMessageRecorderState extends State<HumanMessageRecorder>     with Tic
     }
     message.amplitudes =
         await AmplitudeExtractor.getAmplitudes(message.filePath);
+    cards.messageIsReady();
   }
 
   onStartRecorderPressed() {
-    if (soundController.recorder.isRecording) return stopRecorder;
-    return startRecorder;
+    print("start recorder pressed.");
+    if (soundController.recorder.isRecording) return stopRecorder();
+    return startRecorder();
+  }
+
+  void _createFilePaths() async {
+    Directory tempDir = await getTemporaryDirectory();
+    message.filePath = '${tempDir.path}/card_message.aac';
+    message.alteredFilePath = '${tempDir.path}/altered_card_message.aac';
   }
 
   Future<void> generateAlteredAudioFiles() async {
@@ -124,9 +133,11 @@ class HumanMessageRecorderState extends State<HumanMessageRecorder>     with Tic
 
     await FFMpeg.process.execute(
         '-i ${message.filePath} -filter:a "asetrate=44100*$pitchChange,aresample=44100,atempo=$speedChange" -vn ${message.alteredFilePath}');
+    print("site of error");
     message.alteredAmplitudes =
         await AmplitudeExtractor.getAmplitudes(message.alteredFilePath);
     setState(() => _isProcessingAudio = false);
+    cards.messageIsReady();
   }
 
   // _trimSilence() async {
@@ -155,7 +166,10 @@ class HumanMessageRecorderState extends State<HumanMessageRecorder>     with Tic
             children: <Widget>[
               GestureDetector(
                 onTap: () {
-                  currentActivity.setPreviousSubStep();
+                  if (cards.current.hasSongFormula)
+                    currentActivity.setPreviousSubStep();
+                  else 
+                    currentActivity.setCardCreationStep(CardCreationSteps.song);
                 },
                 child: Row(children: <Widget>[
                   Icon(LineAwesomeIcons.angle_left),
@@ -190,17 +204,21 @@ class HumanMessageRecorderState extends State<HumanMessageRecorder>     with Tic
 
   @override
   Widget build(BuildContext context) {
+    imageController = Provider.of<ImageController>(context, listen: false);
     soundController = Provider.of<SoundController>(context);
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
     spinnerState = Provider.of<SpinnerState>(context, listen: false);
     cards = Provider.of<KaraokeCards>(context, listen: false);
-    message = message;
+    message = cards.current.message;
+
+    _createFilePaths();
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         backSkipBar(),
         ButtonBar(
+          alignment: MainAxisAlignment.center,
           children: <Widget>[
             RawMaterialButton(
               onPressed:
@@ -234,71 +252,81 @@ class HumanMessageRecorderState extends State<HumanMessageRecorder>     with Tic
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Column(
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(top: 10),
-                ),
-                Text("Pitch",
-                    style:
-                        TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                Slider(
-                  value: messagePitch,
-                  min: 0,
-                  max: 200,
-                  activeColor: Colors.blue,
-                  inactiveColor: Colors.grey,
-                  onChanged:
-                      _isProcessingAudio || !_messageExists || _isRecording
-                          ? null
-                          : (value) {
-                              setState(() {
-                                messagePitch = value;
-                                _hasShifted = true;
-                              });
-                            },
-                  onChangeEnd: (value) async {
-                    setState(() {
-                      messagePitch = value;
-                      _isProcessingAudio = true;
-                    });
-                    generateAlteredAudioFiles();
-                  },
-                ),
-              ],
+            SizedBox(
+              width: 150,
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(top: 10),
+                  ),
+                  Text("Pitch",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  Slider(
+                    value: messagePitch,
+                    min: 0,
+                    max: 200,
+                    activeColor: Colors.blue,
+                    inactiveColor: Colors.grey,
+                    onChanged:
+                        _isProcessingAudio || !_messageExists || _isRecording
+                            ? null
+                            : (value) {
+                                soundController.stopPlayer();
+                                imageController.stopAnimation();
+                                setState(() {
+                                  messagePitch = value;
+                                  _hasShifted = true;
+                                });
+                              },
+                    onChangeEnd: (value) async {
+                      setState(() {
+                        messagePitch = value;
+                        _isProcessingAudio = true;
+                      });
+                      generateAlteredAudioFiles();
+                    },
+                  ),
+                ],
+              ),
             ),
-            Column(
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(top: 10),
-                ),
-                Text("Speed",
-                    style:
-                        TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                Slider(
-                  value: messageSpeed,
-                  min: 0,
-                  max: 200,
-                  activeColor: Colors.blue,
-                  inactiveColor: Colors.grey,
-                  onChanged:
-                      _isProcessingAudio || !_messageExists || _isRecording
-                          ? null
-                          : (value) async {
-                              setState(() {
-                                messageSpeed = value;
-                                _hasShifted = true;
-                              });
-                            },
-                  onChangeEnd: (value) {
-                    setState(() {
-                      messageSpeed = value;
-                      _isProcessingAudio = true;
-                    });
-                    generateAlteredAudioFiles();
-                  },
-                ),
-              ],
+            SizedBox(
+              width: 150,
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(top: 10),
+                  ),
+                  Text("Speed",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  Slider(
+                    value: messageSpeed,
+                    min: 0,
+                    max: 200,
+                    activeColor: Colors.blue,
+                    inactiveColor: Colors.grey,
+                    onChanged:
+                        _isProcessingAudio || !_messageExists || _isRecording
+                            ? null
+                            : (value) async {
+                                soundController.stopPlayer();
+                                imageController.stopAnimation();
+                                setState(() {
+                                  messageSpeed = value;
+                                  _hasShifted = true;
+                                });
+                              },
+                    onChangeEnd: (value) {
+                      setState(() {
+                        messageSpeed = value;
+                        _isProcessingAudio = true;
+                      });
+                      generateAlteredAudioFiles();
+                    },
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -306,11 +334,9 @@ class HumanMessageRecorderState extends State<HumanMessageRecorder>     with Tic
             ? GestureDetector(
                 onTap: () async {
                   spinnerState.startLoading();
-                  await cards.current
-                      .combineMessageAndSong();
+                  await cards.current.combineMessageAndSong();
                   spinnerState.stopLoading();
-                  currentActivity
-                      .setCardCreationStep(CardCreationSteps.style);
+                  currentActivity.setCardCreationStep(CardCreationSteps.style);
                 },
                 child: Transform.rotate(
                   angle: _animation.value * 0.1,

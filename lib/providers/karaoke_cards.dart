@@ -19,6 +19,10 @@ class KaraokeCards with ChangeNotifier {
   List<KaraokeCard> all = [];
   KaraokeCard current;
 
+  void messageIsReady() {
+    notifyListeners();
+  }
+  
   String get currentName {
     if (current == null || current.picture == null)
       return "test";
