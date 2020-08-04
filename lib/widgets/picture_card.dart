@@ -9,10 +9,9 @@ import '../providers/pictures.dart';
 import '../screens/set_picture_coordinates_screen.dart';
 
 class PictureCard extends StatefulWidget {
-  final int index;
   final Picture picture;
   final Pictures pictures;
-  PictureCard(this.index, this.picture, this.pictures, {Key key})
+  PictureCard(this.picture, this.pictures, {Key key})
       : super(key: key);
 
   @override
@@ -154,7 +153,7 @@ class _PictureCardState extends State<PictureCard>
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
 
     Animation animation = Tween(begin: 0.0, end: 1.0).animate(
-        new CurvedAnimation(parent: animationController, curve: Curves.ease));
+        CurvedAnimation(parent: animationController, curve: Curves.ease));
 
     return AnimatedBuilder(
       key: widget.key,

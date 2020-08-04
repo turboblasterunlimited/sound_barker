@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/pictures.dart';
+import 'package:K9_Karaoke/screens/camera_or_upload_screen.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/screens/set_picture_coordinates_screen.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
@@ -22,28 +22,77 @@ class PhotoLibraryScreen extends StatefulWidget {
 class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
   Pictures pictures;
 
-  Future<void> _cropAndNavigate(newPicture) async {
-    await cropImage(newPicture, Theme.of(context).primaryColor,
-        Colors.white);
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => SetPictureCoordinatesScreen(newPicture),
+  List<Widget> _pictureGridTiles(List<Picture> pics) {
+    List<Widget> widgets = [];
+    pics.asMap().forEach((i, picture) {
+      widgets.add(PictureCard(picture, pictures));
+    });
+    return widgets;
+  }
+
+  List<Widget> _usersPictureGridTiles() {
+    List<Widget> result = _pictureGridTiles(pictures.all);
+    result.insert(0, _addPictureButton());
+    return result;
+  }
+
+  Widget _addPictureButton() {
+    return Container(
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: GridTile(
+          child: GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, CameraOrUploadScreen.routeName);
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+                border: Border.all(
+                  color: Colors.black,
+                  width: 8,
+                ),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Icon(Icons.add,
+                      color: Theme.of(context).primaryColor, size: 20),
+                  Text(
+                    "Your Dog Here",
+                    style: TextStyle(
+                        fontSize: 18, color: Theme.of(context).primaryColor),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
 
-  Future getImage(source) async {
-    final newPicture = Picture();
-    newPicture.filePath = "$myAppStoragePath/${newPicture.fileId}.jpg";
-
-    final pickedFile = await ImagePicker().getImage(source: source);
-    if (pickedFile == null) return;
-    final bytes = await pickedFile.readAsBytes();
-
-    File(newPicture.filePath).writeAsBytesSync(
-        bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
-    await _cropAndNavigate(newPicture);
+  SliverChildListDelegate _dogGridDivider(String label) {
+    return SliverChildListDelegate(
+      [
+        Padding(
+          padding: const EdgeInsets.only(left: 10.0),
+          child: Text(
+            label,
+            style:
+                TextStyle(fontSize: 20, color: Theme.of(context).primaryColor),
+          ),
+        ),
+        Divider(
+          indent: 10,
+          endIndent: 10,
+          color: Theme.of(context).primaryColor,
+          thickness: 3,
+        ),
+      ],
+    );
   }
 
   Widget build(BuildContext context) {
@@ -118,67 +167,49 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
                 ],
               ),
             ),
-            Center(
-              child: ButtonBar(
-                alignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: FlatButton(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-                      child: Text("Camera", style: TextStyle(fontSize: 20)),
-                      // color: Theme.of(context).primaryColor,
-                      onPressed: () => getImage(ImageSource.camera),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(22.0),
-                        side: BorderSide(
-                          color: Theme.of(context).primaryColor,
-                          width: 3,
-                        ),
-                      ),
-                    ),
+            Expanded(
+              child: CustomScrollView(
+                slivers: <Widget>[
+                  SliverList(
+                    delegate: _dogGridDivider("Your Dogs")
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: FlatButton(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-                      child: Text("Upload", style: TextStyle(fontSize: 20)),
-                      // color: Theme.of(context).primaryColor,
-                      onPressed: () => getImage(ImageSource.gallery),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(22.0),
-                        side: BorderSide(
-                          color: Theme.of(context).primaryColor,
-                          width: 3,
-                        ),
-                      ),
-                    ),
+                  SliverGrid.count(
+                    children: _usersPictureGridTiles(),
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 3,
+                    mainAxisSpacing: 3,
                   ),
+                  SliverList(
+                    delegate: _dogGridDivider("Stock Dogs")
+                  ),
+                  SliverGrid.count(
+                    children: _pictureGridTiles(pictures.stockPictures),
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 3,
+                    mainAxisSpacing: 3,
+                  )
                 ],
               ),
-            ),
-            Expanded(
-              child: Center(
-                child: GridView.builder(
-                  padding: const EdgeInsets.all(10),
-                  itemCount: pictures.combinedPictures.length,
-                  itemBuilder: (_, i) => ChangeNotifierProvider.value(
-                    value: pictures.combinedPictures[i],
-                    key: UniqueKey(),
-                    child:
-                        PictureCard(i, pictures.combinedPictures[i], pictures),
-                  ),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    // childAspectRatio: 3 / 2,
-                    crossAxisSpacing: 6,
-                    mainAxisSpacing: 6,
-                  ),
-                ),
-              ),
-            ),
+            )
+            // Expanded(
+            //   child: Center(
+            //     child: GridView.builder(
+            //       padding: const EdgeInsets.all(10),
+            //       itemCount: pictures.stockPictures.length,
+            // itemBuilder: (_, i) => ChangeNotifierProvider.value(
+            //   value: pictures.stockPictures[i],
+            //   key: UniqueKey(),
+            //   child: PictureCard(i, pictures.stockPictures[i], pictures),
+            // ),
+            //       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            //         crossAxisCount: 3,
+            //         // childAspectRatio: 3 / 2,
+            //         crossAxisSpacing: 3,
+            //         mainAxisSpacing: 3,
+            //       ),
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),

@@ -7,11 +7,10 @@ import 'package:flutter/material.dart';
 
 import 'package:K9_Karaoke/widgets/card_decorator_interface.dart';
 import 'package:K9_Karaoke/widgets/card_decorator_canvas.dart';
-import 'package:K9_Karaoke/widgets/singing_image.dart';
 import 'package:uuid/uuid.dart';
 import '../providers/songs.dart';
 import '../providers/pictures.dart';
-import '../widgets/message_creator.dart';
+import '../widgets/human_message_recorder.dart';
 
 class CardCreatorScreen extends StatefulWidget {
   static const routeName = 'record-message-screen';
@@ -107,7 +106,6 @@ class _CardCreatorScreenState extends State<CardCreatorScreen> {
             aspectRatio: 1 / 1,
             child: Stack(
               children: <Widget>[
-                
                 CardDecoratorCanvas(),
               ],
             ),

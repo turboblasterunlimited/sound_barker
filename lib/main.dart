@@ -4,6 +4,7 @@ import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/user.dart';
 import 'package:K9_Karaoke/screens/account_screen.dart';
 import 'package:K9_Karaoke/screens/authentication_screen.dart';
+import 'package:K9_Karaoke/screens/camera_or_upload_screen.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:flutter/material.dart';
@@ -112,6 +113,7 @@ class MyApp extends StatelessWidget {
             CreatableSongSelectScreen.routeName: (ctx) => CreatableSongSelectScreen(),
             MenuScreen.routeName: (ctx) => MenuScreen(),
             PhotoLibraryScreen.routeName: (ctx) => PhotoLibraryScreen(),
+            CameraOrUploadScreen.routeName: (ctx) => CameraOrUploadScreen(),
           }),
     );
   }
