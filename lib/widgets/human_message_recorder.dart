@@ -138,24 +138,6 @@ class HumanMessageRecorderState extends State<HumanMessageRecorder>
     cards.messageIsReady();
   }
 
-  // _trimSilence() async {
-  //   Map info = await FFMpeg.probe.getMediaInformation(filePath);
-  //   print(
-  //       "info on alteredFilepath: ${await FFMpeg.probe.getMediaInformation(filePath)}");
-
-  //   String duration = info["duration"].toString();
-  //   print("Duration: $duration");
-  //   await FFMpeg.process.execute(
-  //       '-i $filePath -filter:a "silenceremove=start_periods=1:start_duration=1:start_threshold=0dB:detection=peak,aformat=dblp,areverse,silenceremove=start_periods=1:start_duration=1:start_threshold=0dB:detection=peak,aformat=dblp,areverse" $alteredFilePath');
-  //   // '-i $filePath -filter:a "silenceremove=start_periods=1:start_duration=0:start_threshold=0dB:detection=peak:stop_periods=0:stop_duration=0:stop_threshold=0dB:detection=peak:stop_silence=0" $alteredFilePath');
-  //   File(filePath).deleteSync();
-  //   File(alteredFilePath).renameSync(filePath);
-  //   print("Altered filepath exists: ${File(alteredFilePath).existsSync()}");
-  //   print("filepath exists: ${File(filePath).existsSync()}");
-  // }
-
-  // pitched/stretched recroding or unaltered recording
-
   Widget backSkipBar() {
     return Row(
       children: <Widget>[
@@ -175,7 +157,7 @@ class HumanMessageRecorderState extends State<HumanMessageRecorder>
                 ]),
               ),
               Center(
-                child: Text("HUMAN MESSAGE",
+                child: Text("PERSONAL MESSAGE",
                     style: TextStyle(
                         fontSize: 17, color: Theme.of(context).primaryColor)),
               ),
@@ -267,39 +249,37 @@ class HumanMessageRecorderState extends State<HumanMessageRecorder>
             SizedBox(
               height: 80,
               width: 150,
-              child: GestureDetector(
-                onTap: _canAddMessage()
-                    ? () async {
+              child: !_canAddMessage()
+                  ? Center()
+                  : GestureDetector(
+                      onTap: () async {
                         spinnerState.startLoading();
                         await cards.current.combineMessageAndSong();
                         spinnerState.stopLoading();
                         currentActivity
                             .setCardCreationStep(CardCreationSteps.style);
-                      }
-                    : null,
-                child: Transform.rotate(
-                  angle: _canAddMessage() ? _animation.value * 0.1 : 0,
-                  child: Container(
-                    // margin: EdgeInsets.symmetric(horizontal: 24.0),
-                    // padding: EdgeInsets.only(left: 10, right: 10, top: 10),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      shape: BoxShape.rectangle,
-                      color: _canAddMessage()
-                          ? Theme.of(context).primaryColor
-                          : Colors.grey,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 20.0),
-                      child: Text(
-                        "ADD MESSAGE\nAND CONTINUE",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      },
+                      child: Transform.rotate(
+                        angle: _canAddMessage() ? _animation.value * 0.1 : 0,
+                        child: Container(
+                          // margin: EdgeInsets.symmetric(horizontal: 24.0),
+                          // padding: EdgeInsets.only(left: 10, right: 10, top: 10),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              shape: BoxShape.rectangle,
+                              color: Theme.of(context).primaryColor),
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 20.0),
+                            child: Text(
+                              "ADD MESSAGE\nAND CONTINUE",
+                              textAlign: TextAlign.center,
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 16),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              ),
             )
           ],
         ),
