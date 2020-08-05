@@ -19,12 +19,12 @@ import '../providers/sound_controller.dart';
 import '../tools/amplitude_extractor.dart';
 
 // cardCreationSubStep.seven
-class HumanMessageRecorder extends StatefulWidget {
+class PersonalMessageRecorder extends StatefulWidget {
   @override
-  HumanMessageRecorderState createState() => HumanMessageRecorderState();
+  PersonalMessageRecorderState createState() => PersonalMessageRecorderState();
 }
 
-class HumanMessageRecorderState extends State<HumanMessageRecorder>
+class PersonalMessageRecorderState extends State<PersonalMessageRecorder>
     with TickerProviderStateMixin {
   StreamSubscription _recorderSubscription;
   SoundController soundController;
@@ -44,6 +44,21 @@ class HumanMessageRecorderState extends State<HumanMessageRecorder>
   AnimationController _animationController;
   Animation _animation;
   ImageController imageController;
+
+  Map<String, String> effects = {
+    'None': "",
+    'Chorus': ',aecho=0.8:0.88:60:0.4',
+    'Echo': ',aecho=0.8:0.9:1000|1800:0.3|0.25',
+    'Robot': ",afftfilt=real='hypot(re,im)*sin(0)':imag='hypot(re,im)*cos(0)':win_size=512:overlap=0.75",
+    'Reverse': ',areverse',
+    'Tremolo': ',tremolo=f=10:d=1',
+  };
+
+  double effectSliderVal = 0.0;
+
+  String get selectedEffect {
+    return effects.keys.toList()[effectSliderVal.round()];
+  }
 
   @override
   void dispose() {
@@ -130,7 +145,7 @@ class HumanMessageRecorderState extends State<HumanMessageRecorder>
     if (speedChange < .5) speedChange = .5;
 
     await FFMpeg.process.execute(
-        '-i ${message.filePath} -filter:a "asetrate=44100*$pitchChange,aresample=44100,atempo=$speedChange" -vn ${message.alteredFilePath}');
+        '-i ${message.filePath} -filter_complex "asetrate=44100*$pitchChange,aresample=44100,atempo=$speedChange${effects[selectedEffect]}" -vn ${message.alteredFilePath}');
     print("site of error");
     message.alteredAmplitudes =
         await AmplitudeExtractor.getAmplitudes(message.alteredFilePath);
@@ -145,6 +160,7 @@ class HumanMessageRecorderState extends State<HumanMessageRecorder>
           child: Stack(
             children: <Widget>[
               GestureDetector(
+                behavior: HitTestBehavior.translucent,
                 onTap: () {
                   if (cards.current.hasSongFormula)
                     currentActivity.setPreviousSubStep();
@@ -182,8 +198,17 @@ class HumanMessageRecorderState extends State<HumanMessageRecorder>
     );
   }
 
-  _canAddMessage() {
+  bool _canAddMessage() {
     return message.exists && !_isRecording;
+  }
+
+  void _resetSliders() {
+    setState(() {
+      messageSpeed = 100;
+      messagePitch = 100;
+      effectSliderVal = 0.0;
+    });
+    message.deleteAlteredFiles();
   }
 
   @override
@@ -283,122 +308,140 @@ class HumanMessageRecorderState extends State<HumanMessageRecorder>
             )
           ],
         ),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(top: 10),
-                  ),
-                  Text("Pitch",
+        Padding(
+          padding: const EdgeInsets.only(top: 0.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Expanded(
+                child: Column(
+                  children: <Widget>[
+                    Text("Pitch",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold)),
+                    Slider(
+                      value: messagePitch,
+                      min: 0,
+                      max: 200,
+                      activeColor: Colors.blue,
+                      inactiveColor: Colors.grey,
+                      onChanged:
+                          _isProcessingAudio || !message.exists || _isRecording
+                              ? null
+                              : (value) {
+                                  soundController.stopPlayer();
+                                  imageController.stopAnimation();
+                                  setState(() {
+                                    messagePitch = value;
+                                    _hasShifted = true;
+                                  });
+                                },
+                      onChangeEnd: (value) async {
+                        setState(() {
+                          messagePitch = value;
+                          _isProcessingAudio = true;
+                        });
+                        generateAlteredAudioFiles();
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Column(
+                  children: <Widget>[
+                    Text("Speed",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold)),
+                    Slider(
+                      value: messageSpeed,
+                      min: 0,
+                      max: 200,
+                      activeColor: Colors.blue,
+                      inactiveColor: Colors.grey,
+                      onChanged:
+                          _isProcessingAudio || !message.exists || _isRecording
+                              ? null
+                              : (value) async {
+                                  soundController.stopPlayer();
+                                  imageController.stopAnimation();
+                                  setState(() {
+                                    messageSpeed = value;
+                                    _hasShifted = true;
+                                  });
+                                },
+                      onChangeEnd: (value) {
+                        setState(() {
+                          messageSpeed = value;
+                          _isProcessingAudio = true;
+                        });
+                        generateAlteredAudioFiles();
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Column(
+                  children: <Widget>[
+                    Text(
+                      "Effect",
+                      // selectedEffect,
                       style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  Slider(
-                    value: messagePitch,
-                    min: 0,
-                    max: 200,
-                    activeColor: Colors.blue,
-                    inactiveColor: Colors.grey,
-                    onChanged:
-                        _isProcessingAudio || !message.exists || _isRecording
-                            ? null
-                            : (value) {
-                                soundController.stopPlayer();
-                                imageController.stopAnimation();
-                                setState(() {
-                                  messagePitch = value;
-                                  _hasShifted = true;
-                                });
-                              },
-                    onChangeEnd: (value) async {
-                      setState(() {
-                        messagePitch = value;
-                        _isProcessingAudio = true;
-                      });
-                      generateAlteredAudioFiles();
-                    },
-                  ),
-                ],
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    Slider(
+                      value: effectSliderVal,
+                      divisions: effects.length - 1,
+                      min: 0,
+                      max: effects.length.toDouble() - 1,
+                      activeColor: Colors.blue,
+                      inactiveColor: Colors.grey,
+                      label: selectedEffect,
+                      onChanged:
+                          _isProcessingAudio || !message.exists || _isRecording
+                              ? null
+                              : (value) async {
+                                  soundController.stopPlayer();
+                                  imageController.stopAnimation();
+                                  setState(() {
+                                    effectSliderVal = value;
+                                    _hasShifted = true;
+                                  });
+                                },
+                      onChangeEnd: (value) {
+                        setState(() {
+                          _isProcessingAudio = true;
+                        });
+                        generateAlteredAudioFiles();
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        Center(
+          child: RawMaterialButton(
+            onPressed: _resetSliders,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              child: Text(
+                "reset sliders",
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.bold),
               ),
             ),
-            Expanded(
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(top: 10),
-                  ),
-                  Text("Speed",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  Slider(
-                    value: messageSpeed,
-                    min: 0,
-                    max: 200,
-                    activeColor: Colors.blue,
-                    inactiveColor: Colors.grey,
-                    onChanged:
-                        _isProcessingAudio || !message.exists || _isRecording
-                            ? null
-                            : (value) async {
-                                soundController.stopPlayer();
-                                imageController.stopAnimation();
-                                setState(() {
-                                  messageSpeed = value;
-                                  _hasShifted = true;
-                                });
-                              },
-                    onChangeEnd: (value) {
-                      setState(() {
-                        messageSpeed = value;
-                        _isProcessingAudio = true;
-                      });
-                      generateAlteredAudioFiles();
-                    },
-                  ),
-                ],
-              ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30.0),
+              side: BorderSide(color: Theme.of(context).primaryColor, width: 3),
             ),
-            Expanded(
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(top: 10),
-                  ),
-                  Text("Effect",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  Slider(
-                    value: messageSpeed,
-                    min: 0,
-                    max: 200,
-                    activeColor: Colors.blue,
-                    inactiveColor: Colors.grey,
-                    onChanged: null,
-                    // _isProcessingAudio || !message.exists || _isRecording
-                    //     ? null
-                    //     : (value) async {
-                    //         soundController.stopPlayer();
-                    //         imageController.stopAnimation();
-                    //         setState(() {
-                    //           messageSpeed = value;
-                    //           _hasShifted = true;
-                    //         });
-                    //       },
-                    onChangeEnd: (value) {
-                      setState(() {
-                        messageSpeed = value;
-                        _isProcessingAudio = true;
-                      });
-                      generateAlteredAudioFiles();
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ],
+            elevation: 5,
+            // padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 2),
+          ),
         ),
       ],
     );

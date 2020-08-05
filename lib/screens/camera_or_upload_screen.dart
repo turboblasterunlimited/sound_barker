@@ -90,6 +90,7 @@ class CameraOrUploadScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
                 onTap: () {
                   Navigator.of(context).pop();
                 },

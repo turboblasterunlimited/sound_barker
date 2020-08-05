@@ -45,27 +45,20 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
             onTap: () {
               Navigator.pushNamed(context, CameraOrUploadScreen.routeName);
             },
-            child: Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
-                border: Border.all(
-                  color: Colors.black,
-                  width: 8,
-                ),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Icon(Icons.add,
-                      color: Theme.of(context).primaryColor, size: 20),
-                  Text(
-                    "Your Dog Here",
-                    style: TextStyle(
-                        fontSize: 18, color: Theme.of(context).primaryColor),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Theme.of(context).primaryColor,
+                    width: 3,
                   ),
-                ],
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Center(
+                  child: Icon(Icons.add,
+                      color: Theme.of(context).primaryColor, size: 50),
+                ),
               ),
             ),
           ),
@@ -148,7 +141,15 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
               padding: const EdgeInsets.all(20.0),
               child: Stack(
                 children: <Widget>[
+                  Center(
+                    child: Text(
+                      'PHOTO LIBRARY',
+                      style: TextStyle(
+                          fontSize: 20, color: Theme.of(context).primaryColor),
+                    ),
+                  ),
                   GestureDetector(
+                    behavior: HitTestBehavior.translucent,
                     onTap: () {
                       Navigator.of(context)
                           .popAndPushNamed(MenuScreen.routeName);
@@ -158,30 +159,20 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
                       Text('Back'),
                     ]),
                   ),
-                  Center(
-                    child: Text('PHOTO LIBRARY',
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: Theme.of(context).primaryColor)),
-                  ),
                 ],
               ),
             ),
             Expanded(
               child: CustomScrollView(
                 slivers: <Widget>[
-                  SliverList(
-                    delegate: _dogGridDivider("Your Dogs")
-                  ),
+                  SliverList(delegate: _dogGridDivider("Your Dogs")),
                   SliverGrid.count(
                     children: _usersPictureGridTiles(),
                     crossAxisCount: 3,
                     crossAxisSpacing: 3,
                     mainAxisSpacing: 3,
                   ),
-                  SliverList(
-                    delegate: _dogGridDivider("Stock Dogs")
-                  ),
+                  SliverList(delegate: _dogGridDivider("Stock Dogs")),
                   SliverGrid.count(
                     children: _pictureGridTiles(pictures.stockPictures),
                     crossAxisCount: 3,

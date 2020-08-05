@@ -7,6 +7,7 @@ import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/spinner_state.dart';
+
 // cardCreationSubstep.isFive
 class SongArrangementSelector extends StatelessWidget {
   @override
@@ -43,6 +44,7 @@ class SongArrangementSelector extends StatelessWidget {
                 child: Stack(
                   children: <Widget>[
                     GestureDetector(
+                      behavior: HitTestBehavior.translucent,
                       onTap: () {
                         currentActivity.setPreviousSubStep();
                       },
@@ -62,7 +64,9 @@ class SongArrangementSelector extends StatelessWidget {
               ),
             ],
           ),
-          Padding(padding: EdgeInsets.all(20),),
+          Padding(
+            padding: EdgeInsets.all(20),
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[

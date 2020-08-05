@@ -13,7 +13,8 @@ class CreatableSongSelectScreen extends StatefulWidget {
   CreatableSongSelectScreen();
 
   @override
-  _CreatableSongSelectScreenState createState() => _CreatableSongSelectScreenState();
+  _CreatableSongSelectScreenState createState() =>
+      _CreatableSongSelectScreenState();
 }
 
 class _CreatableSongSelectScreenState extends State<CreatableSongSelectScreen> {
@@ -21,7 +22,6 @@ class _CreatableSongSelectScreenState extends State<CreatableSongSelectScreen> {
   CreatableSongs creatableSongs;
   KaraokeCards cards;
   CurrentActivity currentActivity;
-
 
   void initState() {
     super.initState();
@@ -76,6 +76,7 @@ class _CreatableSongSelectScreenState extends State<CreatableSongSelectScreen> {
               child: Stack(
                 children: <Widget>[
                   GestureDetector(
+                    behavior: HitTestBehavior.translucent,
                     onTap: () {
                       Navigator.of(context).pop();
                     },
@@ -102,7 +103,10 @@ class _CreatableSongSelectScreenState extends State<CreatableSongSelectScreen> {
                 padding: const EdgeInsets.all(10),
                 itemCount: creatableSongs.all.length,
                 itemBuilder: (ctx, i) => CreatableSongCard(
-                    creatableSongs.all[i], soundController, cards, currentActivity),
+                    creatableSongs.all[i],
+                    soundController,
+                    cards,
+                    currentActivity),
               ),
             ),
           ],

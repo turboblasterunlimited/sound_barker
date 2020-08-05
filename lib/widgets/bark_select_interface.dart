@@ -115,7 +115,8 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
     barks = Provider.of<Barks>(context);
     soundController = Provider.of<SoundController>(context);
     currentActivity = Provider.of<CurrentActivity>(context);
-    print("Bark select interface and Substep: ${currentActivity.cardCreationSubStep}");
+    print(
+        "Bark select interface and Substep: ${currentActivity.cardCreationSubStep}");
     _updateDisplayBarks();
 
     return Expanded(
@@ -128,6 +129,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
                 child: Stack(
                   children: <Widget>[
                     GestureDetector(
+                      behavior: HitTestBehavior.translucent,
                       onTap: () {
                         currentActivity.setPreviousSubStep();
                       },
