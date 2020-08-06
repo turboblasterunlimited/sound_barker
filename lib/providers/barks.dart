@@ -58,13 +58,7 @@ class Barks with ChangeNotifier {
 
     barks.forEach((serverBark) async {
       if (serverBark["hidden"] == 1) return;
-      Bark bark = Bark(
-        isStock: serverBark["is_stock"] == 1 ? true : false,
-        name: serverBark["name"],
-        fileUrl: serverBark["bucket_fp"],
-        fileId: serverBark["uuid"],
-        created: DateTime.parse(serverBark["created"]),
-      );
+      Bark bark = _serverDataToBark(serverBark);
       tempBarks.add(bark);
     });
     await downloadAllBarksFromBucket(tempBarks);
@@ -126,7 +120,7 @@ class Barks with ChangeNotifier {
     }
   }
 
-    String _lengthAdjective(double seconds) {
+  String _lengthAdjective(double seconds) {
     if (seconds < 0.7)
       return "short";
     else if (seconds < 1.1)
@@ -135,19 +129,25 @@ class Barks with ChangeNotifier {
       return "long";
   }
 
-  Future<List> parseCroppedBarks(List cloudBarkData) async {
+  Future<List> parseCroppedBarks(List serverBarks) async {
     List newBarks = [];
-    int barkCount = cloudBarkData.length;
+    int barkCount = serverBarks.length;
     for (var i = 0; i < barkCount; i++) {
-      newBarks.add(Bark(
-        fileId: cloudBarkData[i]["uuid"],
-        name: cloudBarkData[i]["name"],
-        fileUrl: cloudBarkData[i]["bucket_fp"],
-        created: DateTime.parse(cloudBarkData[i]["created"]),
-        length: _lengthAdjective(cloudBarkData[i]["duration_seconds"]),
-      ));
+      newBarks.add(_serverDataToBark(serverBarks[i]));
     }
+    print("from parse cropped: $newBarks");
     return newBarks;
+  }
+
+  _serverDataToBark(serverBark) {
+    return Bark(
+      isStock: serverBark["is_stock"] == 1 ? true : false,
+      name: serverBark["name"],
+      fileUrl: serverBark["bucket_fp"],
+      fileId: serverBark["uuid"],
+      created: DateTime.parse(serverBark["created"]),
+      length: _lengthAdjective(serverBark["duration_seconds"]),
+    );
   }
 }
 

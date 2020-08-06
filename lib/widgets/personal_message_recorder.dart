@@ -425,7 +425,7 @@ class PersonalMessageRecorderState extends State<PersonalMessageRecorder>
             ],
           ),
         ),
-        Center(
+        if (_hasShifted) Center(
           child: RawMaterialButton(
             onPressed: _resetSliders,
             child: Padding(
