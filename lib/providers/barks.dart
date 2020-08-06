@@ -126,6 +126,15 @@ class Barks with ChangeNotifier {
     }
   }
 
+    String _lengthAdjective(double seconds) {
+    if (seconds < 0.7)
+      return "short";
+    else if (seconds < 1.1)
+      return "medium";
+    else
+      return "long";
+  }
+
   Future<List> parseCroppedBarks(List cloudBarkData) async {
     List newBarks = [];
     int barkCount = cloudBarkData.length;
@@ -135,7 +144,7 @@ class Barks with ChangeNotifier {
         name: cloudBarkData[i]["name"],
         fileUrl: cloudBarkData[i]["bucket_fp"],
         created: DateTime.parse(cloudBarkData[i]["created"]),
-        length: cloudBarkData[i]["duration_seconds"],
+        length: _lengthAdjective(cloudBarkData[i]["duration_seconds"]),
       ));
     }
     return newBarks;
@@ -176,17 +185,6 @@ class Bark with ChangeNotifier {
   String get getName {
     if (name == "" || name == null) return "Unnamed";
     return name;
-  }
-
-  void setLengthProp(int milliseconds) {
-    if (milliseconds < 700)
-      this.length = "short";
-    else if (milliseconds < 1100)
-      this.length = "medium";
-    else
-      this.length = "long";
-    print("Bark length: $length");
-    notifyListeners();
   }
 
   Future<void> rename(newName) async {
