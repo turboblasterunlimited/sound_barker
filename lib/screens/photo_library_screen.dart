@@ -119,7 +119,7 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
                 shape: CircleBorder(),
                 elevation: 2.0,
                 onPressed: () {
-                  Navigator.of(context).popAndPushNamed(MenuScreen.routeName);
+                  Navigator.of(context).pushNamed(MenuScreen.routeName);
                 },
               ),
             ),
@@ -152,7 +152,7 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
                     behavior: HitTestBehavior.translucent,
                     onTap: () {
                       Navigator.of(context)
-                          .popAndPushNamed(MenuScreen.routeName);
+                          .pushNamed(MenuScreen.routeName);
                     },
                     child: Row(children: <Widget>[
                       Icon(LineAwesomeIcons.angle_left),

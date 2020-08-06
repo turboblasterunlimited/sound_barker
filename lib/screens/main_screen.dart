@@ -52,20 +52,16 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Future<void> _navigate() async {
-    if (pictures.all.isEmpty)
-      startCreateCard();
-    else
-      showMenu();
-  }
-
-  void startCreateCard() {
-    currentActivity.startCreateCard(cards.newCurrent);
-    Navigator.of(context).pushNamed(PhotoLibraryScreen.routeName);
-  }
-
-  void showMenu() {
+    // if (pictures.all.isEmpty)
+    //   startCreateCard();
+    // else
     Navigator.of(context).pushNamed(MenuScreen.routeName);
   }
+
+  // void startCreateCard() {
+  //   currentActivity.startCreateCard(cards.newCurrent);
+  //   Navigator.of(context).pushNamed(PhotoLibraryScreen.routeName);
+  // }
 
   @override
   void initState() {

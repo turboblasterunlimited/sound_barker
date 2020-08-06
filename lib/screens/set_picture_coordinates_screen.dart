@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
+import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/widgets/card_progress_bar.dart';
 import 'package:flutter/material.dart';
@@ -87,8 +88,7 @@ class _SetPictureCoordinatesScreenState
     print("imageSizeDifference: $imageSizeDifference");
     var bytes = File(widget.newPicture.filePath).readAsBytesSync();
     print("bytes count: ${bytes.length}");
-    imageData =
-        IMG.decodeImage(bytes);
+    imageData = IMG.decodeImage(bytes);
     imageDataBytes =
         IMG.encodePng(IMG.copyResize(imageData, width: magImageSize));
   }
@@ -288,7 +288,7 @@ class _SetPictureCoordinatesScreenState
                 shape: CircleBorder(),
                 elevation: 2.0,
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pushNamed(MenuScreen.routeName);
                 },
               ),
             ),
@@ -409,60 +409,75 @@ class _SetPictureCoordinatesScreenState
               ),
             ),
             CardProgressBar(),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(top: 20.0, bottom: 20),
-                  child: Text(_instructionalText,
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Stack(
+                children: <Widget>[
+                  GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: () {
+                      Navigator.popAndPushNamed(
+                          context, PhotoLibraryScreen.routeName);
+                    },
+                    child: Row(children: <Widget>[
+                      Icon(LineAwesomeIcons.angle_left),
+                      Text('Back'),
+                    ]),
+                  ),
+                  Center(
+                    child: Text(
+                      _instructionalText,
                       style: TextStyle(
-                          fontSize: 20, color: Theme.of(context).primaryColor)),
+                          fontSize: 20, color: Theme.of(context).primaryColor),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                RawMaterialButton(
+                  onPressed: () {
+                    Navigator.popAndPushNamed(
+                        context, PhotoLibraryScreen.routeName);
+                  },
+                  child: Text(
+                    "Reset",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 40,
+                    ),
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                  elevation: 2.0,
+                  fillColor: Theme.of(context).errorColor,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    RawMaterialButton(
-                      onPressed: () {
-                        cards.setCurrentName(_tempName);
-                        Navigator.popAndPushNamed(
-                            context, PhotoLibraryScreen.routeName);
-                      },
-                      child: Icon(
-                        Icons.close,
-                        color: Colors.white,
-                        size: 40,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      elevation: 2.0,
-                      fillColor: Theme.of(context).errorColor,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 40.0, vertical: 2),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(10),
-                    ),
-                    RawMaterialButton(
-                      onPressed: handleSubmitButton,
-                      child: Icon(
-                        Icons.check,
-                        color: Colors.white,
-                        size: 40,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      elevation: 2.0,
-                      fillColor: widget.editing ||
-                              (widget.isNamed & widget.coordinatesSet)
+                Padding(
+                  padding: EdgeInsets.all(10),
+                ),
+                RawMaterialButton(
+                  onPressed: handleSubmitButton,
+                  child: Icon(
+                    Icons.check,
+                    color: Colors.white,
+                    size: 40,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                  elevation: 2.0,
+                  fillColor:
+                      widget.editing || (widget.isNamed & widget.coordinatesSet)
                           ? Theme.of(context).primaryColor
                           : Colors.grey,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 40.0, vertical: 2),
-                    ),
-                  ],
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
                 ),
               ],
             ),

@@ -3,6 +3,7 @@ import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/screens/set_picture_coordinates_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 
 int hexOfRGB(int r, int g, int b) {
@@ -105,10 +106,35 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
       child: Column(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.only(top: 10.0, bottom: 10),
-            child: Text("CHOOSE MOUTH TONE",
-                style: TextStyle(
-                    fontSize: 20, color: Theme.of(context).primaryColor)),
+            padding: const EdgeInsets.all(10.0),
+            child: Stack(
+              children: <Widget>[
+                GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SetPictureCoordinatesScreen(
+                            card.picture,
+                            editing: true),
+                      ),
+                    );
+                  },
+                  child: Row(children: <Widget>[
+                    Icon(LineAwesomeIcons.angle_left),
+                    Text('Back'),
+                  ]),
+                ),
+                Center(
+                  child: Text(
+                    'MOUTH TONE',
+                    style: TextStyle(
+                        fontSize: 20, color: Theme.of(context).primaryColor),
+                  ),
+                ),
+              ],
+            ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 20.0),
@@ -171,53 +197,22 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
               ],
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              RawMaterialButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SetPictureCoordinatesScreen(
-                          card.picture,
-                          editing: true),
-                    ),
-                  );
-                },
-                child: Icon(
-                  Icons.close,
-                  color: Colors.white,
-                  size: 40,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30.0),
-                ),
-                elevation: 2.0,
-                fillColor: Theme.of(context).errorColor,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
+          Center(
+            child: RawMaterialButton(
+              onPressed: handleSubmitButton,
+              child: Icon(
+                Icons.check,
+                color: Colors.white,
+                size: 40,
               ),
-              Padding(
-                padding: EdgeInsets.all(10),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
               ),
-              RawMaterialButton(
-                onPressed: handleSubmitButton,
-                child: Icon(
-                  Icons.check,
-                  color: Colors.white,
-                  size: 40,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30.0),
-                ),
-                elevation: 2.0,
-                fillColor: Theme.of(context).primaryColor,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
-              ),
-            ],
+              elevation: 2.0,
+              fillColor: Theme.of(context).primaryColor,
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
+            ),
           ),
         ],
       ),
