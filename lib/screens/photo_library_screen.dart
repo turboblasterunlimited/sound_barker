@@ -1,16 +1,11 @@
-import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'package:K9_Karaoke/providers/pictures.dart';
 import 'package:K9_Karaoke/screens/camera_or_upload_screen.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
-import 'package:K9_Karaoke/screens/set_picture_coordinates_screen.dart';
-import 'package:K9_Karaoke/tools/app_storage_path.dart';
-import 'package:K9_Karaoke/tools/cropper.dart';
+import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:K9_Karaoke/widgets/picture_card.dart';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:line_awesome_icons/line_awesome_icons.dart';
-import 'package:provider/provider.dart';
 
 class PhotoLibraryScreen extends StatefulWidget {
   static const routeName = 'photo-library-screen';
@@ -137,30 +132,11 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
         ),
         child: Column(
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Stack(
-                children: <Widget>[
-                  Center(
-                    child: Text(
-                      'PHOTO LIBRARY',
-                      style: TextStyle(
-                          fontSize: 20, color: Theme.of(context).primaryColor),
-                    ),
-                  ),
-                  GestureDetector(
-                    behavior: HitTestBehavior.translucent,
-                    onTap: () {
-                      Navigator.of(context)
-                          .pushNamed(MenuScreen.routeName);
-                    },
-                    child: Row(children: <Widget>[
-                      Icon(LineAwesomeIcons.angle_left),
-                      Text('Back'),
-                    ]),
-                  ),
-                ],
-              ),
+            interfaceTitleNav(
+              context,
+              "PHOTO LIBRARY",
+              backCallback: () =>
+                  Navigator.of(context).pushNamed(MenuScreen.routeName),
             ),
             Expanded(
               child: CustomScrollView(
@@ -182,25 +158,6 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
                 ],
               ),
             )
-            // Expanded(
-            //   child: Center(
-            //     child: GridView.builder(
-            //       padding: const EdgeInsets.all(10),
-            //       itemCount: pictures.stockPictures.length,
-            // itemBuilder: (_, i) => ChangeNotifierProvider.value(
-            //   value: pictures.stockPictures[i],
-            //   key: UniqueKey(),
-            //   child: PictureCard(i, pictures.stockPictures[i], pictures),
-            // ),
-            //       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            //         crossAxisCount: 3,
-            //         // childAspectRatio: 3 / 2,
-            //         crossAxisSpacing: 3,
-            //         mainAxisSpacing: 3,
-            //       ),
-            //     ),
-            //   ),
-            // ),
           ],
         ),
       ),

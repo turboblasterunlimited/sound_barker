@@ -4,6 +4,7 @@ import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/widgets/card_progress_bar.dart';
+import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'dart:io';
@@ -93,30 +94,32 @@ class _SetPictureCoordinatesScreenState
         IMG.encodePng(IMG.copyResize(imageData, width: magImageSize));
   }
 
-  Map<String, List<double>> getCoordinatesForCanvas() {
-    if (canvasCoordinates.length != 0) return canvasCoordinates;
+  _puppetXtoCanvasX(x) {
+    double offset = x * middle * 2;
+    return offset + middle;
+  }
 
-    _puppetXtoCanvasX(x) {
-      double offset = x * middle * 2;
-      return offset + middle;
-    }
+  _puppetYtoCanvasY(y) {
+    double offset = y * middle * 2;
+    if (offset < 0)
+      offset = offset.abs();
+    else
+      offset = 0 - offset;
+    return offset + middle;
+  }
 
-    _puppetYtoCanvasY(y) {
-      double offset = y * middle * 2;
-      if (offset < 0)
-        offset = offset.abs();
-      else
-        offset = 0 - offset;
-      return offset + middle;
-    }
-
+  void setCanvasCoordinatesFromPicture() {
     widget.newPicture.coordinates.forEach((key, xy) {
       canvasCoordinates[key] = [
         _puppetXtoCanvasX(xy[0]),
         _puppetYtoCanvasY(xy[1])
       ];
     });
+  }
 
+  Map<String, List<double>> getCoordinatesForCanvas() {
+    if (canvasCoordinates.length != 0) return canvasCoordinates;
+    setCanvasCoordinatesFromPicture();
     return canvasCoordinates;
   }
 
@@ -219,6 +222,11 @@ class _SetPictureCoordinatesScreenState
       _instructionalText = _getInstructionalText();
     });
     FocusScope.of(context).unfocus();
+  }
+
+  Function _backCallback() {
+    if (!widget.editing) widget.newPicture.delete();
+    Navigator.popAndPushNamed(context, PhotoLibraryScreen.routeName);
   }
 
   @override
@@ -409,52 +417,38 @@ class _SetPictureCoordinatesScreenState
               ),
             ),
             CardProgressBar(),
+            interfaceTitleNav(
+              context,
+              _instructionalText,
+              backCallback: _backCallback,
+            ),
             Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Stack(
-                children: <Widget>[
-                  GestureDetector(
-                    behavior: HitTestBehavior.translucent,
-                    onTap: () {
-                      Navigator.popAndPushNamed(
-                          context, PhotoLibraryScreen.routeName);
-                    },
-                    child: Row(children: <Widget>[
-                      Icon(LineAwesomeIcons.angle_left),
-                      Text('Back'),
-                    ]),
-                  ),
-                  Center(
-                    child: Text(
-                      _instructionalText,
-                      style: TextStyle(
-                          fontSize: 20, color: Theme.of(context).primaryColor),
-                    ),
-                  ),
-                ],
-              ),
+              padding: EdgeInsets.all(20),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 RawMaterialButton(
-                  onPressed: () {
-                    Navigator.popAndPushNamed(
-                        context, PhotoLibraryScreen.routeName);
-                  },
-                  child: Text(
-                    "Reset",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 40,
+                  onPressed: setCanvasCoordinatesFromPicture,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8),
+                    child: Text(
+                      "Reset",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                      ),
                     ),
                   ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30.0),
                   ),
                   elevation: 2.0,
-                  fillColor: Theme.of(context).errorColor,
+                  fillColor:
+                      widget.editing || (widget.isNamed & widget.coordinatesSet)
+                          ? Theme.of(context).errorColor
+                          : Colors.grey,
                   padding:
                       const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
                 ),

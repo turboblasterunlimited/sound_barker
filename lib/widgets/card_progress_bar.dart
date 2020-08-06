@@ -1,5 +1,6 @@
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
+import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/screens/set_picture_coordinates_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -41,12 +42,15 @@ class CardProgressBar extends StatelessWidget {
 
     void navigateToSnap() {
       currentActivity.setCardCreationStep(CardCreationSteps.snap);
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) =>
-              SetPictureCoordinatesScreen(card.picture, editing: true),
-        ),
-      );
+      if (card.picture.isStock)
+        Navigator.of(context).pushNamed(PhotoLibraryScreen.routeName);
+      else
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) =>
+                SetPictureCoordinatesScreen(card.picture, editing: true),
+          ),
+        );
     }
 
     void navigateToSong() {
@@ -77,12 +81,16 @@ class CardProgressBar extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
         progressButton("SNAP", card.hasPicture, currentActivity.isSnap,
-            navigateToSnap, cardPictureIsStock()),
+            navigateToSnap, true),
         progressButton("SONG", card.hasSong || card.hasSongFormula,
             currentActivity.isSong, navigateToSong, card.hasPicture),
         // Can click only if creating a new song
-        progressButton("SPEAK", card.hasBarks || card.hasSong,
-            currentActivity.isSpeak, navigateToSpeak, card.hasSongFormula || card.hasSong),
+        progressButton(
+            "SPEAK",
+            card.hasBarks || card.hasSong,
+            currentActivity.isSpeak,
+            navigateToSpeak,
+            card.hasSongFormula || card.hasSong),
         progressButton("STYLE", card.hasDecoration, currentActivity.isStyle,
             navigateToStyle, card.hasSong),
       ],

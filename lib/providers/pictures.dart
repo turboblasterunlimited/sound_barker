@@ -130,6 +130,10 @@ class Picture with ChangeNotifier, Gcloud {
     this.isStock = isStock ?? false;
   }
 
+  void delete() {
+    if (File(filePath).existsSync()) File(filePath).deleteSync();
+  }
+
   void setName(String newName) {
     this.name = newName;
     RestAPI.updateImage(this);
