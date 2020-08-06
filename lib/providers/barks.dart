@@ -76,15 +76,6 @@ class Barks with ChangeNotifier {
     });
   }
 
-  Future<void> _setLengthProp(Bark bark) async {
-    String tempPath = myAppStoragePath + "/temp_file.wav";
-    await FFMpeg.process.execute('-i ${bark.filePath} $tempPath');
-    Map info = await FFMpeg.probe.getMediaInformation(tempPath);
-    var duration = info["duration"].toString();
-    bark.setLengthProp(int.parse(duration));
-    File(tempPath).deleteSync();
-  }
-
   // downloads the files either from all barks in memory or just the barks passed.
   Future downloadAllBarksFromBucket([List barks]) async {
     print("downloading all barks");
@@ -108,7 +99,6 @@ class Barks with ChangeNotifier {
         await AmplitudeExtractor.createAmplitudeFile(
             barks[i].filePath, filePathBase);
       }
-      await _setLengthProp(barks[i]);
     }
   }
 
@@ -127,8 +117,7 @@ class Barks with ChangeNotifier {
 
   Future<List> uploadRawBarkAndRetrieveCroppedBarks(imageId) async {
     await Gcloud.uploadAsset(tempRawBark.fileId, tempRawBark.filePath, false);
-    List responseBody =
-        await RestAPI.splitRawBark(tempRawBark.fileId, imageId);
+    List responseBody = await RestAPI.splitRawBark(tempRawBark.fileId, imageId);
     List newBarks = await parseCroppedBarks(responseBody);
     await downloadAllBarksFromBucket(newBarks);
     int length = newBarks.length;
@@ -146,6 +135,7 @@ class Barks with ChangeNotifier {
         name: cloudBarkData[i]["name"],
         fileUrl: cloudBarkData[i]["bucket_fp"],
         created: DateTime.parse(cloudBarkData[i]["created"]),
+        length: cloudBarkData[i]["duration_seconds"],
       ));
     }
     return newBarks;
