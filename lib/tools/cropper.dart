@@ -10,7 +10,7 @@ Future<void> resizeImage(filePath) async {
   await File(filePath).writeAsBytes(jpg);
 }
 
-Future<void> cropImage(picture, toolbarColor, widgetColor) async {
+Future<bool> cropImage(picture, toolbarColor, widgetColor) async {
   File newFile = await ImageCropper.cropImage(
     sourcePath: picture.filePath,
     aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
@@ -27,8 +27,9 @@ Future<void> cropImage(picture, toolbarColor, widgetColor) async {
     ),
   );
   print("Rename File: ${picture.filePath}");
-  if (newFile == null) return;
+  if (newFile == null) return false;
   newFile.renameSync(picture.filePath);
   // make it 512x512
   resizeImage(picture.filePath);
+  return true;
 }

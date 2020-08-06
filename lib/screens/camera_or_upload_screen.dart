@@ -16,7 +16,9 @@ class CameraOrUploadScreen extends StatelessWidget {
   BuildContext context;
 
   Future<void> _cropAndNavigate(newPicture) async {
-    await cropImage(newPicture, Theme.of(context).primaryColor, Colors.white);
+    bool cropped = await cropImage(
+        newPicture, Theme.of(context).primaryColor, Colors.white);
+    if (!cropped) return;
     Navigator.push(
       context,
       MaterialPageRoute(
