@@ -28,7 +28,6 @@ class PersonalMessageRecorderState extends State<PersonalMessageRecorder>
     with TickerProviderStateMixin {
   StreamSubscription _recorderSubscription;
   SoundController soundController;
-  bool _isPlaying = false;
   bool _isRecording = false;
   bool _hasShifted = false;
   bool _isProcessingAudio = false;
@@ -49,7 +48,8 @@ class PersonalMessageRecorderState extends State<PersonalMessageRecorder>
     'None': "",
     'Chorus': ',aecho=0.8:0.88:60:0.4',
     'Echo': ',aecho=0.8:0.9:1000|1800:0.3|0.25',
-    'Robot': ",afftfilt=real='hypot(re,im)*sin(0)':imag='hypot(re,im)*cos(0)':win_size=512:overlap=0.75",
+    'Robot':
+        ",afftfilt=real='hypot(re,im)*sin(0)':imag='hypot(re,im)*cos(0)':win_size=512:overlap=0.75",
     'Reverse': ',areverse',
     'Tremolo': ',tremolo=f=10:d=1',
   };
@@ -173,14 +173,17 @@ class PersonalMessageRecorderState extends State<PersonalMessageRecorder>
                 ]),
               ),
               Center(
-                child: Text("PERSONAL MESSAGE",
-                    style: TextStyle(
-                        fontSize: 17, color: Theme.of(context).primaryColor)),
+                child: Text(
+                  "PERSONAL MESSAGE",
+                  style: TextStyle(
+                      fontSize: 17, color: Theme.of(context).primaryColor),
+                ),
               ),
               Positioned(
                 right: 10,
                 child: GestureDetector(
                   onTap: () {
+                    message.deleteEverything();
                     currentActivity.setNextSubStep();
                   },
                   child: Row(
@@ -219,7 +222,6 @@ class PersonalMessageRecorderState extends State<PersonalMessageRecorder>
     spinnerState = Provider.of<SpinnerState>(context, listen: false);
     cards = Provider.of<KaraokeCards>(context, listen: false);
     message = cards.current.message;
-
     _createFilePaths();
 
     return Column(
