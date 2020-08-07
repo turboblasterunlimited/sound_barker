@@ -34,7 +34,7 @@ Widget interfaceTitleNav(BuildContext context, String title,
           right: 0,
           child: GestureDetector(
             behavior: HitTestBehavior.translucent,
-            onTap: backCallback,
+            onTap: skipCallback,
             child: Padding(
               padding: const EdgeInsets.all(10),
               child: Row(

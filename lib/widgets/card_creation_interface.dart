@@ -33,12 +33,12 @@ class CardCreationInterface extends StatelessWidget {
     }
 
     Widget _handleStyleWidget() {
-      // if (currentActivity.isOne)
-      //   return CardBorderSelectionInterface();
-      // else if (currentActivity.isTwo)
-      //   return CardDecorcatorInterface();
-      // else if (currentActivity.isThree)
-      //   return ShareCardInterface();
+      if (currentActivity.isOne)
+        return CardBorderSelectionInterface();
+      else if (currentActivity.isTwo)
+        return CardDecorcatorInterface();
+      else if (currentActivity.isThree)
+        return ShareCardInterface();
     }
 
     return Expanded(
