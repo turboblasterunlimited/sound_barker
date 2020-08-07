@@ -195,6 +195,7 @@ class PersonalMessageRecorderState extends State<PersonalMessageRecorder>
             backCallback: backCallback, skipCallback: skipCallback),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.only(top: 5.0),
@@ -237,40 +238,43 @@ class PersonalMessageRecorderState extends State<PersonalMessageRecorder>
                 ),
               ),
             ),
-            SizedBox(
-              height: 60,
-              width: 150,
-              child: !_canAddMessage()
-                  ? Center()
-                  : GestureDetector(
-                      onTap: () async {
-                        spinnerState.startLoading();
-                        await cards.current.combineMessageAndSong();
-                        spinnerState.stopLoading();
-                        currentActivity
-                            .setCardCreationStep(CardCreationSteps.style);
-                      },
-                      child: Transform.rotate(
-                        angle: _canAddMessage() ? _animation.value * 0.1 : 0,
-                        child: Container(
-                          // margin: EdgeInsets.only(bottom: 20.0),
-                          // padding: EdgeInsets.only(left: 10, right: 10, top: 10),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              shape: BoxShape.rectangle,
-                              color: Theme.of(context).primaryColor),
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 12.0),
-                            child: Text(
-                              "ADD MESSAGE\nAND CONTINUE",
-                              textAlign: TextAlign.center,
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 16),
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: SizedBox(
+                height: 60,
+                width: 150,
+                child: !_canAddMessage()
+                    ? Center()
+                    : GestureDetector(
+                        onTap: () async {
+                          spinnerState.startLoading();
+                          await cards.current.combineMessageAndSong();
+                          spinnerState.stopLoading();
+                          currentActivity
+                              .setCardCreationStep(CardCreationSteps.style);
+                        },
+                        child: Transform.rotate(
+                          angle: _canAddMessage() ? _animation.value * 0.1 : 0,
+                          child: Container(
+                            // margin: EdgeInsets.only(bottom: 20.0),
+                            // padding: EdgeInsets.only(left: 10, right: 10, top: 10),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                shape: BoxShape.rectangle,
+                                color: Theme.of(context).primaryColor),
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 12.0),
+                              child: Text(
+                                "ADD MESSAGE\nAND CONTINUE",
+                                textAlign: TextAlign.center,
+                                style:
+                                    TextStyle(color: Colors.white, fontSize: 16),
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
+              ),
             )
           ],
         ),
