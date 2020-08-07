@@ -112,7 +112,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   double _aspectRatio() {
-    if (cards.current.hasBorder) {
+    if (cards.current != null && cards.current.hasBorder) {
       return 0.8431876607;
     }
     return 1.0;
