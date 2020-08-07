@@ -3,6 +3,7 @@ import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/spinner_state.dart';
+import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -153,52 +154,16 @@ class PersonalMessageRecorderState extends State<PersonalMessageRecorder>
     cards.messageIsReady();
   }
 
-  Widget backSkipBar() {
-    return Row(
-      children: <Widget>[
-        Expanded(
-          child: Stack(
-            children: <Widget>[
-              GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onTap: () {
-                  if (cards.current.hasSongFormula)
-                    currentActivity.setPreviousSubStep();
-                  else
-                    currentActivity.setCardCreationStep(CardCreationSteps.song);
-                },
-                child: Row(children: <Widget>[
-                  Icon(LineAwesomeIcons.angle_left),
-                  Text('Back'),
-                ]),
-              ),
-              Center(
-                child: Text(
-                  "PERSONAL MESSAGE",
-                  style: TextStyle(
-                      fontSize: 17, color: Theme.of(context).primaryColor),
-                ),
-              ),
-              Positioned(
-                right: 10,
-                child: GestureDetector(
-                  onTap: () {
-                    message.deleteEverything();
-                    currentActivity.setNextSubStep();
-                  },
-                  child: Row(
-                    children: <Widget>[
-                      Icon(LineAwesomeIcons.angle_right),
-                      Text('Skip'),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
+  void backCallback() {
+    if (cards.current.hasSongFormula)
+      currentActivity.setPreviousSubStep();
+    else
+      currentActivity.setCardCreationStep(CardCreationSteps.song);
+  }
+
+  void skipCallback() {
+    message.deleteEverything();
+    currentActivity.setCardCreationStep(CardCreationSteps.style);
   }
 
   bool _canAddMessage() {
@@ -225,17 +190,16 @@ class PersonalMessageRecorderState extends State<PersonalMessageRecorder>
     _createFilePaths();
 
     return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        backSkipBar(),
+        interfaceTitleNav(context, "PERSONAL MESSAGE",
+            backCallback: backCallback, skipCallback: skipCallback),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.only(top: 22.0),
+              padding: const EdgeInsets.only(top: 5.0),
               child: SizedBox(
-                height: 120,
+                height: 110,
                 width: 120,
                 child: Column(
                   children: <Widget>[
@@ -253,7 +217,7 @@ class PersonalMessageRecorderState extends State<PersonalMessageRecorder>
                               _isRecording
                                   ? Icons.stop
                                   : Icons.fiber_manual_record,
-                              size: 30,
+                              size: 25,
                               color: Colors.white,
                             ),
                       shape: _isRecording
@@ -274,7 +238,7 @@ class PersonalMessageRecorderState extends State<PersonalMessageRecorder>
               ),
             ),
             SizedBox(
-              height: 80,
+              height: 60,
               width: 150,
               child: !_canAddMessage()
                   ? Center()
@@ -289,14 +253,14 @@ class PersonalMessageRecorderState extends State<PersonalMessageRecorder>
                       child: Transform.rotate(
                         angle: _canAddMessage() ? _animation.value * 0.1 : 0,
                         child: Container(
-                          // margin: EdgeInsets.symmetric(horizontal: 24.0),
+                          // margin: EdgeInsets.only(bottom: 20.0),
                           // padding: EdgeInsets.only(left: 10, right: 10, top: 10),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
                               shape: BoxShape.rectangle,
                               color: Theme.of(context).primaryColor),
                           child: Padding(
-                            padding: const EdgeInsets.only(top: 20.0),
+                            padding: const EdgeInsets.only(top: 12.0),
                             child: Text(
                               "ADD MESSAGE\nAND CONTINUE",
                               textAlign: TextAlign.center,
@@ -425,26 +389,28 @@ class PersonalMessageRecorderState extends State<PersonalMessageRecorder>
             ],
           ),
         ),
-        if (_hasShifted) Center(
-          child: RawMaterialButton(
-            onPressed: _resetSliders,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: Text(
-                "reset sliders",
-                style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontWeight: FontWeight.bold),
+        if (_hasShifted)
+          Center(
+            child: RawMaterialButton(
+              onPressed: _resetSliders,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: Text(
+                  "reset sliders",
+                  style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontWeight: FontWeight.bold),
+                ),
               ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
+                side:
+                    BorderSide(color: Theme.of(context).primaryColor, width: 3),
+              ),
+              elevation: 5,
+              // padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 2),
             ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30.0),
-              side: BorderSide(color: Theme.of(context).primaryColor, width: 3),
-            ),
-            elevation: 5,
-            // padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 2),
           ),
-        ),
       ],
     );
   }

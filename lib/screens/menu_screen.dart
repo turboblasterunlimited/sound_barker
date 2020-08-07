@@ -22,10 +22,7 @@ class _MenuState extends State<MenuScreen> {
       Navigator.of(context).popAndPushNamed(PhotoLibraryScreen.routeName);
     } else {
       currentActivity.startCreateCard(cards.newCurrent);
-      Navigator.popAndPushNamed(
-        context,
-        PhotoLibraryScreen.routeName,
-      );
+      Navigator.of(context).popAndPushNamed(PhotoLibraryScreen.routeName);
     }
   }
 
@@ -120,7 +117,8 @@ class _MenuState extends State<MenuScreen> {
                         fontSize: 40, color: Theme.of(context).primaryColor)),
               ),
               GestureDetector(
-                onTap: () => Navigator.of(context).pushNamed(AccountScreen.routeName),
+                onTap: () =>
+                    Navigator.of(context).pushNamed(AccountScreen.routeName),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text("Account",

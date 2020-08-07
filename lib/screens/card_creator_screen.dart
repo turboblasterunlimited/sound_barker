@@ -10,7 +10,7 @@ import 'package:K9_Karaoke/widgets/card_decorator_canvas.dart';
 import 'package:uuid/uuid.dart';
 import '../providers/songs.dart';
 import '../providers/pictures.dart';
-import '../widgets/human_message_recorder.dart';
+import '../widgets/personal_message_recorder.dart';
 
 class CardCreatorScreen extends StatefulWidget {
   static const routeName = 'record-message-screen';

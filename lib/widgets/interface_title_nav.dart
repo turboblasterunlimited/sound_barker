@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 
-
-
 Widget interfaceTitleNav(BuildContext context, String title,
     {Function backCallback, Function skipCallback}) {
   return Stack(
@@ -32,16 +30,19 @@ Widget interfaceTitleNav(BuildContext context, String title,
         ),
       ),
       if (skipCallback != null)
-        GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          onTap: backCallback,
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Row(
-              children: <Widget>[
-                Icon(LineAwesomeIcons.angle_left),
-                Text('Skip'),
-              ],
+        Positioned(
+          right: 0,
+          child: GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: backCallback,
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Row(
+                children: <Widget>[
+                  Text('Skip'),
+                  Icon(LineAwesomeIcons.angle_right),
+                ],
+              ),
             ),
           ),
         ),

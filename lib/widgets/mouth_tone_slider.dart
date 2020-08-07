@@ -2,6 +2,7 @@ import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/screens/set_picture_coordinates_screen.dart';
+import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
@@ -98,6 +99,16 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
     }
   }
 
+  void backCallback() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            SetPictureCoordinatesScreen(card.picture, editing: true),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     imageController.startMouthOpenAndClose();
@@ -105,37 +116,7 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
     return Expanded(
       child: Column(
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Stack(
-              children: <Widget>[
-                GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SetPictureCoordinatesScreen(
-                            card.picture,
-                            editing: true),
-                      ),
-                    );
-                  },
-                  child: Row(children: <Widget>[
-                    Icon(LineAwesomeIcons.angle_left),
-                    Text('Back'),
-                  ]),
-                ),
-                Center(
-                  child: Text(
-                    'MOUTH TONE',
-                    style: TextStyle(
-                        fontSize: 20, color: Theme.of(context).primaryColor),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          interfaceTitleNav(context, "MOUTH TONE", backCallback: backCallback),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 20.0),
             child: Row(
