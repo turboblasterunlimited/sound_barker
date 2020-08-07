@@ -4,7 +4,6 @@ import 'package:K9_Karaoke/providers/sound_controller.dart';
 import 'package:K9_Karaoke/providers/spinner_state.dart';
 import 'package:K9_Karaoke/providers/user.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
-import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/widgets/card_creation_interface.dart';
 import 'package:K9_Karaoke/widgets/card_progress_bar.dart';
 import 'package:K9_Karaoke/widgets/spinner_half_screen_widget.dart';
@@ -110,6 +109,13 @@ class _MainScreenState extends State<MainScreen> {
         ? imageController.mouthTrackSound(filePath: _playbackFiles[1])
         : imageController.mouthTrackSound(amplitudes: _playbackFiles[1]);
     soundController.startPlayer(_playbackFiles[0], stopAll);
+  }
+
+  double _aspectRatio() {
+    if (cards.current.hasBorder) {
+      return 0.8431876607;
+    }
+    return 1.0;
   }
 
   Widget mainAppBar() {
@@ -234,7 +240,7 @@ class _MainScreenState extends State<MainScreen> {
                     behavior: HitTestBehavior.opaque,
                     onTap: _handleTapPuppet,
                     child: AspectRatio(
-                      aspectRatio: 1 / 1,
+                      aspectRatio: _aspectRatio(),
                       child: Stack(
                         children: <Widget>[
                           SingingImage(),

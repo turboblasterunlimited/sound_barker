@@ -2,6 +2,7 @@ import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/widgets/bark_recorder.dart';
 import 'package:K9_Karaoke/widgets/bark_select_interface.dart';
+import 'package:K9_Karaoke/widgets/card_border_interface.dart';
 import 'package:K9_Karaoke/widgets/card_decorator_interface.dart';
 import 'package:K9_Karaoke/widgets/personal_message_recorder.dart';
 import 'package:K9_Karaoke/widgets/mouth_tone_slider.dart';
@@ -34,11 +35,12 @@ class CardCreationInterface extends StatelessWidget {
 
     Widget _handleStyleWidget() {
       if (currentActivity.isOne)
-        return CardBorderSelectionInterface();
+        return CardBorderInterface();
       else if (currentActivity.isTwo)
-        return CardDecorcatorInterface();
-      else if (currentActivity.isThree)
-        return ShareCardInterface();
+        return Center();
+      //   return CardDecorcatorInterface();
+      // else if (currentActivity.isThree)
+      //   return ShareCardInterface();
     }
 
     return Expanded(

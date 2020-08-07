@@ -73,6 +73,7 @@ flutter:
     - credentials/gcloud_credentials.json
     - assets/backgrounds/
     - assets/fonts/
+    - assets/card_borders/
 
 
 
