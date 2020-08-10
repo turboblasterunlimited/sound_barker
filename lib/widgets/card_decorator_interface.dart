@@ -1,3 +1,4 @@
+import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/sound_controller.dart';
 import 'package:K9_Karaoke/services/gcloud.dart';
 import 'package:K9_Karaoke/services/rest_api.dart';
@@ -10,12 +11,6 @@ import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:uuid/uuid.dart';
 
 class CardDecoratorInterface extends StatefulWidget {
-  final cardAudioFilePath;
-  final cardAudioId;
-  final cardAmplitudes;
-  final pictureId;
-  CardDecoratorInterface(this.cardAudioFilePath, this.cardAudioId, this.cardAmplitudes, this.pictureId);
-
   @override
   _CardDecoratorInterfaceState createState() => _CardDecoratorInterfaceState();
 }
@@ -24,16 +19,12 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
   SoundController soundController;
   KaraokeCardDecorator karaokeCardDecorator;
   ImageController imageController;
+  KaraokeCards cards;
   FocusNode focusNode;
   double canvasLength;
   final textController = TextEditingController();
   bool _isPlaying = false;
 
-  @override
-  void didChangeDependencies() {
-    canvasLength ??= MediaQuery.of(context).size.width;
-    super.didChangeDependencies();
-  }
 
   @override
   void initState() {
@@ -50,7 +41,6 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
 
   void stopPlayback() {
     if (_isPlaying) {
-      print("called stop playback");
       imageController.stopAnimation();
       soundController.stopPlayer();
       setState(() => _isPlaying = false);
@@ -58,24 +48,28 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
   }
 
   void playCard() {
-    print("Card audio filepath: ${widget.cardAudioFilePath}");
-    soundController.startPlayer(widget.cardAudioFilePath, stopPlayback);
-    imageController.mouthTrackSound(amplitudes: widget.cardAmplitudes);
+    soundController.startPlayer(cards.current.audioFilePath, stopPlayback);
+    imageController.mouthTrackSound(amplitudes: cards.current.amplitudes);
     setState(() => _isPlaying = true);
   }
 
   void uploadAndShare() async {
     String decorationImageId = Uuid().v4();
-    String decorationImageFilePath = await karaokeCardDecorator.cardPainter.capturePNG(decorationImageId);
-    await Gcloud.uploadCardAssets(widget.cardAudioFilePath, decorationImageFilePath);
-    await RestAPI.createCard(decorationImageId, widget.cardAudioId, widget.cardAmplitudes, widget.pictureId);
+    String decorationImageFilePath =
+        await karaokeCardDecorator.cardPainter.capturePNG(decorationImageId);
+    await Gcloud.uploadCardAssets(
+        cards.current.audioFilePath, decorationImageFilePath);
+    // await RestAPI.createCard(decorationImageId, widget.cardAudioId,
+    //     cards.current.amplitudes, cards.current.picture.fileId);
   }
 
   @override
   Widget build(BuildContext context) {
-    soundController = Provider.of<SoundController>(context);
-    imageController = Provider.of<ImageController>(context);
-    karaokeCardDecorator = Provider.of<KaraokeCardDecorator>(context);
+    soundController ??= Provider.of<SoundController>(context);
+    imageController ??= Provider.of<ImageController>(context, listen: false);
+    karaokeCardDecorator ??= Provider.of<KaraokeCardDecorator>(context);
+    canvasLength ??= MediaQuery.of(context).size.width;
+    cards = Provider.of<KaraokeCards>(context);
 
     void updateTextColor(color) {
       if (karaokeCardDecorator.isDrawing) return;

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/sound_controller.dart';
@@ -5,6 +7,7 @@ import 'package:K9_Karaoke/providers/spinner_state.dart';
 import 'package:K9_Karaoke/providers/user.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/widgets/card_creation_interface.dart';
+import 'package:K9_Karaoke/widgets/card_decorator_canvas.dart';
 import 'package:K9_Karaoke/widgets/card_progress_bar.dart';
 import 'package:K9_Karaoke/widgets/spinner_half_screen_widget.dart';
 import 'package:K9_Karaoke/widgets/spinner_widget.dart';
@@ -53,6 +56,8 @@ class _MainScreenState extends State<MainScreen> {
       return [cards.current.song.filePath, cards.current.song.amplitudesPath];
     else if (_canPlayMessage)
       return [cards.current.message.path, cards.current.message.amps];
+    else if (_canPlayCombinedAudio)
+      return [cards.current.audioFilePath, cards.current.amplitudes];
     return null;
   }
 
@@ -110,23 +115,11 @@ class _MainScreenState extends State<MainScreen> {
   void startAll() async {
     print("start all");
     setState(() => _isPlaying = true);
-    // Only songs have a .csv amplitude file, barks and message have a List of amplitudes in memory.
+    // Only songs have a .csv amplitude file, barks, messages and card/combined audio have a List of amplitudes in memory.
     _canPlaySong
         ? imageController.mouthTrackSound(filePath: _playbackFiles[1])
         : imageController.mouthTrackSound(amplitudes: _playbackFiles[1]);
     soundController.startPlayer(_playbackFiles[0], stopAll);
-  }
-
-  double _aspectRatio() {
-    if (cards.hasFrame) {
-      return 0.8431876607;
-    }
-    return 1.0;
-  }
-
-  double _paddingForFrame() {
-    if (cards.hasFrame) return 20;
-    return 1.0;
   }
 
   Widget mainAppBar() {
@@ -209,6 +202,12 @@ class _MainScreenState extends State<MainScreen> {
         (cards.current.message.exists);
   }
 
+  bool get _canPlayCombinedAudio {
+    return currentActivity.isStyle &&
+        currentActivity.isOne &&
+        (File(cards.current.audioFilePath).existsSync());
+  }
+
   void _handleTapPuppet() {
     print("Tapping webview!");
     if (_playbackFiles != null) _isPlaying ? stopAll() : startAll();
@@ -219,14 +218,17 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   EdgeInsets get _portraitPadding {
-
-    return cards.hasFrame
+    return showFrame()
         ? EdgeInsets.zero
         : EdgeInsets.only(top: 60, left: 22, right: 22);
   }
 
+  bool showFrame() {
+    return currentActivity.isStyle && cards.hasFrame;
+  }
+
   EdgeInsets get _framePadding {
-    return cards.hasFrame
+    return showFrame()
         ? EdgeInsets.only(
             left: framePadding,
             right: framePadding,
@@ -276,7 +278,7 @@ class _MainScreenState extends State<MainScreen> {
                         behavior: HitTestBehavior.opaque,
                         onTap: _handleTapPuppet,
                         child: Padding(
-                          // to shrink portrait to accomodate frame
+                          // to shrink portrait to accomodate card frame
                           padding: _framePadding,
                           child: AspectRatio(
                             aspectRatio: 1,
@@ -292,8 +294,8 @@ class _MainScreenState extends State<MainScreen> {
                                             children: <Widget>[
                                               RawMaterialButton(
                                                 elevation: 2.0,
-                                                fillColor:
-                                                    Theme.of(context).primaryColor,
+                                                fillColor: Theme.of(context)
+                                                    .primaryColor,
                                                 child: Icon(
                                                   Icons.play_arrow,
                                                   size: 60,
@@ -313,6 +315,8 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                       ),
                     ),
+                    if (currentActivity.isTwo && currentActivity.isStyle)
+                      CardDecoratorCanvas()
                   ],
                 ),
                 if (cards.current != null) CardProgressBar(),

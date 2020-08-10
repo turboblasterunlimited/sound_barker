@@ -8,7 +8,6 @@ import 'package:K9_Karaoke/classes/card_decoration.dart';
 import 'package:K9_Karaoke/providers/karaoke_card_decorator.dart';
 
 class CardDecoratorCanvas extends StatefulWidget {
-  CardDecoratorCanvas();
 
   @override
   _CardDecoratorCanvasState createState() => _CardDecoratorCanvasState();
