@@ -39,6 +39,12 @@ class _MainScreenState extends State<MainScreen> {
   KaraokeCards cards;
   SoundController soundController;
   bool _isPlaying = false;
+  double screenWidth;
+  // frame width in pixels / screenWidth in pixels
+  double frameToScreenWidth;
+  // Xs the frame padding in pixels
+  double framePadding;
+  double framePaddingBottom;
 
   List get _playbackFiles {
     if (_canPlayRawBark)
@@ -112,14 +118,14 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   double _aspectRatio() {
-    if (cards.current != null && cards.hasFrame) {
+    if (cards.hasFrame) {
       return 0.8431876607;
     }
     return 1.0;
   }
 
   double _paddingForFrame() {
-    if (cards.current != null && cards.hasFrame) return 20;
+    if (cards.hasFrame) return 20;
     return 1.0;
   }
 
@@ -212,9 +218,30 @@ class _MainScreenState extends State<MainScreen> {
     return !_isPlaying && (_playbackFiles != null);
   }
 
+  EdgeInsets get _portraitPadding {
+
+    return cards.hasFrame
+        ? EdgeInsets.zero
+        : EdgeInsets.only(top: 60, left: 22, right: 22);
+  }
+
+  EdgeInsets get _framePadding {
+    return cards.hasFrame
+        ? EdgeInsets.only(
+            left: framePadding,
+            right: framePadding,
+            top: framePadding,
+            bottom: framePaddingBottom)
+        : EdgeInsets.zero;
+  }
+
   @override
   Widget build(BuildContext context) {
     print("Building main screen");
+    screenWidth ??= MediaQuery.of(context).size.width;
+    frameToScreenWidth ??= screenWidth / 656;
+    framePadding ??= frameToScreenWidth * 72;
+    framePaddingBottom ??= frameToScreenWidth * 194;
 
     bool everythingReady() {
       return imageController.isReady;
@@ -238,48 +265,55 @@ class _MainScreenState extends State<MainScreen> {
             Column(
               children: <Widget>[
                 // Appbar and horizontal padding.
-                Padding(
-                  padding: EdgeInsets.only(top: 80, left: 22, right: 22),
-                  // WebView
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: _handleTapPuppet,
-                    child: Padding(
-                      padding: EdgeInsets.all(_paddingForFrame()),
-                      child: AspectRatio(
-                        aspectRatio: 1,
-                        child: Stack(
-                          children: <Widget>[
-                            SingingImage(),
-                            Container(
-                              child: canPlay()
-                                  ? Center(
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          RawMaterialButton(
-                                            elevation: 2.0,
-                                            fillColor:
-                                                Theme.of(context).primaryColor,
-                                            child: Icon(
-                                              Icons.play_arrow,
-                                              size: 60,
-                                              color: Colors.white,
-                                            ),
-                                            shape: CircleBorder(),
-                                          )
-                                        ],
-                                      ),
-                                    )
-                                  : Center(),
+                Stack(
+                  children: [
+                    if (cards.hasFrame) Image.asset(cards.current.framePath),
+                    Padding(
+                      // 22px or 0
+                      padding: _portraitPadding,
+                      // WebView
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: _handleTapPuppet,
+                        child: Padding(
+                          // to shrink portrait to accomodate frame
+                          padding: _framePadding,
+                          child: AspectRatio(
+                            aspectRatio: 1,
+                            child: Stack(
+                              children: <Widget>[
+                                SingingImage(),
+                                Container(
+                                  child: canPlay()
+                                      ? Center(
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              RawMaterialButton(
+                                                elevation: 2.0,
+                                                fillColor:
+                                                    Theme.of(context).primaryColor,
+                                                child: Icon(
+                                                  Icons.play_arrow,
+                                                  size: 60,
+                                                  color: Colors.white,
+                                                ),
+                                                shape: CircleBorder(),
+                                              )
+                                            ],
+                                          ),
+                                        )
+                                      : Center(),
+                                ),
+                                // add decoration canvas for currentActivity.isStyle
+                              ],
                             ),
-                            // add decoration canvas for currentActivity.isStyle
-                          ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
                 if (cards.current != null) CardProgressBar(),
                 if (!spinnerState.isLoading && cards.current != null)

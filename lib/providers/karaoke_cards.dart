@@ -81,7 +81,7 @@ class KaraokeCards with ChangeNotifier {
   }
 
   bool get hasFrame {
-    return current.framePath != null;
+    return current != null && current.framePath != null;
   }
 
   bool get currentPictureIsStock {
