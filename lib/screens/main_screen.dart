@@ -112,9 +112,14 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   double _aspectRatio() {
-    if (cards.current != null && cards.current.hasBorder) {
+    if (cards.current != null && cards.hasFrame) {
       return 0.8431876607;
     }
+    return 1.0;
+  }
+
+  double _paddingForFrame() {
+    if (cards.current != null && cards.hasFrame) return 20;
     return 1.0;
   }
 
@@ -239,47 +244,48 @@ class _MainScreenState extends State<MainScreen> {
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,
                     onTap: _handleTapPuppet,
-                    child: AspectRatio(
-                      aspectRatio: _aspectRatio(),
-                      child: Stack(
-                        children: <Widget>[
-                          SingingImage(),
-                          Container(
-                            child: canPlay()
-                                ? Center(
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        RawMaterialButton(
-                                          elevation: 2.0,
-                                          fillColor:
-                                              Theme.of(context).primaryColor,
-                                          child: Icon(
-                                            Icons.play_arrow,
-                                            size: 60,
-                                            color: Colors.white,
-                                          ),
-                                          shape: CircleBorder(),
-                                        )
-                                      ],
-                                    ),
-                                  )
-                                : Center(),
-                          ),
-                          // add decoration canvas for currentActivity.isStyle
-                        ],
+                    child: Padding(
+                      padding: EdgeInsets.all(_paddingForFrame()),
+                      child: AspectRatio(
+                        aspectRatio: 1,
+                        child: Stack(
+                          children: <Widget>[
+                            SingingImage(),
+                            Container(
+                              child: canPlay()
+                                  ? Center(
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          RawMaterialButton(
+                                            elevation: 2.0,
+                                            fillColor:
+                                                Theme.of(context).primaryColor,
+                                            child: Icon(
+                                              Icons.play_arrow,
+                                              size: 60,
+                                              color: Colors.white,
+                                            ),
+                                            shape: CircleBorder(),
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  : Center(),
+                            ),
+                            // add decoration canvas for currentActivity.isStyle
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-                if (cards.current != null)
-                  CardProgressBar(),
+                if (cards.current != null) CardProgressBar(),
                 if (!spinnerState.isLoading && cards.current != null)
                   CardCreationInterface(),
                 // Half screen spinner
-                if (spinnerState.isLoading)
-                  SpinnerHalfScreenWidget(),
+                if (spinnerState.isLoading) SpinnerHalfScreenWidget(),
               ],
             ),
             // Spinner

@@ -4,12 +4,12 @@ import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CardBorderInterface extends StatefulWidget {
+class CardFrameInterface extends StatefulWidget {
   @override
-  _CardBorderInterfaceState createState() => _CardBorderInterfaceState();
+  _CardFrameInterfaceState createState() => _CardFrameInterfaceState();
 }
 
-class _CardBorderInterfaceState extends State<CardBorderInterface> {
+class _CardFrameInterfaceState extends State<CardFrameInterface> {
   KaraokeCards cards;
   CurrentActivity currentActivity;
   String selectedFrame;
@@ -20,6 +20,7 @@ class _CardBorderInterfaceState extends State<CardBorderInterface> {
   }
 
   void skipCallback() {
+    cards.setFrame(null);
     currentActivity.setCardCreationSubStep(CardCreationSubSteps.two);
   }
 
@@ -31,6 +32,7 @@ class _CardBorderInterfaceState extends State<CardBorderInterface> {
     return GestureDetector(
       onTap: () {
         setState(() => selectedFrame = fileName);
+        cards.setFrame(rootPath + fileName);
       },
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 5),
@@ -61,6 +63,29 @@ class _CardBorderInterfaceState extends State<CardBorderInterface> {
     );
   }
 
+  Widget submitButton() {
+    return Center(
+      child: RawMaterialButton(
+        onPressed: cards.hasFrame ? () {
+          currentActivity.setCardCreationSubStep(CardCreationSubSteps.two);
+        } : null,
+        child: Icon(
+          Icons.check,
+          color: Colors.white,
+          size: 40,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30.0),
+        ),
+        elevation: 2.0,
+        fillColor: cards.hasFrame
+            ? Theme.of(context).primaryColor
+            : Colors.grey,
+        padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
+      ),
+    );
+  }
+
   @override
   Widget build(context) {
     cards = Provider.of<KaraokeCards>(context, listen: false);
@@ -71,6 +96,7 @@ class _CardBorderInterfaceState extends State<CardBorderInterface> {
         interfaceTitleNav(context, "CHOOSE FRAME",
             backCallback: backCallback, skipCallback: skipCallback),
         frameList(),
+        submitButton(),
       ],
     );
   }

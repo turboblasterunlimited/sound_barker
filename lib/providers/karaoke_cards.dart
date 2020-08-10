@@ -75,6 +75,15 @@ class KaraokeCards with ChangeNotifier {
     notifyListeners();
   }
 
+  void setFrame(newFramePath) {
+    current.framePath = newFramePath;
+    notifyListeners();
+  }
+
+  bool get hasFrame {
+    return current.framePath != null;
+  }
+
   bool get currentPictureIsStock {
     return current.picture.isStock;
   }
@@ -98,7 +107,7 @@ class KaraokeCard with ChangeNotifier {
   Bark longBark;
   String audioFilePath;
   List amplitudes;
-  String borderPath;
+  String framePath;
 
   KaraokeCard(
       {this.fileId,
@@ -112,7 +121,7 @@ class KaraokeCard with ChangeNotifier {
       this.decorationImagePath,
       this.audioFilePath,
       this.amplitudes,
-      this.borderPath});
+      this.framePath});
 
   Future<void> combineMessageAndSong() async {
     String audioKey = Uuid().v4();
@@ -133,14 +142,6 @@ class KaraokeCard with ChangeNotifier {
   //   await Gcloud.uploadCardAssets(audioFilePath, decorationImagePath);
   //   await RestAPI.createCard(decorationImageId, audioId, amplitudes, imageId)
   // }
-
-  bool get hasBorder {
-    return borderPath != null;
-  }
-
-  void setBorder(path) {
-    borderPath = path;
-  }
 
   void setPicture(Picture newPicture) {
     picture = newPicture;
