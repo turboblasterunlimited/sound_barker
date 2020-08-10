@@ -191,21 +191,27 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   bool get _canPlaySong {
-    return currentActivity.isSpeak &&
-        currentActivity.isSix &&
-        cards.current.song.exists;
+    return (currentActivity.isStyle &&
+            currentActivity.isOne &&
+            cards.current.onlySong()) ||
+        (currentActivity.isSpeak &&
+            currentActivity.isSix &&
+            cards.current.song.exists);
   }
 
   bool get _canPlayMessage {
-    return currentActivity.isSpeak &&
-        currentActivity.isSeven &&
-        (cards.current.message.exists);
+    return (currentActivity.isStyle &&
+            currentActivity.isOne &&
+            cards.current.onlyMessage()) ||
+        (currentActivity.isSpeak &&
+            currentActivity.isSeven &&
+            (cards.current.message.exists));
   }
 
   bool get _canPlayCombinedAudio {
     return currentActivity.isStyle &&
         currentActivity.isOne &&
-        (File(cards.current.audioFilePath).existsSync());
+        (cards.current.audioFilePath != null);
   }
 
   void _handleTapPuppet() {

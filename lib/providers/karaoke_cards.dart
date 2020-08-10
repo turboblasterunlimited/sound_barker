@@ -123,6 +123,14 @@ class KaraokeCard with ChangeNotifier {
       this.amplitudes,
       this.framePath});
 
+      bool onlySong() {
+        return !message.exists;
+      }
+
+      bool onlyMessage() {
+        return song == null;
+      }
+
   Future<void> combineMessageAndSong() async {
     String audioKey = Uuid().v4();
     this.audioFilePath = File("$myAppStoragePath/$audioKey.aac").path;
