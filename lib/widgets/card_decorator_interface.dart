@@ -1,3 +1,4 @@
+import 'package:K9_Karaoke/components/triangular_slider_track_shape.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/sound_controller.dart';
@@ -5,7 +6,6 @@ import 'package:K9_Karaoke/services/gcloud.dart';
 import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:K9_Karaoke/classes/card_decoration.dart';
 import 'package:K9_Karaoke/providers/karaoke_card_decorator.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
@@ -60,6 +60,8 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
         await karaokeCardDecorator.cardPainter.capturePNG(decorationImageId);
   }
 
+  double iconButtonSize = 35;
+
   @override
   Widget build(BuildContext context) {
     soundController ??= Provider.of<SoundController>(context);
@@ -103,6 +105,8 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
               children: <Widget>[
                 // back, draw, write, sizeSlider, undo
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     GestureDetector(
                       behavior: HitTestBehavior.translucent,
@@ -120,7 +124,6 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                     ),
                     // Drawing button
                     IconButton(
-                      padding: EdgeInsets.symmetric(vertical: 20),
                       color: karaokeCardDecorator.isDrawing
                           ? Colors.blue
                           : Theme.of(context).primaryColor,
@@ -128,11 +131,10 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                         focusNode.unfocus();
                         karaokeCardDecorator.startDrawing();
                       },
-                      icon: Icon(Icons.edit),
+                      icon: Icon(Icons.edit, size: iconButtonSize),
                     ),
                     // Typing button
                     IconButton(
-                      padding: EdgeInsets.symmetric(vertical: 20),
                       color: karaokeCardDecorator.isTyping
                           ? Colors.blue
                           : Theme.of(context).primaryColor,
@@ -161,11 +163,32 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                         focusNode.requestFocus();
                         karaokeCardDecorator.startTyping();
                       },
-                      icon: Icon(Icons.font_download),
+                      icon: Icon(Icons.font_download, size: iconButtonSize),
+                    ),
+                    // Text/Drawing Size slider
+                    SizedBox(
+                      width: 105,
+                      child: SliderTheme(
+                        data: SliderTheme.of(context).copyWith(
+                          thumbColor: Colors.blueGrey,
+                          trackHeight: 20,
+                          trackShape: TriangularSliderTrackShape(
+                              Theme.of(context).primaryColor),
+                        ),
+                        child: Slider.adaptive(
+                          value: karaokeCardDecorator.size,
+                          min: 8,
+                          max: 40,
+                          divisions: 32,
+                          label: karaokeCardDecorator.size.round().toString(),
+                          onChanged: (double sliderVal) {
+                            karaokeCardDecorator.setSize(sliderVal);
+                          },
+                        ),
+                      ),
                     ),
                     // Undo button
                     IconButton(
-                      padding: EdgeInsets.symmetric(vertical: 20),
                       color: Theme.of(context).primaryColor,
                       onPressed: () {
                         focusNode.unfocus();
@@ -175,7 +198,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                             textController.clear();
                           });
                       },
-                      icon: Icon(LineAwesomeIcons.undo),
+                      icon: Icon(LineAwesomeIcons.undo, size: iconButtonSize),
                     ),
                   ],
                 ),

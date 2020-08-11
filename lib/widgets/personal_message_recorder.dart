@@ -255,8 +255,6 @@ class PersonalMessageRecorderState extends State<PersonalMessageRecorder>
                         child: Transform.rotate(
                           angle: _canAddMessage() ? _animation.value * 0.1 : 0,
                           child: Container(
-                            // margin: EdgeInsets.only(bottom: 20.0),
-                            // padding: EdgeInsets.only(left: 10, right: 10, top: 10),
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
                                 shape: BoxShape.rectangle,

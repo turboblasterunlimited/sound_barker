@@ -1,14 +1,39 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:K9_Karaoke/classes/card_decoration.dart';
+
+class CardDecoration {
+  String fileId;
+  Drawing drawing;
+  Typing typing;
+  CardDecoration({this.fileId, this.drawing, this.typing});
+}
+
+class Drawing {
+  List<List<Offset>> offsets = [];
+  Color color;
+  double size;
+  Drawing(this.color, this.size);
+}
+
+class Typing {
+  // textSpan includes color
+  TextSpan textSpan;
+  Offset offset;
+  Typing(this.textSpan, this.offset);
+}
 
 class KaraokeCardDecorator with ChangeNotifier {
   bool isDrawing = true;
   bool isTyping = false;
   Color color = Colors.black;
+  double size = 20;
   List<Drawing> allDrawings;
   List<Typing> allTyping;
   var cardPainter;
+
+  void newDrawing() {
+    allDrawings.add(Drawing(color, size));
+  }
 
   bool isEmpty() {
     return allDrawings.isEmpty && allTyping.isEmpty;
@@ -29,6 +54,7 @@ class KaraokeCardDecorator with ChangeNotifier {
   void saveCanvasToFile() {
     cardPainter?.toPNG();
   }
+
   void updateLastTextSpan(newTextSpan) {
     allTyping.last.textSpan = newTextSpan;
     print("Typing length: ${allDrawings.length}");
@@ -65,9 +91,20 @@ class KaraokeCardDecorator with ChangeNotifier {
   void setColor(Color newColor) {
     this.color = newColor;
     notifyListeners();
+    updateText();
+  }
+
+  void setSize(double size) {
+    this.size = size;
+    notifyListeners();
+    updateText();
+  }
+
+  void updateText() {
     if (isTyping) {
       final text = allTyping.last.textSpan.text;
-      final newTextSpan = TextSpan(text: text, style: TextStyle(color: color));
+      final newTextSpan =
+          TextSpan(text: text, style: TextStyle(color: color, fontSize: size));
       updateLastTextSpan(newTextSpan);
     }
   }

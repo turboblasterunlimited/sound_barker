@@ -4,7 +4,6 @@ import 'dart:ui';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:K9_Karaoke/classes/card_decoration.dart';
 import 'package:K9_Karaoke/providers/karaoke_card_decorator.dart';
 
 class CardDecoratorCanvas extends StatefulWidget {
@@ -22,8 +21,8 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
   Widget build(BuildContext context) {
     print("building decorator canvas!");
     karaokeCardDecorator = Provider.of<KaraokeCardDecorator>(context);
-    karaokeCardDecorator.allDrawings = allDrawings;
-    karaokeCardDecorator.allTyping = allTyping;
+    karaokeCardDecorator.allDrawings ??= allDrawings;
+    karaokeCardDecorator.allTyping ??= allTyping;
     double screenWidth = MediaQuery.of(context).size.width;
 
     return GestureDetector(
@@ -43,7 +42,7 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
         print("Drawing....");
         if (karaokeCardDecorator.isDrawing)
           setState(() {
-            allDrawings.add(Drawing(karaokeCardDecorator.color));
+            karaokeCardDecorator.newDrawing();
             allDrawings.last.offsets.add(
               [Offset(details.localPosition.dx, details.localPosition.dy)],
             );
@@ -103,6 +102,7 @@ class CardPainter extends CustomPainter {
 
     for (var drawing in allDrawings) {
       paint.color = drawing.color;
+      paint.strokeWidth = drawing.size;
       for (var mark in drawing.offsets) {
         for (var i = 0; i < mark.length - 1; i++) {
           if (mark[i] != null && mark[i + 1] != null)
