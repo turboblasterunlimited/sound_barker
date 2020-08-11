@@ -20,6 +20,7 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
 
   @override
   Widget build(BuildContext context) {
+    print("building decorator canvas!");
     karaokeCardDecorator = Provider.of<KaraokeCardDecorator>(context);
     karaokeCardDecorator.allDrawings = allDrawings;
     karaokeCardDecorator.allTyping = allTyping;
@@ -39,6 +40,7 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
         // }
       },
       onPanStart: (details) {
+        print("Drawing....");
         if (karaokeCardDecorator.isDrawing)
           setState(() {
             allDrawings.add(Drawing(karaokeCardDecorator.color));

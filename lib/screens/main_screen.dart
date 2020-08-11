@@ -272,57 +272,60 @@ class _MainScreenState extends State<MainScreen> {
           children: <Widget>[
             Column(
               children: <Widget>[
-                // Appbar and horizontal padding.
+                // for frame and portrait
                 Stack(
                   children: [
                     if (cards.hasFrame) Image.asset(cards.current.framePath),
                     Padding(
                       // 22px or 0
                       padding: _portraitPadding,
-                      // WebView
-                      child: GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: _handleTapPuppet,
-                        child: Padding(
-                          // to shrink portrait to accomodate card frame
-                          padding: _framePadding,
-                          child: AspectRatio(
-                            aspectRatio: 1,
-                            child: Stack(
-                              children: <Widget>[
-                                SingingImage(),
-                                Container(
-                                  child: canPlay()
-                                      ? Center(
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: <Widget>[
-                                              RawMaterialButton(
-                                                elevation: 2.0,
-                                                fillColor: Theme.of(context)
-                                                    .primaryColor,
-                                                child: Icon(
-                                                  Icons.play_arrow,
-                                                  size: 60,
-                                                  color: Colors.white,
-                                                ),
-                                                shape: CircleBorder(),
-                                              )
-                                            ],
-                                          ),
-                                        )
-                                      : Center(),
+                      child: Stack(
+                        children: [
+                          // audio playback and decoration canvas
+                          GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: _handleTapPuppet,
+                            child: Padding(
+                              // to shrink portrait to accomodate card frame
+                              padding: _framePadding,
+                              child: AspectRatio(
+                                aspectRatio: 1,
+                                child: Stack(
+                                  children: <Widget>[
+                                    SingingImage(),
+                                    Container(
+                                      child: canPlay()
+                                          ? Center(
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: <Widget>[
+                                                  RawMaterialButton(
+                                                    elevation: 2.0,
+                                                    fillColor: Theme.of(context)
+                                                        .primaryColor,
+                                                    child: Icon(
+                                                      Icons.play_arrow,
+                                                      size: 60,
+                                                      color: Colors.white,
+                                                    ),
+                                                    shape: CircleBorder(),
+                                                  )
+                                                ],
+                                              ),
+                                            )
+                                          : Center(),
+                                    ),
+                                  ],
                                 ),
-                                // add decoration canvas for currentActivity.isStyle
-                              ],
+                              ),
                             ),
                           ),
-                        ),
+                          if (currentActivity.isTwo && currentActivity.isStyle)
+                            CardDecoratorCanvas()
+                        ],
                       ),
                     ),
-                    if (currentActivity.isTwo && currentActivity.isStyle)
-                      CardDecoratorCanvas()
                   ],
                 ),
                 if (cards.current != null) CardProgressBar(),

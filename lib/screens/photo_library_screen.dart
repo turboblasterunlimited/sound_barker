@@ -66,7 +66,7 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
     return SliverChildListDelegate(
       [
         Padding(
-          padding: const EdgeInsets.only(left: 10.0),
+          padding: const EdgeInsets.only(left: 10.0, top: 15),
           child: Text(
             label,
             style:

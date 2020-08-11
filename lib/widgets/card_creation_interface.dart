@@ -37,7 +37,6 @@ class CardCreationInterface extends StatelessWidget {
       if (currentActivity.isOne)
         return CardFrameInterface();
       else if (currentActivity.isTwo)
-        // return Center();
         return CardDecoratorInterface();
       // else if (currentActivity.isThree)
       //   return ShareCardInterface();
