@@ -1,3 +1,4 @@
+import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/sound_controller.dart';
 import 'package:K9_Karaoke/services/gcloud.dart';
@@ -19,12 +20,12 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
   SoundController soundController;
   KaraokeCardDecorator karaokeCardDecorator;
   ImageController imageController;
+  CurrentActivity currentActivity;
   KaraokeCards cards;
   FocusNode focusNode;
   double canvasLength;
   final textController = TextEditingController();
   bool _isPlaying = false;
-
 
   @override
   void initState() {
@@ -53,14 +54,10 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
     setState(() => _isPlaying = true);
   }
 
-  void uploadAndShare() async {
+  void saveArtwork() async {
     String decorationImageId = Uuid().v4();
-    String decorationImageFilePath =
+    cards.current.decorationImagePath =
         await karaokeCardDecorator.cardPainter.capturePNG(decorationImageId);
-    await Gcloud.uploadCardAssets(
-        cards.current.audioFilePath, decorationImageFilePath);
-    // await RestAPI.createCard(decorationImageId, widget.cardAudioId,
-    //     cards.current.amplitudes, cards.current.picture.fileId);
   }
 
   @override
@@ -69,7 +66,8 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
     imageController ??= Provider.of<ImageController>(context, listen: false);
     karaokeCardDecorator ??= Provider.of<KaraokeCardDecorator>(context);
     canvasLength ??= MediaQuery.of(context).size.width;
-    cards = Provider.of<KaraokeCards>(context);
+    cards ??= Provider.of<KaraokeCards>(context);
+    currentActivity ??= Provider.of<CurrentActivity>(context);
 
     void updateTextColor(color) {
       if (karaokeCardDecorator.isDrawing) return;
@@ -103,6 +101,84 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
+                // back, draw, write, sizeSlider, undo
+                Row(
+                  children: [
+                    GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      onTap: () {
+                        currentActivity.setPreviousSubStep();
+                      },
+                      child: Row(children: <Widget>[
+                        Icon(LineAwesomeIcons.angle_left, color: Colors.grey),
+                        Text(
+                          'Back',
+                          style:
+                              TextStyle(color: Theme.of(context).accentColor),
+                        ),
+                      ]),
+                    ),
+                    // Drawing button
+                    IconButton(
+                      padding: EdgeInsets.symmetric(vertical: 20),
+                      color: karaokeCardDecorator.isDrawing
+                          ? Colors.blue
+                          : Theme.of(context).primaryColor,
+                      onPressed: () {
+                        focusNode.unfocus();
+                        karaokeCardDecorator.startDrawing();
+                      },
+                      icon: Icon(Icons.edit),
+                    ),
+                    // Typing button
+                    IconButton(
+                      padding: EdgeInsets.symmetric(vertical: 20),
+                      color: karaokeCardDecorator.isTyping
+                          ? Colors.blue
+                          : Theme.of(context).primaryColor,
+                      onPressed: () {
+                        focusNode.unfocus();
+                        if (karaokeCardDecorator.allTyping.isEmpty) {
+                          karaokeCardDecorator.allTyping.add(
+                            Typing(
+                              TextSpan(
+                                text: "",
+                                style: TextStyle(
+                                    color: karaokeCardDecorator.color,
+                                    fontSize: 40),
+                              ),
+                              Offset(canvasLength / 2, canvasLength - 50),
+                            ),
+                          );
+                          // set color to textSpan that is being edited
+                        } else if (karaokeCardDecorator.color !=
+                            karaokeCardDecorator
+                                .allTyping.last.textSpan.style.color) {
+                          karaokeCardDecorator.setColor(karaokeCardDecorator
+                              .allTyping.last.textSpan.style.color);
+                        }
+
+                        focusNode.requestFocus();
+                        karaokeCardDecorator.startTyping();
+                      },
+                      icon: Icon(Icons.font_download),
+                    ),
+                    // Undo button
+                    IconButton(
+                      padding: EdgeInsets.symmetric(vertical: 20),
+                      color: Theme.of(context).primaryColor,
+                      onPressed: () {
+                        focusNode.unfocus();
+                        karaokeCardDecorator.undoLast();
+                        if (karaokeCardDecorator.isTyping)
+                          setState(() {
+                            textController.clear();
+                          });
+                      },
+                      icon: Icon(LineAwesomeIcons.undo),
+                    ),
+                  ],
+                ),
                 // Color Select
                 Row(
                   children: <Widget>[
@@ -206,134 +282,51 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                     ),
                   ],
                 ),
-                // Draw, Type, or Erase.
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    // Drawing button
                     RawMaterialButton(
-                      padding: EdgeInsets.symmetric(vertical: 20),
-                      fillColor: karaokeCardDecorator.isDrawing
-                          ? Colors.amber[900]
-                          : Colors.amber[200],
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(7.0),
+                      onPressed: karaokeCardDecorator.reset,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 8),
+                        child: Text(
+                          "Reset",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                          ),
+                        ),
                       ),
-                      onPressed: () {
-                        focusNode.unfocus();
-                        karaokeCardDecorator.startDrawing();
-                      },
-                      child: Icon(Icons.edit),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      elevation: 2.0,
+                      fillColor: karaokeCardDecorator.isEmpty()
+                          ? Colors.grey
+                          : Theme.of(context).errorColor,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 40.0, vertical: 2),
                     ),
-                    // Typing button
-                    RawMaterialButton(
-                      padding: EdgeInsets.symmetric(vertical: 20),
-                      fillColor: karaokeCardDecorator.isTyping
-                          ? Colors.amber[900]
-                          : Colors.amber[200],
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(7.0),
-                      ),
-                      onPressed: () {
-                        focusNode.unfocus();
-                        if (karaokeCardDecorator.allTyping.isEmpty) {
-                          karaokeCardDecorator.allTyping.add(
-                            Typing(
-                              TextSpan(
-                                text: "",
-                                style: TextStyle(
-                                    color: karaokeCardDecorator.color,
-                                    fontSize: 40),
-                              ),
-                              Offset(canvasLength / 2, canvasLength - 50),
-                            ),
-                          );
-                          // set color to textSpan that is being edited
-                        } else if (karaokeCardDecorator.color !=
-                            karaokeCardDecorator
-                                .allTyping.last.textSpan.style.color) {
-                          karaokeCardDecorator.setColor(karaokeCardDecorator
-                              .allTyping.last.textSpan.style.color);
-                        }
-
-                        focusNode.requestFocus();
-                        karaokeCardDecorator.startTyping();
-                      },
-                      child: Icon(Icons.font_download),
+                    Padding(
+                      padding: EdgeInsets.all(10),
                     ),
-                    // Undo button
                     RawMaterialButton(
-                      padding: EdgeInsets.symmetric(vertical: 20),
-                      fillColor: Colors.amber[200],
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(7.0),
+                      onPressed: currentActivity.setNextSubStep,
+                      child: Icon(
+                        Icons.check,
+                        color: Colors.white,
+                        size: 40,
                       ),
-                      onPressed: () {
-                        focusNode.unfocus();
-                        karaokeCardDecorator.undoLast();
-                        if (karaokeCardDecorator.isTyping)
-                          setState(() {
-                            textController.clear();
-                          });
-                      },
-                      child: Icon(LineAwesomeIcons.undo),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      elevation: 2.0,
+                      fillColor: Theme.of(context).primaryColor,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 40.0, vertical: 2),
                     ),
                   ],
-                ),
-                // Playback and Share
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      RawMaterialButton(
-                        padding: EdgeInsets.symmetric(vertical: 20),
-                        fillColor: Colors.amber[200],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(7.0),
-                        ),
-                        onPressed: () {
-                          _isPlaying ? stopPlayback() : playCard();
-                        },
-                        child: _isPlaying
-                            ? Icon(LineAwesomeIcons.stop)
-                            : Icon(LineAwesomeIcons.play),
-                      ),
-                      RawMaterialButton(
-                        padding: EdgeInsets.symmetric(vertical: 20),
-                        fillColor: Colors.amber[200],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(7.0),
-                        ),
-                        onPressed: () {
-                          uploadAndShare();
-                        },
-                        child: Icon(Icons.share),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Choose Border Decorations
-                Visibility(
-                  visible: false,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      RawMaterialButton(
-                        padding: EdgeInsets.symmetric(vertical: 20),
-                        fillColor: Colors.amber[200],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(7.0),
-                        ),
-                        onPressed: () {
-                          imageController.webViewController
-                              .evaluateJavascript("test_render()");
-                        },
-                        child: Icon(LineAwesomeIcons.gift),
-                      ),
-                    ],
-                  ),
                 ),
               ],
             ),

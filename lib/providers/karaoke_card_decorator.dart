@@ -10,6 +10,16 @@ class KaraokeCardDecorator with ChangeNotifier {
   List<Typing> allTyping;
   var cardPainter;
 
+  bool isEmpty() {
+    return allDrawings.isEmpty && allTyping.isEmpty;
+  }
+
+  void reset() {
+    allDrawings.clear();
+    allTyping.clear();
+    notifyListeners();
+  }
+
   setPainter(painter) {
     cardPainter = painter;
     notifyListeners();
