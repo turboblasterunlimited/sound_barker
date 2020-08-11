@@ -75,7 +75,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
       if (karaokeCardDecorator.isDrawing) return;
       var newTextSpan = TextSpan(
         text: karaokeCardDecorator.allTyping.last.textSpan.text,
-        style: TextStyle(color: color),
+        style: TextStyle(color: color, fontSize: karaokeCardDecorator.size),
       );
       karaokeCardDecorator.updateLastTextSpan(newTextSpan);
     }
@@ -304,6 +304,9 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                       ),
                     ),
                   ],
+                ),
+                Padding(
+                  padding: EdgeInsets.all(10),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

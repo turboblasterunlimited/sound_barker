@@ -56,6 +56,7 @@ class KaraokeCardDecorator with ChangeNotifier {
   }
 
   void updateLastTextSpan(newTextSpan) {
+    print("Updating text!");
     allTyping.last.textSpan = newTextSpan;
     print("Typing length: ${allDrawings.length}");
     notifyListeners();
@@ -66,14 +67,13 @@ class KaraokeCardDecorator with ChangeNotifier {
       if (allDrawings.isEmpty) return;
       print("Drawing length: ${allDrawings.length}");
       allDrawings.removeLast();
-      notifyListeners();
     }
     if (isTyping) {
       if (allTyping.isEmpty) return;
       print("Typing length: ${allTyping.length}");
       allTyping.removeLast();
-      notifyListeners();
     }
+    notifyListeners();
   }
 
   void startDrawing() {
@@ -90,22 +90,19 @@ class KaraokeCardDecorator with ChangeNotifier {
 
   void setColor(Color newColor) {
     this.color = newColor;
-    notifyListeners();
-    updateText();
+    // updateText();
   }
 
   void setSize(double size) {
     this.size = size;
-    notifyListeners();
     updateText();
   }
 
   void updateText() {
-    if (isTyping) {
-      final text = allTyping.last.textSpan.text;
-      final newTextSpan =
-          TextSpan(text: text, style: TextStyle(color: color, fontSize: size));
-      updateLastTextSpan(newTextSpan);
-    }
+    if (!isTyping) return;
+    final text = allTyping.last.textSpan.text;
+    final newTextSpan =
+        TextSpan(text: text, style: TextStyle(color: color, fontSize: size));
+    updateLastTextSpan(newTextSpan);
   }
 }

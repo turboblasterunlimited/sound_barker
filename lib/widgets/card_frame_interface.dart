@@ -66,9 +66,12 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   Widget submitButton() {
     return Center(
       child: RawMaterialButton(
-        onPressed: cards.hasFrame ? () {
-          currentActivity.setCardCreationSubStep(CardCreationSubSteps.two);
-        } : null,
+        onPressed: cards.hasFrame
+            ? () {
+                currentActivity
+                    .setCardCreationSubStep(CardCreationSubSteps.two);
+              }
+            : null,
         child: Icon(
           Icons.check,
           color: Colors.white,
@@ -78,9 +81,8 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
           borderRadius: BorderRadius.circular(30.0),
         ),
         elevation: 2.0,
-        fillColor: cards.hasFrame
-            ? Theme.of(context).primaryColor
-            : Colors.grey,
+        fillColor:
+            cards.hasFrame ? Theme.of(context).primaryColor : Colors.grey,
         padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
       ),
     );

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/sound_controller.dart';
@@ -275,7 +273,7 @@ class _MainScreenState extends State<MainScreen> {
                 // for frame and portrait
                 Stack(
                   children: [
-                    if (cards.hasFrame) Image.asset(cards.current.framePath),
+                    if (showFrame()) Image.asset(cards.current.framePath),
                     Padding(
                       // 22px or 0
                       padding: _portraitPadding,
@@ -321,11 +319,11 @@ class _MainScreenState extends State<MainScreen> {
                               ),
                             ),
                           ),
-                          if (currentActivity.isTwo && currentActivity.isStyle)
-                            CardDecoratorCanvas()
                         ],
                       ),
                     ),
+                    if (currentActivity.isTwo && currentActivity.isStyle)
+                      CardDecoratorCanvas()
                   ],
                 ),
                 if (cards.current != null) CardProgressBar(),
