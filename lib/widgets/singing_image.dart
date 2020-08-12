@@ -6,8 +6,6 @@ import 'package:provider/provider.dart';
 import '../providers/pictures.dart';
 
 class SingingImage extends StatefulWidget {
-  Picture picture;
-  SingingImage([this.picture]);
 
   @override
   _SingingImageState createState() => _SingingImageState();
@@ -53,9 +51,8 @@ class _SingingImageState extends State<SingingImage> {
                     "[puppet.js postMessage] finished init") {
                   imageController.makeInit();
                   print("Made ready");
-                  if (widget.picture != null) {
-                    print("pic name: ${widget.picture.name}");
-                    imageController.createDog(widget.picture);
+                  if (imageController.picture != null) {
+                    imageController.createDog(imageController.picture);
                   }
                 }
                 if (message.message ==

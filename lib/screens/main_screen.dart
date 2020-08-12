@@ -132,51 +132,53 @@ class _MainScreenState extends State<MainScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Image.asset("assets/logos/K9_logotype.png", width: 80),
-            Expanded(
-              child: Center(
-                child: Container(
-                  width: 170,
-                  child: TextFormField(
-                    enabled: !cards.currentPictureIsStock,
-                    style: TextStyle(color: Colors.grey[600], fontSize: 20),
-                    maxLength: 12,
-                    textAlign: cards.currentPictureIsStock
-                        ? TextAlign.center
-                        : TextAlign.right,
-                    decoration: InputDecoration(
-                        hintText: cards.currentName,
-                        counterText: "",
-                        suffixIcon: cards.currentPictureIsStock
-                            ? null
-                            : Icon(LineAwesomeIcons.edit),
-                        border: InputBorder.none),
-                    onFieldSubmitted: (val) {
-                      cards.setCurrentName(val);
-                      FocusScope.of(context).unfocus();
-                    },
+            if (!showFrame)
+              Expanded(
+                child: Center(
+                  child: Container(
+                    width: 170,
+                    child: TextFormField(
+                      enabled: !cards.currentPictureIsStock,
+                      style: TextStyle(color: Colors.grey[600], fontSize: 20),
+                      maxLength: 12,
+                      textAlign: cards.currentPictureIsStock
+                          ? TextAlign.center
+                          : TextAlign.right,
+                      decoration: InputDecoration(
+                          hintText: cards.currentName,
+                          counterText: "",
+                          suffixIcon: cards.currentPictureIsStock
+                              ? null
+                              : Icon(LineAwesomeIcons.edit),
+                          border: InputBorder.none),
+                      onFieldSubmitted: (val) {
+                        cards.setCurrentName(val);
+                        FocusScope.of(context).unfocus();
+                      },
+                    ),
+                    // This rename field works differently than on the coordinates setting page.
                   ),
-                  // This rename field works differently than on the coordinates setting page.
                 ),
               ),
-            ),
           ],
         ),
         actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(top: 5),
-            child: RawMaterialButton(
-              child: Icon(
-                Icons.menu,
-                color: Colors.black,
-                size: 30,
+          if (!showFrame)
+            Padding(
+              padding: const EdgeInsets.only(top: 5),
+              child: RawMaterialButton(
+                child: Icon(
+                  Icons.menu,
+                  color: Colors.black,
+                  size: 30,
+                ),
+                shape: CircleBorder(),
+                elevation: 2.0,
+                onPressed: () {
+                  Navigator.of(context).pushNamed(MenuScreen.routeName);
+                },
               ),
-              shape: CircleBorder(),
-              elevation: 2.0,
-              onPressed: () {
-                Navigator.of(context).pushNamed(MenuScreen.routeName);
-              },
             ),
-          ),
         ],
       ),
     );
@@ -222,17 +224,17 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   EdgeInsets get _portraitPadding {
-    return showFrame()
+    return showFrame
         ? EdgeInsets.zero
         : EdgeInsets.only(top: 60, left: 22, right: 22);
   }
 
-  bool showFrame() {
+  bool get showFrame {
     return currentActivity.isStyle && cards.hasFrame;
   }
 
   EdgeInsets get _framePadding {
-    return showFrame()
+    return showFrame
         ? EdgeInsets.only(
             left: framePadding,
             right: framePadding,
@@ -273,7 +275,7 @@ class _MainScreenState extends State<MainScreen> {
                 // for frame and portrait
                 Stack(
                   children: [
-                    if (showFrame()) Image.asset(cards.current.framePath),
+                    if (showFrame) Image.asset(cards.current.framePath),
                     Padding(
                       // 22px or 0
                       padding: _portraitPadding,
