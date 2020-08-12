@@ -3,15 +3,13 @@ import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/pictures.dart';
-
 class SingingImage extends StatefulWidget {
-
   @override
   _SingingImageState createState() => _SingingImageState();
 }
 
-class _SingingImageState extends State<SingingImage> {
+class _SingingImageState extends State<SingingImage>
+    with AutomaticKeepAliveClientMixin {
   WebViewController webviewController;
   ImageController imageController;
 
@@ -24,6 +22,7 @@ class _SingingImageState extends State<SingingImage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     print("building singing image");
     imageController = Provider.of<ImageController>(context);
 
@@ -70,4 +69,7 @@ class _SingingImageState extends State<SingingImage> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

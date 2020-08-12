@@ -20,8 +20,8 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   }
 
   void skipCallback() {
-    cards.setFrame(null);
     currentActivity.setCardCreationSubStep(CardCreationSubSteps.two);
+    Future.delayed(Duration(milliseconds: 500), () => cards.setFrame(null));
   }
 
   String rootPath = "assets/card_borders/";
@@ -36,12 +36,14 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       },
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 5),
-        decoration: selectedFrame == fileName ? BoxDecoration(
-          border: Border.all(
-            color: Colors.blue,
-            width: 3,
-          ),
-        ) : BoxDecoration(),
+        decoration: selectedFrame == fileName
+            ? BoxDecoration(
+                border: Border.all(
+                  color: Colors.blue,
+                  width: 3,
+                ),
+              )
+            : BoxDecoration(),
         child: SizedBox(
           child: Image.asset(rootPath + fileName),
         ),
