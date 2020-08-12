@@ -158,7 +158,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                           trackShape: TriangularSliderTrackShape(
                               Theme.of(context).primaryColor),
                         ),
-                        child: Slider.adaptive(
+                        child: Slider(
                           value: karaokeCardDecorator.size,
                           min: 8,
                           max: 40,

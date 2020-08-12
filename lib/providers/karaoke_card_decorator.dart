@@ -31,6 +31,11 @@ class KaraokeCardDecorator with ChangeNotifier {
   List<Typing> allTyping;
   var cardPainter;
   double canvasLength;
+  KaraokeCardDecorator() {
+    allDrawings = [];
+    allTyping = [];
+  }
+
 
   void newDrawing() {
     allDrawings.add(Drawing(color, size));

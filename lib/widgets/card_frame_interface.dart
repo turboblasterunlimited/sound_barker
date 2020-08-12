@@ -26,7 +26,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
 
   String rootPath = "assets/card_borders/";
 
-  List frameFileNames = ['white.png', 'black.png', 'magenta.png', 'teal.png'];
+  List frameFileNames = ['white.png', 'black.png', 'magenta.png', 'teal.png', 'red.png', 'blue.png'];
 
   Widget frameSelectable(fileName) {
     return GestureDetector(
@@ -54,7 +54,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   Widget frameList() {
     return Center(
       child: Container(
-        height: 120,
+        height: 100,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.all(10),
@@ -77,7 +77,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
         child: Icon(
           Icons.check,
           color: Colors.white,
-          size: 40,
+          size: 30,
         ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
@@ -85,7 +85,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
         elevation: 2.0,
         fillColor:
             cards.hasFrame ? Theme.of(context).primaryColor : Colors.grey,
-        padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
+        padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 0),
       ),
     );
   }

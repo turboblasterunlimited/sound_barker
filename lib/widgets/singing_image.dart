@@ -51,6 +51,7 @@ class _SingingImageState extends State<SingingImage>
                   imageController.makeInit();
                   print("Made ready");
                   if (imageController.picture != null) {
+                    print("Creat dog from within singing image. picturename: ${imageController.picture.name}");
                     imageController.createDog(imageController.picture);
                   }
                 }

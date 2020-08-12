@@ -132,7 +132,7 @@ class _MainScreenState extends State<MainScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Image.asset("assets/logos/K9_logotype.png", width: 80),
-            if (!showFrame)
+            // if (!showFrame)
               Expanded(
                 child: Center(
                   child: Container(
@@ -163,7 +163,7 @@ class _MainScreenState extends State<MainScreen> {
           ],
         ),
         actions: <Widget>[
-          if (!showFrame)
+          // if (!showFrame)
             Padding(
               padding: const EdgeInsets.only(top: 5),
               child: RawMaterialButton(
@@ -226,7 +226,7 @@ class _MainScreenState extends State<MainScreen> {
   EdgeInsets get _portraitPadding {
     return showFrame
         ? EdgeInsets.zero
-        : EdgeInsets.only(top: 60, left: 22, right: 22);
+        : EdgeInsets.only(left: 22, right: 22);
   }
 
   bool get showFrame {
@@ -241,6 +241,10 @@ class _MainScreenState extends State<MainScreen> {
             top: framePadding,
             bottom: framePaddingBottom)
         : EdgeInsets.zero;
+  }
+
+  bool get _showDecorationCanvas {
+    return currentActivity.isTwo && currentActivity.isStyle;
   }
 
   @override
@@ -268,77 +272,81 @@ class _MainScreenState extends State<MainScreen> {
             fit: BoxFit.cover,
           ),
         ),
-        child: Stack(
-          children: <Widget>[
-            Column(
-              children: <Widget>[
-                // for frame and portrait
-                Stack(
-                  children: [
-                    if (showFrame) Image.asset(cards.current.framePath),
-                    Padding(
-                      // 22px or 0
-                      padding: _portraitPadding,
-                      child: Stack(
-                        children: [
-                          // audio playback and decoration canvas
-                          GestureDetector(
-                            behavior: HitTestBehavior.opaque,
-                            onTap: _handleTapPuppet,
-                            child: Padding(
-                              // to shrink portrait to accomodate card frame
-                              padding: _framePadding,
-                              child: AspectRatio(
-                                aspectRatio: 1,
-                                child: Stack(
-                                  children: <Widget>[
-                                    SingingImage(),
-                                    Container(
-                                      child: canPlay()
-                                          ? Center(
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: <Widget>[
-                                                  RawMaterialButton(
-                                                    elevation: 2.0,
-                                                    fillColor: Theme.of(context)
-                                                        .primaryColor,
-                                                    child: Icon(
-                                                      Icons.play_arrow,
-                                                      size: 60,
-                                                      color: Colors.white,
-                                                    ),
-                                                    shape: CircleBorder(),
-                                                  )
-                                                ],
-                                              ),
-                                            )
-                                          : Center(),
-                                    ),
-                                  ],
+        child: Padding(
+          padding: const EdgeInsets.only(top: 60.0),
+          child: Stack(
+            children: <Widget>[
+              Column(
+                children: <Widget>[
+                  // for frame and portrait
+                  Stack(
+                    children: [
+                      if (showFrame)
+                         Image.asset(cards.current.framePath),
+                        
+                      Padding(
+                        // 22px or 0
+                        padding: _portraitPadding,
+                        child: Stack(
+                          children: [
+                            // audio playback and decoration canvas
+                            GestureDetector(
+                              onTap: _handleTapPuppet,
+                              child: Padding(
+                                // to shrink portrait to accomodate card frame
+                                padding: _framePadding,
+                                child: AspectRatio(
+                                  aspectRatio: 1,
+                                  child: Stack(
+                                    children: <Widget>[
+                                      SingingImage(),
+                                      Container(
+                                        child: canPlay()
+                                            ? Center(
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: <Widget>[
+                                                    RawMaterialButton(
+                                                      elevation: 2.0,
+                                                      fillColor: Theme.of(context)
+                                                          .primaryColor,
+                                                      child: Icon(
+                                                        Icons.play_arrow,
+                                                        size: 60,
+                                                        color: Colors.white,
+                                                      ),
+                                                      shape: CircleBorder(),
+                                                    )
+                                                  ],
+                                                ),
+                                              )
+                                            : Center(),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    if (currentActivity.isTwo && currentActivity.isStyle)
-                      CardDecoratorCanvas()
-                  ],
-                ),
-                if (cards.current != null) CardProgressBar(),
-                if (!spinnerState.isLoading && cards.current != null)
-                  CardCreationInterface(),
-                // Half screen spinner
-                if (spinnerState.isLoading) SpinnerHalfScreenWidget(),
-              ],
-            ),
-            // Spinner
-            if (!everythingReady())
-              SpinnerWidget("Loading animation engine..."),
-          ],
+                      if (_showDecorationCanvas)
+                        CardDecoratorCanvas(padding: _framePadding),
+                    ],
+                  ),
+                  if (cards.current != null) CardProgressBar(),
+                  if (!spinnerState.isLoading && cards.current != null)
+                    CardCreationInterface(),
+                  // Half screen spinner
+                  if (spinnerState.isLoading) SpinnerHalfScreenWidget(),
+                ],
+              ),
+              // Spinner
+              if (!everythingReady())
+                SpinnerWidget("Loading animation engine..."),
+            ],
+          ),
         ),
       ),
     );

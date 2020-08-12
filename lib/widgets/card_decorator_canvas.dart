@@ -7,26 +7,31 @@ import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/karaoke_card_decorator.dart';
 
 class CardDecoratorCanvas extends StatefulWidget {
-
+  final padding;
+  CardDecoratorCanvas({this.padding});
   @override
   _CardDecoratorCanvasState createState() => _CardDecoratorCanvasState();
 }
 
+const List<int> frameDimensions = [656, 778];
+
 class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
   KaraokeCardDecorator karaokeCardDecorator;
-  List<Drawing> allDrawings = [];
-  List<Typing> allTyping = [];
 
   @override
   Widget build(BuildContext context) {
     print("building decorator canvas!");
     karaokeCardDecorator = Provider.of<KaraokeCardDecorator>(context);
-    karaokeCardDecorator.allDrawings ??= allDrawings;
-    karaokeCardDecorator.allTyping ??= allTyping;
+    final allDrawings = karaokeCardDecorator.allDrawings;
+    final allTyping = karaokeCardDecorator.allTyping;
     double screenWidth = MediaQuery.of(context).size.width;
 
+    double cardHeight = screenWidth / frameDimensions[0] * frameDimensions[1];
+
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTapDown: (details) {
+        print("Tapping canvas");
         // if (karaokeCardDecorator.isTyping) {
         //   allTyping.add(
         //     Typing(
@@ -64,8 +69,9 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
           });
       },
       child: CustomPaint(
-        painter: karaokeCardDecorator.cardPainter = CardPainter(allDrawings, allTyping, screenWidth),
-        child: Container(),
+        painter: karaokeCardDecorator.cardPainter =
+            CardPainter(allDrawings, allTyping, screenWidth),
+        child: Container(height: cardHeight, width: screenWidth),
       ),
     );
   }
