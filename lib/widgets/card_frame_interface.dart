@@ -36,13 +36,13 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       },
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 5),
-        decoration: BoxDecoration(
+        decoration: selectedFrame == fileName ? BoxDecoration(
           border: Border.all(
             color: Colors.blue,
-            width: selectedFrame == fileName ? 3 : 0,
+            width: 3,
           ),
-        ),
-        child: FittedBox(
+        ) : BoxDecoration(),
+        child: SizedBox(
           child: Image.asset(rootPath + fileName),
         ),
       ),
