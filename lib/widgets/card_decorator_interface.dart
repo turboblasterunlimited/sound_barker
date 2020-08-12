@@ -2,8 +2,6 @@ import 'package:K9_Karaoke/components/triangular_slider_track_shape.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/sound_controller.dart';
-import 'package:K9_Karaoke/services/gcloud.dart';
-import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/karaoke_card_decorator.dart';
@@ -60,6 +58,22 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
         await karaokeCardDecorator.cardPainter.capturePNG(decorationImageId);
   }
 
+  void _handleUndo() {
+    focusNode.unfocus();
+    karaokeCardDecorator.undoLast();
+    if (karaokeCardDecorator.isTyping)
+      setState(() {
+        textController.clear();
+      });
+  }
+
+  void _handleReset() {
+    karaokeCardDecorator.reset();
+    setState(() {
+      textController.clear();
+    });
+  }
+
   double iconButtonSize = 35;
 
   @override
@@ -68,17 +82,10 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
     imageController ??= Provider.of<ImageController>(context, listen: false);
     karaokeCardDecorator ??= Provider.of<KaraokeCardDecorator>(context);
     canvasLength ??= MediaQuery.of(context).size.width;
+    karaokeCardDecorator.canvasLength = canvasLength;
     cards ??= Provider.of<KaraokeCards>(context);
     currentActivity ??= Provider.of<CurrentActivity>(context);
-
-    void updateTextColor(color) {
-      if (karaokeCardDecorator.isDrawing) return;
-      var newTextSpan = TextSpan(
-        text: karaokeCardDecorator.allTyping.last.textSpan.text,
-        style: TextStyle(color: color, fontSize: karaokeCardDecorator.size),
-      );
-      karaokeCardDecorator.updateLastTextSpan(newTextSpan);
-    }
+    karaokeCardDecorator.initializeTyping(canvasLength);
 
     return Expanded(
       child: Stack(
@@ -90,11 +97,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
               focusNode: focusNode,
               onChanged: (text) {
                 print("Text: $text");
-                var newTextSpan = TextSpan(
-                  text: text,
-                  style: TextStyle(color: karaokeCardDecorator.color),
-                );
-                karaokeCardDecorator.updateLastTextSpan(newTextSpan);
+                karaokeCardDecorator.updateText(text);
               },
               onSubmitted: (text) {},
             ),
@@ -140,26 +143,6 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                           : Theme.of(context).primaryColor,
                       onPressed: () {
                         focusNode.unfocus();
-                        if (karaokeCardDecorator.allTyping.isEmpty) {
-                          karaokeCardDecorator.allTyping.add(
-                            Typing(
-                              TextSpan(
-                                text: "",
-                                style: TextStyle(
-                                    color: karaokeCardDecorator.color,
-                                    fontSize: 40),
-                              ),
-                              Offset(canvasLength / 2, canvasLength - 50),
-                            ),
-                          );
-                          // set color to textSpan that is being edited
-                        } else if (karaokeCardDecorator.color !=
-                            karaokeCardDecorator
-                                .allTyping.last.textSpan.style.color) {
-                          karaokeCardDecorator.setColor(karaokeCardDecorator
-                              .allTyping.last.textSpan.style.color);
-                        }
-
                         focusNode.requestFocus();
                         karaokeCardDecorator.startTyping();
                       },
@@ -170,7 +153,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                       width: 105,
                       child: SliderTheme(
                         data: SliderTheme.of(context).copyWith(
-                          thumbColor: Colors.blueGrey,
+                          thumbColor: Colors.blue[700],
                           trackHeight: 20,
                           trackShape: TriangularSliderTrackShape(
                               Theme.of(context).primaryColor),
@@ -190,14 +173,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                     // Undo button
                     IconButton(
                       color: Theme.of(context).primaryColor,
-                      onPressed: () {
-                        focusNode.unfocus();
-                        karaokeCardDecorator.undoLast();
-                        if (karaokeCardDecorator.isTyping)
-                          setState(() {
-                            textController.clear();
-                          });
-                      },
+                      onPressed: _handleUndo,
                       icon: Icon(LineAwesomeIcons.undo, size: iconButtonSize),
                     ),
                   ],
@@ -212,7 +188,6 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                         shape: CircleBorder(),
                         onPressed: () {
                           karaokeCardDecorator.setColor(Colors.black);
-                          updateTextColor(Colors.black);
                         },
                         child: karaokeCardDecorator.color == Colors.black
                             ? Icon(Icons.check, size: 20, color: Colors.white)
@@ -226,7 +201,6 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                         shape: CircleBorder(),
                         onPressed: () {
                           karaokeCardDecorator.setColor(Colors.white);
-                          updateTextColor(Colors.white);
                         },
                         child: karaokeCardDecorator.color == Colors.white
                             ? Icon(Icons.check, size: 20)
@@ -240,7 +214,6 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                         shape: CircleBorder(),
                         onPressed: () {
                           karaokeCardDecorator.setColor(Colors.green);
-                          updateTextColor(Colors.green);
                         },
                         child: karaokeCardDecorator.color == Colors.green
                             ? Icon(Icons.check, size: 20)
@@ -254,7 +227,6 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                         shape: CircleBorder(),
                         onPressed: () {
                           karaokeCardDecorator.setColor(Colors.blue);
-                          updateTextColor(Colors.blue);
                         },
                         child: karaokeCardDecorator.color == Colors.blue
                             ? Icon(Icons.check, size: 20)
@@ -268,7 +240,6 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                         shape: CircleBorder(),
                         onPressed: () {
                           karaokeCardDecorator.setColor(Colors.pink);
-                          updateTextColor(Colors.pink);
                         },
                         child: karaokeCardDecorator.color == Colors.pink
                             ? Icon(Icons.check, size: 20)
@@ -282,7 +253,6 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                         shape: CircleBorder(),
                         onPressed: () {
                           karaokeCardDecorator.setColor(Colors.purple);
-                          updateTextColor(Colors.purple);
                         },
                         child: karaokeCardDecorator.color == Colors.purple
                             ? Icon(Icons.check, size: 20)
@@ -296,7 +266,6 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                         shape: CircleBorder(),
                         onPressed: () {
                           karaokeCardDecorator.setColor(Colors.yellow);
-                          updateTextColor(Colors.yellow);
                         },
                         child: karaokeCardDecorator.color == Colors.yellow
                             ? Icon(Icons.check, size: 20)
@@ -313,7 +282,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     RawMaterialButton(
-                      onPressed: karaokeCardDecorator.reset,
+                      onPressed: _handleReset,
                       child: Padding(
                         padding: EdgeInsets.symmetric(vertical: 8),
                         child: Text(

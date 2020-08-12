@@ -30,6 +30,7 @@ class KaraokeCardDecorator with ChangeNotifier {
   List<Drawing> allDrawings;
   List<Typing> allTyping;
   var cardPainter;
+  double canvasLength;
 
   void newDrawing() {
     allDrawings.add(Drawing(color, size));
@@ -55,11 +56,28 @@ class KaraokeCardDecorator with ChangeNotifier {
     cardPainter?.toPNG();
   }
 
+  Offset get defaultTypingOffset {
+    return Offset(canvasLength / 2, canvasLength - 30);
+  }
+
+  void initializeTyping(double length) {
+    this.canvasLength = length;
+    if (allTyping.isNotEmpty) return;
+    final span = TextSpan(
+      text: "",
+      style: TextStyle(color: color, fontSize: size),
+    );
+    allTyping.add(Typing(
+      span,
+      defaultTypingOffset,
+    ));
+  }
+
   void updateLastTextSpan(newTextSpan) {
-    print("Updating text!");
-    allTyping.last.textSpan = newTextSpan;
-    print("Typing length: ${allDrawings.length}");
-    notifyListeners();
+    if (allTyping.isEmpty)
+      allTyping.add(Typing(newTextSpan, defaultTypingOffset));
+    else
+      allTyping.last.textSpan = newTextSpan;
   }
 
   void undoLast() {
@@ -90,17 +108,19 @@ class KaraokeCardDecorator with ChangeNotifier {
 
   void setColor(Color newColor) {
     this.color = newColor;
-    // updateText();
+    updateText();
+    notifyListeners();
   }
 
   void setSize(double size) {
     this.size = size;
     updateText();
+    notifyListeners();
   }
 
-  void updateText() {
+  void updateText([String newText]) {
     if (!isTyping) return;
-    final text = allTyping.last.textSpan.text;
+    String text = newText ?? allTyping.last.textSpan.text;
     final newTextSpan =
         TextSpan(text: text, style: TextStyle(color: color, fontSize: size));
     updateLastTextSpan(newTextSpan);
