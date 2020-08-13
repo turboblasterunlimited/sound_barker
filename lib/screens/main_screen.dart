@@ -133,52 +133,52 @@ class _MainScreenState extends State<MainScreen> {
           children: <Widget>[
             Image.asset("assets/logos/K9_logotype.png", width: 80),
             // if (!showFrame)
-              Expanded(
-                child: Center(
-                  child: Container(
-                    width: 170,
-                    child: TextFormField(
-                      enabled: !cards.currentPictureIsStock,
-                      style: TextStyle(color: Colors.grey[600], fontSize: 20),
-                      maxLength: 12,
-                      textAlign: cards.currentPictureIsStock
-                          ? TextAlign.center
-                          : TextAlign.right,
-                      decoration: InputDecoration(
-                          hintText: cards.currentName,
-                          counterText: "",
-                          suffixIcon: cards.currentPictureIsStock
-                              ? null
-                              : Icon(LineAwesomeIcons.edit),
-                          border: InputBorder.none),
-                      onFieldSubmitted: (val) {
-                        cards.setCurrentName(val);
-                        FocusScope.of(context).unfocus();
-                      },
-                    ),
-                    // This rename field works differently than on the coordinates setting page.
+            Expanded(
+              child: Center(
+                child: Container(
+                  width: 170,
+                  child: TextFormField(
+                    enabled: !cards.currentPictureIsStock,
+                    style: TextStyle(color: Colors.grey[600], fontSize: 20),
+                    maxLength: 12,
+                    textAlign: cards.currentPictureIsStock
+                        ? TextAlign.center
+                        : TextAlign.right,
+                    decoration: InputDecoration(
+                        hintText: cards.currentName,
+                        counterText: "",
+                        suffixIcon: cards.currentPictureIsStock
+                            ? null
+                            : Icon(LineAwesomeIcons.edit),
+                        border: InputBorder.none),
+                    onFieldSubmitted: (val) {
+                      cards.setCurrentName(val);
+                      FocusScope.of(context).unfocus();
+                    },
                   ),
+                  // This rename field works differently than on the coordinates setting page.
                 ),
               ),
+            ),
           ],
         ),
         actions: <Widget>[
           // if (!showFrame)
-            Padding(
-              padding: const EdgeInsets.only(top: 5),
-              child: RawMaterialButton(
-                child: Icon(
-                  Icons.menu,
-                  color: Colors.black,
-                  size: 30,
-                ),
-                shape: CircleBorder(),
-                elevation: 2.0,
-                onPressed: () {
-                  Navigator.of(context).pushNamed(MenuScreen.routeName);
-                },
+          Padding(
+            padding: const EdgeInsets.only(top: 5),
+            child: RawMaterialButton(
+              child: Icon(
+                Icons.menu,
+                color: Colors.black,
+                size: 30,
               ),
+              shape: CircleBorder(),
+              elevation: 2.0,
+              onPressed: () {
+                Navigator.of(context).pushNamed(MenuScreen.routeName);
+              },
             ),
+          ),
         ],
       ),
     );
@@ -224,9 +224,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   EdgeInsets get _portraitPadding {
-    return showFrame
-        ? EdgeInsets.zero
-        : EdgeInsets.only(left: 22, right: 22);
+    return showFrame ? EdgeInsets.zero : EdgeInsets.only(left: 22, right: 22);
   }
 
   bool get showFrame {
@@ -281,9 +279,7 @@ class _MainScreenState extends State<MainScreen> {
                   // for frame and portrait
                   Stack(
                     children: [
-                      if (showFrame)
-                         Image.asset(cards.current.framePath),
-                        
+                      if (showFrame) Image.asset(cards.current.framePath),
                       Padding(
                         // 22px or 0
                         padding: _portraitPadding,
@@ -291,6 +287,7 @@ class _MainScreenState extends State<MainScreen> {
                           children: [
                             // audio playback and decoration canvas
                             GestureDetector(
+                              behavior: HitTestBehavior.translucent,
                               onTap: _handleTapPuppet,
                               child: Padding(
                                 // to shrink portrait to accomodate card frame
@@ -300,7 +297,7 @@ class _MainScreenState extends State<MainScreen> {
                                   child: Stack(
                                     children: <Widget>[
                                       SingingImage(),
-                                      Container(
+                                      Expanded(
                                         child: canPlay()
                                             ? Center(
                                                 child: Row(
@@ -309,8 +306,9 @@ class _MainScreenState extends State<MainScreen> {
                                                   children: <Widget>[
                                                     RawMaterialButton(
                                                       elevation: 2.0,
-                                                      fillColor: Theme.of(context)
-                                                          .primaryColor,
+                                                      fillColor:
+                                                          Theme.of(context)
+                                                              .primaryColor,
                                                       child: Icon(
                                                         Icons.play_arrow,
                                                         size: 60,
