@@ -29,6 +29,8 @@ class MainScreen extends StatefulWidget {
   _MainScreenState createState() => _MainScreenState();
 }
 
+const double portraitPadding = 22;
+
 class _MainScreenState extends State<MainScreen> {
   User user;
   Barks barks;
@@ -224,7 +226,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   EdgeInsets get _portraitPadding {
-    return showFrame ? EdgeInsets.zero : EdgeInsets.only(left: 22, right: 22);
+    return showFrame ? EdgeInsets.zero : EdgeInsets.only(left: portraitPadding, right: portraitPadding);
   }
 
   bool get showFrame {
@@ -331,7 +333,7 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                       ),
                       if (_showDecorationCanvas)
-                        CardDecoratorCanvas(padding: _framePadding),
+                        CardDecoratorCanvas(padding: portraitPadding),
                     ],
                   ),
                   if (cards.current != null) CardProgressBar(),
