@@ -242,7 +242,8 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   bool get _showDecorationCanvas {
-    return currentActivity.isTwo && currentActivity.isStyle;
+    return (currentActivity.isTwo || currentActivity.isThree) &&
+        currentActivity.isStyle;
   }
 
   @override

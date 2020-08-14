@@ -3,8 +3,10 @@ import 'dart:typed_data';
 import 'dart:ui';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/karaoke_card_decorator.dart';
+import 'package:image/image.dart' as IMG;
 
 class CardDecoratorCanvas extends StatefulWidget {
   final padding;
@@ -84,18 +86,39 @@ class CardPainter extends CustomPainter {
 
   CardPainter(this.allDrawings, this.allTyping, this.screenWidth) : super();
 
-  Future<String> capturePNG(String uniqueId) async {
-    print("capturing png...");
+  Future<ByteData> _getArtwork(List aspect) async {
     var recorder = PictureRecorder();
     var canvas = Canvas(recorder);
-    paint(canvas, Size(screenWidth, screenWidth));
+    paint(canvas, Size(aspect[0], aspect[1]));
     var picture = recorder.endRecording();
-    var image = await picture.toImage(512, 512);
-    ByteData data = await image.toByteData(format: ImageByteFormat.png);
+    var image = await picture.toImage(aspect[0], aspect[1]);
+    return await image.toByteData(format: ImageByteFormat.png);
+  }
 
-    final buffer = data.buffer;
+  Future<Uint8List> mergeArtWithFrame(IMG.Image art, String framePath) async {
+    final frameBytes = await rootBundle.load(framePath);
+    final frame = IMG.decodeImage(frameBytes.buffer.asUint8List());
+    final mergedImage = IMG.Image(656, 787);
+    IMG.copyInto(mergedImage, frame, blend: false);
+    IMG.copyInto(mergedImage, art, blend: false);
+    return IMG.encodePng(mergedImage);
+  }
+
+  Future<String> capturePNG(String uniqueId, [String framePath]) async {
+    List aspect;
+    if (framePath != null)
+      aspect = [512, 512];
+    else
+      aspect = [656, 778];
+    ByteData artData = await _getArtwork(aspect);
+    if (framePath != null) {
+      final artImage = IMG.decodeImage(artData.buffer.asUint8List());
+      artData = await mergeArtWithFrame(artImage, framePath);
+    }
+
+    final buffer = artData.buffer;
     final file = await File("$myAppStoragePath/$uniqueId.png").writeAsBytes(
-        buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
+        buffer.asUint8List(artData.offsetInBytes, artData.lengthInBytes));
     return file.path;
     // return data.buffer.asUint8List();
   }

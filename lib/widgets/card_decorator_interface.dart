@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/karaoke_card_decorator.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
-import 'package:uuid/uuid.dart';
+import '../icons/custom_icons.dart';
 
 class CardDecoratorInterface extends StatefulWidget {
   @override
@@ -52,11 +52,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
     setState(() => _isPlaying = true);
   }
 
-  void saveArtwork() async {
-    String decorationImageId = Uuid().v4();
-    cards.current.decorationImagePath =
-        await karaokeCardDecorator.cardPainter.capturePNG(decorationImageId);
-  }
+
 
   void _handleUndo() {
     focusNode.unfocus();
@@ -126,15 +122,18 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                       ]),
                     ),
                     // Drawing button
-                    IconButton(
-                      color: karaokeCardDecorator.isDrawing
-                          ? Colors.blue
-                          : Theme.of(context).primaryColor,
-                      onPressed: () {
-                        focusNode.unfocus();
-                        karaokeCardDecorator.startDrawing();
-                      },
-                      icon: Icon(Icons.edit, size: iconButtonSize),
+                    Padding(
+                      padding: EdgeInsets.only(bottom: 10),
+                      child: IconButton(
+                        color: karaokeCardDecorator.isDrawing
+                            ? Colors.blue
+                            : Theme.of(context).primaryColor,
+                        onPressed: () {
+                          focusNode.unfocus();
+                          karaokeCardDecorator.startDrawing();
+                        },
+                        icon: Icon(CustomIcons.draw, size: iconButtonSize + 10),
+                      ),
                     ),
                     // Typing button
                     IconButton(
@@ -146,7 +145,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                         focusNode.requestFocus();
                         karaokeCardDecorator.startTyping();
                       },
-                      icon: Icon(Icons.font_download, size: iconButtonSize),
+                      icon: Icon(CustomIcons.aa, size: iconButtonSize + 10),
                     ),
                     // Text/Drawing Size slider
                     SizedBox(
@@ -174,7 +173,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                     IconButton(
                       color: Theme.of(context).primaryColor,
                       onPressed: _handleUndo,
-                      icon: Icon(LineAwesomeIcons.undo, size: iconButtonSize),
+                      icon: Icon(CustomIcons.undo, size: iconButtonSize),
                     ),
                   ],
                 ),

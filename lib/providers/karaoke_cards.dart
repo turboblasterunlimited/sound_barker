@@ -108,6 +108,7 @@ class KaraokeCard with ChangeNotifier {
   String audioFilePath;
   List amplitudes;
   String framePath;
+  String recipientName;
 
   KaraokeCard(
       {this.fileId,
