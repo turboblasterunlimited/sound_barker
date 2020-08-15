@@ -114,13 +114,14 @@ class CardPainter extends CustomPainter {
     UI.Picture picture = recorder.endRecording();
     UI.Image image = await picture.toImage(
         canvasDimensions[0].round(), canvasDimensions[1].round());
-    ByteData imageData = await image.toByteData();
-
-    IMG.Image imgImage = IMG.decodeImage(imageData.buffer.asUint8List());
+    ByteData imageData = await image.toByteData(format: UI.ImageByteFormat.png);
+    Uint8List test = imageData.buffer.asUint8List();
+    print("Test: $test");
+    IMG.Image imgImage = IMG.decodeImage(test);
+    print("is null?: $imgImage");
     IMG.Image resized =
         IMG.copyResize(imgImage, width: aspect[0], height: aspect[1]);
-    print("image height: ${image.height}");
-    print("image width: ${image.width}");
+
     return IMG.encodePng(resized);
     // return await image.toByteData(format: UI.ImageByteFormat.png);
   }
