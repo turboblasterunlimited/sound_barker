@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:K9_Karaoke/classes/card_message.dart';
 import 'package:K9_Karaoke/providers/barks.dart';
 import 'package:K9_Karaoke/providers/creatable_songs.dart';
-import 'package:K9_Karaoke/providers/karaoke_card_decorator.dart';
+import 'package:K9_Karaoke/providers/karaoke_card_decorator_controller.dart';
 import 'package:K9_Karaoke/providers/pictures.dart';
 import 'package:K9_Karaoke/providers/songs.dart';
 import 'package:K9_Karaoke/tools/amplitude_extractor.dart';
@@ -20,7 +20,7 @@ class KaraokeCards with ChangeNotifier {
   void messageIsReady() {
     notifyListeners();
   }
-  
+
   String get currentName {
     if (current == null || current.picture == null)
       return "test";
@@ -80,6 +80,11 @@ class KaraokeCards with ChangeNotifier {
     notifyListeners();
   }
 
+  void setCurrentDecorationImagePath(String path) {
+    current.decorationImagePath = path;
+    notifyListeners();
+  }
+
   bool get hasFrame {
     return current != null && current.framePath != null;
   }
@@ -124,13 +129,13 @@ class KaraokeCard with ChangeNotifier {
       this.amplitudes,
       this.framePath});
 
-      bool onlySong() {
-        return !message.exists;
-      }
+  bool onlySong() {
+    return !message.exists;
+  }
 
-      bool onlyMessage() {
-        return song == null;
-      }
+  bool onlyMessage() {
+    return song == null;
+  }
 
   Future<void> combineMessageAndSong() async {
     String audioKey = Uuid().v4();

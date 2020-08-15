@@ -1,3 +1,4 @@
+import 'package:K9_Karaoke/widgets/card_decorator_canvas.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -22,16 +23,16 @@ class Typing {
   Typing(this.textSpan, this.offset);
 }
 
-class KaraokeCardDecorator with ChangeNotifier {
+class KaraokeCardDecoratorController with ChangeNotifier {
   bool isDrawing = true;
   bool isTyping = false;
   Color color = Colors.black;
   double size = 20;
   List<Drawing> allDrawings;
   List<Typing> allTyping;
-  var cardPainter;
+  CardPainter cardPainter;
   double canvasLength;
-  KaraokeCardDecorator() {
+  KaraokeCardDecoratorController() {
     allDrawings = [];
     allTyping = [];
   }
@@ -49,16 +50,6 @@ class KaraokeCardDecorator with ChangeNotifier {
     allDrawings.clear();
     allTyping.clear();
     notifyListeners();
-  }
-
-  setPainter(painter) {
-    cardPainter = painter;
-    notifyListeners();
-    return painter;
-  }
-
-  void saveCanvasToFile() {
-    cardPainter?.toPNG();
   }
 
   Offset get defaultTypingOffset {

@@ -1,12 +1,12 @@
 import 'dart:io';
 import 'dart:typed_data';
-import 'dart:ui';
+import 'dart:ui' as UI;
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:K9_Karaoke/providers/karaoke_card_decorator.dart';
+import 'package:K9_Karaoke/providers/karaoke_card_decorator_controller.dart';
 import 'package:image/image.dart' as IMG;
 
 class CardDecoratorCanvas extends StatefulWidget {
@@ -17,9 +17,10 @@ class CardDecoratorCanvas extends StatefulWidget {
 }
 
 const List<int> frameDimensions = [656, 778];
+const List<int> portraitDimensions = [512, 512];
 
 class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
-  KaraokeCardDecorator karaokeCardDecorator;
+  KaraokeCardDecoratorController karaokeCardDecorator;
   KaraokeCards cards;
   double screenWidth;
 
@@ -42,11 +43,12 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
   @override
   Widget build(BuildContext context) {
     print("building decorator canvas!");
-    karaokeCardDecorator = Provider.of<KaraokeCardDecorator>(context);
+    karaokeCardDecorator = Provider.of<KaraokeCardDecoratorController>(context);
     cards = Provider.of<KaraokeCards>(context);
     final allDrawings = karaokeCardDecorator.allDrawings;
     final allTyping = karaokeCardDecorator.allTyping;
     screenWidth = MediaQuery.of(context).size.width;
+    print("screenWidth: $screenWidth");
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
@@ -90,7 +92,7 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
       },
       child: CustomPaint(
         painter: karaokeCardDecorator.cardPainter =
-            CardPainter(allDrawings, allTyping, screenWidth),
+            CardPainter(allDrawings, allTyping, [cardWidth, cardHeight]),
         child: Container(height: cardHeight, width: cardWidth),
       ),
     );
@@ -100,25 +102,38 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
 class CardPainter extends CustomPainter {
   final allDrawings;
   final allTyping;
-  final screenWidth;
+  final canvasDimensions;
 
-  CardPainter(this.allDrawings, this.allTyping, this.screenWidth) : super();
+  CardPainter(this.allDrawings, this.allTyping, this.canvasDimensions)
+      : super();
 
-  Future<ByteData> _getArtwork(List aspect) async {
-    var recorder = PictureRecorder();
+  Future<Uint8List> _getArtwork(List aspect) async {
+    var recorder = UI.PictureRecorder();
     var canvas = Canvas(recorder);
-    paint(canvas, Size(aspect[0], aspect[1]));
-    var picture = recorder.endRecording();
-    var image = await picture.toImage(aspect[0], aspect[1]);
-    return await image.toByteData(format: ImageByteFormat.png);
+    paint(canvas, Size(canvasDimensions[0], canvasDimensions[1]));
+    UI.Picture picture = recorder.endRecording();
+    UI.Image image = await picture.toImage(
+        canvasDimensions[0].round(), canvasDimensions[1].round());
+    ByteData imageData = await image.toByteData();
+
+    IMG.Image imgImage = IMG.decodeImage(imageData.buffer.asUint8List());
+    IMG.Image resized =
+        IMG.copyResize(imgImage, width: aspect[0], height: aspect[1]);
+    print("image height: ${image.height}");
+    print("image width: ${image.width}");
+    return IMG.encodePng(resized);
+    // return await image.toByteData(format: UI.ImageByteFormat.png);
   }
 
   Future<Uint8List> _mergeArtWithFrame(IMG.Image art, String framePath) async {
     final frameBytes = await rootBundle.load(framePath);
-    final frame = IMG.decodeImage(frameBytes.buffer.asUint8List());
+    final frame = IMG.decodeImage(frameBytes.buffer
+        .asUint8List(frameBytes.offsetInBytes, frameBytes.lengthInBytes));
+    print("frame height: ${frame.height}");
+    print("frame width: ${frame.width}");
     final mergedImage = IMG.Image(656, 787);
-    IMG.copyInto(mergedImage, frame, blend: false);
-    IMG.copyInto(mergedImage, art, blend: false);
+    IMG.copyInto(mergedImage, frame, blend: true);
+    IMG.copyInto(mergedImage, art, blend: true);
     return IMG.encodePng(mergedImage);
   }
 
@@ -126,12 +141,10 @@ class CardPainter extends CustomPainter {
     File file;
     Uint8List result;
     if (framePath == null) {
-      ByteData artData = await _getArtwork([512, 512]);
-      final buffer = artData.buffer;
-      result = buffer.asUint8List(artData.offsetInBytes, artData.lengthInBytes);
+      result = await _getArtwork(portraitDimensions);
     } else {
-      ByteData artData = await _getArtwork([656, 778]);
-      final artImage = IMG.decodeImage(artData.buffer.asUint8List());
+      Uint8List artData = await _getArtwork(frameDimensions);
+      final artImage = IMG.decodeImage(artData);
       result = await _mergeArtWithFrame(artImage, framePath);
     }
     file = await File("$myAppStoragePath/$uniqueId.png").writeAsBytes(result);

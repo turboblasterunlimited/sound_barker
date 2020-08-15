@@ -4,7 +4,7 @@ import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/sound_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:K9_Karaoke/providers/karaoke_card_decorator.dart';
+import 'package:K9_Karaoke/providers/karaoke_card_decorator_controller.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import '../icons/custom_icons.dart';
@@ -16,7 +16,7 @@ class CardDecoratorInterface extends StatefulWidget {
 
 class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
   SoundController soundController;
-  KaraokeCardDecorator karaokeCardDecorator;
+  KaraokeCardDecoratorController karaokeCardDecorator;
   ImageController imageController;
   CurrentActivity currentActivity;
   KaraokeCards cards;
@@ -76,7 +76,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
   Widget build(BuildContext context) {
     soundController ??= Provider.of<SoundController>(context);
     imageController ??= Provider.of<ImageController>(context, listen: false);
-    karaokeCardDecorator ??= Provider.of<KaraokeCardDecorator>(context);
+    karaokeCardDecorator ??= Provider.of<KaraokeCardDecoratorController>(context);
     canvasLength ??= MediaQuery.of(context).size.width;
     karaokeCardDecorator.canvasLength = canvasLength;
     cards ??= Provider.of<KaraokeCards>(context);

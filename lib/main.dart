@@ -10,7 +10,7 @@ import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:K9_Karaoke/providers/karaoke_card_decorator.dart';
+import 'package:K9_Karaoke/providers/karaoke_card_decorator_controller.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:flutter/rendering.dart';
 
@@ -75,7 +75,7 @@ class MyApp extends StatelessWidget {
           value: SpinnerState(),
         ),
         ChangeNotifierProvider.value(
-          value: KaraokeCardDecorator(),
+          value: KaraokeCardDecoratorController(),
         ),
         ChangeNotifierProvider.value(
           value: User(),
