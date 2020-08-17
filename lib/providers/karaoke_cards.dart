@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:path/path.dart';
 
 import 'package:K9_Karaoke/classes/card_message.dart';
 import 'package:K9_Karaoke/providers/barks.dart';
@@ -95,25 +96,23 @@ class KaraokeCards with ChangeNotifier {
 }
 
 class KaraokeCard with ChangeNotifier {
-  final message = CardMessage();
   String fileId;
-  Picture picture;
   // This is a creatable song, which has two arrangments. One of the arrangement ids gets sent to the server with the bark ids to create an actual song.
   CreatableSong songFormula;
   // This is an actual song
   Song song;
-  List<String> barks = [];
-  // if editing a previously generated card
-  String decorationImagePath;
-  // if making a new card
-  CardDecoration cardDecoration;
+  final message = CardMessage();
   Bark shortBark;
   Bark mediumBark;
   Bark longBark;
   String audioFilePath;
   List amplitudes;
-  String framePath;
   String recipientName;
+  // visual
+  Picture picture;
+  String framePath;
+  CardDecoration cardDecoration;
+  String decorationImagePath;
 
   KaraokeCard(
       {this.fileId,
@@ -135,6 +134,14 @@ class KaraokeCard with ChangeNotifier {
 
   bool onlyMessage() {
     return song == null;
+  }
+
+  String get decorationImageId {
+    return basename(decorationImagePath).split('.')[0];
+  }
+
+  String get audioId {
+    return basename(audioFilePath).split('.')[0];
   }
 
   Future<void> combineMessageAndSong() async {

@@ -26,7 +26,24 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
 
   String rootPath = "assets/card_borders/";
 
-  List frameFileNames = ['white.png', 'black.png', 'magenta.png', 'teal.png', 'red.png', 'blue.png'];
+  List frameFileNames = [
+    'white.png',
+    'black.png',
+    'magenta.png',
+    'teal.png',
+    'red.png',
+    'blue.png',
+    'bd-ballons.png',
+    'bd-bone.png',
+    'bd-cake-1.png',
+    'bd-cake-2.png',
+    'bd-cake-3.png',
+    'pres-1.png',
+    'pres-2.png',
+    'pres-3.png',
+    'pres-hannuka.png',
+    'pres-xmas.png',
+  ];
 
   Widget frameSelectable(fileName) {
     return GestureDetector(

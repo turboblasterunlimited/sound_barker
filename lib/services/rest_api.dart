@@ -8,14 +8,11 @@ import '../providers/barks.dart';
 import '../providers/pictures.dart';
 
 class RestAPI {
-
   static Future<dynamic> logoutUser(email) async {
     print("logging out...");
     var response;
     try {
-      response = await HttpController.dio.get(
-        "http://165.227.178.14/logout"
-      );
+      response = await HttpController.dio.get("http://165.227.178.14/logout");
     } catch (e) {
       print("logout error: ${e.message}");
       return e.message;
@@ -24,11 +21,8 @@ class RestAPI {
     return response.data["success"];
   }
 
-  static Future<String> createCard(
-      String decorationImageId, String audioId, amplitudes, String imageId) async {
-    String cardId = Uuid().v4();
-    // create card decoration image
-    final imageBody = {'uuid': decorationImageId};
+  static Future<void> createCardDecorationImage(imageId, bucketFp) async {
+    final imageBody = {'uuid': imageId, 'bucket_fp': bucketFp};
     final imageUrl = 'http://165.227.178.14/decoration_image';
 
     var response;
@@ -44,11 +38,12 @@ class RestAPI {
       print(e.response.request);
     }
     print("create decoration image body: ${response.data}");
+  }
 
-    // create card audio
-    final audioBody = {'uuid': audioId};
+  static Future<void> createCardAudio(audioId, bucketFp) async {
+    final audioBody = {'uuid': audioId, 'bucket_fp': bucketFp};
     final audioUrl = 'http://165.227.178.14/card_audio';
-
+    var response;
     try {
       response = await HttpController.dio.post(
         audioUrl,
@@ -61,6 +56,12 @@ class RestAPI {
       print(e.response.request);
     }
     print("create card audio body: ${response.data}");
+  }
+
+  static Future<String> createCard(String decorationImageId, String audioId,
+      amplitudes, String imageId) async {
+    String cardId = Uuid().v4();
+    var response;
 
     final cardBody = {
       'uuid': cardId,
@@ -140,7 +141,6 @@ class RestAPI {
       'coordinates_json': json.encode(image.coordinates),
       'mouth_color': image.mouthColor,
       'bucket_fp': image.fileUrl,
-
     };
     print("Image upload body: $body");
     final url = 'http://165.227.178.14/image';

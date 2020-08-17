@@ -226,7 +226,9 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   EdgeInsets get _portraitPadding {
-    return showFrame ? EdgeInsets.zero : EdgeInsets.only(left: portraitPadding, right: portraitPadding);
+    return showFrame
+        ? EdgeInsets.zero
+        : EdgeInsets.only(left: portraitPadding, right: portraitPadding);
   }
 
   bool get showFrame {
@@ -282,7 +284,6 @@ class _MainScreenState extends State<MainScreen> {
                   // for frame and portrait
                   Stack(
                     children: [
-                      if (showFrame) Image.asset(cards.current.framePath),
                       Padding(
                         // 22px or 0
                         padding: _portraitPadding,
@@ -332,6 +333,11 @@ class _MainScreenState extends State<MainScreen> {
                           ],
                         ),
                       ),
+                      if (showFrame)
+                        GestureDetector(
+                            behavior: HitTestBehavior.translucent,
+                            onTap: _handleTapPuppet,
+                            child: Image.asset(cards.current.framePath)),
                       if (_showDecorationCanvas)
                         CardDecoratorCanvas(padding: portraitPadding),
                     ],

@@ -46,7 +46,7 @@ class Gcloud {
     return bucketWritePath;
   }
 
-  static Future<void> uploadCardAssets(
+  static Future<Map<String, String>> uploadCardAssets(
       String audioFilePath, String imageFilePath) async {
     String audioFileWritePath = "card_audios/${basename(audioFilePath)}";
     String imageFileWritePath = "decoration_images/${basename(imageFilePath)}";
@@ -71,5 +71,9 @@ class Gcloud {
     }
     print(
         "audioDownloadLink: ${audioInfo.downloadLink}, imageDownloadLink: ${imageInfo.downloadLink}");
+    return {
+      "audio": audioInfo.downloadLink,
+      "image": imageInfo.downloadLink
+    };
   }
 }

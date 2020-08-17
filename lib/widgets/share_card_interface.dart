@@ -25,11 +25,13 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
 
   void _handleUploadAndShare() async {
     saveArtwork();
-    // await Gcloud.uploadCardAssets(
-    //     cards.current.audioFilePath, cards.current.decorationImagePath);
-    // Upload card audio here too. then...
-    // await RestAPI.createCard(decorationImageId, widget.cardAudioId,
-    //     cards.current.amplitudes, cards.current.picture.fileId);
+    final bucketFps = await Gcloud.uploadCardAssets(
+        cards.current.audioFilePath, cards.current.decorationImagePath);
+    await RestAPI.createCardDecorationImage(cards.current.decorationImageId, bucketFps["image"]);
+    await RestAPI.createCardAudio(cards.current.audioId, bucketFps["audio"]);
+
+    await RestAPI.createCard(cards.current.decorationImageId, cards.current.audioId,
+        cards.current.amplitudes, cards.current.picture.fileId);
   }
 
   void saveArtwork() async {
@@ -60,7 +62,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                 onSubmitted: (_) => _handleUploadAndShare(),
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: Colors.transparent,
+                  fillColor: Colors.white,
                   border: OutlineInputBorder(),
                   labelText: 'Recipient Name',
                 ),

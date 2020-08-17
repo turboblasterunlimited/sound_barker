@@ -116,22 +116,16 @@ class CardPainter extends CustomPainter {
         canvasDimensions[0].round(), canvasDimensions[1].round());
     ByteData imageData = await image.toByteData(format: UI.ImageByteFormat.png);
     Uint8List test = imageData.buffer.asUint8List();
-    print("Test: $test");
     IMG.Image imgImage = IMG.decodeImage(test);
-    print("is null?: $imgImage");
     IMG.Image resized =
         IMG.copyResize(imgImage, width: aspect[0], height: aspect[1]);
-
     return IMG.encodePng(resized);
-    // return await image.toByteData(format: UI.ImageByteFormat.png);
   }
 
   Future<Uint8List> _mergeArtWithFrame(IMG.Image art, String framePath) async {
     final frameBytes = await rootBundle.load(framePath);
     final frame = IMG.decodeImage(frameBytes.buffer
         .asUint8List(frameBytes.offsetInBytes, frameBytes.lengthInBytes));
-    print("frame height: ${frame.height}");
-    print("frame width: ${frame.width}");
     final mergedImage = IMG.Image(656, 787);
     IMG.copyInto(mergedImage, frame, blend: true);
     IMG.copyInto(mergedImage, art, blend: true);
