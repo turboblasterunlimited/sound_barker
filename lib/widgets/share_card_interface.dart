@@ -25,10 +25,12 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
 
   void _handleUploadAndShare() async {
     await saveArtwork();
-    print("audioFilePath: ${cards.current.audioFilePath}, decorationImagePath: ${cards.current.decorationImagePath}");
+    print(
+        "audioFilePath: ${cards.current.audioFilePath}, decorationImagePath: ${cards.current.decorationImagePath}");
     final bucketFps = await Gcloud.uploadCardAssets(
         cards.current.audioFilePath, cards.current.decorationImagePath);
-    await RestAPI.createCardDecorationImage(cards.current.decorationImageId, bucketFps["image"]);
+    await RestAPI.createCardDecorationImage(
+        cards.current.decorationImageId, bucketFps["image"]);
     await RestAPI.createCardAudio(cards.current.audioId, bucketFps["audio"]);
     await RestAPI.createCard(cards.current);
   }
@@ -47,45 +49,37 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     cards = Provider.of<KaraokeCards>(context, listen: true);
     cardDecorator =
         Provider.of<KaraokeCardDecoratorController>(context, listen: false);
-    return Container(
-      height: 200,
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 30, right: 30, bottom: 15),
-              child: TextField(
-                onChanged: (name) {
-                  cards.current.recipientName = name;
-                },
-                onSubmitted: (_) => _handleUploadAndShare(),
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(),
-                  labelText: 'Recipient Name',
-                ),
-              ),
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 30, right: 30, bottom: 15),
+          child: TextField(
+            onChanged: (name) {
+              cards.current.recipientName = name;
+            },
+            onSubmitted: (_) => _handleUploadAndShare(),
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.white,
+              border: OutlineInputBorder(),
+              labelText: 'Recipient Name',
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 30, right: 30, bottom: 15),
-              child: RawMaterialButton(
-                onPressed: _handleUploadAndShare,
-                child: Text("Share It!", style: TextStyle(color: Colors.white)),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30.0),
-                ),
-                elevation: 2.0,
-                fillColor: Theme.of(context).primaryColor,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
-              ),
-            ),
-            if (cards.current.decorationImagePath != null)
-              Center(child: Image.file(File(cards.current.decorationImagePath)))
-          ],
+          ),
         ),
-      ),
+        Padding(
+          padding: const EdgeInsets.only(left: 30, right: 30, bottom: 15),
+          child: RawMaterialButton(
+            onPressed: _handleUploadAndShare,
+            child: Text("Share It!", style: TextStyle(color: Colors.white)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30.0),
+            ),
+            elevation: 2.0,
+            fillColor: Theme.of(context).primaryColor,
+            padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
+          ),
+        ),
+      ],
     );
   }
 }

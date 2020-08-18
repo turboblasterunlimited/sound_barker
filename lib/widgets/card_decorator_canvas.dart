@@ -152,13 +152,15 @@ class CardPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 4.0;
 
+
     for (var drawing in allDrawings) {
       paint.color = drawing.color;
-      paint.strokeWidth = drawing.size;
+      paint.strokeWidth = drawing.size / 2;
       for (var mark in drawing.offsets) {
         for (var i = 0; i < mark.length - 1; i++) {
           if (mark[i] != null && mark[i + 1] != null)
-            canvas.drawLine(mark[i], mark[i + 1], paint);
+            canvas.drawCircle(mark[i], drawing.size/2, paint);
+            // canvas.drawLine(mark[i], mark[i + 1], paint);
         }
       }
     }

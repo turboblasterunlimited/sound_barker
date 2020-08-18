@@ -66,7 +66,7 @@ class RestAPI {
     final cardBody = {
       'uuid': cardId,
       'card_audio_id': card.audioId,
-      "image_id": card.decorationImageId,
+      "image_id": card.picture.fileId,
       'decoration_image_id': card.decorationImageId,
       'recipient_name': card.recipientName,
       'animation_json': '{"mouth_positions": ${card.amplitudes.toString()}}',
