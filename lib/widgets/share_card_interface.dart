@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:K9_Karaoke/providers/karaoke_card_decorator_controller.dart';
+import 'package:K9_Karaoke/providers/karaoke_card_decoration_controller.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/sound_controller.dart';
 import 'package:K9_Karaoke/services/gcloud.dart';
@@ -21,7 +21,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   SoundController soundController;
   ImageController imageController;
   KaraokeCards cards;
-  KaraokeCardDecoratorController cardDecorator;
+  KaraokeCardDecorationController cardDecorator;
 
   void _handleUploadAndShare() async {
     await saveArtwork();
@@ -48,7 +48,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     imageController ??= Provider.of<ImageController>(context, listen: false);
     cards = Provider.of<KaraokeCards>(context, listen: true);
     cardDecorator =
-        Provider.of<KaraokeCardDecoratorController>(context, listen: false);
+        Provider.of<KaraokeCardDecorationController>(context, listen: false);
     return Column(
       children: [
         Padding(

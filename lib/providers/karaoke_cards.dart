@@ -4,7 +4,7 @@ import 'package:path/path.dart';
 import 'package:K9_Karaoke/classes/card_message.dart';
 import 'package:K9_Karaoke/providers/barks.dart';
 import 'package:K9_Karaoke/providers/creatable_songs.dart';
-import 'package:K9_Karaoke/providers/karaoke_card_decorator_controller.dart';
+import 'package:K9_Karaoke/providers/karaoke_card_decoration_controller.dart';
 import 'package:K9_Karaoke/providers/pictures.dart';
 import 'package:K9_Karaoke/providers/songs.dart';
 import 'package:K9_Karaoke/tools/amplitude_extractor.dart';

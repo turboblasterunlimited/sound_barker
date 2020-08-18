@@ -23,7 +23,7 @@ class Typing {
   Typing(this.textSpan, this.offset);
 }
 
-class KaraokeCardDecoratorController with ChangeNotifier {
+class KaraokeCardDecorationController with ChangeNotifier {
   bool isDrawing = true;
   bool isTyping = false;
   Color color = Colors.black;
@@ -32,7 +32,7 @@ class KaraokeCardDecoratorController with ChangeNotifier {
   List<Typing> allTyping;
   CardPainter cardPainter;
   double canvasLength;
-  KaraokeCardDecoratorController() {
+  KaraokeCardDecorationController() {
     allDrawings = [];
     allTyping = [];
   }

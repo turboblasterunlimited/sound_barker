@@ -6,7 +6,7 @@ import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:K9_Karaoke/providers/karaoke_card_decorator_controller.dart';
+import 'package:K9_Karaoke/providers/karaoke_card_decoration_controller.dart';
 import 'package:image/image.dart' as IMG;
 
 class CardDecoratorCanvas extends StatefulWidget {
@@ -20,7 +20,7 @@ const List<int> frameDimensions = [656, 778];
 const List<int> portraitDimensions = [512, 512];
 
 class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
-  KaraokeCardDecoratorController karaokeCardDecorator;
+  KaraokeCardDecorationController karaokeCardDecorator;
   KaraokeCards cards;
   double screenWidth;
   List<Drawing> allDrawings;
@@ -47,15 +47,67 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
       setState(() {
         karaokeCardDecorator.newDrawing();
         allDrawings.last.offsets.add(
-          [Offset(details.localPosition.dx, details.localPosition.dy)],
+          [_getOffset(details)],
         );
       });
+  }
+
+  void _handleUpdateDrawing(details) {
+    if (karaokeCardDecorator.isDrawing)
+      setState(() {
+        allDrawings.last.offsets.last.add(
+          _getOffset(details),
+        );
+      });
+  }
+
+  Offset _getOffset(details) {
+    return Offset(details.localPosition.dx, details.localPosition.dy);
+  }
+
+  bool _inProximity(Offset existingXY, Offset touchedXY) {
+    if ((existingXY.dx - touchedXY.dx).abs() < 20.0 &&
+        (existingXY.dy - touchedXY.dy).abs() < 20.0) return true;
+    return false;
+  }
+
+  Typing _selectText(details) {
+    var index = allTyping
+        .indexWhere((text) => _inProximity(details.localPosition, text.offset));
+    if (index == -1) return null;
+    Typing selected = allTyping[index];
+    allTyping.removeAt(index);
+    allTyping.add(selected);
+  }
+
+  void _createNewTyping(details) {
+    if (karaokeCardDecorator.isTyping) {
+      allTyping.add(
+        Typing(
+          TextSpan(
+            text: "",
+            style: TextStyle(color: karaokeCardDecorator.color),
+          ),
+          _getOffset(details),
+        ),
+      );
+    }
+  }
+
+  void _handleCreateOrSelectText(details) {
+    if (karaokeCardDecorator.isTyping) {
+      Typing selected = _selectText(details);
+      if (selected == null) {
+        _createNewTyping(details);
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     print("building decorator canvas!");
-    karaokeCardDecorator = Provider.of<KaraokeCardDecoratorController>(context);
+    karaokeCardDecorator =
+        Provider.of<KaraokeCardDecorationController>(context);
     cards = Provider.of<KaraokeCards>(context);
     allDrawings = karaokeCardDecorator.allDrawings;
     allTyping = karaokeCardDecorator.allTyping;
@@ -67,29 +119,14 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
       onTapDown: (details) {
         print("Tapping canvas");
         _handleAddNewDrawing(details);
-
-        // if (karaokeCardDecorator.isTyping) {
-        //   allTyping.add(
-        //     Typing(
-        //         TextSpan(
-        //           text: "",
-        //           style: TextStyle(color: karaokeCardDecorator.color),
-        //         ),
-        //         Offset(details.localPosition.dx, details.localPosition.dy),),
-        //   );
-        // }
+        _handleCreateOrSelectText(details);
       },
       onPanStart: (details) {
         print("Drawing....");
         _handleAddNewDrawing(details);
       },
       onPanUpdate: (details) {
-        if (karaokeCardDecorator.isDrawing)
-          setState(() {
-            allDrawings.last.offsets.last.add(
-              Offset(details.localPosition.dx, details.localPosition.dy),
-            );
-          });
+        _handleUpdateDrawing(details);
       },
       onPanEnd: (details) {
         if (karaokeCardDecorator.isDrawing)
