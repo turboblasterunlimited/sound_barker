@@ -23,6 +23,8 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
   KaraokeCardDecoratorController karaokeCardDecorator;
   KaraokeCards cards;
   double screenWidth;
+  List<Drawing> allDrawings;
+  List<Typing> allTyping;
 
   double get cardHeight {
     if (cards.current.framePath != null) {
@@ -40,13 +42,23 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
     }
   }
 
+  void _handleAddNewDrawing(details) {
+    if (karaokeCardDecorator.isDrawing)
+      setState(() {
+        karaokeCardDecorator.newDrawing();
+        allDrawings.last.offsets.add(
+          [Offset(details.localPosition.dx, details.localPosition.dy)],
+        );
+      });
+  }
+
   @override
   Widget build(BuildContext context) {
     print("building decorator canvas!");
     karaokeCardDecorator = Provider.of<KaraokeCardDecoratorController>(context);
     cards = Provider.of<KaraokeCards>(context);
-    final allDrawings = karaokeCardDecorator.allDrawings;
-    final allTyping = karaokeCardDecorator.allTyping;
+    allDrawings = karaokeCardDecorator.allDrawings;
+    allTyping = karaokeCardDecorator.allTyping;
     screenWidth = MediaQuery.of(context).size.width;
     print("screenWidth: $screenWidth");
 
@@ -54,6 +66,8 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
       behavior: HitTestBehavior.opaque,
       onTapDown: (details) {
         print("Tapping canvas");
+        _handleAddNewDrawing(details);
+
         // if (karaokeCardDecorator.isTyping) {
         //   allTyping.add(
         //     Typing(
@@ -67,13 +81,7 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
       },
       onPanStart: (details) {
         print("Drawing....");
-        if (karaokeCardDecorator.isDrawing)
-          setState(() {
-            karaokeCardDecorator.newDrawing();
-            allDrawings.last.offsets.add(
-              [Offset(details.localPosition.dx, details.localPosition.dy)],
-            );
-          });
+        _handleAddNewDrawing(details);
       },
       onPanUpdate: (details) {
         if (karaokeCardDecorator.isDrawing)
@@ -149,18 +157,15 @@ class CardPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..style = PaintingStyle.stroke
+      ..style = PaintingStyle.fill
       ..strokeWidth = 4.0;
-
 
     for (var drawing in allDrawings) {
       paint.color = drawing.color;
       paint.strokeWidth = drawing.size / 2;
       for (var mark in drawing.offsets) {
-        for (var i = 0; i < mark.length - 1; i++) {
-          if (mark[i] != null && mark[i + 1] != null)
-            canvas.drawCircle(mark[i], drawing.size/2, paint);
-            // canvas.drawLine(mark[i], mark[i + 1], paint);
+        for (var i = 0; i < mark.length; i++) {
+          canvas.drawCircle(mark[i], drawing.size / 2, paint);
         }
       }
     }
