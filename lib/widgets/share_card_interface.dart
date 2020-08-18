@@ -24,17 +24,16 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   KaraokeCardDecoratorController cardDecorator;
 
   void _handleUploadAndShare() async {
-    saveArtwork();
+    await saveArtwork();
+    print("audioFilePath: ${cards.current.audioFilePath}, decorationImagePath: ${cards.current.decorationImagePath}");
     final bucketFps = await Gcloud.uploadCardAssets(
         cards.current.audioFilePath, cards.current.decorationImagePath);
     await RestAPI.createCardDecorationImage(cards.current.decorationImageId, bucketFps["image"]);
     await RestAPI.createCardAudio(cards.current.audioId, bucketFps["audio"]);
-
-    await RestAPI.createCard(cards.current.decorationImageId, cards.current.audioId,
-        cards.current.amplitudes, cards.current.picture.fileId);
+    await RestAPI.createCard(cards.current);
   }
 
-  void saveArtwork() async {
+  Future<void> saveArtwork() async {
     String decorationImageId = Uuid().v4();
     String decorationImagePath = await cardDecorator.cardPainter
         .capturePNG(decorationImageId, cards.current.framePath);

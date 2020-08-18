@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:uuid/uuid.dart';
 
 import '../services/http_controller.dart';
@@ -58,17 +59,17 @@ class RestAPI {
     print("create card audio body: ${response.data}");
   }
 
-  static Future<String> createCard(String decorationImageId, String audioId,
-      amplitudes, String imageId) async {
+  static Future<String> createCard(KaraokeCard card) async {
     String cardId = Uuid().v4();
     var response;
 
     final cardBody = {
       'uuid': cardId,
-      'card_audio_id': audioId,
-      "image_id": imageId,
-      'decoration_image_id': decorationImageId,
-      'animation_json': '{"mouth_positions": $amplitudes}'
+      'card_audio_id': card.audioId,
+      "image_id": card.decorationImageId,
+      'decoration_image_id': card.decorationImageId,
+      'recipient_name': card.recipientName,
+      'animation_json': '{"mouth_positions": ${card.amplitudes.toString()}}',
     };
     final cardUrl = 'http://165.227.178.14/greeting_card';
     print("card request body: $cardBody");

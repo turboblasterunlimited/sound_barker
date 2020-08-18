@@ -72,8 +72,8 @@ class Gcloud {
     print(
         "audioDownloadLink: ${audioInfo.downloadLink}, imageDownloadLink: ${imageInfo.downloadLink}");
     return {
-      "audio": audioInfo.downloadLink,
-      "image": imageInfo.downloadLink
+      "audio": audioInfo.downloadLink.toString(),
+      "image": imageInfo.downloadLink.toString()
     };
   }
 }
