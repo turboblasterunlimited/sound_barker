@@ -66,18 +66,22 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
   }
 
   bool _inProximity(Offset existingXY, Offset touchedXY) {
-    if ((existingXY.dx - touchedXY.dx).abs() < 20.0 &&
-        (existingXY.dy - touchedXY.dy).abs() < 20.0) return true;
+    if ((existingXY.dx - touchedXY.dx).abs() < 100.0 &&
+        (existingXY.dy - touchedXY.dy).abs() < 100.0) return true;
+    print("it's false");
     return false;
   }
 
-  Typing _selectText(details) {
+  bool _selectText(details) {
+    // selecting text, moves the text to the end of the List
     var index = allTyping
         .indexWhere((text) => _inProximity(details.localPosition, text.offset));
-    if (index == -1) return null;
+
+    if (index == -1) return false;
     Typing selected = allTyping[index];
     allTyping.removeAt(index);
-    allTyping.add(selected);
+    setState(() => allTyping.add(selected));
+    return true;
   }
 
   void _createNewTyping(details) {
@@ -96,8 +100,8 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
 
   void _handleCreateOrSelectText(details) {
     if (karaokeCardDecorator.isTyping) {
-      Typing selected = _selectText(details);
-      if (selected == null) {
+      bool selected = _selectText(details);
+      if (!selected) {
         _createNewTyping(details);
       }
     }
@@ -138,7 +142,18 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
       child: CustomPaint(
         painter: karaokeCardDecorator.cardPainter =
             CardPainter(allDrawings, allTyping, [cardWidth, cardHeight]),
-        child: Container(height: cardHeight, width: cardWidth),
+        child: Container(
+          height: cardHeight,
+          width: cardWidth,
+          child: karaokeCardDecorator.isTyping ? Positioned(
+            top: allTyping.last.offset.dy,
+            left: allTyping.last.offset.dx,
+            child: Text(
+              "XXX",
+              style: TextStyle(fontSize: 30),
+            ),
+          ) : Center(),
+        ),
       ),
     );
   }

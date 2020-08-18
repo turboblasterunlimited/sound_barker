@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:path/path.dart';
 import 'package:flutter/services.dart';
@@ -48,32 +49,24 @@ class Gcloud {
 
   static Future<Map<String, String>> uploadCardAssets(
       String audioFilePath, String imageFilePath) async {
-    String audioFileWritePath = "card_audios/${basename(audioFilePath)}";
-    String imageFileWritePath = "decoration_images/${basename(imageFilePath)}";
+    final audioFileWritePath = "card_audios/${basename(audioFilePath)}";
+    final imageFileWritePath = "decoration_images/${basename(imageFilePath)}";
 
-    var audioInfo;
-    var imageInfo;
-
-    Bucket bucket = await accessBucket("k9karaoke_cards");
+    Bucket bucket = await accessBucket();
     try {
-      audioInfo = await File(audioFilePath)
+      await File(audioFilePath)
           .openRead()
           .pipe(bucket.write(audioFileWritePath));
     } catch (e) {
       print(e);
     }
     try {
-      imageInfo = await File(imageFilePath)
+      await File(imageFilePath)
           .openRead()
           .pipe(bucket.write(imageFileWritePath));
     } catch (e) {
       print(e);
     }
-    print(
-        "audioDownloadLink: ${audioInfo.downloadLink}, imageDownloadLink: ${imageInfo.downloadLink}");
-    return {
-      "audio": audioInfo.downloadLink.toString(),
-      "image": imageInfo.downloadLink.toString()
-    };
+    return {"audio": audioFileWritePath, "image": imageFileWritePath};
   }
 }
