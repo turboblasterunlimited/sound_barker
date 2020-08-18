@@ -335,11 +335,15 @@ class _MainScreenState extends State<MainScreen> {
                       ),
                       if (showFrame)
                         GestureDetector(
-                            behavior: HitTestBehavior.translucent,
-                            onTap: _handleTapPuppet,
-                            child: Image.asset(cards.current.framePath)),
+                          behavior: HitTestBehavior.translucent,
+                          onTap: _handleTapPuppet,
+                          child: Image.asset(cards.current.framePath),
+                        ),
                       if (_showDecorationCanvas)
-                        CardDecoratorCanvas(padding: portraitPadding),
+                        IgnorePointer(
+                          ignoring: currentActivity.isThree,
+                          child: CardDecoratorCanvas(padding: portraitPadding),
+                        ),
                     ],
                   ),
                   if (cards.current != null) CardProgressBar(),

@@ -67,6 +67,7 @@ class Gcloud {
     } catch (e) {
       print(e);
     }
+    print({"audio": audioFileWritePath, "image": imageFileWritePath});
     return {"audio": audioFileWritePath, "image": imageFileWritePath};
   }
 }
