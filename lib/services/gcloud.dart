@@ -1,5 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
+import 'package:K9_Karaoke/classes/card_audio.dart';
+import 'package:K9_Karaoke/classes/card_decoration_image.dart';
 import 'package:path/path.dart';
 import 'package:flutter/services.dart';
 import 'package:gcloud/storage.dart';
@@ -46,26 +48,42 @@ class Gcloud {
   }
 
   static Future<Map<String, String>> uploadCardAssets(
-      String audioFilePath, String imageFilePath) async {
-    final audioFileWritePath = "card_audios/${basename(audioFilePath)}";
-    final imageFileWritePath = "decoration_images/${basename(imageFilePath)}";
-
+      CardDecorationImage decorationImage, CardAudio cardAudio) async {
     Bucket bucket = await accessBucket();
+    String imageFileWritePath = await uploadDecorationImage(decorationImage, bucket);
+    String audioFileWritePath = await uploadCardAudio(cardAudio, bucket);
+    return {"audio": audioFileWritePath, "image": imageFileWritePath};
+  }
+
+  static Future<String> uploadDecorationImage(
+      CardDecorationImage decorationImage,
+      [Bucket bucket]) async {
+    final decorationImageWritePath =
+        "decoration_images/${basename(decorationImage.filePath)}";
+    bucket ??= await accessBucket();
     try {
-      await File(audioFilePath)
+      await File(decorationImage.filePath)
+          .openRead()
+          .pipe(bucket.write(decorationImageWritePath));
+    } catch (e) {
+      print(e);
+    }
+
+    return decorationImageWritePath;
+  }
+
+  static Future<String> uploadCardAudio(CardAudio cardAudio,
+      [Bucket bucket]) async {
+    final audioFileWritePath = "card_audios/${basename(cardAudio.filePath)}";
+    bucket ??= await accessBucket();
+    try {
+      await File(cardAudio.filePath)
           .openRead()
           .pipe(bucket.write(audioFileWritePath));
     } catch (e) {
       print(e);
     }
-    try {
-      await File(imageFilePath)
-          .openRead()
-          .pipe(bucket.write(imageFileWritePath));
-    } catch (e) {
-      print(e);
-    }
-    print({"audio": audioFileWritePath, "image": imageFileWritePath});
-    return {"audio": audioFileWritePath, "image": imageFileWritePath};
+
+    return audioFileWritePath;
   }
 }

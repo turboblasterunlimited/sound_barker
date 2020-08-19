@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:K9_Karaoke/classes/card_audio.dart';
+import 'package:K9_Karaoke/classes/card_decoration_image.dart';
 import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:path/path.dart';
 
@@ -84,7 +85,7 @@ class KaraokeCards with ChangeNotifier {
   }
 
   void setCurrentDecorationImagePath(String path) {
-    current.decorationImagePath = path;
+    current.decorationImage.filePath = path;
     notifyListeners();
   }
 
@@ -98,7 +99,7 @@ class KaraokeCards with ChangeNotifier {
 }
 
 class KaraokeCard with ChangeNotifier {
-  String fileId;
+  String uuid;
   // This is a creatable song, which has two arrangments. One of the arrangement ids gets sent to the server with the bark ids to create an actual song.
   CreatableSong songFormula;
   // This is an actual song
@@ -107,18 +108,18 @@ class KaraokeCard with ChangeNotifier {
   Bark shortBark;
   Bark mediumBark;
   Bark longBark;
-  CardAudio audio;
+  CardAudio audio = CardAudio();
   // visual
   Picture picture;
   String framePath;
   CardDecoration cardDecoration;
-  String decorationImagePath;
+  CardDecorationImage decorationImage;
 
   bool shouldDeleteOldDecoration;
   CardAudio oldCardAudio;
 
   KaraokeCard({
-    this.fileId,
+    this.uuid,
     this.picture,
     this.song,
     this.songFormula,
@@ -126,18 +127,15 @@ class KaraokeCard with ChangeNotifier {
     this.mediumBark,
     this.longBark,
     this.cardDecoration,
-    this.decorationImagePath,
+    this.decorationImage,
     this.framePath,
     this.oldCardAudio,
-    this.shouldDeleteOldDecoration,
+    this.shouldDeleteOldDecoration = false,
   });
 
-  Future<void> deleteOldDecoration() async{
-    if (shouldDeleteOldDecoration) {
-      await RestAPI.deleteDecorationImage(decorationImageId);
-    }
-    if (File(decorationImagePath).existsSync())
-      File(decorationImagePath).deleteSync();
+  Future<void> deleteOldDecoration() async {
+    await decorationImage.delete();
+    decorationImage = null;
   }
 
   Future<void> deleteOldAudio() async {
@@ -153,14 +151,9 @@ class KaraokeCard with ChangeNotifier {
     return song == null;
   }
 
-  String get decorationImageId {
-    if (decorationImagePath == null) return null;
-    return basename(decorationImagePath).split('.')[0];
-  }
-
   Future<void> combineMessageAndSong() async {
     String audioKey = Uuid().v4();
-    audio.filePath= File("$myAppStoragePath/$audioKey.aac").path;
+    audio.filePath = File("$myAppStoragePath/$audioKey.aac").path;
     File tempFile = File("$myAppStoragePath/tempFile.wav");
     // concat and save card audio file
     await FFMpeg.process.execute(
@@ -206,6 +199,6 @@ class KaraokeCard with ChangeNotifier {
   }
 
   bool get hasDecoration {
-    return cardDecoration != null || decorationImagePath != null;
+    return cardDecoration != null || decorationImage?.filePath != null;
   }
 }

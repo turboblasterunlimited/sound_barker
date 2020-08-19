@@ -91,14 +91,42 @@ class RestAPI {
     print("create card audio body: ${response.data}");
   }
 
+  static Future<String> updateCard(KaraokeCard card) async {
+    var response;
+    final cardBody = {
+      'card_audio_id': card.audio.fileId,
+      "image_id": card.picture.fileId,
+      'decoration_image_id': card.decorationImage.fileId,
+      'animation_json':
+          '{"mouth_positions": ${card.audio.amplitudes.toString()}}',
+    };
+    final cardUrl = 'http://165.227.178.14/greeting_card/${card.uuid}';
+    print("update card request body: $cardBody");
+    try {
+      response = await HttpController.dio.patch(
+        cardUrl,
+        data: cardBody,
+      );
+    } catch (e) {
+      print("update greeting card error: ${e.message}");
+      print(e.response.headers);
+      print(e.response.data);
+      print(e.response.request);
+    }
+    print("update greeting card body: ${response.data}");
+    return response.data.toString();
+
+  }
+
   static Future<String> createCard(KaraokeCard card) async {
     var response;
     final cardBody = {
-      'uuid': card.fileId,
+      'uuid': card.uuid,
       'card_audio_id': card.audio.fileId,
       "image_id": card.picture.fileId,
-      'decoration_image_id': card.decorationImageId,
-      'animation_json': '{"mouth_positions": ${card.audio.amplitudes.toString()}}',
+      'decoration_image_id': card.decorationImage.fileId,
+      'animation_json':
+          '{"mouth_positions": ${card.audio.amplitudes.toString()}}',
     };
     final cardUrl = 'http://165.227.178.14/greeting_card';
     print("card request body: $cardBody");
