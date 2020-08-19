@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:K9_Karaoke/classes/card_audio.dart';
+import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:path/path.dart';
 
 import 'package:K9_Karaoke/classes/card_message.dart';
@@ -105,28 +107,43 @@ class KaraokeCard with ChangeNotifier {
   Bark shortBark;
   Bark mediumBark;
   Bark longBark;
-  String audioFilePath;
-  List amplitudes;
-  String recipientName;
+  CardAudio audio;
   // visual
   Picture picture;
   String framePath;
   CardDecoration cardDecoration;
   String decorationImagePath;
 
-  KaraokeCard(
-      {this.fileId,
-      this.picture,
-      this.song,
-      this.songFormula,
-      this.shortBark,
-      this.mediumBark,
-      this.longBark,
-      this.cardDecoration,
-      this.decorationImagePath,
-      this.audioFilePath,
-      this.amplitudes,
-      this.framePath});
+  bool shouldDeleteOldDecoration;
+  CardAudio oldCardAudio;
+
+  KaraokeCard({
+    this.fileId,
+    this.picture,
+    this.song,
+    this.songFormula,
+    this.shortBark,
+    this.mediumBark,
+    this.longBark,
+    this.cardDecoration,
+    this.decorationImagePath,
+    this.framePath,
+    this.oldCardAudio,
+    this.shouldDeleteOldDecoration,
+  });
+
+  Future<void> deleteOldDecoration() async{
+    if (shouldDeleteOldDecoration) {
+      await RestAPI.deleteDecorationImage(decorationImageId);
+    }
+    if (File(decorationImagePath).existsSync())
+      File(decorationImagePath).deleteSync();
+  }
+
+  Future<void> deleteOldAudio() async {
+    await oldCardAudio.delete();
+    oldCardAudio = null;
+  }
 
   bool onlySong() {
     return !message.exists;
@@ -137,32 +154,24 @@ class KaraokeCard with ChangeNotifier {
   }
 
   String get decorationImageId {
+    if (decorationImagePath == null) return null;
     return basename(decorationImagePath).split('.')[0];
-  }
-
-  String get audioId {
-    return basename(audioFilePath).split('.')[0];
   }
 
   Future<void> combineMessageAndSong() async {
     String audioKey = Uuid().v4();
-    this.audioFilePath = File("$myAppStoragePath/$audioKey.aac").path;
+    audio.filePath= File("$myAppStoragePath/$audioKey.aac").path;
     File tempFile = File("$myAppStoragePath/tempFile.wav");
     // concat and save card audio file
     await FFMpeg.process.execute(
         '-i "concat:${message.path}|${song.filePath}" -c copy ${tempFile.path}');
-    await FFMpeg.process.execute('-i ${tempFile.path} $audioFilePath');
+    await FFMpeg.process.execute('-i ${tempFile.path} ${audio.filePath}');
     if (tempFile.existsSync()) tempFile.deleteSync();
     // concat and return amplitudes
     List songAmplitudes =
         await AmplitudeExtractor.fileToList(song.amplitudesPath);
-    amplitudes = message.amps + songAmplitudes;
+    audio.amplitudes = message.amps + songAmplitudes;
   }
-
-  // Future<void> uploadAudio() async {
-  //   await Gcloud.uploadCardAssets(audioFilePath, decorationImagePath);
-  //   await RestAPI.createCard(decorationImageId, audioId, amplitudes, imageId)
-  // }
 
   void setPicture(Picture newPicture) {
     picture = newPicture;

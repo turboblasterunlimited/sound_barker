@@ -47,8 +47,8 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
   }
 
   void playCard() {
-    soundController.startPlayer(cards.current.audioFilePath, stopPlayback);
-    imageController.mouthTrackSound(amplitudes: cards.current.amplitudes);
+    soundController.startPlayer(cards.current.audio.filePath, stopPlayback);
+    imageController.mouthTrackSound(amplitudes: cards.current.audio.amplitudes);
     setState(() => _isPlaying = true);
   }
 

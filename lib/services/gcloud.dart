@@ -35,11 +35,9 @@ class Gcloud {
   static Future<String> uploadAsset(fileId, filePath, [image]) async {
     String bucketWritePath =
         image == true ? "images/$fileId.jpg" : "$fileId/raw.aac";
-    var info;
     Bucket bucket = await accessBucket();
     try {
-      info =
-          await File(filePath).openRead().pipe(bucket.write(bucketWritePath));
+      await File(filePath).openRead().pipe(bucket.write(bucketWritePath));
     } catch (e) {
       print(e);
       return e;

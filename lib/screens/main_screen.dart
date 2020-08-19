@@ -57,7 +57,7 @@ class _MainScreenState extends State<MainScreen> {
     else if (_canPlayMessage)
       return [cards.current.message.path, cards.current.message.amps];
     else if (_canPlayCombinedAudio)
-      return [cards.current.audioFilePath, cards.current.amplitudes];
+      return [cards.current.audio.filePath, cards.current.audio.amplitudes];
     return null;
   }
 
@@ -213,7 +213,7 @@ class _MainScreenState extends State<MainScreen> {
   bool get _canPlayCombinedAudio {
     return currentActivity.isStyle &&
         currentActivity.isOne &&
-        (cards.current.audioFilePath != null);
+        (cards.current.audio.filePath != null);
   }
 
   void _handleTapPuppet() {

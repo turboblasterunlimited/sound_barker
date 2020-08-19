@@ -1,8 +1,6 @@
 import 'dart:convert';
 
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
-import 'package:uuid/uuid.dart';
-
 import '../services/http_controller.dart';
 import '../providers/songs.dart';
 import '../providers/barks.dart';
@@ -20,6 +18,40 @@ class RestAPI {
     }
     print("logout: ${response.data["success"]}");
     return response.data["success"];
+  }
+
+  static Future<void> deleteDecorationImage(imageId) async {
+    final imageUrl = 'http://165.227.178.14/decoration_image/$imageId';
+
+    var response;
+    try {
+      response = await HttpController.dio.delete(
+        imageUrl,
+      );
+    } catch (e) {
+      print("delete decoration image request error message: ${e.message}");
+      print(e.response.headers);
+      print(e.response.data);
+      print(e.response.request);
+    }
+    print("delete decoration image: ${response.data}");
+  }
+
+  static Future<void> deleteCardAudio(audioId) async {
+    final imageUrl = 'http://165.227.178.14/card_audios/$audioId';
+
+    var response;
+    try {
+      response = await HttpController.dio.delete(
+        imageUrl,
+      );
+    } catch (e) {
+      print("delete card audio request error message: ${e.message}");
+      print(e.response.headers);
+      print(e.response.data);
+      print(e.response.request);
+    }
+    print("delete card audio: ${response.data}");
   }
 
   static Future<void> createCardDecorationImage(imageId, bucketFp) async {
@@ -60,16 +92,13 @@ class RestAPI {
   }
 
   static Future<String> createCard(KaraokeCard card) async {
-    String cardId = Uuid().v4();
     var response;
-
     final cardBody = {
-      'uuid': cardId,
-      'card_audio_id': card.audioId,
+      'uuid': card.fileId,
+      'card_audio_id': card.audio.fileId,
       "image_id": card.picture.fileId,
       'decoration_image_id': card.decorationImageId,
-      'recipient_name': card.recipientName,
-      'animation_json': '{"mouth_positions": ${card.amplitudes.toString()}}',
+      'animation_json': '{"mouth_positions": ${card.audio.amplitudes.toString()}}',
     };
     final cardUrl = 'http://165.227.178.14/greeting_card';
     print("card request body: $cardBody");
