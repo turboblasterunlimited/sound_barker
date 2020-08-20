@@ -23,7 +23,6 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
   FocusNode focusNode;
   double canvasLength;
   final textController = TextEditingController();
-  bool _isPlaying = false;
 
   @override
   void initState() {
@@ -39,17 +38,8 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
   }
 
   void stopPlayback() {
-    if (_isPlaying) {
-      imageController.stopAnimation();
-      soundController.stopPlayer();
-      setState(() => _isPlaying = false);
-    }
-  }
-
-  void playCard() {
-    soundController.startPlayer(cards.current.audio.filePath, stopPlayback);
-    imageController.mouthTrackSound(amplitudes: cards.current.audio.amplitudes);
-    setState(() => _isPlaying = true);
+    imageController.stopAnimation();
+    soundController.stopPlayer();
   }
 
   void _handleUndo() {
@@ -74,7 +64,8 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
   Widget build(BuildContext context) {
     soundController ??= Provider.of<SoundController>(context);
     imageController ??= Provider.of<ImageController>(context, listen: false);
-    karaokeCardDecorator ??= Provider.of<KaraokeCardDecorationController>(context);
+    karaokeCardDecorator ??=
+        Provider.of<KaraokeCardDecorationController>(context);
     canvasLength ??= MediaQuery.of(context).size.width;
     karaokeCardDecorator.canvasLength = canvasLength;
     cards ??= Provider.of<KaraokeCards>(context);

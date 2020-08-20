@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:K9_Karaoke/classes/card_decoration_image.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_card_decoration_controller.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
@@ -27,58 +28,56 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   CurrentActivity currentActivity;
   String recipientName;
 
-  void _handleUploadAndShare() async {
-    await saveArtwork();
-    final bucketFps = await Gcloud.uploadCardAssets(
-        cards.current.decorationImage, cards.current.audio);
-
-    await RestAPI.createCardDecorationImage(
-        cards.current.decorationImage.fileId, bucketFps["image"]);
-    await RestAPI.createCardAudio(
-        cards.current.audio.fileId, bucketFps["audio"]);
-    await RestAPI.createCard(cards.current);
-  }
+  void _handleUploadAndShare() async {}
 
   Future<void> saveArtwork() async {
-    if (cards.current.decorationImage.filePath != null) return;
-    final decorationImageId = Uuid().v4();
-    final decorationImagePath = await cardDecorator.cardPainter
-        .capturePNG(decorationImageId, cards.current.framePath);
-    cards.setCurrentDecorationImagePath(decorationImagePath);
+    if (cards.current.decorationImage != null) return;
+    final decorationImage = CardDecorationImage();
+    decorationImage.filePath = await cardDecorator.cardPainter
+        .capturePNG(decorationImage.fileId, cards.current.framePath);
+    cards.current.decorationImage = decorationImage;
   }
 
   Future<void> _uploadAndCreateDecorationImage() async {
-    String imageBucketFp =
+    cards.current.decorationImage.bucketFp =
         await Gcloud.uploadDecorationImage(cards.current.decorationImage);
-    await RestAPI.createCardDecorationImage(
-        cards.current.decorationImage.fileId, imageBucketFp);
+    await RestAPI.createCardDecorationImage(cards.current.decorationImage);
   }
 
   Future<void> _uploadAndCreateCardAudio() async {
-    String audioBucketFp = await Gcloud.uploadCardAudio(cards.current.audio);
-    await RestAPI.createCardAudio(cards.current.audio.fileId, audioBucketFp);
+    cards.current.audio.bucketFp =
+        await Gcloud.uploadCardAudio(cards.current.audio);
+    await RestAPI.createCardAudio(cards.current.audio);
   }
 
   Future<void> _updateCard() async {
-    bool changedAudio, changedDecoration = false;
+    bool changed = false;
     if (cards.current.shouldDeleteOldDecoration) {
       cards.current.deleteOldDecoration();
       saveArtwork();
       _uploadAndCreateDecorationImage();
       cards.current.shouldDeleteOldDecoration = false;
-      changedDecoration = true;
+      changed = true;
     }
     if (cards.current.oldCardAudio != null) {
       cards.current.deleteOldAudio();
       _uploadAndCreateCardAudio();
-      changedAudio = true;
+      changed = true;
     }
-    if (changedAudio || changedDecoration)
-      RestAPI.updateCard(cards.current, changedAudio, changedDecoration);
+    if (changed) RestAPI.updateCard(cards.current);
   }
 
-  Future<void> _createCard() {
+  Future<void> _createCard() async {
+    await saveArtwork();
+    cards.current.decorationImage.bucketFp =
+        await Gcloud.uploadDecorationImage(cards.current.decorationImage);
+    cards.current.audio.bucketFp =
+        await Gcloud.uploadCardAudio(cards.current.audio);
+
+    await RestAPI.createCardDecorationImage(cards.current.decorationImage);
+    await RestAPI.createCardAudio(cards.current.audio);
     cards.current.uuid = Uuid().v4();
+    await RestAPI.createCard(cards.current);
   }
 
   Function shareDialog() {

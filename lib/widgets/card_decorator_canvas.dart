@@ -68,7 +68,6 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
   bool _inProximity(Offset existingXY, Offset touchedXY) {
     if ((existingXY.dx - touchedXY.dx).abs() < 100.0 &&
         (existingXY.dy - touchedXY.dy).abs() < 100.0) return true;
-    print("it's false");
     return false;
   }
 

@@ -47,14 +47,6 @@ class Gcloud {
     return bucketWritePath;
   }
 
-  static Future<Map<String, String>> uploadCardAssets(
-      CardDecorationImage decorationImage, CardAudio cardAudio) async {
-    Bucket bucket = await accessBucket();
-    String imageFileWritePath = await uploadDecorationImage(decorationImage, bucket);
-    String audioFileWritePath = await uploadCardAudio(cardAudio, bucket);
-    return {"audio": audioFileWritePath, "image": imageFileWritePath};
-  }
-
   static Future<String> uploadDecorationImage(
       CardDecorationImage decorationImage,
       [Bucket bucket]) async {

@@ -54,8 +54,8 @@ class RestAPI {
     print("delete card audio: ${response.data}");
   }
 
-  static Future<void> createCardDecorationImage(imageId, bucketFp) async {
-    final imageBody = {'uuid': imageId, 'bucket_fp': bucketFp};
+  static Future<void> createCardDecorationImage(decorationImage) async {
+    final imageBody = {'uuid': decorationImage.imageId, 'bucket_fp': decorationImage.bucketFp};
     final imageUrl = 'http://165.227.178.14/decoration_image';
 
     var response;
@@ -73,8 +73,8 @@ class RestAPI {
     print("create decoration image body: ${response.data}");
   }
 
-  static Future<void> createCardAudio(audioId, bucketFp) async {
-    final audioBody = {'uuid': audioId, 'bucket_fp': bucketFp};
+  static Future<void> createCardAudio(audio) async {
+    final audioBody = {'uuid': audio.audioId, 'bucket_fp': audio.bucketFp};
     final audioUrl = 'http://165.227.178.14/card_audio';
     var response;
     try {

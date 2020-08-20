@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:K9_Karaoke/services/rest_api.dart';
+import 'package:uuid/uuid.dart';
 
 class CardDecorationImage {
   String fileId;
@@ -8,10 +9,11 @@ class CardDecorationImage {
   String bucketFp;
 
   CardDecorationImage({
-    this.fileId,
     this.filePath,
     this.bucketFp,
-  });
+  }) {
+    this.fileId = Uuid().v4();
+  }
 
   void delete() async {
     await RestAPI.deleteDecorationImage(fileId);

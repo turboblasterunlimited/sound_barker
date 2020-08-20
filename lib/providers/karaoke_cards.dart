@@ -84,11 +84,6 @@ class KaraokeCards with ChangeNotifier {
     notifyListeners();
   }
 
-  void setCurrentDecorationImagePath(String path) {
-    current.decorationImage.filePath = path;
-    notifyListeners();
-  }
-
   bool get hasFrame {
     return current != null && current.framePath != null;
   }
