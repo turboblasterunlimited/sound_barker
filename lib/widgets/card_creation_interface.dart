@@ -4,7 +4,7 @@ import 'package:K9_Karaoke/widgets/bark_recorder.dart';
 import 'package:K9_Karaoke/widgets/bark_select_interface.dart';
 import 'package:K9_Karaoke/widgets/card_frame_interface.dart';
 import 'package:K9_Karaoke/widgets/card_decorator_interface.dart';
-import 'package:K9_Karaoke/widgets/personal_message_recorder.dart';
+import 'package:K9_Karaoke/widgets/personal_message_interface.dart';
 import 'package:K9_Karaoke/widgets/mouth_tone_slider.dart';
 import 'package:K9_Karaoke/widgets/share_card_interface.dart';
 import 'package:K9_Karaoke/widgets/song_arrangement_selector.dart';
@@ -29,7 +29,7 @@ class CardCreationInterface extends StatelessWidget {
       else if (currentActivity.isSix)
         return SongPlaybackInterface();
       else if (currentActivity.isSeven)
-        return PersonalMessageRecorder();
+        return PersonalMessageInterface();
       else
         return BarkSelectInterface();
     }

@@ -142,8 +142,8 @@ class KaraokeCard with ChangeNotifier {
   }
 
   Future<void> combineMessageAndSong() async {
-    String audioKey = Uuid().v4();
-    audio.filePath = File("$myAppStoragePath/$audioKey.aac").path;
+    audio.fileId = Uuid().v4();
+    audio.filePath = File("$myAppStoragePath/${audio.fileId}.aac").path;
     File tempFile = File("$myAppStoragePath/tempFile.wav");
     // concat and save card audio file
     await FFMpeg.process.execute(

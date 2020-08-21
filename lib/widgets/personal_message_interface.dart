@@ -19,12 +19,12 @@ import '../providers/sound_controller.dart';
 import '../tools/amplitude_extractor.dart';
 
 // cardCreationSubStep.seven
-class PersonalMessageRecorder extends StatefulWidget {
+class PersonalMessageInterface extends StatefulWidget {
   @override
-  PersonalMessageRecorderState createState() => PersonalMessageRecorderState();
+  PersonalMessageInterfaceState createState() => PersonalMessageInterfaceState();
 }
 
-class PersonalMessageRecorderState extends State<PersonalMessageRecorder>
+class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
     with TickerProviderStateMixin {
   StreamSubscription _recorderSubscription;
   SoundController soundController;

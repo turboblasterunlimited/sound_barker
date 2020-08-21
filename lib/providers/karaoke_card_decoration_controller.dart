@@ -32,7 +32,7 @@ class KaraokeCardDecorationController with ChangeNotifier {
   void setDecoration(cardDecoration, screenWidth) {
     decoration = cardDecoration;
     _initializeTyping(screenWidth);
-    notifyListeners();
+    // notifyListeners();
   }
 
   void _initializeTyping(double length) {

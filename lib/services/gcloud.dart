@@ -65,6 +65,7 @@ class Gcloud {
 
   static Future<String> uploadCardAudio(CardAudio cardAudio,
       [Bucket bucket]) async {
+    print("Audio filepath: ${cardAudio.filePath}");
     final audioFileWritePath = "card_audios/${basename(cardAudio.filePath)}";
     bucket ??= await accessBucket();
     try {
@@ -74,7 +75,7 @@ class Gcloud {
     } catch (e) {
       print(e);
     }
-
+    print("audio upload success");
     return audioFileWritePath;
   }
 }

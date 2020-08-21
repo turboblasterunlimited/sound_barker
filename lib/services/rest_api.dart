@@ -74,6 +74,7 @@ class RestAPI {
   }
 
   static Future<void> createCardAudio(audio) async {
+    print("AUDIO STUFF: ${audio.bucketFp}, ${audio.fileId}");
     final audioBody = {'uuid': audio.fileId, 'bucket_fp': audio.bucketFp};
     final audioUrl = 'http://165.227.178.14/card_audio';
     var response;

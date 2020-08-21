@@ -69,12 +69,17 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
 
   Future<void> _createCard() async {
     await saveArtwork();
+    print("checkpoint");
     setState(() => _loadingMessage = "saving artwork...");
     cards.current.decorationImage.bucketFp =
         await Gcloud.uploadDecorationImage(cards.current.decorationImage);
+            print("checkpoint 1");
+
     setState(() => _loadingMessage = "saving sounds...");
     cards.current.audio.bucketFp =
         await Gcloud.uploadCardAudio(cards.current.audio);
+            print("checkpoint 2");
+
     setState(() => _loadingMessage = "creating link...");
     await RestAPI.createCardDecorationImage(cards.current.decorationImage);
     await RestAPI.createCardAudio(cards.current.audio);
@@ -83,6 +88,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     setState(() => _loadingMessage = null);
     setState(() => shareLink =
         "https://www.thedogbarksthesong.ml/card/" + responseData["uuid"]);
+    print("Share Link $shareLink");
   }
 
   Widget _shareLink() {
@@ -151,9 +157,9 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
 
   Future<void> _handleUploadAndShare() async {
     if (_editingCard()) {
-      _updateCard();
+      await _updateCard();
     } else {
-      _createCard();
+      await _createCard();
     }
   }
 
