@@ -20,8 +20,16 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   }
 
   void skipCallback() {
-    currentActivity.setCardCreationSubStep(CardCreationSubSteps.two);
-    Future.delayed(Duration(milliseconds: 500), () => cards.setFrame(null));
+    if (cards.current.decorationImage != null) {
+      cards.current.shouldDeleteOldDecoration = false;
+      Future.delayed(
+          Duration(milliseconds: 200),
+          () => currentActivity
+              .setCardCreationSubStep(CardCreationSubSteps.three));
+    } else {
+      currentActivity.setNextSubStep();
+      Future.delayed(Duration(milliseconds: 500), () => cards.setFrame(null));
+    }
   }
 
   String rootPath = "assets/card_borders/";
@@ -82,15 +90,23 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     );
   }
 
+  bool get _keepingCardDecorationImage {
+    return cards.current.decorationImage != null &&
+        !cards.current.shouldDeleteOldDecoration;
+  }
+
+  bool get _noFrameNoDecorationImage {
+    return cards.current.decorationImage == null &&
+        cards.current.framePath == null;
+  }
+
   Widget submitButton() {
     return Center(
       child: RawMaterialButton(
-        onPressed: cards.hasFrame
-            ? () {
-                currentActivity
-                    .setCardCreationSubStep(CardCreationSubSteps.two);
-              }
-            : null,
+        onPressed: _keepingCardDecorationImage
+            ? () => currentActivity
+                .setCardCreationSubStep(CardCreationSubSteps.three)
+            : currentActivity.setNextSubStep,
         child: Icon(
           Icons.check,
           color: Colors.white,

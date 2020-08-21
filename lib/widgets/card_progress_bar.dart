@@ -1,4 +1,5 @@
 import 'package:K9_Karaoke/providers/current_activity.dart';
+import 'package:K9_Karaoke/providers/karaoke_card_decoration_controller.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/screens/set_picture_coordinates_screen.dart';
@@ -8,9 +9,18 @@ import 'package:provider/provider.dart';
 class CardProgressBar extends StatelessWidget {
   KaraokeCard card;
   CurrentActivity currentActivity;
+
+  bool cardPictureIsStock() {
+    return card.hasPicture ? !card.picture.isStock : false;
+  }
+
+  bool get _hasDecoration {
+    return card.decorationImage != null || !card.decoration.isEmpty;
+  }
+
   @override
   Widget build(BuildContext context) {
-    card = Provider.of<KaraokeCards>(context).current;
+    card = Provider.of<KaraokeCards>(context, listen: false).current;
     currentActivity = Provider.of<CurrentActivity>(context);
 
     Widget progressButton(String stepText, bool stepIsCompleted,
@@ -73,10 +83,6 @@ class CardProgressBar extends StatelessWidget {
       Navigator.of(context).popUntil(ModalRoute.withName("main-screen"));
     }
 
-    bool cardPictureIsStock() {
-      return card.hasPicture ? !card.picture.isStock : false;
-    }
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
@@ -91,7 +97,7 @@ class CardProgressBar extends StatelessWidget {
             currentActivity.isSpeak,
             navigateToSpeak,
             card.hasSongFormula || card.hasSong),
-        progressButton("STYLE", card.hasDecoration, currentActivity.isStyle,
+        progressButton("STYLE", _hasDecoration, currentActivity.isStyle,
             navigateToStyle, card.hasSong),
       ],
     );

@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as UI;
+import 'package:K9_Karaoke/classes/drawing.dart';
+import 'package:K9_Karaoke/classes/typing.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:flutter/material.dart';
@@ -106,14 +108,15 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
     print("building decorator canvas!");
     karaokeCardDecorator =
         Provider.of<KaraokeCardDecorationController>(context);
     cards = Provider.of<KaraokeCards>(context);
-    allDrawings = karaokeCardDecorator.allDrawings;
-    allTyping = karaokeCardDecorator.allTyping;
+    karaokeCardDecorator.decoration = cards.current.decoration;
+
     screenWidth = MediaQuery.of(context).size.width;
     print("screenWidth: $screenWidth");
 

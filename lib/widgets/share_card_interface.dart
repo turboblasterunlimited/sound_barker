@@ -53,7 +53,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   Future<void> _updateCard() async {
     bool changed = false;
     if (cards.current.shouldDeleteOldDecoration) {
-      cards.current.deleteOldDecoration();
+      cards.current.deleteOldDecorationImage();
       saveArtwork();
       _uploadAndCreateDecorationImage();
       cards.current.shouldDeleteOldDecoration = false;

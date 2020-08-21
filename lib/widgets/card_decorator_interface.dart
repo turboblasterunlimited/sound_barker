@@ -285,7 +285,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                         borderRadius: BorderRadius.circular(30.0),
                       ),
                       elevation: 2.0,
-                      fillColor: karaokeCardDecorator.isEmpty()
+                      fillColor: karaokeCardDecorator.decoration.isEmpty
                           ? Colors.grey
                           : Theme.of(context).errorColor,
                       padding: const EdgeInsets.symmetric(

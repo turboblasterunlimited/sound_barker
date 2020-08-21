@@ -1,10 +1,9 @@
 import 'dart:io';
+
 import 'package:K9_Karaoke/classes/card_audio.dart';
 import 'package:K9_Karaoke/classes/card_decoration_image.dart';
-import 'package:K9_Karaoke/services/rest_api.dart';
-import 'package:path/path.dart';
-
 import 'package:K9_Karaoke/classes/card_message.dart';
+import 'package:K9_Karaoke/classes/decoration.dart';
 import 'package:K9_Karaoke/providers/barks.dart';
 import 'package:K9_Karaoke/providers/creatable_songs.dart';
 import 'package:K9_Karaoke/providers/karaoke_card_decoration_controller.dart';
@@ -80,6 +79,7 @@ class KaraokeCards with ChangeNotifier {
   }
 
   void setFrame(newFramePath) {
+    current.shouldDeleteOldDecoration = true;
     current.framePath = newFramePath;
     notifyListeners();
   }
@@ -107,7 +107,7 @@ class KaraokeCard with ChangeNotifier {
   // visual
   Picture picture;
   String framePath;
-  CardDecoration cardDecoration;
+  CardDecoration decoration = CardDecoration();
   CardDecorationImage decorationImage;
 
   bool shouldDeleteOldDecoration;
@@ -121,14 +121,13 @@ class KaraokeCard with ChangeNotifier {
     this.shortBark,
     this.mediumBark,
     this.longBark,
-    this.cardDecoration,
     this.decorationImage,
     this.framePath,
     this.oldCardAudio,
     this.shouldDeleteOldDecoration = false,
   });
 
-  Future<void> deleteOldDecoration() async {
+  Future<void> deleteOldDecorationImage() async {
     await decorationImage.delete();
     decorationImage = null;
   }
@@ -194,6 +193,6 @@ class KaraokeCard with ChangeNotifier {
   }
 
   bool get hasDecoration {
-    return cardDecoration != null || decorationImage?.filePath != null;
+    return !decoration.isEmpty || decorationImage != null;
   }
 }

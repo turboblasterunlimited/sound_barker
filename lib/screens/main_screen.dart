@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/sound_controller.dart';
@@ -231,10 +233,6 @@ class _MainScreenState extends State<MainScreen> {
         : EdgeInsets.only(left: portraitPadding, right: portraitPadding);
   }
 
-  bool get showFrame {
-    return currentActivity.isStyle && cards.hasFrame;
-  }
-
   EdgeInsets get _framePadding {
     return showFrame
         ? EdgeInsets.only(
@@ -246,8 +244,18 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   bool get _showDecorationCanvas {
-    return (currentActivity.isTwo || currentActivity.isThree) &&
-        currentActivity.isStyle;
+    return currentActivity.isStyle &&
+        (currentActivity.isTwo || currentActivity.isThree);
+  }
+
+  bool get showFrame {
+    return currentActivity.isStyle && cards.hasFrame;
+  }
+
+  bool get _showDecorationImage {
+    return currentActivity.isStyle &&
+        cards.current.decorationImage != null &&
+        !cards.current.shouldDeleteOldDecoration;
   }
 
   @override
@@ -343,6 +351,13 @@ class _MainScreenState extends State<MainScreen> {
                         IgnorePointer(
                           ignoring: currentActivity.isThree,
                           child: CardDecoratorCanvas(padding: portraitPadding),
+                        ),
+                      if (_showDecorationImage)
+                        GestureDetector(
+                          behavior: HitTestBehavior.translucent,
+                          onTap: _handleTapPuppet,
+                          child: Image.file(
+                              File(cards.current.decorationImage.filePath)),
                         ),
                     ],
                   ),

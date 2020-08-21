@@ -1,54 +1,29 @@
+import 'package:K9_Karaoke/classes/decoration.dart';
+import 'package:K9_Karaoke/classes/drawing.dart';
+import 'package:K9_Karaoke/classes/typing.dart';
 import 'package:K9_Karaoke/widgets/card_decorator_canvas.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
-class CardDecoration {
-  String fileId;
-  Drawing drawing;
-  Typing typing;
-  CardDecoration({this.fileId, this.drawing, this.typing});
-}
-
-class Drawing {
-  List<List<Offset>> offsets = [];
-  Color color;
-  double size;
-  Drawing(this.color, this.size);
-}
-
-class Typing {
-  // textSpan includes color
-  TextSpan textSpan;
-  Offset offset;
-  Typing(this.textSpan, this.offset);
-}
 
 class KaraokeCardDecorationController with ChangeNotifier {
   bool isDrawing = true;
   bool isTyping = false;
   Color color = Colors.black;
   double size = 20;
-  List<Drawing> allDrawings;
-  List<Typing> allTyping;
+  CardDecoration decoration;
   CardPainter cardPainter;
   double canvasLength;
-  KaraokeCardDecorationController() {
-    allDrawings = [];
-    allTyping = [];
-  }
+  KaraokeCardDecorationController();
+  
 
 
   void newDrawing() {
-    allDrawings.add(Drawing(color, size));
-  }
-
-  bool isEmpty() {
-    return allDrawings.isEmpty && allTyping.isEmpty;
+    decoration.drawings.add(Drawing(color, size));
   }
 
   void reset() {
-    allDrawings.clear();
-    allTyping.clear();
+    decoration.drawings.clear();
+    decoration.typings.clear();
     notifyListeners();
   }
 
@@ -58,34 +33,34 @@ class KaraokeCardDecorationController with ChangeNotifier {
 
   void initializeTyping(double length) {
     this.canvasLength = length;
-    if (allTyping.isNotEmpty) return;
+    if (decoration.typings.isNotEmpty) return;
     final span = TextSpan(
       text: "",
       style: TextStyle(color: color, fontSize: size),
     );
-    allTyping.add(Typing(
+    decoration.typings.add(Typing(
       span,
       defaultTypingOffset,
     ));
   }
 
   void updateLastTextSpan(newTextSpan) {
-    if (allTyping.isEmpty)
-      allTyping.add(Typing(newTextSpan, defaultTypingOffset));
+    if (decoration.typings.isEmpty)
+      decoration.typings.add(Typing(newTextSpan, defaultTypingOffset));
     else
-      allTyping.last.textSpan = newTextSpan;
+      decoration.typings.last.textSpan = newTextSpan;
   }
 
   void undoLast() {
     if (isDrawing) {
-      if (allDrawings.isEmpty) return;
-      print("Drawing length: ${allDrawings.length}");
-      allDrawings.removeLast();
+      if (decoration.drawings.isEmpty) return;
+      print("Drawing length: ${decoration.drawings.length}");
+      decoration.drawings.removeLast();
     }
     if (isTyping) {
-      if (allTyping.isEmpty) return;
-      print("Typing length: ${allTyping.length}");
-      allTyping.removeLast();
+      if (decoration.typings.isEmpty) return;
+      print("Typing length: ${decoration.typings.length}");
+      decoration.typings.removeLast();
     }
     notifyListeners();
   }
@@ -116,7 +91,7 @@ class KaraokeCardDecorationController with ChangeNotifier {
 
   void updateText([String newText]) {
     if (!isTyping) return;
-    String text = newText ?? allTyping.last.textSpan.text;
+    String text = newText ?? decoration.typings.last.textSpan.text;
     final newTextSpan =
         TextSpan(text: text, style: TextStyle(color: color, fontSize: size));
     updateLastTextSpan(newTextSpan);
