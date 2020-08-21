@@ -80,8 +80,8 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
                   builder: (context, constraints) {
                     return Padding(
                       padding: EdgeInsets.only(
-                          bottom: constraints.biggest.height * 194/778,
-                          left: constraints.biggest.width * 72/656),
+                          bottom: constraints.biggest.height * 194 / 778,
+                          left: constraints.biggest.width * 72 / 656),
                       child: Image.file(
                         File(cards.current.picture.filePath),
                       ),
@@ -130,7 +130,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       onTap: () {
         setState(() => selectedFrame = "decorationImage");
         cards.setFrame(null);
-        cards.current.shouldDeleteOldDecoration = true;
+        cards.current.shouldDeleteOldDecoration = false;
       },
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 5),
@@ -143,13 +143,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
               )
             : BoxDecoration(),
         child: SizedBox(
-          child: Stack(
-            children: [
-              Opacity(
-                  opacity: 0, child: Image.asset(rootPath + frameFileNames[0])),
-              Center(child: Text("No Frame")),
-            ],
-          ),
+          child: Image.file(File(cards.current.decorationImage.filePath)),
         ),
       ),
     );
@@ -226,7 +220,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
 
     return Column(
       children: <Widget>[
-        interfaceTitleNav(context, "CHOOSE FRAME",
+        interfaceTitleNav(context, "CHOOSE ART",
             backCallback: backCallback, skipCallback: skipCallback),
         frameList(),
         submitButton(),
