@@ -25,8 +25,8 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
   KaraokeCardDecorationController karaokeCardDecorator;
   KaraokeCards cards;
   double screenWidth;
-  List<Drawing> allDrawings;
-  List<Typing> allTyping;
+  List<Drawing> drawings;
+  List<Typing> typings;
 
   double get cardHeight {
     if (cards.current.framePath != null) {
@@ -48,7 +48,9 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
     if (karaokeCardDecorator.isDrawing)
       setState(() {
         karaokeCardDecorator.newDrawing();
-        allDrawings.last.offsets.add(
+        print("in karaoke card: ${karaokeCardDecorator.decoration.drawings}");
+        print("Just drawings: $drawings");
+        drawings.last.offsets.add(
           [_getOffset(details)],
         );
       });
@@ -57,7 +59,7 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
   void _handleUpdateDrawing(details) {
     if (karaokeCardDecorator.isDrawing)
       setState(() {
-        allDrawings.last.offsets.last.add(
+        drawings.last.offsets.last.add(
           _getOffset(details),
         );
       });
@@ -75,19 +77,19 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
 
   bool _selectText(details) {
     // selecting text, moves the text to the end of the List
-    var index = allTyping
+    var index = typings
         .indexWhere((text) => _inProximity(details.localPosition, text.offset));
 
     if (index == -1) return false;
-    Typing selected = allTyping[index];
-    allTyping.removeAt(index);
-    setState(() => allTyping.add(selected));
+    Typing selected = typings[index];
+    typings.removeAt(index);
+    setState(() => typings.add(selected));
     return true;
   }
 
   void _createNewTyping(details) {
     if (karaokeCardDecorator.isTyping) {
-      allTyping.add(
+      typings.add(
         Typing(
           TextSpan(
             text: "",
@@ -116,7 +118,8 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
         Provider.of<KaraokeCardDecorationController>(context);
     cards = Provider.of<KaraokeCards>(context);
     karaokeCardDecorator.decoration = cards.current.decoration;
-
+    drawings = karaokeCardDecorator.decoration.drawings;
+    typings = karaokeCardDecorator.decoration.typings;
     screenWidth = MediaQuery.of(context).size.width;
     print("screenWidth: $screenWidth");
 
@@ -137,19 +140,19 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
       onPanEnd: (details) {
         if (karaokeCardDecorator.isDrawing)
           setState(() {
-            allDrawings.last.offsets.last
-                .add(allDrawings.last.offsets.last.last);
+            drawings.last.offsets.last
+                .add(drawings.last.offsets.last.last);
           });
       },
       child: CustomPaint(
         painter: karaokeCardDecorator.cardPainter =
-            CardPainter(allDrawings, allTyping, [cardWidth, cardHeight]),
+            CardPainter(drawings, typings, [cardWidth, cardHeight]),
         child: Container(
           height: cardHeight,
           width: cardWidth,
           child: karaokeCardDecorator.isTyping ? Positioned(
-            top: allTyping.last.offset.dy,
-            left: allTyping.last.offset.dx,
+            top: typings.last.offset.dy,
+            left: typings.last.offset.dx,
             child: Text(
               "XXX",
               style: TextStyle(fontSize: 30),
@@ -162,11 +165,11 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
 }
 
 class CardPainter extends CustomPainter {
-  final allDrawings;
-  final allTyping;
+  final drawings;
+  final typings;
   final canvasDimensions;
 
-  CardPainter(this.allDrawings, this.allTyping, this.canvasDimensions)
+  CardPainter(this.drawings, this.typings, this.canvasDimensions)
       : super();
 
   Future<Uint8List> _getArtwork(List aspect) async {
@@ -214,7 +217,7 @@ class CardPainter extends CustomPainter {
       ..style = PaintingStyle.fill
       ..strokeWidth = 4.0;
 
-    for (var drawing in allDrawings) {
+    for (var drawing in drawings) {
       paint.color = drawing.color;
       paint.strokeWidth = drawing.size / 2;
       for (var mark in drawing.offsets) {
@@ -229,7 +232,7 @@ class CardPainter extends CustomPainter {
       return Offset(oldOffset.dx - (tpSize.width / 2), oldOffset.dy);
     }
 
-    for (var typing in allTyping) {
+    for (var typing in typings) {
       var tp = TextPainter(
           textScaleFactor: 3.0,
           text: typing.textSpan,

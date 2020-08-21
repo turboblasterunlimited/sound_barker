@@ -14,8 +14,6 @@ class KaraokeCardDecorationController with ChangeNotifier {
   CardPainter cardPainter;
   double canvasLength;
   KaraokeCardDecorationController();
-  
-
 
   void newDrawing() {
     decoration.drawings.add(Drawing(color, size));
@@ -42,6 +40,7 @@ class KaraokeCardDecorationController with ChangeNotifier {
       span,
       defaultTypingOffset,
     ));
+    print("decoration.typings now not empty");
   }
 
   void updateLastTextSpan(newTextSpan) {
