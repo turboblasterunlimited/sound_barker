@@ -67,10 +67,10 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
     karaokeCardDecorator ??=
         Provider.of<KaraokeCardDecorationController>(context);
     canvasLength ??= MediaQuery.of(context).size.width;
-    karaokeCardDecorator.canvasLength = canvasLength;
     cards ??= Provider.of<KaraokeCards>(context);
     currentActivity ??= Provider.of<CurrentActivity>(context);
-    karaokeCardDecorator.initializeTyping(canvasLength);
+    karaokeCardDecorator.setDecoration(cards.current.decoration, canvasLength);
+
 
     return Expanded(
       child: Stack(

@@ -29,7 +29,13 @@ class KaraokeCardDecorationController with ChangeNotifier {
     return Offset(canvasLength / 2, canvasLength - 30);
   }
 
-  void initializeTyping(double length) {
+  void setDecoration(cardDecoration, screenWidth) {
+    decoration = cardDecoration;
+    _initializeTyping(screenWidth);
+    notifyListeners();
+  }
+
+  void _initializeTyping(double length) {
     this.canvasLength = length;
     if (decoration.typings.isNotEmpty) return;
     final span = TextSpan(

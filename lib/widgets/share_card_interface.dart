@@ -9,9 +9,9 @@ import 'package:K9_Karaoke/services/gcloud.dart';
 import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
-import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:share/share.dart';
 import 'package:uuid/uuid.dart';
 
@@ -27,6 +27,8 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   KaraokeCardDecorationController cardDecorator;
   CurrentActivity currentActivity;
   String recipientName;
+  String _loadingMessage;
+  String shareLink;
 
   Future<void> saveArtwork() async {
     if (cards.current.decorationImage != null) return;
@@ -67,15 +69,34 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
 
   Future<void> _createCard() async {
     await saveArtwork();
+    setState(() => _loadingMessage = "saving artwork...");
     cards.current.decorationImage.bucketFp =
         await Gcloud.uploadDecorationImage(cards.current.decorationImage);
+    setState(() => _loadingMessage = "saving sounds...");
     cards.current.audio.bucketFp =
         await Gcloud.uploadCardAudio(cards.current.audio);
-
+    setState(() => _loadingMessage = "creating link...");
     await RestAPI.createCardDecorationImage(cards.current.decorationImage);
     await RestAPI.createCardAudio(cards.current.audio);
     cards.current.uuid = Uuid().v4();
-    await RestAPI.createCard(cards.current);
+    var responseData = await RestAPI.createCard(cards.current);
+    setState(() => _loadingMessage = null);
+    setState(() => shareLink =
+        "https://www.thedogbarksthesong.ml/card/" + responseData["uuid"]);
+  }
+
+  Widget _shareLink() {
+    return Text(shareLink);
+  }
+
+  Widget _loading() {
+    return Column(
+      children: [
+        SpinKitWave(),
+        Text(_loadingMessage,
+            style: TextStyle(color: Theme.of(context).primaryColor)),
+      ],
+    );
   }
 
   _shareDialog() async {
@@ -85,16 +106,13 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
         title: Text('Share'),
         content: Container(
           height: 200,
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.only(left: 30, right: 30, bottom: 15),
-                  child: TextField(
+          child: Stack(
+            children: [
+              if (shareLink == null && _loadingMessage == null) Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextField(
                     onChanged: (name) {
                       recipientName = name;
                     },
@@ -106,20 +124,25 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                       labelText: 'Recipient Name',
                     ),
                   ),
-                ),
-                RawMaterialButton(
-                  onPressed: _handleUploadAndShare,
-                  child: Text("Share", style: TextStyle(color: Colors.white)),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0),
+                  Center(
+                    child: RawMaterialButton(
+                      onPressed: _handleUploadAndShare,
+                      child:
+                          Text("Share", style: TextStyle(color: Colors.white)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      elevation: 2.0,
+                      fillColor: Theme.of(context).primaryColor,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 40.0, vertical: 2),
+                    ),
                   ),
-                  elevation: 2.0,
-                  fillColor: Theme.of(context).primaryColor,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
-                ),
-              ],
-            ),
+                ],
+              ),
+              if (_loadingMessage != null) _loading()
+              else if (shareLink != null) _shareLink(),
+            ],
           ),
         ),
       ),
@@ -138,6 +161,12 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     return cards.current.uuid != null;
   }
 
+  void _backCallback() {
+    return cards.current.isUsingDecorationImage
+        ? currentActivity.setCardCreationSubStep(CardCreationSubSteps.one)
+        : currentActivity.setPreviousSubStep();
+  }
+
   @override
   Widget build(BuildContext context) {
     soundController ??= Provider.of<SoundController>(context, listen: false);
@@ -147,10 +176,13 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
         Provider.of<KaraokeCardDecorationController>(context, listen: false);
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
 
+    // File(cards.current.picture.filePath);
+
+    // print();
+
     return Column(
       children: [
-        interfaceTitleNav(context, "",
-            backCallback: currentActivity.setPreviousSubStep),
+        interfaceTitleNav(context, "", backCallback: _backCallback),
         Padding(
           padding: const EdgeInsets.only(left: 30, right: 30, bottom: 15),
           child: RawMaterialButton(

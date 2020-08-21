@@ -25,8 +25,6 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
   KaraokeCardDecorationController karaokeCardDecorator;
   KaraokeCards cards;
   double screenWidth;
-  List<Drawing> drawings;
-  List<Typing> typings;
 
   double get cardHeight {
     if (cards.current.framePath != null) {
@@ -110,15 +108,20 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
     }
   }
 
+  List<Drawing> get drawings {
+    return karaokeCardDecorator.decoration.drawings;
+  }
+
+    List<Typing> get typings {
+    return karaokeCardDecorator.decoration.typings;
+  }
+
   @override
   Widget build(BuildContext context) {
     print("building decorator canvas!");
     karaokeCardDecorator =
         Provider.of<KaraokeCardDecorationController>(context);
     cards = Provider.of<KaraokeCards>(context);
-    karaokeCardDecorator.decoration = cards.current.decoration;
-    drawings = karaokeCardDecorator.decoration.drawings;
-    typings = karaokeCardDecorator.decoration.typings;
     screenWidth = MediaQuery.of(context).size.width;
     print("screenWidth: $screenWidth");
 
@@ -190,7 +193,7 @@ class CardPainter extends CustomPainter {
     final frameBytes = await rootBundle.load(framePath);
     final frame = IMG.decodeImage(frameBytes.buffer
         .asUint8List(frameBytes.offsetInBytes, frameBytes.lengthInBytes));
-    final mergedImage = IMG.Image(656, 787);
+    final mergedImage = IMG.Image(656, 778);
     IMG.copyInto(mergedImage, frame, blend: true);
     IMG.copyInto(mergedImage, art, blend: true);
     return IMG.encodePng(mergedImage);

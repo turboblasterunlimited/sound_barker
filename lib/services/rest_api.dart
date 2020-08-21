@@ -118,7 +118,7 @@ class RestAPI {
 
   }
 
-  static Future<String> createCard(KaraokeCard card) async {
+  static Future createCard(KaraokeCard card) async {
     var response;
     final cardBody = {
       'uuid': card.uuid,
@@ -142,7 +142,7 @@ class RestAPI {
       print(e.response.request);
     }
     print("create greeting card body: ${response.data}");
-    return response.data.toString();
+    return response.data;
   }
 
   static Future<Map> createSong(List<String> cropIds, int songId) async {

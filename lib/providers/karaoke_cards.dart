@@ -117,6 +117,12 @@ class KaraokeCard with ChangeNotifier {
     notifyListeners();
   }
 
+  bool get isUsingDecorationImage {
+    print("decorationImage: $decorationImage");
+    print("shoulddeleteold: $shouldDeleteOldDecoration");
+    return this.decorationImage != null && this.shouldDeleteOldDecoration == false;
+  }
+
   Future<void> deleteOldDecorationImage() async {
     await decorationImage.delete();
     decorationImage = null;
