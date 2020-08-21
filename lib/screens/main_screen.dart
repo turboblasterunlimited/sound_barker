@@ -309,30 +309,27 @@ class _MainScreenState extends State<MainScreen> {
                                   child: Stack(
                                     children: <Widget>[
                                       SingingImage(),
-                                      Expanded(
-                                        child: canPlay()
-                                            ? Center(
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: <Widget>[
-                                                    RawMaterialButton(
-                                                      elevation: 2.0,
-                                                      fillColor:
-                                                          Theme.of(context)
-                                                              .primaryColor,
-                                                      child: Icon(
-                                                        Icons.play_arrow,
-                                                        size: 60,
-                                                        color: Colors.white,
-                                                      ),
-                                                      shape: CircleBorder(),
-                                                    )
-                                                  ],
-                                                ),
-                                              )
-                                            : Center(),
-                                      ),
+                                      canPlay()
+                                          ? Center(
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: <Widget>[
+                                                  RawMaterialButton(
+                                                    elevation: 2.0,
+                                                    fillColor: Theme.of(context)
+                                                        .primaryColor,
+                                                    child: Icon(
+                                                      Icons.play_arrow,
+                                                      size: 60,
+                                                      color: Colors.white,
+                                                    ),
+                                                    shape: CircleBorder(),
+                                                  )
+                                                ],
+                                              ),
+                                            )
+                                          : Center(),
                                     ],
                                   ),
                                 ),

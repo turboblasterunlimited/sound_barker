@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
@@ -41,7 +43,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     'teal.png',
     'red.png',
     'blue.png',
-    'bd-ballons.png',
+    'bd-balloons.png',
     'bd-bone.png',
     'bd-cake-1.png',
     'bd-cake-2.png',
@@ -58,6 +60,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       onTap: () {
         setState(() => selectedFrame = fileName);
         cards.setFrame(rootPath + fileName);
+        cards.current.shouldDeleteOldDecoration = true;
       },
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 5),
@@ -70,21 +73,114 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
               )
             : BoxDecoration(),
         child: SizedBox(
-          child: Image.asset(rootPath + fileName),
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return Padding(
+                      padding: EdgeInsets.only(
+                          bottom: constraints.biggest.height * 194/778,
+                          left: constraints.biggest.width * 72/656),
+                      child: Image.file(
+                        File(cards.current.picture.filePath),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              Image.asset(rootPath + fileName),
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  Widget noFrame() {
+    return GestureDetector(
+      onTap: () {
+        setState(() => selectedFrame = "");
+        cards.setFrame(null);
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 5),
+        decoration: selectedFrame == ""
+            ? BoxDecoration(
+                border: Border.all(
+                  color: Colors.blue,
+                  width: 3,
+                ),
+              )
+            : BoxDecoration(),
+        child: SizedBox(
+          child: Column(
+            children: [
+              Expanded(child: Image.file(File(cards.current.picture.filePath))),
+              Center(child: Text("No Frame")),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget decorationImage() {
+    return GestureDetector(
+      onTap: () {
+        setState(() => selectedFrame = "decorationImage");
+        cards.setFrame(null);
+        cards.current.shouldDeleteOldDecoration = true;
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 5),
+        decoration: selectedFrame == "decorationImage"
+            ? BoxDecoration(
+                border: Border.all(
+                  color: Colors.blue,
+                  width: 3,
+                ),
+              )
+            : BoxDecoration(),
+        child: SizedBox(
+          child: Stack(
+            children: [
+              Opacity(
+                  opacity: 0, child: Image.asset(rootPath + frameFileNames[0])),
+              Center(child: Text("No Frame")),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  int get listLength {
+    return frameFileNames.length +
+        (cards.current.decorationImage != null ? 2 : 1);
   }
 
   Widget frameList() {
     return Center(
       child: Container(
         height: 100,
-        child: ListView.builder(
+        child: CustomScrollView(
           scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.all(10),
-          itemCount: frameFileNames.length,
-          itemBuilder: (ctx, i) => frameSelectable(frameFileNames[i]),
+          slivers: <Widget>[
+            SliverList(
+              delegate:
+                  SliverChildBuilderDelegate((BuildContext context, int i) {
+                if (i >= listLength - 1)
+                  return null;
+                else if (i == 0)
+                  return noFrame();
+                else if (i == 1 && cards.current.decorationImage != null)
+                  return decorationImage();
+                else
+                  return frameSelectable(frameFileNames[i]);
+              }),
+            ),
+          ],
         ),
       ),
     );

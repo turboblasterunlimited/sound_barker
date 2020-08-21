@@ -110,7 +110,6 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     print("building decorator canvas!");

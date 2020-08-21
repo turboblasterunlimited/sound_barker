@@ -112,6 +112,11 @@ class KaraokeCard with ChangeNotifier {
   bool shouldDeleteOldDecoration = false;
   CardAudio oldCardAudio;
 
+  setDecorationImage(decorationImage) {
+    this.decorationImage = decorationImage;
+    notifyListeners();
+  }
+
   Future<void> deleteOldDecorationImage() async {
     await decorationImage.delete();
     decorationImage = null;

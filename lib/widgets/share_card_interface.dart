@@ -33,7 +33,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     final decorationImage = CardDecorationImage();
     decorationImage.filePath = await cardDecorator.cardPainter
         .capturePNG(decorationImage.fileId, cards.current.framePath);
-    cards.current.decorationImage = decorationImage;
+    cards.current.setDecorationImage(decorationImage);
   }
 
   Future<void> _uploadAndCreateDecorationImage() async {
