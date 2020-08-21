@@ -28,8 +28,6 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   CurrentActivity currentActivity;
   String recipientName;
 
-  void _handleUploadAndShare() async {}
-
   Future<void> saveArtwork() async {
     if (cards.current.decorationImage != null) return;
     final decorationImage = CardDecorationImage();
@@ -80,53 +78,55 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     await RestAPI.createCard(cards.current);
   }
 
-  Function shareDialog() {
-    return () => Dialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-          child: Container(
-            height: 200,
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 30, right: 30, bottom: 15),
-                    child: TextField(
-                      onChanged: (name) {
-                        recipientName = name;
-                      },
-                      onSubmitted: (_) => _handleUploadAndShare(),
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(),
-                        labelText: 'Recipient Name',
-                      ),
+  _shareDialog() async {
+    await showDialog<Null>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Share'),
+        content: Container(
+          height: 200,
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.only(left: 30, right: 30, bottom: 15),
+                  child: TextField(
+                    onChanged: (name) {
+                      recipientName = name;
+                    },
+                    onSubmitted: (_) => _handleUploadAndShare(),
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(),
+                      labelText: 'Recipient Name',
                     ),
                   ),
-                  RawMaterialButton(
-                    onPressed: _handleUploadAndShare,
-                    child: Text("Share", style: TextStyle(color: Colors.white)),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    elevation: 2.0,
-                    fillColor: Theme.of(context).primaryColor,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 40.0, vertical: 2),
+                ),
+                RawMaterialButton(
+                  onPressed: _handleUploadAndShare,
+                  child: Text("Share", style: TextStyle(color: Colors.white)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
                   ),
-                ],
-              ),
+                  elevation: 2.0,
+                  fillColor: Theme.of(context).primaryColor,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
+                ),
+              ],
             ),
           ),
-        );
+        ),
+      ),
+    );
   }
 
-  Future<void> _saveCard() {
+  Future<void> _handleUploadAndShare() async {
     if (_editingCard()) {
       _updateCard();
     } else {
@@ -154,13 +154,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
         Padding(
           padding: const EdgeInsets.only(left: 30, right: 30, bottom: 15),
           child: RawMaterialButton(
-            onPressed: () async {
-              await _saveCard();
-              showDialog(
-                context: context,
-                builder: shareDialog(),
-              );
-            },
+            onPressed: _shareDialog,
             child: Text("Save Card", style: TextStyle(color: Colors.white)),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30.0),

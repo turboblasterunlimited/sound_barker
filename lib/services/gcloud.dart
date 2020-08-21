@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 import 'package:K9_Karaoke/classes/card_audio.dart';
 import 'package:K9_Karaoke/classes/card_decoration_image.dart';

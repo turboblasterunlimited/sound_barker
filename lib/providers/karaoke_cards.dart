@@ -6,7 +6,6 @@ import 'package:K9_Karaoke/classes/card_message.dart';
 import 'package:K9_Karaoke/classes/decoration.dart';
 import 'package:K9_Karaoke/providers/barks.dart';
 import 'package:K9_Karaoke/providers/creatable_songs.dart';
-import 'package:K9_Karaoke/providers/karaoke_card_decoration_controller.dart';
 import 'package:K9_Karaoke/providers/pictures.dart';
 import 'package:K9_Karaoke/providers/songs.dart';
 import 'package:K9_Karaoke/tools/amplitude_extractor.dart';
@@ -110,22 +109,8 @@ class KaraokeCard with ChangeNotifier {
   CardDecoration decoration = CardDecoration();
   CardDecorationImage decorationImage;
 
-  bool shouldDeleteOldDecoration;
+  bool shouldDeleteOldDecoration = false;
   CardAudio oldCardAudio;
-
-  KaraokeCard({
-    this.uuid,
-    this.picture,
-    this.song,
-    this.songFormula,
-    this.shortBark,
-    this.mediumBark,
-    this.longBark,
-    this.decorationImage,
-    this.framePath,
-    this.oldCardAudio,
-    this.shouldDeleteOldDecoration = false,
-  });
 
   Future<void> deleteOldDecorationImage() async {
     await decorationImage.delete();
