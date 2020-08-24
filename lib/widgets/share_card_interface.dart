@@ -50,7 +50,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     await RestAPI.createCardAudio(cards.current.audio);
   }
 
-  Future<void> _updateCard() async {
+  Future<void> _updateCard(Function setStateDialog) async {
     bool changed = false;
     if (cards.current.shouldDeleteOldDecoration) {
       cards.current.deleteOldDecorationImage();
@@ -67,26 +67,26 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     if (changed) RestAPI.updateCard(cards.current);
   }
 
-  Future<void> _createCard() async {
+  Future<void> _createCard(Function setStateDialog) async {
     await saveArtwork();
     print("checkpoint");
-    setState(() => _loadingMessage = "saving artwork...");
+    setStateDialog(() => _loadingMessage = "saving artwork...");
     cards.current.decorationImage.bucketFp =
         await Gcloud.uploadDecorationImage(cards.current.decorationImage);
-            print("checkpoint 1");
+    print("checkpoint 1");
 
-    setState(() => _loadingMessage = "saving sounds...");
+    setStateDialog(() => _loadingMessage = "saving sounds...");
     cards.current.audio.bucketFp =
         await Gcloud.uploadCardAudio(cards.current.audio);
-            print("checkpoint 2");
+    print("checkpoint 2");
 
-    setState(() => _loadingMessage = "creating link...");
+    setStateDialog(() => _loadingMessage = "creating link...");
     await RestAPI.createCardDecorationImage(cards.current.decorationImage);
     await RestAPI.createCardAudio(cards.current.audio);
     cards.current.uuid = Uuid().v4();
     var responseData = await RestAPI.createCard(cards.current);
-    setState(() => _loadingMessage = null);
-    setState(() => shareLink =
+    setStateDialog(() => _loadingMessage = null);
+    setStateDialog(() => shareLink =
         "https://www.thedogbarksthesong.ml/card/" + responseData["uuid"]);
     print("Share Link $shareLink");
   }
@@ -98,7 +98,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   Widget _loading() {
     return Column(
       children: [
-        SpinKitWave(),
+        SpinKitWave(color: Theme.of(context).primaryColor),
         Text(_loadingMessage,
             style: TextStyle(color: Theme.of(context).primaryColor)),
       ],
@@ -107,59 +107,70 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
 
   _shareDialog() async {
     await showDialog<Null>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('Share'),
-        content: Container(
-          height: 200,
-          child: Stack(
-            children: [
-              if (shareLink == null && _loadingMessage == null) Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextField(
-                    onChanged: (name) {
-                      recipientName = name;
-                    },
-                    onSubmitted: (_) => _handleUploadAndShare(),
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(),
-                      labelText: 'Recipient Name',
-                    ),
-                  ),
-                  Center(
-                    child: RawMaterialButton(
-                      onPressed: _handleUploadAndShare,
-                      child:
-                          Text("Share", style: TextStyle(color: Colors.white)),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
+        context: context,
+        builder: (ctx) {
+          return StatefulBuilder(
+              builder: (BuildContext context, Function setStateDialog) {
+            return AlertDialog(
+              title: Text('Share'),
+              content: Container(
+                height: 200,
+                child: Stack(
+                  children: [
+                    if (shareLink == null && _loadingMessage == null)
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TextField(
+                            onChanged: (name) {
+                              recipientName = name;
+                            },
+                            onSubmitted: (_) {
+                              _handleUploadAndShare(setStateDialog);
+                            },
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.white,
+                              border: OutlineInputBorder(),
+                              labelText: 'Recipient Name',
+                            ),
+                          ),
+                          Center(
+                            child: RawMaterialButton(
+                              onPressed: () {
+                                _handleUploadAndShare(setStateDialog);
+                              },
+                              child: Text("Share",
+                                  style: TextStyle(color: Colors.white)),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30.0),
+                              ),
+                              elevation: 2.0,
+                              fillColor: Theme.of(context).primaryColor,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 40.0, vertical: 2),
+                            ),
+                          ),
+                        ],
                       ),
-                      elevation: 2.0,
-                      fillColor: Theme.of(context).primaryColor,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 40.0, vertical: 2),
-                    ),
-                  ),
-                ],
+                    if (_loadingMessage != null)
+                      _loading()
+                    else if (shareLink != null)
+                      _shareLink(),
+                  ],
+                ),
               ),
-              if (_loadingMessage != null) _loading()
-              else if (shareLink != null) _shareLink(),
-            ],
-          ),
-        ),
-      ),
-    );
+            );
+          });
+        });
   }
 
-  Future<void> _handleUploadAndShare() async {
+  Future<void> _handleUploadAndShare(Function setStateDialog) async {
     if (_editingCard()) {
-      await _updateCard();
+      await _updateCard(setStateDialog);
     } else {
-      await _createCard();
+      await _createCard(setStateDialog);
     }
   }
 

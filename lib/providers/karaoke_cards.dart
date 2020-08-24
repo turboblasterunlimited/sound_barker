@@ -114,6 +114,7 @@ class KaraokeCard with ChangeNotifier {
 
   setDecorationImage(decorationImage) {
     this.decorationImage = decorationImage;
+    this.shouldDeleteOldDecoration = false;
     notifyListeners();
   }
 
