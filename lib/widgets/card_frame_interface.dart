@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:path/path.dart' as PATH;
 
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
@@ -146,7 +147,28 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
               )
             : BoxDecoration(),
         child: SizedBox(
-          child: Image.file(File(cards.current.decorationImage.filePath)),
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return Padding(
+                      padding: EdgeInsets.only(
+                        top: constraints.biggest.height * 72 / 778,
+                        bottom: constraints.biggest.height * 194 / 778,
+                        left: constraints.biggest.width * 72 / 656,
+                        right: constraints.biggest.width * 72 / 656,
+                      ),
+                      child: Image.file(
+                        File(cards.current.picture.filePath),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              Image.file(File(cards.current.decorationImage.filePath)),
+            ],
+          ),
         ),
       ),
     );
@@ -217,11 +239,16 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     );
   }
 
+  void _setFrameSelection() {
+    if (cards.current.framePath != null)
+      selectedFrame = PATH.basename(cards.current.framePath);
+  }
+
   @override
   Widget build(context) {
     cards = Provider.of<KaraokeCards>(context, listen: false);
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
-
+    _setFrameSelection();
     return Column(
       children: <Widget>[
         interfaceTitleNav(context, "CHOOSE ART",
