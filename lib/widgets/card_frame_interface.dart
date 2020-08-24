@@ -80,8 +80,11 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
                   builder: (context, constraints) {
                     return Padding(
                       padding: EdgeInsets.only(
-                          bottom: constraints.biggest.height * 194 / 778,
-                          left: constraints.biggest.width * 72 / 656),
+                        top: constraints.biggest.height * 72 / 778,
+                        bottom: constraints.biggest.height * 194 / 778,
+                        left: constraints.biggest.width * 72 / 656,
+                        right: constraints.biggest.width * 72 / 656,
+                      ),
                       child: Image.file(
                         File(cards.current.picture.filePath),
                       ),
@@ -185,10 +188,10 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
         !cards.current.shouldDeleteOldDecoration;
   }
 
-  bool get _noFrameNoDecorationImage {
-    return cards.current.decorationImage == null &&
-        cards.current.framePath == null;
-  }
+  // bool get _noFrameNoDecorationImage {
+  //   return cards.current.decorationImage == null &&
+  //       cards.current.framePath == null;
+  // }
 
   Widget submitButton() {
     return Center(
@@ -206,8 +209,9 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
           borderRadius: BorderRadius.circular(30.0),
         ),
         elevation: 2.0,
-        fillColor:
-            cards.hasFrame ? Theme.of(context).primaryColor : Colors.grey,
+        fillColor: selectedFrame != null
+            ? Theme.of(context).primaryColor
+            : Colors.grey,
         padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 0),
       ),
     );
