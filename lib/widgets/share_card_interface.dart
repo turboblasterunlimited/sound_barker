@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:share/share.dart';
 import 'package:uuid/uuid.dart';
+import 'package:flutter/services.dart';
 
 class ShareCardInterface extends StatefulWidget {
   @override
@@ -172,6 +173,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     } else {
       await _createCard(setStateDialog);
     }
+    SystemChrome.restoreSystemUIOverlays();
   }
 
   bool _editingCard() {

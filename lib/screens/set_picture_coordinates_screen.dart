@@ -6,6 +6,7 @@ import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/widgets/card_progress_bar.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
@@ -237,6 +238,7 @@ class _SetPictureCoordinatesScreenState
     card = Provider.of<KaraokeCards>(context, listen: false).current;
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
     cards = Provider.of<KaraokeCards>(context, listen: false);
+    SystemChrome.restoreSystemUIOverlays();
 
     return Scaffold(
       extendBodyBehindAppBar: true,

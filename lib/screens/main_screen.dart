@@ -214,7 +214,7 @@ class _MainScreenState extends State<MainScreen> {
 
   bool get _canPlayCombinedAudio {
     return currentActivity.isStyle &&
-        currentActivity.isOne &&
+        (currentActivity.isOne || currentActivity.isThree) &&
         (cards.current.audio.filePath != null);
   }
 
@@ -347,14 +347,24 @@ class _MainScreenState extends State<MainScreen> {
                       if (_showDecorationCanvas)
                         IgnorePointer(
                           ignoring: currentActivity.isThree,
-                          child: CardDecoratorCanvas(padding: portraitPadding),
+                          child: Padding(
+                            // 22px or 0
+                            padding: _portraitPadding,
+                            child:
+                                CardDecoratorCanvas(padding: portraitPadding),
+                          ),
                         ),
                       if (_showDecorationImage)
-                        GestureDetector(
-                          behavior: HitTestBehavior.translucent,
-                          onTap: _handleTapPuppet,
-                          child: Image.file(
-                              File(cards.current.decorationImage.filePath)),
+                        Padding(
+                          // 22px or 0
+                          padding: _portraitPadding,
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.translucent,
+                            onTap: _handleTapPuppet,
+                            child: Image.file(
+                              File(cards.current.decorationImage.filePath),
+                            ),
+                          ),
                         ),
                     ],
                   ),
