@@ -131,6 +131,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   }
 
   Widget decorationImageSelectable(image) {
+    print("decoration has frame: $decorationImageHasFrame");
     return decorationImageHasFrame
         ? Positioned.fill(
             child: LayoutBuilder(
@@ -146,7 +147,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
               },
             ),
           )
-        : image;
+        : Positioned.fill(child: image);
   }
 
   Widget decorationImage() {
@@ -167,21 +168,14 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
               )
             : BoxDecoration(),
         child: SizedBox(
-          child: Column(
+          child: Stack(
             children: [
-              Expanded(
-                child: Stack(
-                  children: [
-                    decorationImageSelectable(
-                      Image.file(File(cards.current.picture.filePath)),
-                    ),
-                    Image.file(
-                      File(cards.current.decorationImage.filePath),
-                    ),
-                  ],
-                ),
+              decorationImageSelectable(
+                Image.file(File(cards.current.picture.filePath)),
               ),
-              Text("")
+              Image.file(
+                File(cards.current.decorationImage.filePath),
+              ),
             ],
           ),
         ),

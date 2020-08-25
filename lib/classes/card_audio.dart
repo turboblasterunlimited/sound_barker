@@ -15,7 +15,7 @@ class CardAudio {
     this.amplitudes,
   });
 
-  void delete() async {
+  Future<void> delete() async {
     await RestAPI.deleteCardAudio(fileId);
     if (File(filePath).existsSync()) File(filePath).deleteSync();
   }

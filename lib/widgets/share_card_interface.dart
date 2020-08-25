@@ -51,44 +51,48 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     await RestAPI.createCardAudio(cards.current.audio);
   }
 
-  Future<void> _updateCard(Function setStateDialog) async {
+  Future<void> _updateCard(Function setDialogState) async {
     bool changed = false;
     if (cards.current.shouldDeleteOldDecoration) {
-      setStateDialog(() => _loadingMessage = "updating artwork...");
-      cards.current.deleteOldDecorationImage();
-      saveArtwork();
-      _uploadAndCreateDecorationImage();
+      setDialogState(() => _loadingMessage = "updating artwork...");
+      await cards.current.deleteOldDecorationImage();
+      await saveArtwork();
+      await _uploadAndCreateDecorationImage();
       cards.current.shouldDeleteOldDecoration = false;
       changed = true;
     }
     if (cards.current.oldCardAudio != null) {
-      setStateDialog(() => _loadingMessage = "saving sounds...");
-      cards.current.deleteOldAudio();
-      _uploadAndCreateCardAudio();
+      setDialogState(() => _loadingMessage = "saving sounds...");
+      await cards.current.deleteOldAudio();
+      await _uploadAndCreateCardAudio();
       changed = true;
     }
     if (changed) RestAPI.updateCard(cards.current);
   }
 
-  Future<void> _createCard(Function setStateDialog) async {
+  void _handleShare(responseData, setDialogState) {
+    setDialogState(() => _loadingMessage = null);
+    setDialogState(() => shareLink =
+        "https://www.thedogbarksthesong.ml/card/" + responseData["uuid"]);
+    print("Share Link $shareLink");
+  }
+
+  Future<void> _createCard(Function setDialogState) async {
     await saveArtwork();
-    setStateDialog(() => _loadingMessage = "saving artwork...");
+    setDialogState(() => _loadingMessage = "saving artwork...");
     cards.current.decorationImage.bucketFp =
         await Gcloud.uploadDecorationImage(cards.current.decorationImage);
 
-    setStateDialog(() => _loadingMessage = "saving sounds...");
+    setDialogState(() => _loadingMessage = "saving sounds...");
     cards.current.audio.bucketFp =
         await Gcloud.uploadCardAudio(cards.current.audio);
 
-    setStateDialog(() => _loadingMessage = "creating link...");
+    setDialogState(() => _loadingMessage = "creating link...");
     await RestAPI.createCardDecorationImage(cards.current.decorationImage);
     await RestAPI.createCardAudio(cards.current.audio);
     cards.current.uuid = Uuid().v4();
     var responseData = await RestAPI.createCard(cards.current);
-    setStateDialog(() => _loadingMessage = null);
-    setStateDialog(() => shareLink =
-        "https://www.thedogbarksthesong.ml/card/" + responseData["uuid"]);
-    print("Share Link $shareLink");
+    _handleShare(responseData, setDialogState);
   }
 
   Widget _shareLink() {
@@ -110,7 +114,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
         context: context,
         builder: (ctx) {
           return StatefulBuilder(
-              builder: (BuildContext context, Function setStateDialog) {
+              builder: (BuildContext context, Function setDialogState) {
             return AlertDialog(
               title: Text('Share'),
               content: Container(
@@ -127,7 +131,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                               recipientName = name;
                             },
                             onSubmitted: (_) {
-                              _handleUploadAndShare(setStateDialog);
+                              _handleUploadAndShare(setDialogState);
                             },
                             decoration: InputDecoration(
                               filled: true,
@@ -139,7 +143,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                           Center(
                             child: RawMaterialButton(
                               onPressed: () {
-                                _handleUploadAndShare(setStateDialog);
+                                _handleUploadAndShare(setDialogState);
                               },
                               child: Text("Share",
                                   style: TextStyle(color: Colors.white)),
@@ -166,11 +170,11 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
         });
   }
 
-  Future<void> _handleUploadAndShare(Function setStateDialog) async {
+  Future<void> _handleUploadAndShare(Function setDialogState) async {
     if (_editingCard()) {
-      await _updateCard(setStateDialog);
+      await _updateCard(setDialogState);
     } else {
-      await _createCard(setStateDialog);
+      await _createCard(setDialogState);
     }
     SystemChrome.restoreSystemUIOverlays();
   }
