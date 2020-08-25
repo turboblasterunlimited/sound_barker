@@ -8,12 +8,12 @@ import 'package:K9_Karaoke/providers/barks.dart';
 import 'package:K9_Karaoke/providers/creatable_songs.dart';
 import 'package:K9_Karaoke/providers/pictures.dart';
 import 'package:K9_Karaoke/providers/songs.dart';
+import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:K9_Karaoke/tools/amplitude_extractor.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:K9_Karaoke/tools/ffmpeg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:uuid/uuid.dart';
 
 class KaraokeCards with ChangeNotifier {
   List<KaraokeCard> all = [];
@@ -21,6 +21,36 @@ class KaraokeCards with ChangeNotifier {
 
   void messageIsReady() {
     notifyListeners();
+  }
+
+  Future<void> retrieveAll() async {
+    var response = await RestAPI.retrieveAllCards();
+    response.forEach((cardData) {
+      all.add(KaraokeCard(uuid: cardData["uuid"] ));
+    });
+  }
+
+
+
+  Future retrieveAll() async {
+    List tempSongs = [];
+    Bucket bucket = await Gcloud.accessBucket();
+    List serverSongs = await RestAPI.retrieveAllSongs();
+    print("retriveallsongresponse: $serverSongs");
+
+    for (Map<String, dynamic> serverSong in serverSongs) {
+      if (serverSong["hidden"] == 1) continue;
+      final song = await Song().retrieveSong(serverSong, bucket);
+      tempSongs.add(song);
+      print("song created: ${song.created}");
+    }
+
+    tempSongs.sort((song1, song2) {
+      return song1.created.compareTo(song2.created);
+    });
+    tempSongs.forEach((song) {
+      addSong(song);
+    });
   }
 
   String get currentName {
@@ -111,6 +141,8 @@ class KaraokeCard with ChangeNotifier {
 
   bool shouldDeleteOldDecoration = false;
   CardAudio oldCardAudio;
+
+  KaraokeCard({this.uuid, this.picture, this.audio, this.decorationImage});
 
   setDecorationImage(decorationImage) {
     this.decorationImage = decorationImage;

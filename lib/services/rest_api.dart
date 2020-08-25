@@ -20,6 +20,8 @@ class RestAPI {
     return response.data["success"];
   }
 
+
+
   static Future<void> deleteDecorationImage(imageId) async {
     final imageUrl = 'http://165.227.178.14/decoration_image/$imageId';
 
@@ -212,7 +214,6 @@ class RestAPI {
 
   static void renameBark(Bark bark, newName) async {
     Map body = {'name': newName};
-    print(body);
     final url = 'http://165.227.178.14/crop/${bark.fileId}';
     final response = await HttpController.dio.patch(
       url,
@@ -221,11 +222,31 @@ class RestAPI {
     print("Edit bark name response body: ${response.data}");
   }
 
+  static Future<List> retrieveAllDecorationImages() async {
+    final url = 'http://165.227.178.14/all/decoration_image';
+    final response = await HttpController.dio.get(url);
+    print("Get all decoration images response body: ${response.data}");
+    return response.data;
+  }
+
+  static Future<List> retrieveAllCardAudio() async {
+    final url = 'http://165.227.178.14/all/decoration_image';
+    final response = await HttpController.dio.get(url);
+    print("Get all card audio response body: ${response.data}");
+    return response.data;
+  }
+
   static Future<List> retrieveAllSongs() async {
     final url = 'http://165.227.178.14/all/sequence';
-    print(url);
     final response = await HttpController.dio.get(url);
     print("Get all Songs response body: ${response.data}");
+    return response.data;
+  }
+
+  static Future<List> retrieveAllCards() async {
+    final url = 'http://165.227.178.14/all/greeting_card';
+    final response = await HttpController.dio.get(url);
+    print("Get all Cards response body: ${response.data}");
     return response.data;
   }
 

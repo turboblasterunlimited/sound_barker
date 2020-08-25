@@ -33,9 +33,8 @@ class Gcloud {
     return filePath;
   }
 
-  static Future<String> uploadAsset(fileId, filePath, [image]) async {
-    String bucketWritePath =
-        image == true ? "images/$fileId.jpg" : "$fileId/raw.aac";
+  static Future<String> uploadRawBark(fileId, filePath) async {
+    String bucketWritePath = "$fileId/raw.aac";
     Bucket bucket = await accessBucket();
     try {
       await File(filePath).openRead().pipe(bucket.write(bucketWritePath));
@@ -46,36 +45,15 @@ class Gcloud {
     return bucketWritePath;
   }
 
-  static Future<String> uploadDecorationImage(
-      CardDecorationImage decorationImage,
+  static Future<String> upload(String filePath, String directory,
       [Bucket bucket]) async {
-    final decorationImageWritePath =
-        "decoration_images/${basename(decorationImage.filePath)}";
+    final bucketFp = "$directory/${basename(filePath)}";
     bucket ??= await accessBucket();
     try {
-      await File(decorationImage.filePath)
-          .openRead()
-          .pipe(bucket.write(decorationImageWritePath));
+      await File(filePath).openRead().pipe(bucket.write(bucketFp));
     } catch (e) {
       print(e);
     }
-
-    return decorationImageWritePath;
-  }
-
-  static Future<String> uploadCardAudio(CardAudio cardAudio,
-      [Bucket bucket]) async {
-    print("Audio filepath: ${cardAudio.filePath}");
-    final audioFileWritePath = "card_audios/${basename(cardAudio.filePath)}";
-    bucket ??= await accessBucket();
-    try {
-      await File(cardAudio.filePath)
-          .openRead()
-          .pipe(bucket.write(audioFileWritePath));
-    } catch (e) {
-      print(e);
-    }
-    print("audio upload success");
-    return audioFileWritePath;
+    return bucketFp;
   }
 }

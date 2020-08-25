@@ -110,7 +110,8 @@ class Barks with ChangeNotifier {
   }
 
   Future<List> uploadRawBarkAndRetrieveCroppedBarks(imageId) async {
-    await Gcloud.uploadAsset(tempRawBark.fileId, tempRawBark.filePath, false);
+
+    await Gcloud.uploadRawBark(tempRawBark.fileId, tempRawBark.filePath, false);
     List responseBody = await RestAPI.splitRawBark(tempRawBark.fileId, imageId);
     List newBarks = await parseCroppedBarks(responseBody);
     await downloadAllBarksFromBucket(newBarks);

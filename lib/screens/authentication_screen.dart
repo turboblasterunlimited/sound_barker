@@ -1,6 +1,7 @@
 import 'dart:io' show Platform;
 import 'package:K9_Karaoke/providers/barks.dart';
 import 'package:K9_Karaoke/providers/creatable_songs.dart';
+import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/pictures.dart';
 import 'package:K9_Karaoke/providers/songs.dart';
 import 'package:K9_Karaoke/providers/user.dart';
@@ -25,7 +26,7 @@ class AuthenticationScreen extends StatefulWidget {
 
 class _AuthenticationScreenState extends State<AuthenticationScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  bool loading = true;
+  bool signingIn = true;
   FocusNode passwordFocusNode;
   String email;
   String password;
@@ -35,7 +36,9 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   Songs songs;
   Pictures pictures;
   CreatableSongs creatableSongs;
+  KaraokeCards cards;
   bool everythingDownloaded = true;
+  String downloadMessage = "Initializing...";
 
   void _showError([message = "You must be connected to the internet"]) {
     _scaffoldKey.currentState.showSnackBar(
@@ -130,7 +133,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   }
 
   void _handleGoogleAuthentication() async {
-    // setState(() => loading = true);
+    // setState(() => signingIn = true);
     var token;
     var response;
     String clientId;
@@ -195,14 +198,20 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   Future<void> downloadEverything() async {
     setState(() {
       everythingDownloaded = false;
-      loading = false;
+      signingIn = false;
+      downloadMessage = "Retrieving Pictures...";
     });
     await pictures.retrieveAll();
     // need creatableSongData to get songIds
     await creatableSongs.retrieveFromServer();
+    setState(() => downloadMessage = "Retrieving Barks...");
     await barks.retrieveAll();
     songs.setCreatableSongs(creatableSongs.all);
+    setState(() => downloadMessage = "Retrieving Songs...");
     await songs.retrieveAll();
+    setState(() => downloadMessage = "Retrieving Cards...");
+    await cards.retrieveAll();
+    setState(() => downloadMessage = "Done.");
   }
 
   @override
@@ -213,12 +222,13 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     songs = Provider.of<Songs>(context, listen: false);
     pictures = Provider.of<Pictures>(context, listen: false);
     creatableSongs = Provider.of<CreatableSongs>(context, listen: false);
+    cards = Provider.of<KaraokeCards>(context, listen: false);
 
     var responseData = await checkIfSignedIn();
     if (responseData["logged_in"] == true) {
       _handleSignedIn(responseData["user_id"]);
     } else {
-      setState(() => loading = false);
+      setState(() => signingIn = false);
     }
   }
 
@@ -229,7 +239,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       key: _scaffoldKey,
       resizeToAvoidBottomPadding: false,
       extendBodyBehindAppBar: true,
-      appBar: loading
+      appBar: signingIn
           ? null
           : PreferredSize(
               preferredSize: Size.fromHeight(60.0),
@@ -257,7 +267,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         child: Stack(
           children: <Widget>[
             Visibility(
-              visible: !loading,
+              visible: !signingIn,
               child: Padding(
                 padding: const EdgeInsets.only(top: 180.0),
                 child: Column(
@@ -368,9 +378,9 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
               ),
             ),
             Visibility(
-              visible: loading || !everythingDownloaded,
-              child: SpinnerWidget(
-                  loading ? "Signing in..." : "Getting your stuff!"),
+              visible: signingIn || !everythingDownloaded,
+              child:
+                  SpinnerWidget(signingIn ? "Signing in..." : downloadMessage),
             ),
           ],
         ),

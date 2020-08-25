@@ -146,7 +146,7 @@ class Picture with ChangeNotifier, Gcloud {
   }
 
   Future<void> uploadPictureAndSaveToServer() async {
-    this.fileUrl = await Gcloud.uploadAsset(fileId, filePath, true);
+    this.fileUrl = await Gcloud.upload(filePath, "images");
     print("File url from uploadpictureandsavetoserver: $fileUrl");
     Map body = await RestAPI.createImage(this);
     created = DateTime.parse(body["created"]);

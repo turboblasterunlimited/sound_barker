@@ -4,6 +4,23 @@ import 'package:image/image.dart' as IMG;
 import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:uuid/uuid.dart';
 
+class CardDecorationImages {
+  List<CardDecorationImage> all = [];
+
+  retrieveAll() async {
+    var response = await RestAPI.retrieveAllDecorationImages();
+
+    response.forEach((imageData) {
+      all.add(
+        CardDecorationImage(
+          fileId: imageData["uuid"],
+          bucketFp: imageData["bucket_fp"],
+        ),
+      );
+    });
+  }
+}
+
 class CardDecorationImage {
   String fileId;
   String filePath;
@@ -12,8 +29,9 @@ class CardDecorationImage {
   CardDecorationImage({
     this.filePath,
     this.bucketFp,
+    this.fileId,
   }) {
-    this.fileId = Uuid().v4();
+    this.fileId ??= Uuid().v4();
   }
 
   Future<void> delete() async {

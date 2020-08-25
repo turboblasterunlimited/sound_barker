@@ -41,14 +41,14 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   }
 
   Future<void> _uploadAndCreateDecorationImage() async {
-    cards.current.decorationImage.bucketFp =
-        await Gcloud.uploadDecorationImage(cards.current.decorationImage);
+    cards.current.decorationImage.bucketFp = await Gcloud.upload(
+        cards.current.decorationImage.filePath, "decoration_images");
     await RestAPI.createCardDecorationImage(cards.current.decorationImage);
   }
 
   Future<void> _uploadAndCreateCardAudio() async {
     cards.current.audio.bucketFp =
-        await Gcloud.uploadCardAudio(cards.current.audio);
+        await Gcloud.upload(cards.current.audio.filePath, "card_audios");
     await RestAPI.createCardAudio(cards.current.audio);
   }
 
@@ -90,12 +90,12 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   Future<void> _createCard(Function setDialogState) async {
     await saveArtwork();
     setDialogState(() => _loadingMessage = "saving artwork...");
-    cards.current.decorationImage.bucketFp =
-        await Gcloud.uploadDecorationImage(cards.current.decorationImage);
+    cards.current.decorationImage.bucketFp = await Gcloud.upload(
+        cards.current.decorationImage.filePath, "decoration_images");
 
     setDialogState(() => _loadingMessage = "saving sounds...");
     cards.current.audio.bucketFp =
-        await Gcloud.uploadCardAudio(cards.current.audio);
+        await Gcloud.upload(cards.current.audio.filePath, "card_audios");
 
     setDialogState(() => _loadingMessage = "creating link...");
     await RestAPI.createCardDecorationImage(cards.current.decorationImage);
