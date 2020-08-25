@@ -223,6 +223,7 @@ class _SetPictureCoordinatesScreenState
       _instructionalText = _getInstructionalText();
     });
     FocusScope.of(context).unfocus();
+    SystemChrome.restoreSystemUIOverlays();
   }
 
   Function _backCallback() {

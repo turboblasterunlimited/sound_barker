@@ -168,6 +168,7 @@ class _MainScreenState extends State<MainScreen> {
                     onFieldSubmitted: (val) {
                       cards.setCurrentName(val);
                       FocusScope.of(context).unfocus();
+                      SystemChrome.restoreSystemUIOverlays();
                     },
                   ),
                   // This rename field works differently than on the coordinates setting page.
