@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:intl/intl.dart';
 
-
 import 'package:K9_Karaoke/classes/card_decoration_image.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_card_decoration_controller.dart';
@@ -83,7 +82,8 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     setDialogState(
         () => shareLink = "https://www.thedogbarksthesong.ml/card/" + uuid);
     print("Share Link $shareLink");
-    Share.share("$name has a message for you.\n\n$shareLink\n\nCreated with K-9 Karaoke.",
+    Share.share(
+        "$name has a message for you.\n\n$shareLink\n\nCreated with K-9 Karaoke.",
         subject: "$name has a message for you.");
   }
 
@@ -106,7 +106,26 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   }
 
   Widget _shareLink() {
-    return Text(shareLink);
+    return Column(
+      children: [
+        GestureDetector(
+            onTap: () => Clipboard.setData(ClipboardData(text: shareLink))
+                    .then((result) {
+                  final snackBar = SnackBar(
+                    content: Text('Card link copied to Clipboard'),
+                  );
+                  Scaffold.of(context).showSnackBar(snackBar);
+                }),
+            child: Row(
+              children: [
+                Icon(Icons.content_copy),
+                Flexible(
+                  child: Text(shareLink),
+                )
+              ],
+            )),
+      ],
+    );
   }
 
   Widget _loading() {
@@ -131,9 +150,9 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                 height: 200,
                 child: Stack(
                   children: [
-                    if (shareLink == null && _loadingMessage == null)
+                    if (_loadingMessage == null)
                       Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           TextField(
@@ -155,7 +174,8 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                               onPressed: () {
                                 _handleUploadAndShare(setDialogState);
                               },
-                              child: Text("Share",
+                              child: Text(
+                                  "Share${shareLink != null ? ' Again' : ''}",
                                   style: TextStyle(color: Colors.white)),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30.0),
@@ -166,12 +186,11 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                                   horizontal: 40.0, vertical: 2),
                             ),
                           ),
+                          if (shareLink != null && _loadingMessage == null)
+                            _shareLink(),
                         ],
                       ),
-                    if (_loadingMessage != null)
-                      _loading()
-                    else if (shareLink != null)
-                      _shareLink(),
+                    if (_loadingMessage != null) _loading()
                   ],
                 ),
               ),
