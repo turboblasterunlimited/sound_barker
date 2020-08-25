@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:intl/intl.dart';
+
 
 import 'package:K9_Karaoke/classes/card_decoration_image.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
@@ -73,15 +75,16 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     } else {
       _handleShare(cards.current.uuid, setDialogState);
     }
-    
-
   }
 
   void _handleShare(uuid, setDialogState) {
+    String name = toBeginningOfSentenceCase(cards.current.picture.name);
     setDialogState(() => _loadingMessage = null);
-    setDialogState(() => shareLink =
-        "https://www.thedogbarksthesong.ml/card/" + uuid);
+    setDialogState(
+        () => shareLink = "https://www.thedogbarksthesong.ml/card/" + uuid);
     print("Share Link $shareLink");
+    Share.share("$name has a message for you.\n\n$shareLink\n\nCreated with K-9 Karaoke.",
+        subject: "$name has a message for you.");
   }
 
   Future<void> _createCard(Function setDialogState) async {
