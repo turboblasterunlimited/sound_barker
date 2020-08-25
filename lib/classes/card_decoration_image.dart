@@ -21,8 +21,8 @@ class CardDecorationImage {
     if (File(filePath).existsSync()) File(filePath).deleteSync();
   }
 
-  Future<bool> get hasFrameDimension async {
-    var bytes = await File(filePath).readAsBytes();
+  bool get hasFrameDimension {
+    var bytes = File(filePath).readAsBytesSync();
     IMG.Image image = IMG.decodeImage(bytes);
     print("image width = ${image.width}");
     return image.width != 656;

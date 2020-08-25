@@ -54,6 +54,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   Future<void> _updateCard(Function setStateDialog) async {
     bool changed = false;
     if (cards.current.shouldDeleteOldDecoration) {
+      setStateDialog(() => _loadingMessage = "updating artwork...");
       cards.current.deleteOldDecorationImage();
       saveArtwork();
       _uploadAndCreateDecorationImage();
@@ -61,6 +62,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
       changed = true;
     }
     if (cards.current.oldCardAudio != null) {
+      setStateDialog(() => _loadingMessage = "saving sounds...");
       cards.current.deleteOldAudio();
       _uploadAndCreateCardAudio();
       changed = true;
@@ -70,16 +72,13 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
 
   Future<void> _createCard(Function setStateDialog) async {
     await saveArtwork();
-    print("checkpoint");
     setStateDialog(() => _loadingMessage = "saving artwork...");
     cards.current.decorationImage.bucketFp =
         await Gcloud.uploadDecorationImage(cards.current.decorationImage);
-    print("checkpoint 1");
 
     setStateDialog(() => _loadingMessage = "saving sounds...");
     cards.current.audio.bucketFp =
         await Gcloud.uploadCardAudio(cards.current.audio);
-    print("checkpoint 2");
 
     setStateDialog(() => _loadingMessage = "creating link...");
     await RestAPI.createCardDecorationImage(cards.current.decorationImage);

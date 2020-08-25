@@ -16,6 +16,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   KaraokeCards cards;
   CurrentActivity currentActivity;
   String selectedFrame;
+  bool decorationImageHasFrame;
 
   void backCallback() {
     currentActivity.setCardCreationStep(CardCreationSteps.speak);
@@ -129,6 +130,25 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     );
   }
 
+  Widget decorationImageSelectable(image) {
+    return decorationImageHasFrame
+        ? Positioned.fill(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return Padding(
+                    padding: EdgeInsets.only(
+                      top: constraints.biggest.height * 72 / 778,
+                      bottom: constraints.biggest.height * 194 / 778,
+                      left: constraints.biggest.width * 72 / 656,
+                      right: constraints.biggest.width * 72 / 656,
+                    ),
+                    child: image);
+              },
+            ),
+          )
+        : image;
+  }
+
   Widget decorationImage() {
     return GestureDetector(
       onTap: () {
@@ -147,26 +167,21 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
               )
             : BoxDecoration(),
         child: SizedBox(
-          child: Stack(
+          child: Column(
             children: [
-              Positioned.fill(
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    return Padding(
-                      padding: EdgeInsets.only(
-                        top: constraints.biggest.height * 72 / 778,
-                        bottom: constraints.biggest.height * 194 / 778,
-                        left: constraints.biggest.width * 72 / 656,
-                        right: constraints.biggest.width * 72 / 656,
-                      ),
-                      child: Image.file(
-                        File(cards.current.picture.filePath),
-                      ),
-                    );
-                  },
+              Expanded(
+                child: Stack(
+                  children: [
+                    decorationImageSelectable(
+                      Image.file(File(cards.current.picture.filePath)),
+                    ),
+                    Image.file(
+                      File(cards.current.decorationImage.filePath),
+                    ),
+                  ],
                 ),
               ),
-              Image.file(File(cards.current.decorationImage.filePath)),
+              Text("")
             ],
           ),
         ),
@@ -240,7 +255,9 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   }
 
   void _setFrameSelection() {
-    if (cards.current.framePath != null)
+    if (cards.current.isUsingDecorationImage)
+      selectedFrame = "decorationImage";
+    else if (cards.current.framePath != null)
       selectedFrame = PATH.basename(cards.current.framePath);
   }
 
@@ -249,6 +266,8 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     cards = Provider.of<KaraokeCards>(context, listen: false);
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
     _setFrameSelection();
+    decorationImageHasFrame = cards.current.decorationImage?.hasFrameDimension;
+
     return Column(
       children: <Widget>[
         interfaceTitleNav(context, "CHOOSE ART",

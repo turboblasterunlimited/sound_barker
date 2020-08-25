@@ -106,6 +106,16 @@ class _MainScreenState extends State<MainScreen> {
     cards = Provider.of<KaraokeCards>(context);
   }
 
+  // void didChangeAppLifecycleState(AppLifecycleState state) {
+  //   if (state == AppLifecycleState.resumed) {
+  //     SystemChrome.restoreSystemUIOverlays();
+  //     print("App State $state");
+  //     print("restoring system ui overlays");
+  //   } else {
+  //     print("App State $state");
+  //   }
+  // }
+
   void stopAll() {
     if (_isPlaying) {
       setState(() => _isPlaying = false);
