@@ -121,7 +121,8 @@ class KaraokeCard with ChangeNotifier {
   bool get isUsingDecorationImage {
     print("decorationImage: $decorationImage");
     print("shoulddeleteold: $shouldDeleteOldDecoration");
-    return this.decorationImage != null && this.shouldDeleteOldDecoration == false;
+    return this.decorationImage != null &&
+        this.shouldDeleteOldDecoration == false;
   }
 
   Future<void> deleteOldDecorationImage() async {
@@ -142,9 +143,17 @@ class KaraokeCard with ChangeNotifier {
     return song == null;
   }
 
+  void _markLastAudioForDelete() {
+    if (audio.filePath == null) return;
+    audio.deleteFile();
+    if (audio.bucketFp == null) return;
+    oldCardAudio = audio;
+    audio = CardAudio();
+  }
+
   Future<void> combineMessageAndSong() async {
-    audio.fileId = Uuid().v4();
-    audio.filePath = File("$myAppStoragePath/${audio.fileId}.aac").path;
+    _markLastAudioForDelete();
+    audio.filePath = "$myAppStoragePath/${audio.fileId}.aac";
     File tempFile = File("$myAppStoragePath/tempFile.wav");
     // concat and save card audio file
     await FFMpeg.process.execute(

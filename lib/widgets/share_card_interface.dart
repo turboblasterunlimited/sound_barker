@@ -67,13 +67,20 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
       await _uploadAndCreateCardAudio();
       changed = true;
     }
-    if (changed) RestAPI.updateCard(cards.current);
+    if (changed) {
+      var responseData = await RestAPI.updateCard(cards.current);
+      _handleShare(responseData["uuid"], setDialogState);
+    } else {
+      _handleShare(cards.current.uuid, setDialogState);
+    }
+    
+
   }
 
-  void _handleShare(responseData, setDialogState) {
+  void _handleShare(uuid, setDialogState) {
     setDialogState(() => _loadingMessage = null);
     setDialogState(() => shareLink =
-        "https://www.thedogbarksthesong.ml/card/" + responseData["uuid"]);
+        "https://www.thedogbarksthesong.ml/card/" + uuid);
     print("Share Link $shareLink");
   }
 
@@ -92,7 +99,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     await RestAPI.createCardAudio(cards.current.audio);
     cards.current.uuid = Uuid().v4();
     var responseData = await RestAPI.createCard(cards.current);
-    _handleShare(responseData, setDialogState);
+    _handleShare(responseData["uuid"], setDialogState);
   }
 
   Widget _shareLink() {

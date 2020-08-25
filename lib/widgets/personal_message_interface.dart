@@ -3,6 +3,7 @@ import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/spinner_state.dart';
+import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound_lite/flutter_sound.dart';
@@ -21,7 +22,8 @@ import '../tools/amplitude_extractor.dart';
 // cardCreationSubStep.seven
 class PersonalMessageInterface extends StatefulWidget {
   @override
-  PersonalMessageInterfaceState createState() => PersonalMessageInterfaceState();
+  PersonalMessageInterfaceState createState() =>
+      PersonalMessageInterfaceState();
 }
 
 class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
@@ -80,10 +82,10 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
   }
 
   void startRecorder() async {
-    print("in start recorder.");
     PermissionStatus status = await Permission.microphone.request();
     if (status != PermissionStatus.granted) {
-      throw RecordingPermissionException("Microphone permission not granted");
+      showError(context, "Accept microphone permisions to record");
+      return;
     }
 
     message.deleteEverything();
@@ -264,8 +266,8 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
                               child: Text(
                                 "ADD MESSAGE\nAND CONTINUE",
                                 textAlign: TextAlign.center,
-                                style:
-                                    TextStyle(color: Colors.white, fontSize: 16),
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 16),
                               ),
                             ),
                           ),

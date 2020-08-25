@@ -38,7 +38,7 @@ class RestAPI {
   }
 
   static Future<void> deleteCardAudio(audioId) async {
-    final imageUrl = 'http://165.227.178.14/card_audios/$audioId';
+    final imageUrl = 'http://165.227.178.14/card_audio/$audioId';
 
     var response;
     try {
@@ -92,7 +92,7 @@ class RestAPI {
     print("create card audio body: ${response.data}");
   }
 
-  static Future<String> updateCard(KaraokeCard card) async {
+  static Future updateCard(KaraokeCard card) async {
     var response;
     final cardBody = {
       'card_audio_id': card.audio.fileId,
@@ -115,7 +115,7 @@ class RestAPI {
       print(e.response.request);
     }
     print("update greeting card body: ${response.data}");
-    return response.data.toString();
+    return response.data;
 
   }
 

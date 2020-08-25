@@ -16,7 +16,7 @@ class CardDecorationImage {
     this.fileId = Uuid().v4();
   }
 
-  void delete() async {
+  Future<void> delete() async {
     await RestAPI.deleteDecorationImage(fileId);
     if (File(filePath).existsSync()) File(filePath).deleteSync();
   }
