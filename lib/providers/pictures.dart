@@ -18,7 +18,7 @@ class Pictures with ChangeNotifier {
   }
 
   Picture findById(String id) {
-    return all.firstWhere((test) => test.fileId == id);
+    return all.firstWhere((picture) => picture.fileId == id);
   }
 
   void add(Picture picture) {

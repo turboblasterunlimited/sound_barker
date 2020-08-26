@@ -1,11 +1,11 @@
+import 'package:K9_Karaoke/providers/karaoke_cards.dart';
+import 'package:K9_Karaoke/screens/photo_library_screen.dart';
+import 'package:K9_Karaoke/widgets/card_card.dart';
+import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:K9_Karaoke/providers/pictures.dart';
-import 'package:K9_Karaoke/screens/camera_or_upload_screen.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
-import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
-import 'package:K9_Karaoke/widgets/picture_card.dart';
 
 class MyCardsScreen extends StatefulWidget {
   static const routeName = 'my-cards-screen';
@@ -15,30 +15,25 @@ class MyCardsScreen extends StatefulWidget {
 }
 
 class _MyCardsScreenState extends State<MyCardsScreen> {
-  Pictures pictures;
+  KaraokeCards cards;
 
-  List<Widget> _pictureGridTiles(List<Picture> pics) {
+  List<Widget> _cardGridTiles() {
     List<Widget> widgets = [];
-    pics.asMap().forEach((i, picture) {
-      widgets.add(PictureCard(picture, pictures));
+    widgets.add(_addCardButton());
+    cards.all.forEach((card) {
+      widgets.add(CardCard(card, cards));
     });
     return widgets;
   }
 
-  List<Widget> _usersPictureGridTiles() {
-    List<Widget> result = _pictureGridTiles(pictures.all);
-    result.insert(0, _addPictureButton());
-    return result;
-  }
-
-  Widget _addPictureButton() {
+  Widget _addCardButton() {
     return Container(
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
         child: GridTile(
           child: GestureDetector(
             onTap: () {
-              Navigator.pushNamed(context, CameraOrUploadScreen.routeName);
+              Navigator.pushNamed(context, PhotoLibraryScreen.routeName);
             },
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -62,29 +57,8 @@ class _MyCardsScreenState extends State<MyCardsScreen> {
     );
   }
 
-  SliverChildListDelegate _dogGridDivider(String label) {
-    return SliverChildListDelegate(
-      [
-        Padding(
-          padding: const EdgeInsets.only(left: 10.0, top: 15),
-          child: Text(
-            label,
-            style:
-                TextStyle(fontSize: 20, color: Theme.of(context).primaryColor),
-          ),
-        ),
-        Divider(
-          indent: 10,
-          endIndent: 10,
-          color: Theme.of(context).primaryColor,
-          thickness: 3,
-        ),
-      ],
-    );
-  }
-
   Widget build(BuildContext context) {
-    pictures = Provider.of<Pictures>(context, listen: false);
+    cards = Provider.of<KaraokeCards>(context, listen: false);
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomPadding: false,
@@ -134,27 +108,19 @@ class _MyCardsScreenState extends State<MyCardsScreen> {
           children: <Widget>[
             interfaceTitleNav(
               context,
-              "PHOTO LIBRARY",
+              "My Cards",
               backCallback: () =>
-                  Navigator.of(context).pushNamed(MenuScreen.routeName),
+                  Navigator.of(context).popAndPushNamed(MenuScreen.routeName),
             ),
             Expanded(
               child: CustomScrollView(
                 slivers: <Widget>[
-                  SliverList(delegate: _dogGridDivider("Your Dogs")),
                   SliverGrid.count(
-                    children: _usersPictureGridTiles(),
+                    children: _cardGridTiles(),
                     crossAxisCount: 3,
                     crossAxisSpacing: 3,
                     mainAxisSpacing: 3,
                   ),
-                  SliverList(delegate: _dogGridDivider("Stock Dogs")),
-                  SliverGrid.count(
-                    children: _pictureGridTiles(pictures.stockPictures),
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 3,
-                    mainAxisSpacing: 3,
-                  )
                 ],
               ),
             )

@@ -5,8 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'dart:io';
 
-import '../screens/set_picture_coordinates_screen.dart';
-
 class CardCard extends StatefulWidget {
   final KaraokeCard card;
   final KaraokeCards cards;

@@ -1,6 +1,7 @@
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/screens/account_screen.dart';
+import 'package:K9_Karaoke/screens/my_cards.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
@@ -24,6 +25,10 @@ class _MenuState extends State<MenuScreen> {
       currentActivity.startCreateCard(cards.newCurrent);
       Navigator.of(context).popAndPushNamed(PhotoLibraryScreen.routeName);
     }
+  }
+
+  void handleMyCards() {
+    Navigator.of(context).popAndPushNamed(MyCardsScreen.routeName);
   }
 
   Widget build(BuildContext context) {
@@ -92,11 +97,14 @@ class _MenuState extends State<MenuScreen> {
                           fontSize: 40, color: Theme.of(context).primaryColor)),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("My Cards",
-                    style: TextStyle(
-                        fontSize: 40, color: Theme.of(context).primaryColor)),
+              GestureDetector(
+                onTap: handleMyCards,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("My Cards",
+                      style: TextStyle(
+                          fontSize: 40, color: Theme.of(context).primaryColor)),
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
