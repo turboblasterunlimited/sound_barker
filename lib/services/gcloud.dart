@@ -1,11 +1,8 @@
 import 'dart:io';
-import 'package:K9_Karaoke/classes/card_audio.dart';
-import 'package:K9_Karaoke/classes/card_decoration_image.dart';
 import 'package:path/path.dart';
 import 'package:flutter/services.dart';
 import 'package:gcloud/storage.dart';
 import 'package:googleapis_auth/auth_io.dart' as auth;
-import '../tools/app_storage_path.dart';
 
 class Gcloud {
   static Future<Bucket> accessBucket(
@@ -20,13 +17,12 @@ class Gcloud {
     return storage.bucket(bucket_name);
   }
 
-  static Future<String> downloadFromBucket(fileUrl, fileName,
+  static Future<String> downloadFromBucket(String bucketFp, String filePath,
       {Bucket bucket}) async {
-    if (fileUrl == null) return null;
+    // if (bucketFp == null) return null;
     bucket ??= await accessBucket();
-    String filePath = myAppStoragePath + '/' + fileName;
     try {
-      await bucket.read(fileUrl).pipe(File(filePath).openWrite());
+      await bucket.read(bucketFp).pipe(File(filePath).openWrite());
     } catch (e) {
       print(e);
     }

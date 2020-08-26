@@ -57,7 +57,8 @@ class AmplitudeExtractor {
 
   static Future<List> getAmplitudes(filePath, [filePathBase]) async {
     filePathBase ??= filePath.substring(0, filePath.length - 4);
-    if (File("${filePathBase}.wav").existsSync())File("${filePathBase}.wav").deleteSync();
+    if (File("${filePathBase}.wav").existsSync())
+      File("${filePathBase}.wav").deleteSync();
     print("filePathBase: $filePathBase");
     print("filePath: $filePath");
     await FFMpeg.process

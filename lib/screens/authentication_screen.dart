@@ -1,4 +1,6 @@
 import 'dart:io' show Platform;
+import 'package:K9_Karaoke/providers/card_audio.dart';
+import 'package:K9_Karaoke/providers/card_decoration_image.dart';
 import 'package:K9_Karaoke/providers/barks.dart';
 import 'package:K9_Karaoke/providers/creatable_songs.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
@@ -31,12 +33,16 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   String email;
   String password;
   bool obscurePassword = true;
+
   User user;
   Barks barks;
   Songs songs;
   Pictures pictures;
   CreatableSongs creatableSongs;
+  CardAudios cardAudios;
+  CardDecorationImages decorationImages;
   KaraokeCards cards;
+
   bool everythingDownloaded = true;
   String downloadMessage = "Initializing...";
 
@@ -210,7 +216,11 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     setState(() => downloadMessage = "Retrieving Songs...");
     await songs.retrieveAll();
     setState(() => downloadMessage = "Retrieving Cards...");
-    await cards.retrieveAll();
+    await cardAudios.retrieveAll();
+    setState(() => downloadMessage = "Retrieving Card Decorations...");
+    await decorationImages.retrieveAll();
+    setState(() => downloadMessage = "Retrieving Cards Themselves...");
+    await cards.retrieveAll(cardAudios, decorationImages);
     setState(() => downloadMessage = "Done.");
   }
 
@@ -222,6 +232,9 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     songs = Provider.of<Songs>(context, listen: false);
     pictures = Provider.of<Pictures>(context, listen: false);
     creatableSongs = Provider.of<CreatableSongs>(context, listen: false);
+    cardAudios = Provider.of<CardAudios>(context, listen: false);
+    decorationImages =
+        Provider.of<CardDecorationImages>(context, listen: false);
     cards = Provider.of<KaraokeCards>(context, listen: false);
 
     var responseData = await checkIfSignedIn();

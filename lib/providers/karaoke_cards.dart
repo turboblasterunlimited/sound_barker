@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:K9_Karaoke/classes/card_audio.dart';
-import 'package:K9_Karaoke/classes/card_decoration_image.dart';
+import 'package:K9_Karaoke/providers/card_audio.dart';
+import 'package:K9_Karaoke/providers/card_decoration_image.dart';
 import 'package:K9_Karaoke/classes/card_message.dart';
 import 'package:K9_Karaoke/classes/decoration.dart';
 import 'package:K9_Karaoke/providers/barks.dart';
@@ -23,33 +23,15 @@ class KaraokeCards with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> retrieveAll() async {
+  Future<void> retrieveAll(
+      CardAudios audios, CardDecorationImages decorations) async {
     var response = await RestAPI.retrieveAllCards();
     response.forEach((cardData) {
-      all.add(KaraokeCard(uuid: cardData["uuid"] ));
-    });
-  }
-
-
-
-  Future retrieveAll() async {
-    List tempSongs = [];
-    Bucket bucket = await Gcloud.accessBucket();
-    List serverSongs = await RestAPI.retrieveAllSongs();
-    print("retriveallsongresponse: $serverSongs");
-
-    for (Map<String, dynamic> serverSong in serverSongs) {
-      if (serverSong["hidden"] == 1) continue;
-      final song = await Song().retrieveSong(serverSong, bucket);
-      tempSongs.add(song);
-      print("song created: ${song.created}");
-    }
-
-    tempSongs.sort((song1, song2) {
-      return song1.created.compareTo(song2.created);
-    });
-    tempSongs.forEach((song) {
-      addSong(song);
+      all.add(KaraokeCard(
+          uuid: cardData["uuid"],
+          audio: audios.findById(cardData["card_audio_id"]),
+          decorationImage:
+              decorations.findById(cardData["decoration_image_id"])));
     });
   }
 
@@ -123,28 +105,27 @@ class KaraokeCards with ChangeNotifier {
 }
 
 class KaraokeCard with ChangeNotifier {
+  // completed components
   String uuid;
-  // This is a creatable song, which has two arrangments. One of the arrangement ids gets sent to the server with the bark ids to create an actual song.
-  CreatableSong songFormula;
-  // This is an actual song
-  Song song;
+  Picture picture;
+  CardAudio audio = CardAudio();
+  CardDecorationImage decorationImage;
+
+  // used to create or manage card components
+  CreatableSong songFormula; // This is a creatable song, which has two arrangments. One of the arrangement ids gets sent to the server with the bark ids to create an actual song.
+  Song song; // This is an actual song
   final message = CardMessage();
   Bark shortBark;
   Bark mediumBark;
   Bark longBark;
-  CardAudio audio = CardAudio();
-  // visual
-  Picture picture;
   String framePath;
   CardDecoration decoration = CardDecoration();
-  CardDecorationImage decorationImage;
-
   bool shouldDeleteOldDecoration = false;
   CardAudio oldCardAudio;
 
   KaraokeCard({this.uuid, this.picture, this.audio, this.decorationImage});
 
-  setDecorationImage(decorationImage) {
+  void setDecorationImage(decorationImage) {
     this.decorationImage = decorationImage;
     this.shouldDeleteOldDecoration = false;
     notifyListeners();

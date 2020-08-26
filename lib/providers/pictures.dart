@@ -81,7 +81,7 @@ class Pictures with ChangeNotifier {
       String filePath = myAppStoragePath + '/' + fileName;
       images[i].filePath = filePath;
       if (!await File(filePath).exists())
-        await Gcloud.downloadFromBucket(images[i].fileUrl, fileName,
+        await Gcloud.downloadFromBucket(images[i].fileUrl, filePath,
             bucket: bucket);
     }
   }

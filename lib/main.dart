@@ -1,3 +1,5 @@
+import 'package:K9_Karaoke/providers/card_audio.dart';
+import 'package:K9_Karaoke/providers/card_decoration_image.dart';
 import 'package:K9_Karaoke/providers/creatable_songs.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
@@ -88,6 +90,12 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider.value(
           value: CreatableSongs(),
+        ),
+        ChangeNotifierProvider.value(
+          value: CardAudios(),
+        ),
+        ChangeNotifierProvider.value(
+          value: CardDecorationImages(),
         ),
       ],
       child: MaterialApp(

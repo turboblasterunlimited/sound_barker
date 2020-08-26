@@ -1,4 +1,3 @@
-import 'package:K9_Karaoke/tools/ffmpeg.dart';
 import 'package:flutter/material.dart';
 import 'package:gcloud/storage.dart';
 import 'package:K9_Karaoke/tools/amplitude_extractor.dart';
@@ -86,7 +85,7 @@ class Barks with ChangeNotifier {
       // download and generate amplitude file if none exist
       if (!File(barks[i].filePath).existsSync()) {
         await Gcloud.downloadFromBucket(
-            barks[i].fileUrl, barks[i].fileId + '.aac',
+            barks[i].fileUrl, barks[i].filePath,
             bucket: bucket);
       }
       if (!File(barks[i].amplitudesPath).existsSync()) {
@@ -111,7 +110,7 @@ class Barks with ChangeNotifier {
 
   Future<List> uploadRawBarkAndRetrieveCroppedBarks(imageId) async {
 
-    await Gcloud.uploadRawBark(tempRawBark.fileId, tempRawBark.filePath, false);
+    await Gcloud.uploadRawBark(tempRawBark.fileId, tempRawBark.filePath);
     List responseBody = await RestAPI.splitRawBark(tempRawBark.fileId, imageId);
     List newBarks = await parseCroppedBarks(responseBody);
     await downloadAllBarksFromBucket(newBarks);
