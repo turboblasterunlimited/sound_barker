@@ -26,14 +26,19 @@ class CardDecorationImages with ChangeNotifier {
             bucketFp: imageData["bucket_fp"],
           ),
         ));
-    await Future.wait(all.map((decoration) async {
-      var filePath = "$myAppStoragePath/${decoration.fileId}.png";
-      decoration.filePath = filePath;
+    await Future.wait(
+      all.map(
+        (decoration) async {
+          var filePath = "$myAppStoragePath/${decoration.fileId}.png";
+          decoration.filePath = filePath;
 
-      if (File(filePath).existsSync()) return;
-      await Gcloud.downloadFromBucket(decoration.bucketFp, filePath,
-          bucket: bucket);
-    }));
+          if (File(filePath).existsSync()) return;
+          await Gcloud.downloadFromBucket(decoration.bucketFp, filePath,
+              bucket: bucket);
+        },
+      ),
+    );
+    notifyListeners();
   }
 }
 

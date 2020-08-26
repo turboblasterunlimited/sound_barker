@@ -34,6 +34,7 @@ class CardAudios with ChangeNotifier {
       if (audio.amplitudes == null && File(filePath).lengthSync() > 0)
         audio.amplitudes = await AmplitudeExtractor.getAmplitudes(filePath);
     }));
+    notifyListeners();
   }
 }
 

@@ -108,7 +108,7 @@ class KaraokeCard with ChangeNotifier {
   // completed components
   String uuid;
   Picture picture;
-  CardAudio audio = CardAudio();
+  CardAudio audio;
   CardDecorationImage decorationImage;
 
   // used to create or manage card components
@@ -123,7 +123,9 @@ class KaraokeCard with ChangeNotifier {
   bool shouldDeleteOldDecoration = false;
   CardAudio oldCardAudio;
 
-  KaraokeCard({this.uuid, this.picture, this.audio, this.decorationImage});
+  KaraokeCard({this.uuid, this.picture, this.audio, this.decorationImage}) {
+    this.audio ??= CardAudio();
+  }
 
   void setDecorationImage(decorationImage) {
     this.decorationImage = decorationImage;
