@@ -19,19 +19,32 @@ class KaraokeCards with ChangeNotifier {
   List<KaraokeCard> all = [];
   KaraokeCard current;
 
+  void remove(KaraokeCard card) async {
+    print("TODO: implement delete");
+    await RestAPI.deleteCardAudio(card.audio.fileId);
+    await RestAPI.deleteDecorationImage(card.decorationImage.fileId);
+    await RestAPI.deleteCard(card);
+    all.remove(card);
+    notifyListeners();
+  }
+
   void messageIsReady() {
     notifyListeners();
   }
 
-  Future<void> retrieveAll(
-      CardAudios audios, CardDecorationImages decorations) async {
+  Future<void> retrieveAll(Pictures pictures, CardAudios audios,
+      CardDecorationImages decorations) async {
     var response = await RestAPI.retrieveAllCards();
     response.forEach((cardData) {
-      all.add(KaraokeCard(
+      all.add(
+        KaraokeCard(
           uuid: cardData["uuid"],
+          picture: pictures.findById(cardData["image_id"]),
           audio: audios.findById(cardData["card_audio_id"]),
           decorationImage:
-              decorations.findById(cardData["decoration_image_id"])));
+              decorations.findById(cardData["decoration_image_id"]),
+        ),
+      );
     });
   }
 
@@ -79,7 +92,6 @@ class KaraokeCards with ChangeNotifier {
 
   void setCurrent(card) {
     current = card;
-    all.add(current);
     notifyListeners();
   }
 
@@ -112,7 +124,8 @@ class KaraokeCard with ChangeNotifier {
   CardDecorationImage decorationImage;
 
   // used to create or manage card components
-  CreatableSong songFormula; // This is a creatable song, which has two arrangments. One of the arrangement ids gets sent to the server with the bark ids to create an actual song.
+  CreatableSong
+      songFormula; // This is a creatable song, which has two arrangments. One of the arrangement ids gets sent to the server with the bark ids to create an actual song.
   Song song; // This is an actual song
   final message = CardMessage();
   Bark shortBark;

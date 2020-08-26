@@ -131,7 +131,6 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   }
 
   Widget decorationImageSelectable(image) {
-    print("decoration has frame: $decorationImageHasFrame");
     return decorationImageHasFrame
         ? Positioned.fill(
             child: LayoutBuilder(

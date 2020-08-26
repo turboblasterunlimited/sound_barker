@@ -11,8 +11,7 @@ import '../screens/set_picture_coordinates_screen.dart';
 class PictureCard extends StatefulWidget {
   final Picture picture;
   final Pictures pictures;
-  PictureCard(this.picture, this.pictures, {Key key})
-      : super(key: key);
+  PictureCard(this.picture, this.pictures, {Key key}) : super(key: key);
 
   @override
   _PictureCardState createState() => _PictureCardState();
@@ -51,8 +50,7 @@ class _PictureCardState extends State<PictureCard>
   void imageActions(String action) {
     if (action == "DELETE") {
       animationController.reverse();
-      final newMounted = widget.pictures.remove(widget.picture);
-      newMounted ?? imageController.createDog(newMounted);
+      widget.pictures.remove(widget.picture);
     } else if (action == "SET FACE") {
       Navigator.push(
         context,

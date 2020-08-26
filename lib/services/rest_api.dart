@@ -20,8 +20,6 @@ class RestAPI {
     return response.data["success"];
   }
 
-
-
   static Future<void> deleteDecorationImage(imageId) async {
     final imageUrl = 'http://165.227.178.14/decoration_image/$imageId';
 
@@ -39,7 +37,7 @@ class RestAPI {
     print("delete decoration image: ${response.data}");
   }
 
-  static Future<void> deleteCardAudio(audioId) async {
+  static Future<void> deleteCardAudio(String audioId) async {
     final imageUrl = 'http://165.227.178.14/card_audio/$audioId';
 
     var response;
@@ -57,7 +55,10 @@ class RestAPI {
   }
 
   static Future<void> createCardDecorationImage(decorationImage) async {
-    final imageBody = {'uuid': decorationImage.fileId, 'bucket_fp': decorationImage.bucketFp};
+    final imageBody = {
+      'uuid': decorationImage.fileId,
+      'bucket_fp': decorationImage.bucketFp
+    };
     final imageUrl = 'http://165.227.178.14/decoration_image';
 
     var response;
@@ -118,7 +119,6 @@ class RestAPI {
     }
     print("update greeting card body: ${response.data}");
     return response.data;
-
   }
 
   static Future createCard(KaraokeCard card) async {
@@ -279,6 +279,13 @@ class RestAPI {
     print("deleteImage req url: $url");
     final response = await HttpController.dio.delete(url);
     print("Delete picture response body: ${response.data}");
+  }
+
+  static Future<void> deleteCard(KaraokeCard card) async {
+    final url = 'http://165.227.178.14/greeting_card/${card.uuid}';
+    print("delete Card req url: $url");
+    final response = await HttpController.dio.delete(url);
+    print("Delete card response body: ${response.data}");
   }
 
   static void deleteSong(Song song) async {
