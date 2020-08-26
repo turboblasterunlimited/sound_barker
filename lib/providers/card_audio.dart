@@ -16,40 +16,34 @@ class CardAudios with ChangeNotifier {
   }
 
   Future<void> retrieveAll() async {
-    var response = await RestAPI.retrieveAllDecorationImages();
+    var response = await RestAPI.retrieveAllCardAudio();
     Bucket bucket = await Gcloud.accessBucket();
 
-    response.forEach((imageData) {
-      all.add(
-        CardAudio(
-          fileId: imageData["uuid"],
-          bucketFp: imageData["bucket_fp"],
-        ),
-      );
-      all.forEach((decoration) async {
-        var filePath = "$myAppStoragePath/${decoration.fileId}.aac";
-        if (File(filePath).existsSync()) return;
-        await Gcloud.downloadFromBucket(decoration.bucketFp, filePath,
+    response.forEach((audioData) => all.add(CardAudio(
+        fileId: audioData["uuid"], bucketFp: audioData["bucket_fp"])));
+
+    await Future.wait(all.map((audio) async {
+      var filePath = "$myAppStoragePath/${audio.fileId}.aac";
+      audio.filePath = filePath;
+
+      // print("file length: ${File(filePath).lengthSync()}");
+
+      if (!File(filePath).existsSync())
+        await Gcloud.downloadFromBucket(audio.bucketFp, filePath,
             bucket: bucket);
-        decoration.filePath = filePath;
-        decoration.amplitudes = await AmplitudeExtractor.getAmplitudes(filePath);
-      });
-    });
+      if (audio.amplitudes == null && File(filePath).lengthSync() > 0)
+        audio.amplitudes = await AmplitudeExtractor.getAmplitudes(filePath);
+    }));
   }
 }
 
-class CardAudio{
+class CardAudio {
   String fileId;
   String filePath;
   String bucketFp;
   List amplitudes;
 
-  CardAudio({
-    this.filePath,
-    this.bucketFp,
-    this.amplitudes,
-    this.fileId
-  }) {
+  CardAudio({this.filePath, this.bucketFp, this.amplitudes, this.fileId}) {
     this.fileId ??= Uuid().v4();
   }
 

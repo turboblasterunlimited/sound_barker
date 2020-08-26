@@ -20,21 +20,20 @@ class CardDecorationImages with ChangeNotifier {
     var response = await RestAPI.retrieveAllDecorationImages();
     Bucket bucket = await Gcloud.accessBucket();
 
-    response.forEach((imageData) {
-      all.add(
-        CardDecorationImage(
-          fileId: imageData["uuid"],
-          bucketFp: imageData["bucket_fp"],
-        ),
-      );
-      all.forEach((decoration) async {
-        var filePath = "$myAppStoragePath/${decoration.fileId}.png";
-        if (File(filePath).existsSync()) return;
-        await Gcloud.downloadFromBucket(decoration.bucketFp, filePath,
-            bucket: bucket);
-        decoration.filePath = filePath;
-      });
-    });
+    response.forEach((imageData) => all.add(
+          CardDecorationImage(
+            fileId: imageData["uuid"],
+            bucketFp: imageData["bucket_fp"],
+          ),
+        ));
+    await Future.wait(all.map((decoration) async {
+      var filePath = "$myAppStoragePath/${decoration.fileId}.png";
+      decoration.filePath = filePath;
+
+      if (File(filePath).existsSync()) return;
+      await Gcloud.downloadFromBucket(decoration.bucketFp, filePath,
+          bucket: bucket);
+    }));
   }
 }
 

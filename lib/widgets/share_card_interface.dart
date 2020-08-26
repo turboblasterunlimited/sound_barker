@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:intl/intl.dart';
 
-import 'package:K9_Karaoke/classes/card_decoration_image.dart';
+import 'package:K9_Karaoke/providers/card_decoration_image.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_card_decoration_controller.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';

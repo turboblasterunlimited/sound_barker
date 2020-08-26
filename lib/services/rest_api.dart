@@ -230,7 +230,7 @@ class RestAPI {
   }
 
   static Future<List> retrieveAllCardAudio() async {
-    final url = 'http://165.227.178.14/all/decoration_image';
+    final url = 'http://165.227.178.14/all/card_audio';
     final response = await HttpController.dio.get(url);
     print("Get all card audio response body: ${response.data}");
     return response.data;
