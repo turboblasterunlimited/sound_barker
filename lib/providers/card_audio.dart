@@ -48,6 +48,10 @@ class CardAudio {
     this.fileId ??= Uuid().v4();
   }
 
+  bool get exists {
+    return fileId != null;
+  }
+
   void deleteFile() {
     if (File(filePath).existsSync()) File(filePath).deleteSync();
   }

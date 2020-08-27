@@ -1,3 +1,4 @@
+import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/widgets/card_card.dart';
@@ -16,12 +17,15 @@ class MyCardsScreen extends StatefulWidget {
 
 class _MyCardsScreenState extends State<MyCardsScreen> {
   KaraokeCards cards;
+  CurrentActivity currentActivity;
 
   List<Widget> _cardGridTiles() {
     List<Widget> widgets = [];
     widgets.add(_addCardButton());
     cards.all.forEach((card) {
       widgets.add(CardCard(card, cards));
+            // widgets.add(Text("CHECK CHECK CHECK"));
+
     });
     return widgets;
   }
@@ -33,7 +37,8 @@ class _MyCardsScreenState extends State<MyCardsScreen> {
         child: GridTile(
           child: GestureDetector(
             onTap: () {
-              Navigator.pushNamed(context, PhotoLibraryScreen.routeName);
+              currentActivity.startCreateCard(cards.newCurrent);
+              Navigator.popAndPushNamed(context, PhotoLibraryScreen.routeName);
             },
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -59,6 +64,9 @@ class _MyCardsScreenState extends State<MyCardsScreen> {
 
   Widget build(BuildContext context) {
     cards = Provider.of<KaraokeCards>(context, listen: false);
+    print("card count ${cards.all.length}");
+    currentActivity = Provider.of<CurrentActivity>(context, listen: false);
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomPadding: false,

@@ -46,6 +46,7 @@ class KaraokeCards with ChangeNotifier {
         ),
       );
     });
+    notifyListeners();
   }
 
   String get currentName {
@@ -220,6 +221,10 @@ class KaraokeCard with ChangeNotifier {
 
   bool get hasSong {
     return song != null;
+  }
+
+  bool get hasAudio {
+    return hasSong || audio != null;
   }
 
   bool get hasSongFormula {

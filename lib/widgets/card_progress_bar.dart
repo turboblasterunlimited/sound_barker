@@ -23,8 +23,12 @@ class CardProgressBar extends StatelessWidget {
     card = Provider.of<KaraokeCards>(context, listen: false).current;
     currentActivity = Provider.of<CurrentActivity>(context);
 
-    Widget progressButton(String stepText, bool stepIsCompleted,
-        bool isCurrentStep, Function navigateHere, bool canNavigate) {
+    Widget progressButton(
+        {String stepText,
+        bool stepIsCompleted,
+        bool isCurrentStep,
+        Function navigateHere,
+        bool canNavigate}) {
       return Opacity(
         opacity: canNavigate ? 1 : .3,
         child: RawMaterialButton(
@@ -86,19 +90,31 @@ class CardProgressBar extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
-        progressButton("SNAP", card.hasPicture, currentActivity.isSnap,
-            navigateToSnap, true),
-        progressButton("SONG", card.hasSong || card.hasSongFormula,
-            currentActivity.isSong, navigateToSong, card.hasPicture),
+        progressButton(
+            stepText: "SNAP",
+            stepIsCompleted: card.hasPicture,
+            isCurrentStep: currentActivity.isSnap,
+            navigateHere: navigateToSnap,
+            canNavigate: true),
+        progressButton(
+            stepText: "SONG",
+            stepIsCompleted: card.hasSong || card.hasSongFormula,
+            isCurrentStep: currentActivity.isSong,
+            navigateHere: navigateToSong,
+            canNavigate: card.hasPicture),
         // Can click only if creating a new song
         progressButton(
-            "SPEAK",
-            card.hasBarks || card.hasSong,
-            currentActivity.isSpeak,
-            navigateToSpeak,
-            card.hasSongFormula || card.hasSong),
-        progressButton("STYLE", _hasDecoration, currentActivity.isStyle,
-            navigateToStyle, card.hasSong),
+            stepText: "SPEAK",
+            stepIsCompleted: card.hasBarks || card.hasSong,
+            isCurrentStep: currentActivity.isSpeak,
+            navigateHere: navigateToSpeak,
+            canNavigate: card.hasSongFormula || card.hasSong),
+        progressButton(
+            stepText: "STYLE",
+            stepIsCompleted: _hasDecoration,
+            isCurrentStep: currentActivity.isStyle,
+            navigateHere: navigateToStyle,
+            canNavigate: card.hasAudio),
       ],
     );
   }

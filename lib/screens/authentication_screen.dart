@@ -208,6 +208,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       downloadMessage = "Retrieving Pictures...";
     });
     await pictures.retrieveAll();
+    print("pictures count: ${pictures.all.length}");
     // need creatableSongData to get songIds
     await creatableSongs.retrieveFromServer();
     setState(() => downloadMessage = "Retrieving Barks...");
@@ -221,6 +222,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     await decorationImages.retrieveAll();
     setState(() => downloadMessage = "Retrieving Cards Themselves...");
     await cards.retrieveAll(pictures, cardAudios, decorationImages);
+    print("card count ${cards.all.length}");
     setState(() => downloadMessage = "Done.");
   }
 

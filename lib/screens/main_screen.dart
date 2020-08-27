@@ -52,15 +52,16 @@ class _MainScreenState extends State<MainScreen> {
   double framePaddingBottom;
 
   List get _playbackFiles {
-    if (_canPlayRawBark)
+    if (_canPlayCombinedAudio)
+      return [cards.current.audio.filePath, cards.current.audio.amplitudes];
+    else if (_canPlayRawBark)
       return [barks.tempRawBark.filePath, barks.tempRawBarkAmplitudes];
     else if (_canPlaySong)
       return [cards.current.song.filePath, cards.current.song.amplitudesPath];
     else if (_canPlayMessage)
       return [cards.current.message.path, cards.current.message.amps];
-    else if (_canPlayCombinedAudio)
-      return [cards.current.audio.filePath, cards.current.audio.amplitudes];
-    return null;
+    else
+      return null;
   }
 
   Future<void> _navigate() async {
@@ -355,16 +356,6 @@ class _MainScreenState extends State<MainScreen> {
                           onTap: _handleTapPuppet,
                           child: Image.asset(cards.current.framePath),
                         ),
-                      if (_showDecorationCanvas)
-                        IgnorePointer(
-                          ignoring: currentActivity.isThree,
-                          child: Padding(
-                            // 22px or 0
-                            padding: _portraitPadding,
-                            child:
-                                CardDecoratorCanvas(padding: portraitPadding),
-                          ),
-                        ),
                       if (_showDecorationImage)
                         Padding(
                           // 22px or 0
@@ -375,6 +366,16 @@ class _MainScreenState extends State<MainScreen> {
                             child: Image.file(
                               File(cards.current.decorationImage.filePath),
                             ),
+                          ),
+                        ),
+                      if (_showDecorationCanvas && !_showDecorationImage)
+                        IgnorePointer(
+                          ignoring: currentActivity.isThree,
+                          child: Padding(
+                            // 22px or 0
+                            padding: _portraitPadding,
+                            child:
+                                CardDecoratorCanvas(padding: portraitPadding),
                           ),
                         ),
                     ],

@@ -17,7 +17,6 @@ class CardCard extends StatefulWidget {
 class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
   ImageController imageController;
   AnimationController animationController;
-  KaraokeCards cards;
   CurrentActivity currentActivity;
 
   @override
@@ -25,15 +24,15 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
     super.initState();
     imageController = Provider.of<ImageController>(context, listen: false);
 
-    animationController =
-        AnimationController(vsync: this, duration: const Duration(seconds: 1));
+    // animationController =
+    //     AnimationController(vsync: this, duration: const Duration(seconds: 1));
   }
 
-  @override
-  void dispose() {
-    animationController.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   animationController.dispose();
+  //   super.dispose();
+  // }
 
   void imageActions(String action) {
     if (action == "DELETE") {
@@ -45,8 +44,10 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
   }
 
   void handleTap() {
-    cards.setCurrent(widget.card);
+    widget.cards.setCurrent(widget.card);
     imageController.createDog(widget.card.picture);
+    currentActivity.setCardCreationStep(CardCreationSteps.style, CardCreationSubSteps.three);
+
     Navigator.popUntil(
       context,
       ModalRoute.withName("main-screen"),
@@ -73,53 +74,58 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
   }
 
   Widget decorationImage() {
-    return GestureDetector(
-      onTap: handleTap,
-      child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 5),
-        child: SizedBox(
-          child: Stack(
-            children: [
-              decorationImageSelectable(
-                Image.file(File(cards.current.picture.filePath)),
-              ),
-              Image.file(
-                File(cards.current.decorationImage.filePath),
-              ),
-              Positioned(
-                right: -25,
-                top: -5,
-                child: Stack(
-                  children: <Widget>[
-                    PopupMenuButton(
-                      onSelected: imageActions,
-                      child: RawMaterialButton(
-                        child: Icon(
-                          Icons.more_vert,
-                          color: Colors.black38,
-                          size: 20,
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(10),
+      child: GridTile(
+        child: GestureDetector(
+          onTap: handleTap,
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 5),
+            child: SizedBox(
+              child: Stack(
+                children: [
+                  decorationImageSelectable(
+                    Image.file(File(widget.card.picture.filePath)),
+                  ),
+                  Image.file(
+                    File(widget.card.decorationImage.filePath),
+                  ),
+                  Positioned(
+                    right: -25,
+                    top: -5,
+                    child: Stack(
+                      children: <Widget>[
+                        PopupMenuButton(
+                          onSelected: imageActions,
+                          child: RawMaterialButton(
+                            child: Icon(
+                              Icons.more_vert,
+                              color: Colors.black38,
+                              size: 20,
+                            ),
+                            shape: CircleBorder(),
+                            elevation: 2.0,
+                            fillColor: Colors.white,
+                          ),
+                          itemBuilder: (BuildContext context) {
+                            return [
+                              PopupMenuItem<String>(
+                                value: "DELETE",
+                                child: Text("Delete"),
+                              ),
+                              PopupMenuItem<String>(
+                                value: "SHARE/EDIT",
+                                child: Text("Share/Edit"),
+                              ),
+                            ];
+                          },
                         ),
-                        shape: CircleBorder(),
-                        elevation: 2.0,
-                        fillColor: Colors.white,
-                      ),
-                      itemBuilder: (BuildContext context) {
-                        return [
-                          PopupMenuItem<String>(
-                            value: "DELETE",
-                            child: Text("Delete"),
-                          ),
-                          PopupMenuItem<String>(
-                            value: "SHARE/EDIT",
-                            child: Text("Share/Edit"),
-                          ),
-                        ];
-                      },
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
@@ -128,22 +134,21 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    cards = Provider.of<KaraokeCards>(context, listen: false);
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
 
-    Animation animation = Tween(begin: 0.0, end: 1.0).animate(
-        CurvedAnimation(parent: animationController, curve: Curves.ease));
-
-    return AnimatedBuilder(
-      key: widget.key,
-      animation: animation,
-      child: decorationImage(),
-      builder: (context, child) {
-        return Transform.scale(
-          scale: animation.value,
-          child: child,
-        );
-      },
-    );
+    // Animation animation = Tween(begin: 0.0, end: 1.0).animate(
+    //     CurvedAnimation(parent: animationController, curve: Curves.ease));
+    return decorationImage();
+    // return AnimatedBuilder(
+    //   key: widget.key,
+    //   // animation: animation,
+    //   child: decorationImage(),
+    //   builder: (context, child) {
+    //     return Transform.scale(
+    //       scale: animation.value,
+    //       child: child,
+    //     );
+    //   },
+    // );
   }
 }

@@ -74,9 +74,12 @@ class CurrentActivity with ChangeNotifier {
     return cardCreationStep == CardCreationSteps.style;
   }
 
-  void setCardCreationStep(CardCreationSteps step) {
+  void setCardCreationStep(CardCreationSteps step,
+      [CardCreationSubSteps subStep]) {
     cardCreationStep = step;
-    cardCreationSubStep = CardCreationSubSteps.one;
+    subStep == null
+        ? cardCreationSubStep = CardCreationSubSteps.one
+        : cardCreationSubStep = subStep;
     notifyListeners();
   }
 
