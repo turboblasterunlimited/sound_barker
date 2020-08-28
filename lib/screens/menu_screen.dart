@@ -38,42 +38,41 @@ class _MenuState extends State<MenuScreen> {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       extendBodyBehindAppBar: true,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(60.0),
-        child: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          automaticallyImplyLeading: false, // Don't show the leading button
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Image.asset("assets/logos/K9_logotype.png", width: 100),
-            ],
-          ),
-          // Can only close if activity already selected
-          actions: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(top: 5),
-              child: RawMaterialButton(
-                child: Visibility(
-                  visible: currentActivity.activitySelected(),
-                  child: Icon(
-                    Icons.close,
-                    color: Colors.black,
-                    size: 30,
-                  ),
-                ),
-                shape: CircleBorder(),
-                elevation: 2.0,
-                // fillColor: Theme.of(context).accentColor,
-                onPressed: currentActivity.activitySelected()
-                    ? () => Navigator.of(context).pop()
-                    : null,
-              ),
-            ),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        automaticallyImplyLeading: false, // Don't show the leading button
+        toolbarHeight: 90,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Image.asset("assets/logos/K9_logotype.png", width: 100),
           ],
         ),
+
+        // Can only close if activity already selected
+        actions: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(top: 5),
+            child: RawMaterialButton(
+              child: Visibility(
+                visible: currentActivity.activitySelected(),
+                child: Icon(
+                  Icons.close,
+                  color: Colors.black,
+                  size: 30,
+                ),
+              ),
+              shape: CircleBorder(),
+              elevation: 2.0,
+              // fillColor: Theme.of(context).accentColor,
+              onPressed: currentActivity.activitySelected()
+                  ? () => Navigator.of(context).pop()
+                  : null,
+            ),
+          ),
+        ],
       ),
       body: Container(
         padding: EdgeInsets.only(top: 60),

@@ -136,67 +136,65 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget mainAppBar() {
-    return PreferredSize(
-      preferredSize: Size.fromHeight(60.0),
-      child: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        automaticallyImplyLeading: false, // Don't show the leading button
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Image.asset("assets/logos/K9_logotype.png", width: 80),
-            // if (!showFrame)
-            Expanded(
-              child: Center(
-                child: Container(
-                  width: 170,
-                  child: TextFormField(
-                    enabled: !cards.currentPictureIsStock,
-                    style: TextStyle(color: Colors.grey[600], fontSize: 20),
-                    maxLength: 12,
-                    textAlign: cards.currentPictureIsStock
-                        ? TextAlign.center
-                        : TextAlign.right,
-                    decoration: InputDecoration(
-                        hintText: cards.currentName,
-                        counterText: "",
-                        suffixIcon: cards.currentPictureIsStock
-                            ? null
-                            : Icon(LineAwesomeIcons.edit),
-                        border: InputBorder.none),
-                    onFieldSubmitted: (val) {
-                      cards.setCurrentName(val);
-                      FocusScope.of(context).unfocus();
-                      SystemChrome.restoreSystemUIOverlays();
-                    },
-                  ),
-                  // This rename field works differently than on the coordinates setting page.
-                ),
-              ),
-            ),
-          ],
-        ),
-        actions: <Widget>[
+    return AppBar(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      automaticallyImplyLeading: false, // Don't show the leading button
+      toolbarHeight: 90,
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Image.asset("assets/logos/K9_logotype.png", width: 100),
           // if (!showFrame)
-          Padding(
-            padding: const EdgeInsets.only(top: 5),
-            child: RawMaterialButton(
-              child: Icon(
-                Icons.menu,
-                color: Colors.black,
-                size: 30,
+          Expanded(
+            child: Center(
+              child: Container(
+                width: 170,
+                child: TextFormField(
+                  enabled: !cards.currentPictureIsStock,
+                  style: TextStyle(color: Colors.grey[600], fontSize: 20),
+                  maxLength: 12,
+                  textAlign: cards.currentPictureIsStock
+                      ? TextAlign.center
+                      : TextAlign.right,
+                  decoration: InputDecoration(
+                      hintText: cards.currentName,
+                      counterText: "",
+                      suffixIcon: cards.currentPictureIsStock
+                          ? null
+                          : Icon(LineAwesomeIcons.edit),
+                      border: InputBorder.none),
+                  onFieldSubmitted: (val) {
+                    cards.setCurrentName(val);
+                    FocusScope.of(context).unfocus();
+                    SystemChrome.restoreSystemUIOverlays();
+                  },
+                ),
+                // This rename field works differently than on the coordinates setting page.
               ),
-              shape: CircleBorder(),
-              elevation: 2.0,
-              onPressed: () {
-                Navigator.of(context).pushNamed(MenuScreen.routeName);
-              },
             ),
           ),
         ],
       ),
+      actions: <Widget>[
+        // if (!showFrame)
+        Padding(
+          padding: const EdgeInsets.only(top: 5),
+          child: RawMaterialButton(
+            child: Icon(
+              Icons.menu,
+              color: Colors.black,
+              size: 30,
+            ),
+            shape: CircleBorder(),
+            elevation: 2.0,
+            onPressed: () {
+              Navigator.of(context).pushNamed(MenuScreen.routeName);
+            },
+          ),
+        ),
+      ],
     );
   }
 
@@ -296,7 +294,7 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.only(top: 60.0),
+          padding: const EdgeInsets.only(top: 90.0),
           child: Stack(
             children: <Widget>[
               Column(

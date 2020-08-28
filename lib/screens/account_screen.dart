@@ -40,35 +40,34 @@ class _AccountState extends State<AccountScreen> {
       key: _scaffoldKey,
       resizeToAvoidBottomPadding: false,
       extendBodyBehindAppBar: true,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(60.0),
-        child: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          automaticallyImplyLeading: false, // Don't show the leading button
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Image.asset("assets/logos/K9_logotype.png", width: 100),
-            ],
-          ),
-          actions: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(top: 5),
-              child: RawMaterialButton(
-                child: Icon(
-                  Icons.close,
-                  color: Colors.black,
-                  size: 30,
-                ),
-                shape: CircleBorder(),
-                elevation: 2.0,
-                onPressed: Navigator.of(context).pop,
-              ),
-            ),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        automaticallyImplyLeading: false, // Don't show the leading button
+        toolbarHeight: 90,
+
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Image.asset("assets/logos/K9_logotype.png", width: 100),
           ],
         ),
+        actions: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(top: 5),
+            child: RawMaterialButton(
+              child: Icon(
+                Icons.close,
+                color: Colors.black,
+                size: 30,
+              ),
+              shape: CircleBorder(),
+              elevation: 2.0,
+              onPressed: Navigator.of(context).pop,
+            ),
+          ),
+        ],
       ),
       body: Container(
         padding: EdgeInsets.only(top: 60),

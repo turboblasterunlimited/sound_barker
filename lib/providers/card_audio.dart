@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:K9_Karaoke/services/gcloud.dart';
 import 'package:K9_Karaoke/services/rest_api.dart';
-import 'package:K9_Karaoke/tools/amplitude_extractor.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:flutter/material.dart';
 import 'package:gcloud/storage.dart';
@@ -47,7 +46,7 @@ class CardAudio {
   }
 
   bool get exists {
-    return fileId != null;
+    return filePath != null;
   }
 
   void deleteFile() {

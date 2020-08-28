@@ -244,67 +244,66 @@ class _SetPictureCoordinatesScreenState
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomPadding: false,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(60.0),
-        child: AppBar(
-          iconTheme:
-              IconThemeData(color: Theme.of(context).primaryColor, size: 30),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          centerTitle: true,
-          automaticallyImplyLeading: false, // Don't show the leading button
-          titleSpacing: 3.0,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Image.asset("assets/logos/K9_logotype.png", width: 80),
-              Expanded(
-                child: Center(
-                  child: Container(
-                    width: 170,
-                    child: TextFormField(
-                      autofocus: widget.isNamed ? false : true,
-                      style: TextStyle(color: Colors.grey[600], fontSize: 20),
-                      maxLength: 12,
-                      textAlign: TextAlign.right,
-                      decoration: InputDecoration(
-                          hintText: widget.newPicture.name ?? "Name",
-                          counterText: "",
-                          suffixIcon: Icon(LineAwesomeIcons.edit),
-                          border: InputBorder.none),
-                      onChanged: (val) {
-                        print("Changed: $val");
-                        setState(() {
-                          _tempName = val;
-                        });
-                      },
-                      // onEditingComplete: handleNameChange,
-                      onFieldSubmitted: handleNameChange,
-                    ),
+      appBar: AppBar(
+        iconTheme:
+            IconThemeData(color: Theme.of(context).primaryColor, size: 30),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: true,
+        automaticallyImplyLeading: false, // Don't show the leading button
+        titleSpacing: 3.0,
+        toolbarHeight: 90,
+
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Image.asset("assets/logos/K9_logotype.png", width: 80),
+            Expanded(
+              child: Center(
+                child: Container(
+                  width: 170,
+                  child: TextFormField(
+                    autofocus: widget.isNamed ? false : true,
+                    style: TextStyle(color: Colors.grey[600], fontSize: 20),
+                    maxLength: 12,
+                    textAlign: TextAlign.right,
+                    decoration: InputDecoration(
+                        hintText: widget.newPicture.name ?? "Name",
+                        counterText: "",
+                        suffixIcon: Icon(LineAwesomeIcons.edit),
+                        border: InputBorder.none),
+                    onChanged: (val) {
+                      print("Changed: $val");
+                      setState(() {
+                        _tempName = val;
+                      });
+                    },
+                    // onEditingComplete: handleNameChange,
+                    onFieldSubmitted: handleNameChange,
                   ),
                 ),
-              ),
-            ],
-          ),
-          actions: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(top: 5),
-              child: RawMaterialButton(
-                child: Icon(
-                  Icons.menu,
-                  color: Colors.black,
-                  size: 30,
-                ),
-                shape: CircleBorder(),
-                elevation: 2.0,
-                onPressed: () {
-                  Navigator.of(context).pushNamed(MenuScreen.routeName);
-                },
               ),
             ),
           ],
         ),
+        actions: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(top: 5),
+            child: RawMaterialButton(
+              child: Icon(
+                Icons.menu,
+                color: Colors.black,
+                size: 30,
+              ),
+              shape: CircleBorder(),
+              elevation: 2.0,
+              onPressed: () {
+                Navigator.of(context).pushNamed(MenuScreen.routeName);
+              },
+            ),
+          ),
+        ],
       ),
       body: Container(
         // appbar offset

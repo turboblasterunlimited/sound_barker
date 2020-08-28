@@ -38,22 +38,20 @@ class _CreatableSongSelectScreenState extends State<CreatableSongSelectScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomPadding: false,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(60.0),
-        child: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          automaticallyImplyLeading: false, // Don't show the leading button
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Image.asset("assets/logos/K9_logotype.png", width: 80),
-              Expanded(
-                child: Center(),
-              ),
-            ],
-          ),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        automaticallyImplyLeading: false, // Don't show the leading button
+        toolbarHeight: 90,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Image.asset("assets/logos/K9_logotype.png", width: 100),
+            Expanded(
+              child: Center(),
+            ),
+          ],
         ),
       ),
       body: Container(

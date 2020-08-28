@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 
 Widget interfaceTitleNav(BuildContext context, String title,
-    {Function backCallback, Function skipCallback}) {
+    {Function backCallback, Function skipCallback, double titleSize}) {
   return Stack(
     children: <Widget>[
       if (backCallback != null)
@@ -24,8 +24,9 @@ Widget interfaceTitleNav(BuildContext context, String title,
           alignment: Alignment.center,
           child: Text(
             title,
-            style:
-                TextStyle(fontSize: 18, color: Theme.of(context).primaryColor),
+            style: TextStyle(
+                fontSize: titleSize ?? 18,
+                color: Theme.of(context).primaryColor),
           ),
         ),
       ),
