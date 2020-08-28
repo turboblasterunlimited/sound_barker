@@ -19,6 +19,7 @@ class CardDecorationImages with ChangeNotifier {
   Future<void> retrieveAll() async {
     var response = await RestAPI.retrieveAllDecorationImages();
     Bucket bucket = await Gcloud.accessBucket();
+    String lastDecorationImage;
 
     response.forEach((imageData) => all.add(
           CardDecorationImage(
@@ -33,8 +34,15 @@ class CardDecorationImages with ChangeNotifier {
           decoration.filePath = filePath;
 
           if (File(filePath).existsSync()) return;
-          await Gcloud.downloadFromBucket(decoration.bucketFp, filePath,
-              bucket: bucket);
+          try {
+            await Gcloud.downloadFromBucket(decoration.bucketFp, filePath,
+                bucket: bucket);
+          } catch (e) {
+            // hack to get around bad bucket_fp
+            print(e);
+            filePath = lastDecorationImage;
+          }
+          lastDecorationImage = filePath;
         },
       ),
     );

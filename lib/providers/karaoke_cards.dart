@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:K9_Karaoke/providers/card_audio.dart';
@@ -36,11 +37,14 @@ class KaraokeCards with ChangeNotifier {
       CardDecorationImages decorations) async {
     var response = await RestAPI.retrieveAllCards();
     response.forEach((cardData) {
+      CardAudio cardAudio = audios.findById(cardData["card_audio_id"]);
+      cardAudio.amplitudes = json.decode(cardData["animation_json"])["mouth_positions"];
+
       all.add(
         KaraokeCard(
           uuid: cardData["uuid"],
           picture: pictures.findById(cardData["image_id"]),
-          audio: audios.findById(cardData["card_audio_id"]),
+          audio: cardAudio,
           decorationImage:
               decorations.findById(cardData["decoration_image_id"]),
         ),

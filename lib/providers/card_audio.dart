@@ -31,8 +31,6 @@ class CardAudios with ChangeNotifier {
       if (!File(filePath).existsSync())
         await Gcloud.downloadFromBucket(audio.bucketFp, filePath,
             bucket: bucket);
-      if (audio.amplitudes == null && File(filePath).lengthSync() > 0)
-        audio.amplitudes = await AmplitudeExtractor.getAmplitudes(filePath);
     }));
     notifyListeners();
   }

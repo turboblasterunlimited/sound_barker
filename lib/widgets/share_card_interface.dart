@@ -28,7 +28,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   KaraokeCards cards;
   KaraokeCardDecorationController cardDecorator;
   CurrentActivity currentActivity;
-  String recipientName;
+  String recipientName = "You";
   String _loadingMessage;
   String shareLink;
 
@@ -80,7 +80,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     String name = toBeginningOfSentenceCase(cards.current.picture.name);
     setDialogState(() => _loadingMessage = null);
     setDialogState(
-        () => shareLink = "https://www.thedogbarksthesong.ml/card/" + uuid);
+        () => shareLink = "https://www.thedogbarksthesong.ml/card/$uuid?recipient_name=$recipientName");
     print("Share Link $shareLink");
     Share.share(
         "$name has a message for you.\n\n$shareLink\n\nCreated with K-9 Karaoke.",
@@ -238,7 +238,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
           padding: const EdgeInsets.only(left: 30, right: 30, bottom: 15),
           child: RawMaterialButton(
             onPressed: _shareDialog,
-            child: Text("Save Card", style: TextStyle(color: Colors.white)),
+            child: Text("Save & Send", style: TextStyle(color: Colors.white)),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30.0),
             ),
