@@ -363,6 +363,7 @@ class _MainScreenState extends State<MainScreen> {
                             onTap: _handleTapPuppet,
                             child: Image.file(
                               File(cards.current.decorationImage.filePath),
+                              fit: BoxFit.fill,
                             ),
                           ),
                         ),

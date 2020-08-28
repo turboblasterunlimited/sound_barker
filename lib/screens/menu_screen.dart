@@ -1,4 +1,5 @@
 import 'package:K9_Karaoke/providers/current_activity.dart';
+import 'package:K9_Karaoke/providers/karaoke_card_decoration_controller.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/screens/account_screen.dart';
 import 'package:K9_Karaoke/screens/my_cards.dart';
@@ -17,14 +18,13 @@ class MenuScreen extends StatefulWidget {
 class _MenuState extends State<MenuScreen> {
   KaraokeCards cards;
   CurrentActivity currentActivity;
+  KaraokeCardDecorationController cardDecorator;
 
   void handleCreateNewCard() {
-    if (currentActivity.cardCreation) {
-      Navigator.of(context).popAndPushNamed(PhotoLibraryScreen.routeName);
-    } else {
-      currentActivity.startCreateCard(cards.newCurrent);
-      Navigator.of(context).popAndPushNamed(PhotoLibraryScreen.routeName);
-    }
+    cards.newCurrent();
+    cardDecorator.reset();
+    currentActivity.setCardCreationStep(CardCreationSteps.snap);
+    Navigator.of(context).popAndPushNamed(PhotoLibraryScreen.routeName);
   }
 
   void handleMyCards() {
@@ -34,6 +34,8 @@ class _MenuState extends State<MenuScreen> {
   Widget build(BuildContext context) {
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
     cards = Provider.of<KaraokeCards>(context, listen: false);
+    cardDecorator = Provider.of<KaraokeCardDecorationController>(context, listen: false);
+
 
     return Scaffold(
       resizeToAvoidBottomPadding: false,

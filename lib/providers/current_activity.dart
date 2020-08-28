@@ -98,8 +98,7 @@ class CurrentActivity with ChangeNotifier {
         CardCreationSubSteps.values[cardCreationSubStep.index + 1]);
   }
 
-  void startCreateCard(Function setCurrentCallback) {
-    setCurrentCallback();
+  void startCreateCard() {
     cardCreationStep = CardCreationSteps.snap;
     cardCreation = true;
     songLibrary = false;

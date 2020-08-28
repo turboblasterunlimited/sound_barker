@@ -20,8 +20,8 @@ class KaraokeCardDecorationController with ChangeNotifier {
   }
 
   void reset() {
-    decoration.drawings.clear();
-    decoration.typings.clear();
+    decoration?.drawings?.clear();
+    decoration?.typings?.clear();
     notifyListeners();
   }
 

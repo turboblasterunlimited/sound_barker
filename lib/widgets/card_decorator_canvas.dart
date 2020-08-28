@@ -112,7 +112,7 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
     return karaokeCardDecorator.decoration.drawings;
   }
 
-    List<Typing> get typings {
+  List<Typing> get typings {
     return karaokeCardDecorator.decoration.typings;
   }
 
@@ -142,8 +142,7 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
       onPanEnd: (details) {
         if (karaokeCardDecorator.isDrawing)
           setState(() {
-            drawings.last.offsets.last
-                .add(drawings.last.offsets.last.last);
+            drawings.last.offsets.last.add(drawings.last.offsets.last.last);
           });
       },
       child: CustomPaint(
@@ -152,14 +151,16 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
         child: Container(
           height: cardHeight,
           width: cardWidth,
-          child: karaokeCardDecorator.isTyping ? Positioned(
-            top: typings.last.offset.dy,
-            left: typings.last.offset.dx,
-            child: Text(
-              "XXX",
-              style: TextStyle(fontSize: 30),
-            ),
-          ) : Center(),
+          child: karaokeCardDecorator.isTyping
+              ? Positioned(
+                  top: typings.last.offset.dy,
+                  left: typings.last.offset.dx,
+                  child: Text(
+                    "XXX",
+                    style: TextStyle(fontSize: 30),
+                  ),
+                )
+              : Center(),
         ),
       ),
     );
@@ -171,8 +172,7 @@ class CardPainter extends CustomPainter {
   final typings;
   final canvasDimensions;
 
-  CardPainter(this.drawings, this.typings, this.canvasDimensions)
-      : super();
+  CardPainter(this.drawings, this.typings, this.canvasDimensions) : super();
 
   Future<Uint8List> _getArtwork(List aspect) async {
     var recorder = UI.PictureRecorder();

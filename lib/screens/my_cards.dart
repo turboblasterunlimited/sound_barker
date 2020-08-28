@@ -1,4 +1,5 @@
 import 'package:K9_Karaoke/providers/current_activity.dart';
+import 'package:K9_Karaoke/providers/karaoke_card_decoration_controller.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/widgets/card_card.dart';
@@ -18,6 +19,7 @@ class MyCardsScreen extends StatefulWidget {
 class _MyCardsScreenState extends State<MyCardsScreen> {
   KaraokeCards cards;
   CurrentActivity currentActivity;
+  KaraokeCardDecorationController cardDecorator;
 
   List<Widget> _cardGridTiles() {
     List<Widget> widgets = [];
@@ -36,7 +38,9 @@ class _MyCardsScreenState extends State<MyCardsScreen> {
         child: GridTile(
           child: GestureDetector(
             onTap: () {
-              currentActivity.startCreateCard(cards.newCurrent);
+              cards.newCurrent();
+              cardDecorator.reset();
+              currentActivity.setCardCreationStep(CardCreationSteps.snap);
               Navigator.popAndPushNamed(context, PhotoLibraryScreen.routeName);
             },
             child: Padding(
@@ -65,7 +69,8 @@ class _MyCardsScreenState extends State<MyCardsScreen> {
     cards = Provider.of<KaraokeCards>(context, listen: false);
     print("card count ${cards.all.length}");
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
-
+    cardDecorator =
+        Provider.of<KaraokeCardDecorationController>(context, listen: false);
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomPadding: false,
