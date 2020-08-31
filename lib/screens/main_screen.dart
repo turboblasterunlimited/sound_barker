@@ -140,7 +140,7 @@ class _MainScreenState extends State<MainScreen> {
       backgroundColor: Colors.transparent,
       elevation: 0,
       automaticallyImplyLeading: false, // Don't show the leading button
-      toolbarHeight: 90,
+      toolbarHeight: 80,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -294,7 +294,7 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.only(top: 90.0),
+          padding: const EdgeInsets.only(top: 70.0),
           child: Stack(
             children: <Widget>[
               Column(

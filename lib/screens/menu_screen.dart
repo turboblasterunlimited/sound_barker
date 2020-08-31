@@ -24,6 +24,8 @@ class _MenuState extends State<MenuScreen> {
     cards.newCurrent();
     cardDecorator.reset();
     currentActivity.setCardCreationStep(CardCreationSteps.snap);
+    currentActivity.startCreateCard(cards.newCurrent);
+
     Navigator.of(context).popAndPushNamed(PhotoLibraryScreen.routeName);
   }
 
@@ -44,7 +46,7 @@ class _MenuState extends State<MenuScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         automaticallyImplyLeading: false, // Don't show the leading button
-        toolbarHeight: 90,
+        toolbarHeight: 80,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,

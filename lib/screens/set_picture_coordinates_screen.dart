@@ -252,7 +252,7 @@ class _SetPictureCoordinatesScreenState
         centerTitle: true,
         automaticallyImplyLeading: false, // Don't show the leading button
         titleSpacing: 3.0,
-        toolbarHeight: 90,
+        toolbarHeight: 80,
 
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

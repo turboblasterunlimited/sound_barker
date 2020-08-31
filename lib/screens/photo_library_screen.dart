@@ -92,7 +92,7 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         automaticallyImplyLeading: false, // Don't show the leading button
-        toolbarHeight: 90,
+        toolbarHeight: 80,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,

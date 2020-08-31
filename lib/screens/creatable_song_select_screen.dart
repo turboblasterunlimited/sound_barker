@@ -42,7 +42,7 @@ class _CreatableSongSelectScreenState extends State<CreatableSongSelectScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         automaticallyImplyLeading: false, // Don't show the leading button
-        toolbarHeight: 90,
+        toolbarHeight: 80,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
