@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:K9_Karaoke/providers/image_controller.dart';
+import 'package:K9_Karaoke/providers/sound_controller.dart';
 import 'package:path/path.dart' as PATH;
 
 import 'package:K9_Karaoke/providers/current_activity.dart';
@@ -17,6 +19,15 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   CurrentActivity currentActivity;
   String selectedFrame;
   bool decorationImageHasFrame;
+  ImageController imageController;
+  SoundController soundController;
+
+  @override
+  void dispose() {
+    imageController.stopAnimation();
+    soundController.stopPlayer();
+    super.dispose();
+  }
 
   void backCallback() {
     currentActivity.setCardCreationStep(CardCreationSteps.speak);
@@ -260,6 +271,9 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   Widget build(context) {
     cards = Provider.of<KaraokeCards>(context, listen: false);
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
+    imageController = Provider.of<ImageController>(context, listen: false);
+    soundController = Provider.of<SoundController>(context, listen: false);
+
     _setFrameSelection();
     decorationImageHasFrame = cards.current.decorationImage?.hasFrameDimension;
 

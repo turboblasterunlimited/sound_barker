@@ -10,7 +10,7 @@ Widget interfaceTitleNav(BuildContext context, String title,
           behavior: HitTestBehavior.translucent,
           onTap: backCallback,
           child: Padding(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
             child: Row(
               children: <Widget>[
                 Icon(LineAwesomeIcons.angle_left),
@@ -21,7 +21,7 @@ Widget interfaceTitleNav(BuildContext context, String title,
         ),
       Positioned.fill(
         child: Align(
-          alignment: Alignment.center,
+          alignment: Alignment.topCenter,
           child: Text(
             title,
             style: TextStyle(
@@ -37,7 +37,7 @@ Widget interfaceTitleNav(BuildContext context, String title,
             behavior: HitTestBehavior.translucent,
             onTap: skipCallback,
             child: Padding(
-              padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
               child: Row(
                 children: <Widget>[
                   Text('Skip'),

@@ -45,6 +45,8 @@ class CardMessage {
     amplitudes = null;
     if (File(alteredFilePath).existsSync()) File(alteredFilePath).deleteSync();
     alteredAmplitudes = null;
+    filePath = "";
+    alteredFilePath = "";
     // notifyCardChanges();
   }
 

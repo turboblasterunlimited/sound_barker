@@ -241,6 +241,7 @@ class _MainScreenState extends State<MainScreen> {
     return showFrame
         ? EdgeInsets.zero
         : EdgeInsets.only(left: portraitPadding, right: portraitPadding);
+    // return EdgeInsets.only(left: portraitPadding, right: portraitPadding);
   }
 
   EdgeInsets get _framePadding {

@@ -116,12 +116,15 @@ class _MyCardsScreenState extends State<MyCardsScreen> {
         ),
         child: Column(
           children: <Widget>[
-            interfaceTitleNav(
-              context,
-              "My Cards",
-              titleSize: 24,
-              backCallback: () =>
-                  Navigator.of(context).popAndPushNamed(MenuScreen.routeName),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: interfaceTitleNav(
+                context,
+                "My Cards",
+                titleSize: 24,
+                backCallback: () =>
+                    Navigator.of(context).popAndPushNamed(MenuScreen.routeName),
+              ),
             ),
             Expanded(
               child: CustomScrollView(
