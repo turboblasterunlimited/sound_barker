@@ -79,8 +79,8 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   void _handleShare(uuid, setDialogState) {
     String name = toBeginningOfSentenceCase(cards.current.picture.name);
     setDialogState(() => _loadingMessage = null);
-    setDialogState(
-        () => shareLink = "https://www.thedogbarksthesong.ml/card/$uuid?recipient_name=$recipientName");
+    setDialogState(() => shareLink =
+        "https://www.thedogbarksthesong.ml/card/$uuid?recipient_name=$recipientName");
     print("Share Link $shareLink");
     Share.share(
         "$name has a message for you.\n\n$shareLink\n\nCreated with K-9 Karaoke.",
@@ -94,8 +94,12 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
         cards.current.decorationImage.filePath, "decoration_images");
 
     setDialogState(() => _loadingMessage = "saving sounds...");
-    cards.current.audio.bucketFp =
-        await Gcloud.upload(cards.current.audio.filePath, "card_audios");
+
+    if (cards.current.audio.exists) {
+      cards.current.audio.bucketFp =
+          await Gcloud.upload(cards.current.audio.filePath, "card_audios");
+      await RestAPI.createCardAudio(cards.current.audio);
+    }
 
     setDialogState(() => _loadingMessage = "creating link...");
     await RestAPI.createCardDecorationImage(cards.current.decorationImage);

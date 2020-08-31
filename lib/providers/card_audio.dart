@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:K9_Karaoke/providers/karaoke_cards.dart';
+import 'package:K9_Karaoke/providers/songs.dart';
 import 'package:K9_Karaoke/services/gcloud.dart';
 import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
@@ -24,8 +26,10 @@ class CardAudios with ChangeNotifier {
     var response = await RestAPI.retrieveAllCardAudio();
     Bucket bucket = await Gcloud.accessBucket();
 
-    response.forEach((audioData) => all.add(CardAudio(
-        fileId: audioData["uuid"], bucketFp: audioData["bucket_fp"])));
+    response.forEach((audioData) {
+      all.add(CardAudio(
+          fileId: audioData["uuid"], bucketFp: audioData["bucket_fp"]));
+    });
 
     await Future.wait(all.map((audio) async {
       var filePath = "$myAppStoragePath/${audio.fileId}.aac";

@@ -221,7 +221,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     setState(() => downloadMessage = "Retrieving Card Decorations...");
     await decorationImages.retrieveAll();
     setState(() => downloadMessage = "Retrieving Cards Themselves...");
-    await cards.retrieveAll(pictures, cardAudios, decorationImages);
+    await cards.retrieveAll(pictures, cardAudios, songs, decorationImages);
     print("card count ${cards.all.length}");
     setState(() => downloadMessage = "Done.");
   }

@@ -180,6 +180,13 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
     message.deleteAlteredFiles();
   }
 
+  void _handleCombineAndContinue() async {
+    spinnerState.startLoading();
+    await cards.current.combineMessageAndSong();
+    spinnerState.stopLoading();
+    currentActivity.setCardCreationStep(CardCreationSteps.style);
+  }
+
   @override
   Widget build(BuildContext context) {
     imageController = Provider.of<ImageController>(context, listen: false);
@@ -247,13 +254,7 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
                 child: !_canAddMessage()
                     ? Center()
                     : GestureDetector(
-                        onTap: () async {
-                          spinnerState.startLoading();
-                          await cards.current.combineMessageAndSong();
-                          spinnerState.stopLoading();
-                          currentActivity
-                              .setCardCreationStep(CardCreationSteps.style);
-                        },
+                        onTap: _handleCombineAndContinue,
                         child: Transform.rotate(
                           angle: _canAddMessage() ? _animation.value * 0.1 : 0,
                           child: Container(

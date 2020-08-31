@@ -6,6 +6,7 @@ class CardMessage {
   List amplitudes;
   List alteredAmplitudes;
   Function notifyCardChanges;
+  String bucketFp;
   CardMessage({
     this.filePath = "",
     this.alteredFilePath = "",

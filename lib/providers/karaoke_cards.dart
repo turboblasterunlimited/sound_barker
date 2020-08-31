@@ -37,23 +37,32 @@ class KaraokeCards with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> retrieveAll(Pictures pictures, CardAudios audios,
+  _addAudioSongOrMessage(
+      KaraokeCard card, CardAudios audios, Songs songs, Map cardData) {
+    // messages can be assigned and used like (combined) audio for all intents and purposes
+    var song = songs.findById(cardData["card_audio_id"]);
+    if (song != null) {
+      card.song = song;
+    } else {
+      card.audio = audios.findById(cardData["card_audio_id"]);
+      card.audio.amplitudes =
+          json.decode(cardData["animation_json"])["mouth_positions"];
+    }
+  }
+
+  Future<void> retrieveAll(Pictures pictures, CardAudios audios, Songs songs,
       CardDecorationImages decorations) async {
     var response = await RestAPI.retrieveAllCards();
     response.forEach((cardData) {
-      CardAudio cardAudio = audios.findById(cardData["card_audio_id"]);
-      cardAudio.amplitudes =
-          json.decode(cardData["animation_json"])["mouth_positions"];
       try {
-        all.add(
-          KaraokeCard(
-            uuid: cardData["uuid"],
-            picture: pictures.findById(cardData["image_id"]),
-            audio: cardAudio,
-            decorationImage:
-                decorations.findById(cardData["decoration_image_id"]),
-          ),
+        final card = KaraokeCard(
+          uuid: cardData["uuid"],
+          picture: pictures.findById(cardData["image_id"]),
+          decorationImage:
+              decorations.findById(cardData["decoration_image_id"]),
         );
+        _addAudioSongOrMessage(card, audios, songs, cardData);
+        all.add(card);
       } catch (e) {
         print(e);
         return;
@@ -193,18 +202,26 @@ class KaraokeCard with ChangeNotifier {
   }
 
   Future<void> combineMessageAndSong() async {
+    // if already have a combined audio file
     _markLastAudioForDelete();
     audio.filePath = "$myAppStoragePath/${audio.fileId}.aac";
-    File tempFile = File("$myAppStoragePath/tempFile.wav");
-    // concat and save card audio file
-    await FFMpeg.process.execute(
-        '-i "concat:${message.path}|${song.filePath}" -c copy ${tempFile.path}');
-    await FFMpeg.process.execute('-i ${tempFile.path} ${audio.filePath}');
-    if (tempFile.existsSync()) tempFile.deleteSync();
-    // concat and return amplitudes
-    List songAmplitudes =
-        await AmplitudeExtractor.fileToList(song.amplitudesPath);
-    audio.amplitudes = message.amps + songAmplitudes;
+
+    // Combine with song
+    if (song.exists) {
+      File tempFile = File("$myAppStoragePath/tempFile.wav");
+      // concat and save card audio file
+      await FFMpeg.process.execute(
+          '-i "concat:${message.path}|${song.filePath}" -c copy ${tempFile.path}');
+      await FFMpeg.process.execute('-i ${tempFile.path} ${audio.filePath}');
+      if (tempFile.existsSync()) tempFile.deleteSync();
+      // concat and return amplitudes
+      List songAmplitudes =
+          await AmplitudeExtractor.fileToList(song.amplitudesPath);
+      audio.amplitudes = message.amps + songAmplitudes;
+      return null;
+    }
+    // make card.message into card.audio
+    File(message.path).copySync(audio.filePath);
   }
 
   void setPicture(Picture newPicture) {

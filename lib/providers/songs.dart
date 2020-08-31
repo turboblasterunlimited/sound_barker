@@ -23,9 +23,11 @@ class Songs with ChangeNotifier {
   }
 
   Song findById(String id) {
-    return all.firstWhere((test) {
-      return test.fileId == id;
-    });
+    try {
+      return all.firstWhere((test) => test.fileId == id);
+    } catch (e) {
+      return null;
+    }
   }
 
   void addSong(song) {
@@ -162,7 +164,8 @@ class Song with ChangeNotifier {
   }
 
   Future<void> _getMelodyAndGenerateAmplitudeFile(bucket, filePathBase) async {
-    this.filePath = await Gcloud.downloadFromBucket(fileUrl, filePathBase + '.aac',
+    this.filePath = await Gcloud.downloadFromBucket(
+        fileUrl, filePathBase + '.aac',
         bucket: bucket);
     this.amplitudesPath = await AmplitudeExtractor.createAmplitudeFile(
         this.filePath, filePathBase);
