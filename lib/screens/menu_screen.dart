@@ -24,7 +24,7 @@ class _MenuState extends State<MenuScreen> {
     cards.newCurrent();
     cardDecorator.reset();
     currentActivity.setCardCreationStep(CardCreationSteps.snap);
-    currentActivity.startCreateCard(cards.newCurrent);
+    currentActivity.startCreateCard();
 
     Navigator.of(context).popAndPushNamed(PhotoLibraryScreen.routeName);
   }
@@ -61,7 +61,7 @@ class _MenuState extends State<MenuScreen> {
             padding: const EdgeInsets.only(top: 5),
             child: RawMaterialButton(
               child: Visibility(
-                visible: currentActivity.activitySelected(),
+                visible: currentActivity.isCreateCard,
                 child: Icon(
                   Icons.close,
                   color: Colors.black,
@@ -71,7 +71,7 @@ class _MenuState extends State<MenuScreen> {
               shape: CircleBorder(),
               elevation: 2.0,
               // fillColor: Theme.of(context).accentColor,
-              onPressed: currentActivity.activitySelected()
+              onPressed: currentActivity.isCreateCard
                   ? () => Navigator.of(context).pop()
                   : null,
             ),

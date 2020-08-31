@@ -17,15 +17,20 @@ enum CardCreationSubSteps {
   seven,
 }
 
+enum Activities {
+  cardCreation,
+  songLibrary,
+  barkLibrary,
+}
+
 class CurrentActivity with ChangeNotifier {
-  bool cardCreation = false;
-  bool songLibrary = false;
-  bool barkLibrary = false;
+  Activities current;
   CardCreationSteps cardCreationStep;
   CardCreationSubSteps cardCreationSubStep;
 
-  bool activitySelected() {
-    return cardCreation || songLibrary || barkLibrary;
+  // Activities
+  bool get isCreateCard {
+    return Activities.cardCreation == current;
   }
 
   // Substeps
@@ -100,23 +105,17 @@ class CurrentActivity with ChangeNotifier {
 
   void startCreateCard() {
     cardCreationStep = CardCreationSteps.snap;
-    cardCreation = true;
-    songLibrary = false;
-    barkLibrary = false;
+    current = Activities.cardCreation;
     notifyListeners();
   }
 
   void startSongLibrary() {
-    cardCreation = false;
-    songLibrary = true;
-    barkLibrary = false;
+    current = Activities.songLibrary;
     notifyListeners();
   }
 
   void startBarkLibrary() {
-    cardCreation = false;
-    songLibrary = false;
-    barkLibrary = true;
+    current = Activities.barkLibrary;
     notifyListeners();
   }
 }

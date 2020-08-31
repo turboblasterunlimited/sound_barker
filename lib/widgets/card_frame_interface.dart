@@ -225,7 +225,9 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
 
   Widget submitButton() {
     return Center(
-      child: RawMaterialButton(
+      child: MaterialButton(
+        height: 20,
+        minWidth: 50,
         onPressed: _keepingCardDecorationImage
             ? () => currentActivity
                 .setCardCreationSubStep(CardCreationSubSteps.three)
@@ -239,7 +241,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
           borderRadius: BorderRadius.circular(30.0),
         ),
         elevation: 2.0,
-        fillColor: selectedFrame != null
+        color: selectedFrame != null
             ? Theme.of(context).primaryColor
             : Colors.grey,
         padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 0),

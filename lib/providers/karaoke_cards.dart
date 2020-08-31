@@ -20,6 +20,10 @@ class KaraokeCards with ChangeNotifier {
   List<KaraokeCard> all = [];
   KaraokeCard current;
 
+  void addCurrent() {
+    all.add(current);
+  }
+
   void remove(KaraokeCard card) async {
     print("TODO: implement delete");
     await RestAPI.deleteCardAudio(card.audio.fileId);
@@ -107,7 +111,6 @@ class KaraokeCards with ChangeNotifier {
 
   void newCurrent() {
     current = KaraokeCard();
-    all.add(current);
     notifyListeners();
   }
 

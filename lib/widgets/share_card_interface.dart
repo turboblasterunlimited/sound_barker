@@ -101,6 +101,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     await RestAPI.createCardDecorationImage(cards.current.decorationImage);
     await RestAPI.createCardAudio(cards.current.audio);
     cards.current.uuid = Uuid().v4();
+    cards.addCurrent();
     var responseData = await RestAPI.createCard(cards.current);
     _handleShare(responseData["uuid"], setDialogState);
   }
