@@ -11,7 +11,13 @@ class CardAudios with ChangeNotifier {
   List<CardAudio> all = [];
 
   CardAudio findById(id) {
-    return all.firstWhere((audio) => audio.fileId == id);
+    var result;
+    try {
+      result = all.firstWhere((audio) => audio.fileId == id);
+    } catch (e) {
+      print("Error! CardAudio id: $id not found!!");
+    }
+    return result ?? CardAudio();
   }
 
   Future<void> retrieveAll() async {

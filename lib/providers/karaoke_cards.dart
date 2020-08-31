@@ -38,17 +38,22 @@ class KaraokeCards with ChangeNotifier {
     var response = await RestAPI.retrieveAllCards();
     response.forEach((cardData) {
       CardAudio cardAudio = audios.findById(cardData["card_audio_id"]);
-      cardAudio.amplitudes = json.decode(cardData["animation_json"])["mouth_positions"];
-
-      all.add(
-        KaraokeCard(
-          uuid: cardData["uuid"],
-          picture: pictures.findById(cardData["image_id"]),
-          audio: cardAudio,
-          decorationImage:
-              decorations.findById(cardData["decoration_image_id"]),
-        ),
-      );
+      cardAudio.amplitudes =
+          json.decode(cardData["animation_json"])["mouth_positions"];
+      try {
+        all.add(
+          KaraokeCard(
+            uuid: cardData["uuid"],
+            picture: pictures.findById(cardData["image_id"]),
+            audio: cardAudio,
+            decorationImage:
+                decorations.findById(cardData["decoration_image_id"]),
+          ),
+        );
+      } catch (e) {
+        print(e);
+        return;
+      }
     });
     notifyListeners();
   }

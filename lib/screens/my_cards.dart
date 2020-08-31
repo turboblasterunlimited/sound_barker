@@ -119,6 +119,7 @@ class _MyCardsScreenState extends State<MyCardsScreen> {
             interfaceTitleNav(
               context,
               "My Cards",
+              titleSize: 24,
               backCallback: () =>
                   Navigator.of(context).popAndPushNamed(MenuScreen.routeName),
             ),
