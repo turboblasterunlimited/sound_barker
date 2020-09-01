@@ -56,7 +56,7 @@ class CardAudio {
   }
 
   bool get exists {
-    return filePath != null;
+    return filePath != null && File(filePath).existsSync();
   }
 
   void deleteFile() {

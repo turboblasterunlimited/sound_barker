@@ -1,5 +1,8 @@
+import 'package:K9_Karaoke/providers/current_activity.dart';
+import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/screens/creatable_song_select_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/sound_controller.dart';
@@ -18,7 +21,10 @@ class _SongSelectInterfaceState extends State<SongSelectInterface> {
     final songs = Provider.of<Songs>(context);
     final soundController = Provider.of<SoundController>(context);
     final spinnerState = Provider.of<SpinnerState>(context, listen: true);
-    print("song count: ${songs.all.length}");
+    final card = Provider.of<KaraokeCards>(context, listen: false).current;
+    final currentActivity =
+        Provider.of<CurrentActivity>(context, listen: false);
+
     return Expanded(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -26,6 +32,7 @@ class _SongSelectInterfaceState extends State<SongSelectInterface> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              Spacer(),
               RawMaterialButton(
                 onPressed: () {},
                 child: Text("My Songs",
@@ -48,7 +55,8 @@ class _SongSelectInterfaceState extends State<SongSelectInterface> {
                 onPressed: spinnerState.isLoading
                     ? null
                     : () {
-                        Navigator.pushNamed(context, CreatableSongSelectScreen.routeName);
+                        Navigator.pushNamed(
+                            context, CreatableSongSelectScreen.routeName);
                       },
                 child: spinnerState.isLoading
                     ? SpinKitWave(
@@ -69,6 +77,26 @@ class _SongSelectInterfaceState extends State<SongSelectInterface> {
                 elevation: 2.0,
                 padding:
                     const EdgeInsets.symmetric(vertical: 13, horizontal: 22.0),
+              ),
+              GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: () {
+                  card.noSongNoFormula();
+                  currentActivity.setCardCreationStep(
+                      CardCreationSteps.speak, CardCreationSubSteps.seven);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Row(
+                    children: <Widget>[
+                      Text('Skip', style: TextStyle(color: Colors.grey)),
+                      Icon(
+                        LineAwesomeIcons.angle_right,
+                        color: Colors.grey,
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),

@@ -158,7 +158,8 @@ class KaraokeCard with ChangeNotifier {
   bool shouldDeleteOldDecoration = false;
   CardAudio oldCardAudio;
 
-  KaraokeCard({this.uuid, this.picture, this.audio, this.decorationImage}) {
+  KaraokeCard(
+      {this.uuid, this.picture, this.audio, this.song, this.decorationImage}) {
     this.audio ??= CardAudio();
   }
 
@@ -207,7 +208,7 @@ class KaraokeCard with ChangeNotifier {
     audio.filePath = "$myAppStoragePath/${audio.fileId}.aac";
 
     // Combine with song
-    if (song.exists) {
+    if (hasSong) {
       File tempFile = File("$myAppStoragePath/tempFile.wav");
       // concat and save card audio file
       await FFMpeg.process.execute(
@@ -222,6 +223,7 @@ class KaraokeCard with ChangeNotifier {
     }
     // make card.message into card.audio
     File(message.path).copySync(audio.filePath);
+    audio.amplitudes = message.amps;
   }
 
   void setPicture(Picture newPicture) {
@@ -232,6 +234,11 @@ class KaraokeCard with ChangeNotifier {
   void setSong(Song newSong) {
     song = newSong;
     notifyListeners();
+  }
+
+  void noSongNoFormula() {
+    song = null;
+    songFormula = null;
   }
 
   List<String> get barkIds {

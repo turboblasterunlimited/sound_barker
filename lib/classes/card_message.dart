@@ -15,7 +15,7 @@ class CardMessage {
   });
 
   bool get exists {
-    return amps != null && path != null;
+    return amps != null;
   }
 
   String get path {
@@ -42,12 +42,13 @@ class CardMessage {
   }
 
   void deleteEverything() {
+    print("FilePath: $filePath");
     if (File(filePath).existsSync()) File(filePath).deleteSync();
     amplitudes = null;
     if (File(alteredFilePath).existsSync()) File(alteredFilePath).deleteSync();
     alteredAmplitudes = null;
-    filePath = "";
-    alteredFilePath = "";
+    // filePath = "";
+    // alteredFilePath = "";
     // notifyCardChanges();
   }
 

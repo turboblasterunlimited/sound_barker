@@ -74,7 +74,6 @@ class Songs with ChangeNotifier {
 
 class Song with ChangeNotifier {
   String name;
-  String fileUrl;
   String filePath;
   String fileId;
   String formulaId;
@@ -82,26 +81,17 @@ class Song with ChangeNotifier {
   DateTime created;
   String amplitudesPath;
   String songFamily;
+  String bucketFp;
   Song(
-      {String filePath,
-      String name,
-      String fileUrl,
-      String fileId,
-      String formulaId,
-      String backingTrackUrl,
-      DateTime created,
-      String amplitudesPath,
-      String songFamily}) {
-    this.filePath = filePath;
-    this.name = name;
-    this.fileUrl = fileUrl;
-    this.fileId = fileId;
-    this.formulaId = formulaId;
-    this.backingTrackUrl = backingTrackUrl;
-    this.created = created;
-    this.amplitudesPath = amplitudesPath;
-    songFamily = songFamily;
-  }
+      {this.bucketFp,
+      this.filePath,
+      this.name,
+      this.fileId,
+      this.formulaId,
+      this.backingTrackUrl,
+      this.created,
+      this.amplitudesPath,
+      this.songFamily});
 
   bool get exists {
     return File(filePath).existsSync();
@@ -136,7 +126,7 @@ class Song with ChangeNotifier {
     this.backingTrackUrl = songData["backing_track_fp"];
     this.fileId = songData["uuid"];
     this.name = songData["name"];
-    this.fileUrl = songData["bucket_fp"];
+    this.bucketFp = songData["bucket_fp"];
     this.formulaId = songData["song_id"];
     this.created = DateTime.parse(songData["created"]);
     String filePathBase = myAppStoragePath + '/' + fileId;
@@ -165,7 +155,7 @@ class Song with ChangeNotifier {
 
   Future<void> _getMelodyAndGenerateAmplitudeFile(bucket, filePathBase) async {
     this.filePath = await Gcloud.downloadFromBucket(
-        fileUrl, filePathBase + '.aac',
+        bucketFp, filePathBase + '.aac',
         bucket: bucket);
     this.amplitudesPath = await AmplitudeExtractor.createAmplitudeFile(
         this.filePath, filePathBase);

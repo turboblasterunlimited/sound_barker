@@ -210,7 +210,7 @@ class _MainScreenState extends State<MainScreen> {
             cards.current.onlySong()) ||
         (currentActivity.isSpeak &&
             currentActivity.isSix &&
-            cards.current.song.exists);
+            cards.current.hasSong);
   }
 
   bool get _canPlayMessage {

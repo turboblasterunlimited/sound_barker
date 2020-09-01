@@ -87,6 +87,19 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
         subject: "$name has a message for you.");
   }
 
+  _handleAudio() async {
+    if (cards.current.audio.exists) {
+      print("CHECK card audio exists");
+      cards.current.audio.bucketFp =
+          await Gcloud.upload(cards.current.audio.filePath, "card_audios");
+      print("checking.... : ${cards.current.audio.bucketFp}");
+      await RestAPI.createCardAudio(cards.current.audio);
+    } else if (cards.current.hasSong) {
+      print("CHECK just card song exists");
+      await RestAPI.createCardAudio(cards.current.song);
+    }
+  }
+
   Future<void> _createCard(Function setDialogState) async {
     await saveArtwork();
     setDialogState(() => _loadingMessage = "saving artwork...");
@@ -95,15 +108,10 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
 
     setDialogState(() => _loadingMessage = "saving sounds...");
 
-    if (cards.current.audio.exists) {
-      cards.current.audio.bucketFp =
-          await Gcloud.upload(cards.current.audio.filePath, "card_audios");
-      await RestAPI.createCardAudio(cards.current.audio);
-    }
+    await _handleAudio();
 
     setDialogState(() => _loadingMessage = "creating link...");
     await RestAPI.createCardDecorationImage(cards.current.decorationImage);
-    await RestAPI.createCardAudio(cards.current.audio);
     cards.current.uuid = Uuid().v4();
     cards.addCurrent();
     var responseData = await RestAPI.createCard(cards.current);
