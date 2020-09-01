@@ -7,7 +7,6 @@ import 'package:gcloud/storage.dart';
 import 'package:image/image.dart' as IMG;
 import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:uuid/uuid.dart';
-import 'package:path/path.dart' as PATH;
 
 class CardDecorationImages with ChangeNotifier {
   List<CardDecorationImage> all = [];
@@ -54,6 +53,7 @@ class CardDecorationImage {
   String fileId;
   String filePath;
   String bucketFp;
+  bool frameDimension;
 
   CardDecorationImage({
     this.filePath,
@@ -69,8 +69,11 @@ class CardDecorationImage {
   }
 
   bool get hasFrameDimension {
+    // 656 with frame. 512 without.
+    if (frameDimension != null) return frameDimension;
     var bytes = File(filePath).readAsBytesSync();
     IMG.Image image = IMG.decodeImage(bytes);
-    return image.width == 656;
+    frameDimension = image.width == 656;
+    return frameDimension;
   }
 }

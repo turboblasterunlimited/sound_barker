@@ -32,33 +32,26 @@ class _MyCardsScreenState extends State<MyCardsScreen> {
   }
 
   Widget _addCardButton() {
-    return Container(
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: GridTile(
-          child: GestureDetector(
-            onTap: () {
-              cards.newCurrent();
-              cardDecorator.reset();
-              currentActivity.setCardCreationStep(CardCreationSteps.snap);
-              Navigator.popAndPushNamed(context, PhotoLibraryScreen.routeName);
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Theme.of(context).primaryColor,
-                    width: 3,
-                  ),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Center(
-                  child: Icon(Icons.add,
-                      color: Theme.of(context).primaryColor, size: 50),
-                ),
-              ),
+    return GestureDetector(
+      onTap: () {
+        cards.newCurrent();
+        cardDecorator.reset();
+        currentActivity.setCardCreationStep(CardCreationSteps.snap);
+        Navigator.popAndPushNamed(context, PhotoLibraryScreen.routeName);
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Theme.of(context).primaryColor,
+              width: 3,
             ),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Center(
+            child: Icon(Icons.add,
+                color: Theme.of(context).primaryColor, size: 50),
           ),
         ),
       ),
@@ -66,7 +59,7 @@ class _MyCardsScreenState extends State<MyCardsScreen> {
   }
 
   Widget build(BuildContext context) {
-    cards = Provider.of<KaraokeCards>(context, listen: false);
+    cards = Provider.of<KaraokeCards>(context);
     print("card count ${cards.all.length}");
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
     cardDecorator =

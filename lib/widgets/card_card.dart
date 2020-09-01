@@ -36,7 +36,7 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
 
   void imageActions(String action) {
     if (action == "DELETE") {
-      animationController.reverse();
+      // animationController.reverse();
       widget.cards.remove(widget.card);
     } else if (action == "SHARE/EDIT") {
       handleTap();
@@ -46,8 +46,8 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
   void handleTap() {
     widget.cards.setCurrent(widget.card);
     imageController.createDog(widget.card.picture);
-    currentActivity.setCardCreationStep(CardCreationSteps.style, CardCreationSubSteps.three);
-
+    currentActivity.setCardCreationStep(
+        CardCreationSteps.style, CardCreationSubSteps.three);
     Navigator.popUntil(
       context,
       ModalRoute.withName("main-screen"),
@@ -63,7 +63,7 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
                     padding: EdgeInsets.only(
                       top: constraints.biggest.height * 72 / 778,
                       bottom: constraints.biggest.height * 194 / 778,
-                      left: constraints.biggest.width * 72 / 656,
+                      left: 0,
                       right: constraints.biggest.width * 72 / 656,
                     ),
                     child: image);
@@ -74,57 +74,54 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
   }
 
   Widget decorationImage() {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(10),
-      child: GridTile(
-        child: GestureDetector(
-          onTap: handleTap,
-          child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 5),
-            child: SizedBox(
-              child: Stack(
-                children: [
-                  decorationImageSelectable(
-                    Image.file(File(widget.card.picture.filePath)),
-                  ),
-                  Image.file(
-                    File(widget.card.decorationImage.filePath),
-                  ),
-                  Positioned(
-                    right: -25,
-                    top: -5,
-                    child: Stack(
-                      children: <Widget>[
-                        PopupMenuButton(
-                          onSelected: imageActions,
-                          child: RawMaterialButton(
-                            child: Icon(
-                              Icons.more_vert,
-                              color: Colors.black38,
-                              size: 20,
-                            ),
-                            shape: CircleBorder(),
-                            elevation: 2.0,
-                            fillColor: Colors.white,
+    return GridTile(
+      child: GestureDetector(
+        onTap: handleTap,
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 5),
+          child: SizedBox(
+            child: Stack(
+              children: [
+                decorationImageSelectable(
+                  Image.file(File(widget.card.picture.filePath)),
+                ),
+                Image.file(
+                  File(widget.card.decorationImage.filePath),
+                ),
+                Positioned(
+                  right: -25,
+                  top: -5,
+                  child: Stack(
+                    children: <Widget>[
+                      PopupMenuButton(
+                        onSelected: imageActions,
+                        child: RawMaterialButton(
+                          child: Icon(
+                            Icons.more_vert,
+                            color: Colors.black38,
+                            size: 20,
                           ),
-                          itemBuilder: (BuildContext context) {
-                            return [
-                              PopupMenuItem<String>(
-                                value: "DELETE",
-                                child: Text("Delete"),
-                              ),
-                              PopupMenuItem<String>(
-                                value: "SHARE/EDIT",
-                                child: Text("Share/Edit"),
-                              ),
-                            ];
-                          },
+                          shape: CircleBorder(),
+                          elevation: 2.0,
+                          fillColor: Colors.white,
                         ),
-                      ],
-                    ),
+                        itemBuilder: (BuildContext context) {
+                          return [
+                            PopupMenuItem<String>(
+                              value: "DELETE",
+                              child: Text("Delete"),
+                            ),
+                            PopupMenuItem<String>(
+                              value: "SHARE/EDIT",
+                              child: Text("Share/Edit"),
+                            ),
+                          ];
+                        },
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
