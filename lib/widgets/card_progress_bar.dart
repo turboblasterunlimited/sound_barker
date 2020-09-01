@@ -107,7 +107,7 @@ class CardProgressBar extends StatelessWidget {
         // Can click only if creating a new song
         progressButton(
             stepText: "SPEAK",
-            stepIsCompleted: card.hasBarks || card.hasSong,
+            stepIsCompleted: card.hasMessage,
             isCurrentStep: currentActivity.isSpeak,
             navigateHere: navigateToSpeak,
             // canNavigate: card.hasSongFormula || card.hasSong),

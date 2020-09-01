@@ -162,8 +162,23 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
       currentActivity.setCardCreationStep(CardCreationSteps.song);
   }
 
-  void skipCallback() {
+  void skipCallback() async {
+    if (!cards.current.hasSong) {
+      showError(context, "Need a song or a message or both!");
+      return null;
+    }
+
     message.deleteEverything();
+    if (cards.current.audio.exists)
+      await cards.current.audio.delete();
+    print("CHEECCCK POIIINNNT");
+
+    // if just song
+    await cards.current.songToAudio();
+
+        print("CHEECCCK POIIINNNT 2222");
+
+
     currentActivity.setCardCreationStep(CardCreationSteps.style);
   }
 

@@ -37,19 +37,6 @@ class KaraokeCards with ChangeNotifier {
     notifyListeners();
   }
 
-  _addAudioSongOrMessage(
-      KaraokeCard card, CardAudios audios, Songs songs, Map cardData) {
-    // messages can be assigned and used like (combined) audio for all intents and purposes
-    var song = songs.findById(cardData["card_audio_id"]);
-    if (song != null) {
-      card.song = song;
-    } else {
-      card.audio = audios.findById(cardData["card_audio_id"]);
-      card.audio.amplitudes =
-          json.decode(cardData["animation_json"])["mouth_positions"];
-    }
-  }
-
   Future<void> retrieveAll(Pictures pictures, CardAudios audios, Songs songs,
       CardDecorationImages decorations) async {
     var response = await RestAPI.retrieveAllCards();
@@ -61,7 +48,9 @@ class KaraokeCards with ChangeNotifier {
           decorationImage:
               decorations.findById(cardData["decoration_image_id"]),
         );
-        _addAudioSongOrMessage(card, audios, songs, cardData);
+        card.audio = audios.findById(cardData["card_audio_id"]);
+        card.audio.amplitudes =
+            json.decode(cardData["animation_json"])["mouth_positions"];
         all.add(card);
       } catch (e) {
         print(e);
@@ -187,11 +176,11 @@ class KaraokeCard with ChangeNotifier {
   }
 
   bool onlySong() {
-    return !message.exists;
+    return !hasMessage && hasSong;
   }
 
   bool onlyMessage() {
-    return song == null;
+    return song == null && hasMessage;
   }
 
   void _markLastAudioForDelete() {
@@ -226,6 +215,13 @@ class KaraokeCard with ChangeNotifier {
     audio.amplitudes = message.amps;
   }
 
+  Future<void> songToAudio() async {
+    _markLastAudioForDelete();
+    audio.filePath = "$myAppStoragePath/${audio.fileId}.aac";
+    File(song.filePath).copySync(audio.filePath);
+    audio.amplitudes = await AmplitudeExtractor.fileToList(song.amplitudesPath);
+  }
+
   void setPicture(Picture newPicture) {
     picture = newPicture;
     notifyListeners();
@@ -257,6 +253,10 @@ class KaraokeCard with ChangeNotifier {
 
   bool get hasSong {
     return song != null;
+  }
+
+  bool get hasMessage {
+    return message.exists;
   }
 
   bool get hasAudio {

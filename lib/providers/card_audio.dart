@@ -65,7 +65,11 @@ class CardAudio {
 
   Future<void> delete() async {
     print("Deleting old card audio");
-    if (bucketFp != null) await RestAPI.deleteCardAudio(fileId);
-    deleteFile();
+    try {
+      if (bucketFp != null) await RestAPI.deleteCardAudio(fileId);
+      deleteFile();
+    } catch (e) {
+      print(e);
+    }
   }
 }

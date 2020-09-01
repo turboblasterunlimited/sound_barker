@@ -121,11 +121,11 @@ class RestAPI {
     return response.data;
   }
 
-  static Future createCard(KaraokeCard card) async {
+  static Future createCard(KaraokeCard card, {songId}) async {
     var response;
     final cardBody = {
       'uuid': card.uuid,
-      'card_audio_id': card.audio.fileId,
+      'card_audio_id': songId ?? card.audio.fileId,
       "image_id": card.picture.fileId,
       'decoration_image_id': card.decorationImage.fileId,
       'animation_json':

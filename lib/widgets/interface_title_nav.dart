@@ -35,9 +35,11 @@ Widget interfaceTitleNav(BuildContext context, String title,
           right: 0,
           child: GestureDetector(
             behavior: HitTestBehavior.translucent,
-            onTap: skipCallback,
+            onTap: () async {
+              await skipCallback();
+            },
             child: Padding(
-            padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+              padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
               child: Row(
                 children: <Widget>[
                   Text('Skip'),
