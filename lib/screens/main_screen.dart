@@ -52,8 +52,8 @@ class _MainScreenState extends State<MainScreen> {
   double framePaddingBottom;
 
   List get _playbackFiles {
-    if (_canPlayCombinedAudio) {
-      print("_canPlayCombinedAudio");
+    if (_canPlayAudio) {
+      print("_canPlayAudio");
       return [cards.current.audio.filePath, cards.current.audio.amplitudes];
     } else if (_canPlayRawBark) {
       print("_canPlayRawBark");
@@ -65,8 +65,8 @@ class _MainScreenState extends State<MainScreen> {
       print("_canPlayMessage");
       return [cards.current.message.path, cards.current.message.amps];
     } else
-    print("can't play");
-      return null;
+      print("can't play");
+    return null;
   }
 
   Future<void> _navigate() async {
@@ -134,7 +134,7 @@ class _MainScreenState extends State<MainScreen> {
     print("start all");
     setState(() => _isPlaying = true);
     // Only songs have a .csv amplitude file, barks, messages and card/combined audio have a List of amplitudes in memory.
-    _canPlaySong
+    !_canPlayAudio && _canPlaySong
         ? imageController.mouthTrackSound(filePath: _playbackFiles[1])
         : imageController.mouthTrackSound(amplitudes: _playbackFiles[1]);
     soundController.startPlayer(_playbackFiles[0], stopAll);
@@ -227,9 +227,7 @@ class _MainScreenState extends State<MainScreen> {
             (cards.current.message.exists));
   }
 
-  bool get _canPlayCombinedAudio {
-    if (cards.current.audio.exists) return false;
-    print("amps: ${cards.current.audio.amplitudes}");
+  bool get _canPlayAudio {
     return currentActivity.isStyle &&
         (currentActivity.isOne || currentActivity.isThree) &&
         (cards.current.audio.exists);
@@ -352,21 +350,18 @@ class _MainScreenState extends State<MainScreen> {
                             ),
                           ),
                         if (canPlay)
-                          Center(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                RawMaterialButton(
-                                  elevation: 2.0,
-                                  fillColor: Theme.of(context).primaryColor,
-                                  child: Icon(
-                                    Icons.play_arrow,
-                                    size: 60,
-                                    color: Colors.white,
-                                  ),
-                                  shape: CircleBorder(),
-                                )
-                              ],
+                          Positioned.fill(
+                            child: Center(
+                              child: RawMaterialButton(
+                                elevation: 2.0,
+                                fillColor: Theme.of(context).primaryColor,
+                                child: Icon(
+                                  Icons.play_arrow,
+                                  size: 60,
+                                  color: Colors.white,
+                                ),
+                                shape: CircleBorder(),
+                              ),
                             ),
                           )
                       ],

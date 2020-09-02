@@ -220,6 +220,7 @@ class KaraokeCard with ChangeNotifier {
     audio.filePath = "$myAppStoragePath/${audio.fileId}.aac";
     File(song.filePath).copySync(audio.filePath);
     audio.amplitudes = await AmplitudeExtractor.fileToList(song.amplitudesPath);
+    notifyListeners();
   }
 
   void setPicture(Picture newPicture) {
