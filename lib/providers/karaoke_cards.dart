@@ -261,7 +261,7 @@ class KaraokeCard with ChangeNotifier {
   }
 
   bool get hasAudio {
-    return hasSong || audio.exists;
+    return audio.exists;
   }
 
   bool get hasSongFormula {
