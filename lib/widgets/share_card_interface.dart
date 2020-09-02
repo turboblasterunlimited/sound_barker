@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import 'package:intl/intl.dart';
 
 import 'package:K9_Karaoke/providers/card_decoration_image.dart';
@@ -87,19 +88,10 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
         subject: "$name has a message for you.");
   }
 
-  Future<String> _handleAudio() async {
-    if (cards.current.audio.exists) {
-      print("CHECK card audio exists");
-      cards.current.audio.bucketFp =
-          await Gcloud.upload(cards.current.audio.filePath, "card_audios");
-      print("checking.... : ${cards.current.audio.bucketFp}");
-      await RestAPI.createCardAudio(cards.current.audio);
-      return null;
-    } else if (cards.current.hasSong) {
-      print("CHECK just card song exists");
-      await RestAPI.createCardAudio(cards.current.song);
-      return cards.current.song.fileId;
-    }
+  Future<void> _handleAudio() async {
+    cards.current.audio.bucketFp =
+        await Gcloud.upload(cards.current.audio.filePath, "card_audios");
+    await RestAPI.createCardAudio(cards.current.audio);
   }
 
   Future<void> _createCard(Function setDialogState) async {
@@ -110,13 +102,13 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
 
     setDialogState(() => _loadingMessage = "saving sounds...");
 
-    String songId = await _handleAudio();
+    await _handleAudio();
 
     setDialogState(() => _loadingMessage = "creating link...");
     await RestAPI.createCardDecorationImage(cards.current.decorationImage);
     cards.current.uuid = Uuid().v4();
     cards.addCurrent();
-    var responseData = await RestAPI.createCard(cards.current, songId: songId);
+    var responseData = await RestAPI.createCard(cards.current);
     _handleShare(responseData["uuid"], setDialogState);
   }
 
@@ -215,6 +207,9 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   }
 
   Future<void> _handleUploadAndShare(Function setDialogState) async {
+    if (!cards.current.audio.exists)
+      return showError(context, "Card has no audio");
+
     if (_editingCard()) {
       await _updateCard(setDialogState);
     } else {

@@ -52,15 +52,20 @@ class _MainScreenState extends State<MainScreen> {
   double framePaddingBottom;
 
   List get _playbackFiles {
-    if (_canPlayCombinedAudio)
+    if (_canPlayCombinedAudio) {
+      print("_canPlayCombinedAudio");
       return [cards.current.audio.filePath, cards.current.audio.amplitudes];
-    else if (_canPlayRawBark)
+    } else if (_canPlayRawBark) {
+      print("_canPlayRawBark");
       return [barks.tempRawBark.filePath, barks.tempRawBarkAmplitudes];
-    else if (_canPlaySong)
+    } else if (_canPlaySong) {
+      print("_canPlaySong");
       return [cards.current.song.filePath, cards.current.song.amplitudesPath];
-    else if (_canPlayMessage)
+    } else if (_canPlayMessage) {
+      print("_canPlayMessage");
       return [cards.current.message.path, cards.current.message.amps];
-    else
+    } else
+    print("can't play");
       return null;
   }
 
@@ -223,9 +228,11 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   bool get _canPlayCombinedAudio {
+    if (cards.current.audio.exists) return false;
+    print("amps: ${cards.current.audio.amplitudes}");
     return currentActivity.isStyle &&
         (currentActivity.isOne || currentActivity.isThree) &&
-        (cards.current.audio.filePath != null);
+        (cards.current.audio.exists);
   }
 
   void _handleTapPuppet() {
@@ -233,7 +240,7 @@ class _MainScreenState extends State<MainScreen> {
     if (_playbackFiles != null) _isPlaying ? stopAll() : startAll();
   }
 
-  bool canPlay() {
+  bool get canPlay {
     return !_isPlaying && (_playbackFiles != null);
   }
 
@@ -296,86 +303,74 @@ class _MainScreenState extends State<MainScreen> {
         ),
         child: Padding(
           padding: const EdgeInsets.only(top: 70.0),
+          // loading spinner or card creation
           child: Stack(
             children: <Widget>[
+              // portrait, progress bar, interface, spinner
               Column(
                 children: <Widget>[
-                  // for frame and portrait
-                  Stack(
-                    children: [
-                      Padding(
-                        // 22px or 0
-                        padding: _portraitPadding,
-                        child: Stack(
-                          children: [
-                            // audio playback and decoration canvas
-                            GestureDetector(
-                              behavior: HitTestBehavior.translucent,
-                              onTap: _handleTapPuppet,
-                              child: Padding(
-                                // to shrink portrait to accomodate card frame
-                                padding: _framePadding,
-                                child: AspectRatio(
-                                  aspectRatio: 1,
-                                  child: Stack(
-                                    children: <Widget>[
-                                      SingingImage(),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      if (showFrame)
-                        GestureDetector(
-                          behavior: HitTestBehavior.translucent,
-                          onTap: _handleTapPuppet,
-                          child: Image.asset(cards.current.framePath),
-                        ),
-                      if (_showDecorationImage)
+                  // frame and portrait
+                  GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: _handleTapPuppet,
+                    child: Stack(
+                      children: [
                         Padding(
                           // 22px or 0
                           padding: _portraitPadding,
-                          child: GestureDetector(
-                            behavior: HitTestBehavior.translucent,
-                            onTap: _handleTapPuppet,
+                          child: Padding(
+                            // to shrink portrait to accomodate card frame
+                            padding: _framePadding,
+                            child: AspectRatio(
+                              aspectRatio: 1,
+                              child: Stack(
+                                children: <Widget>[
+                                  SingingImage(),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        if (showFrame) Image.asset(cards.current.framePath),
+                        if (_showDecorationImage)
+                          Padding(
+                            // 22px or 0
+                            padding: _portraitPadding,
                             child: Image.file(
                               File(cards.current.decorationImage.filePath),
                               fit: BoxFit.fill,
                             ),
                           ),
-                        ),
-                      if (_showDecorationCanvas && !_showDecorationImage)
-                        IgnorePointer(
-                          ignoring: currentActivity.isThree,
-                          child: Padding(
-                            // 22px or 0
-                            padding: _portraitPadding,
-                            child:
-                                CardDecoratorCanvas(padding: portraitPadding),
+                        if (_showDecorationCanvas && !_showDecorationImage)
+                          IgnorePointer(
+                            ignoring: currentActivity.isThree,
+                            child: Padding(
+                              // 22px or 0
+                              padding: _portraitPadding,
+                              child:
+                                  CardDecoratorCanvas(padding: portraitPadding),
+                            ),
                           ),
-                        ),
-                      if (canPlay())
-                        Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              RawMaterialButton(
-                                elevation: 2.0,
-                                fillColor: Theme.of(context).primaryColor,
-                                child: Icon(
-                                  Icons.play_arrow,
-                                  size: 60,
-                                  color: Colors.white,
-                                ),
-                                shape: CircleBorder(),
-                              )
-                            ],
-                          ),
-                        )
-                    ],
+                        if (canPlay)
+                          Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                RawMaterialButton(
+                                  elevation: 2.0,
+                                  fillColor: Theme.of(context).primaryColor,
+                                  child: Icon(
+                                    Icons.play_arrow,
+                                    size: 60,
+                                    color: Colors.white,
+                                  ),
+                                  shape: CircleBorder(),
+                                )
+                              ],
+                            ),
+                          )
+                      ],
+                    ),
                   ),
                   if (cards.current != null) CardProgressBar(),
                   if (!spinnerState.isLoading && cards.current != null)
