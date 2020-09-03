@@ -264,8 +264,6 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-
-
                 // MaterialButton(
                 //   height: 20,
                 //   minWidth: 50,
@@ -289,17 +287,18 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                 //       const EdgeInsets.symmetric(horizontal: 40.0, vertical: 0),
                 // ),
 
-
                 MaterialButton(
                   height: 20,
                   minWidth: 50,
                   onPressed: _handleReset,
                   child: Padding(
                     padding: EdgeInsets.symmetric(vertical: 8),
-                    child: Text(
-                      "Reset",
-                      style: TextStyle(
-                        color: Colors.white,
+                    child: FittedBox(
+                      child: Text(
+                        "Reset",
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),

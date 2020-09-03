@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/spinner_state.dart';
+import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -102,6 +103,10 @@ class BarkRecorderState extends State<BarkRecorder>
     soundController.recorder.isRecording ? stopRecorder() : startRecorder();
   }
 
+  void _backCallback() {
+    currentActivity.setCardCreationStep(CardCreationSteps.song);
+  }
+
   @override
   Widget build(BuildContext context) {
     cards = Provider.of<KaraokeCards>(context);
@@ -111,7 +116,9 @@ class BarkRecorderState extends State<BarkRecorder>
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
 
     return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
+        interfaceTitleNav(context, 'RECORD BARKS', backCallback: _backCallback),
         ButtonBar(
           alignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -148,7 +155,7 @@ class BarkRecorderState extends State<BarkRecorder>
                   Text(
                       _isRecording
                           ? "RECORDING...  \nTAP TO STOP"
-                          : "RECORD BARKS",
+                          : "START RECORDING",
                       style: TextStyle(
                           fontSize: 16, color: Theme.of(context).errorColor))
                 ],
@@ -168,7 +175,7 @@ class BarkRecorderState extends State<BarkRecorder>
                           .setCardCreationSubStep(CardCreationSubSteps.two);
                     },
                   ),
-                  Text("Skip", style: TextStyle(fontSize: 16))
+                  Text("SKIP", style: TextStyle(fontSize: 16))
                 ],
               ),
             ),
@@ -176,41 +183,46 @@ class BarkRecorderState extends State<BarkRecorder>
         ),
         // ADD BARKS BUTTON
 
-        barks.tempRawBark != null && !_isRecording
-            ? GestureDetector(
-                onTap: () async {
-                  spinnerState.startLoading();
-                  await barks.uploadRawBarkAndRetrieveCroppedBarks(
-                      cards.current.picture.fileId);
-                  spinnerState.stopLoading();
-                  currentActivity
-                      .setCardCreationSubStep(CardCreationSubSteps.two);
-                },
-                child: Transform.rotate(
-                  angle: _animation.value * 0.1,
-                  child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: 24.0),
-                    padding: EdgeInsets.all(15),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      shape: BoxShape.rectangle,
-                      color: Theme.of(context).primaryColor,
-                      // boxShadow: [
-                      //   BoxShadow(
-                      //       color: Colors.green,
-                      //       blurRadius: _animation.value,
-                      //       spreadRadius: _animation.value)
-                      // ]
-                    ),
-                    child: Text(
-                      "ADD BARKS\nAND CONTINUE",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
+        Visibility(
+          visible: barks.tempRawBark != null && !_isRecording,
+          maintainState: true,
+          maintainAnimation: true,
+          maintainSize: true,
+          child: GestureDetector(
+            onTap: () async {
+              spinnerState.startLoading();
+              await barks.uploadRawBarkAndRetrieveCroppedBarks(
+                  cards.current.picture.fileId);
+              spinnerState.stopLoading();
+              currentActivity.setCardCreationSubStep(CardCreationSubSteps.two);
+            },
+            child: Transform.rotate(
+              angle: _animation.value * 0.1,
+              child: Container(
+                padding: EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  shape: BoxShape.rectangle,
+                  color: Theme.of(context).primaryColor,
+                  // boxShadow: [
+                  //   BoxShadow(
+                  //       color: Colors.green,
+                  //       blurRadius: _animation.value,
+                  //       spreadRadius: _animation.value)
+                  // ]
                 ),
-              )
-            : Center(),
+                child: Text(
+                  "ADD BARKS\nAND CONTINUE",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.all(5),
+        )
       ],
     );
   }
