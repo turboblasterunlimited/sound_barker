@@ -152,8 +152,12 @@ class KaraokeCard with ChangeNotifier {
     this.audio ??= CardAudio();
   }
 
-    bool get hasFrame {
+  bool get hasFrame {
     return framePath != null;
+  }
+
+  bool get hasFrameDimension {
+    return hasFrame || (decorationImage != null && decorationImage.hasFrameDimension);
   }
 
   void setDecorationImage(decorationImage) {

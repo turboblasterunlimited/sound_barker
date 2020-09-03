@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:K9_Karaoke/providers/card_decoration_image.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import '../services/http_controller.dart';
 import '../providers/songs.dart';
@@ -54,10 +55,12 @@ class RestAPI {
     print("delete card audio: ${response.data}");
   }
 
-  static Future<void> createCardDecorationImage(decorationImage) async {
+  static Future<void> createCardDecorationImage(
+      CardDecorationImage decorationImage) async {
     final imageBody = {
       'uuid': decorationImage.fileId,
-      'bucket_fp': decorationImage.bucketFp
+      'bucket_fp': decorationImage.bucketFp,
+      'has_frame_dimension': decorationImage.hasFrameDimension == true ? 1 : 0,
     };
     final imageUrl = 'http://165.227.178.14/decoration_image';
 
@@ -78,7 +81,10 @@ class RestAPI {
 
   static Future<void> createCardAudio(audioOrSong) async {
     print("AUDIO STUFF: ${audioOrSong.bucketFp}, ${audioOrSong.fileId}");
-    final audioBody = {'uuid': audioOrSong.fileId, 'bucket_fp': audioOrSong.bucketFp};
+    final audioBody = {
+      'uuid': audioOrSong.fileId,
+      'bucket_fp': audioOrSong.bucketFp
+    };
     final audioUrl = 'http://165.227.178.14/card_audio';
     var response;
     try {
@@ -126,7 +132,7 @@ class RestAPI {
     final cardBody = {
       'uuid': card.uuid,
       'card_audio_id': card.audio.fileId,
-      // 'card_song_id': card.song?.fileId,
+      'song_id': card.song?.fileId,
       "image_id": card.picture.fileId,
       'decoration_image_id': card.decorationImage.fileId,
       'animation_json':

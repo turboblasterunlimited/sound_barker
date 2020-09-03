@@ -24,6 +24,7 @@ class CardDecorationImages with ChangeNotifier {
           CardDecorationImage(
             fileId: imageData["uuid"],
             bucketFp: imageData["bucket_fp"],
+            frameDimension: imageData["has_frame_dimension"] == 1 ? true : false,
           ),
         ));
     await Future.wait(
@@ -59,6 +60,7 @@ class CardDecorationImage {
     this.filePath,
     this.bucketFp,
     this.fileId,
+    this.frameDimension,
   }) {
     this.fileId ??= Uuid().v4();
   }

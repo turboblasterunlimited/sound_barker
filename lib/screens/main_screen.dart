@@ -274,6 +274,14 @@ class _MainScreenState extends State<MainScreen> {
         !cards.current.shouldDeleteOldDecoration;
   }
 
+  double get _maxHeightBasedPuppetDecoration {
+    return cards.current.hasFrame ? _frameMaxHeight : screenWidth;
+  }
+
+  double get _frameMaxHeight {
+    return frameToScreenWidth * 778;
+  }
+
   @override
   Widget build(BuildContext context) {
     print("Building main screen");
@@ -308,7 +316,9 @@ class _MainScreenState extends State<MainScreen> {
               Column(
                 children: <Widget>[
                   // frame and portrait
-                  Expanded(
+                  ConstrainedBox(
+                    constraints: BoxConstraints(
+                        maxHeight: _maxHeightBasedPuppetDecoration),
                     child: GestureDetector(
                       behavior: HitTestBehavior.translucent,
                       onTap: _handleTapPuppet,

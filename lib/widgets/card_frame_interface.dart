@@ -18,7 +18,6 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   KaraokeCards cards;
   CurrentActivity currentActivity;
   String selectedFrame;
-  bool decorationImageHasFrame;
   ImageController imageController;
   SoundController soundController;
 
@@ -142,7 +141,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   }
 
   Widget decorationImageSelectable(image) {
-    return decorationImageHasFrame
+    return cards.current.hasFrameDimension
         ? Positioned.fill(
             child: LayoutBuilder(
               builder: (context, constraints) {
@@ -281,7 +280,6 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     soundController = Provider.of<SoundController>(context, listen: false);
 
     _setFrameSelection();
-    decorationImageHasFrame = cards.current.decorationImage?.hasFrameDimension;
 
     return Column(
       children: <Widget>[
