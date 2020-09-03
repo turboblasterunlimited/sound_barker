@@ -201,7 +201,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   Widget frameList() {
     return Center(
       child: Container(
-        height: 100,
+        height: 200,
         child: CustomScrollView(
           scrollDirection: Axis.horizontal,
           slivers: <Widget>[
@@ -210,7 +210,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
                 crossAxisCount: 2,
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
-                childAspectRatio: 656 / 778,
+                childAspectRatio: 778 / 656,
               ),
               delegate:
                   SliverChildBuilderDelegate((BuildContext context, int i) {

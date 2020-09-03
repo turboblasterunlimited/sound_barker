@@ -33,7 +33,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   String _loadingMessage;
   String shareLink;
 
-  Future<void> saveArtwork() async {
+  Future<void> _captureArtwork() async {
     if (cards.current.decorationImage != null) return;
     final decorationImage = CardDecorationImage();
     decorationImage.filePath = await cardDecorator.cardPainter
@@ -58,7 +58,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     if (cards.current.shouldDeleteOldDecoration) {
       setDialogState(() => _loadingMessage = "updating artwork...");
       await cards.current.deleteOldDecorationImage();
-      await saveArtwork();
+      await _captureArtwork();
       await _uploadAndCreateDecorationImage();
       cards.current.shouldDeleteOldDecoration = false;
       changed = true;
@@ -94,18 +94,21 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     await RestAPI.createCardAudio(cards.current.audio);
   }
 
-  Future<void> _createCard(Function setDialogState) async {
-    await saveArtwork();
-    setDialogState(() => _loadingMessage = "saving artwork...");
+  Future<void> _handleDecorationImage() async {
     cards.current.decorationImage.bucketFp = await Gcloud.upload(
         cards.current.decorationImage.filePath, "decoration_images");
+    await RestAPI.createCardDecorationImage(cards.current.decorationImage);
+  }
+
+  Future<void> _createCard(Function setDialogState) async {
+    await _captureArtwork();
+    setDialogState(() => _loadingMessage = "saving artwork...");
+    _handleDecorationImage();
 
     setDialogState(() => _loadingMessage = "saving sounds...");
-
     await _handleAudio();
 
     setDialogState(() => _loadingMessage = "creating link...");
-    await RestAPI.createCardDecorationImage(cards.current.decorationImage);
     cards.current.uuid = Uuid().v4();
     cards.addCurrent();
     var responseData = await RestAPI.createCard(cards.current);

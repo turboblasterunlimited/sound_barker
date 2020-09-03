@@ -23,7 +23,7 @@ class CardCreationInterface extends StatelessWidget {
 
     Widget _handleSpeakWidget() {
       if (currentActivity.isOne)
-      return BarkRecorder();
+        return BarkRecorder();
       else if (currentActivity.isFive)
         return SongArrangementSelector();
       else if (currentActivity.isSix)
@@ -39,12 +39,11 @@ class CardCreationInterface extends StatelessWidget {
         return CardFrameInterface();
       else if (currentActivity.isTwo)
         return CardDecoratorInterface();
-      else if (currentActivity.isThree)
-        return ShareCardInterface();
+      else if (currentActivity.isThree) return ShareCardInterface();
     }
 
-    return Expanded(
-      child: Column(children: <Widget>[
+    return Column(
+      children: <Widget>[
         Padding(
           padding: const EdgeInsets.only(top: 10.0),
         ),
@@ -61,7 +60,7 @@ class CardCreationInterface extends StatelessWidget {
         //   visible: currentActivity.isStyle,
         //   child: CardDecoratorInterface(),
         // ),
-      ]),
+      ],
     );
   }
 }

@@ -169,15 +169,10 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
     }
 
     message.deleteEverything();
-    if (cards.current.audio.exists)
-      await cards.current.audio.delete();
-    print("CHEECCCK POIIINNNT");
+    if (cards.current.audio.exists) await cards.current.audio.delete();
 
     // if just song
     await cards.current.songToAudio();
-
-        print("CHEECCCK POIIINNNT 2222");
-
 
     currentActivity.setCardCreationStep(CardCreationSteps.style);
   }
