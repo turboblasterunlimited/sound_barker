@@ -126,7 +126,7 @@ class RestAPI {
     final cardBody = {
       'uuid': card.uuid,
       'card_audio_id': card.audio.fileId,
-      'card_song_id': card.song?.fileId,
+      // 'card_song_id': card.song?.fileId,
       "image_id": card.picture.fileId,
       'decoration_image_id': card.decorationImage.fileId,
       'animation_json':

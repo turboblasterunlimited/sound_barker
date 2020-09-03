@@ -205,7 +205,13 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
         child: CustomScrollView(
           scrollDirection: Axis.horizontal,
           slivers: <Widget>[
-            SliverList(
+            SliverGrid(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                childAspectRatio: 656 / 778,
+              ),
               delegate:
                   SliverChildBuilderDelegate((BuildContext context, int i) {
                 if (i >= listLength - 1)

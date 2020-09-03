@@ -308,63 +308,73 @@ class _MainScreenState extends State<MainScreen> {
               Column(
                 children: <Widget>[
                   // frame and portrait
-                  GestureDetector(
-                    behavior: HitTestBehavior.translucent,
-                    onTap: _handleTapPuppet,
-                    child: Stack(
-                      children: [
-                        Padding(
-                          // 22px or 0
-                          padding: _portraitPadding,
-                          child: Padding(
-                            // to shrink portrait to accomodate card frame
-                            padding: _framePadding,
-                            child: AspectRatio(
-                              aspectRatio: 1,
-                              child: Stack(
-                                children: <Widget>[
-                                  SingingImage(),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        if (showFrame) Image.asset(cards.current.framePath),
-                        if (_showDecorationImage)
-                          Padding(
-                            // 22px or 0
-                            padding: _portraitPadding,
-                            child: Image.file(
-                              File(cards.current.decorationImage.filePath),
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                        if (_showDecorationCanvas && !_showDecorationImage)
-                          IgnorePointer(
-                            ignoring: currentActivity.isThree,
+                  Expanded(
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      onTap: _handleTapPuppet,
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
                             child: Padding(
                               // 22px or 0
                               padding: _portraitPadding,
-                              child:
-                                  CardDecoratorCanvas(padding: portraitPadding),
-                            ),
-                          ),
-                        if (canPlay)
-                          Positioned.fill(
-                            child: Center(
-                              child: RawMaterialButton(
-                                elevation: 2.0,
-                                fillColor: Theme.of(context).primaryColor,
-                                child: Icon(
-                                  Icons.play_arrow,
-                                  size: 60,
-                                  color: Colors.white,
+                              child: Padding(
+                                // to shrink portrait to accomodate card frame
+                                padding: _framePadding,
+                                child: AspectRatio(
+                                  aspectRatio: 1,
+                                  child: Stack(
+                                    children: <Widget>[
+                                      SingingImage(),
+                                    ],
+                                  ),
                                 ),
-                                shape: CircleBorder(),
                               ),
                             ),
-                          )
-                      ],
+                          ),
+                          if (showFrame)
+                            AspectRatio(
+                              aspectRatio: 656 / 778,
+                              child: Image.asset(cards.current.framePath),
+                            ),
+                          if (_showDecorationImage)
+                            AspectRatio(
+                              aspectRatio: cards
+                                      .current.decorationImage.hasFrameDimension
+                                  ? 656 / 778
+                                  : 1,
+                              child: Image.file(
+                                File(cards.current.decorationImage.filePath),
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                          if (_showDecorationCanvas && !_showDecorationImage)
+                            IgnorePointer(
+                              ignoring: currentActivity.isThree,
+                              child: AspectRatio(
+                                aspectRatio:
+                                    cards.current.hasFrame ? 656 / 778 : 1,
+                                child: CardDecoratorCanvas(
+                                    padding: portraitPadding),
+                              ),
+                            ),
+                          if (canPlay)
+                            Positioned.fill(
+                              child: Center(
+                                child: RawMaterialButton(
+                                  elevation: 2.0,
+                                  fillColor: Theme.of(context).primaryColor,
+                                  child: Icon(
+                                    Icons.play_arrow,
+                                    size: 60,
+                                    color: Colors.white,
+                                  ),
+                                  shape: CircleBorder(),
+                                ),
+                              ),
+                            )
+                        ],
+                      ),
                     ),
                   ),
                   if (cards.current != null) CardProgressBar(),

@@ -1,5 +1,4 @@
 import 'package:K9_Karaoke/providers/current_activity.dart';
-import 'package:K9_Karaoke/providers/karaoke_card_decoration_controller.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/screens/set_picture_coordinates_screen.dart';

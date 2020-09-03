@@ -119,7 +119,7 @@ class KaraokeCards with ChangeNotifier {
   }
 
   bool get hasFrame {
-    return current != null && current.framePath != null;
+    return current != null && current.hasFrame;
   }
 
   bool get currentPictureIsStock {
@@ -150,6 +150,10 @@ class KaraokeCard with ChangeNotifier {
   KaraokeCard(
       {this.uuid, this.picture, this.audio, this.song, this.decorationImage}) {
     this.audio ??= CardAudio();
+  }
+
+    bool get hasFrame {
+    return framePath != null;
   }
 
   void setDecorationImage(decorationImage) {
