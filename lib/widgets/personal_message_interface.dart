@@ -403,8 +403,12 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
             ],
           ),
         ),
-        if (_hasShifted)
-          Center(
+        Visibility(
+          visible: _hasShifted,
+          maintainSize: true,
+          maintainAnimation: true,
+          maintainState: true,
+          child: Center(
             child: RawMaterialButton(
               onPressed: _resetSliders,
               child: Padding(
@@ -425,6 +429,7 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
               // padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 2),
             ),
           ),
+        )
       ],
     );
   }
