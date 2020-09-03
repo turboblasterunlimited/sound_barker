@@ -264,7 +264,35 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                RawMaterialButton(
+
+
+                // MaterialButton(
+                //   height: 20,
+                //   minWidth: 50,
+                //   onPressed: _keepingCardDecorationImage
+                //       ? () => currentActivity
+                //           .setCardCreationSubStep(CardCreationSubSteps.three)
+                //       : currentActivity.setNextSubStep,
+                //   child: Icon(
+                //     Icons.check,
+                //     color: Colors.white,
+                //     size: 30,
+                //   ),
+                //   shape: RoundedRectangleBorder(
+                //     borderRadius: BorderRadius.circular(30.0),
+                //   ),
+                //   elevation: 2.0,
+                //   color: selectedFrame != null
+                //       ? Theme.of(context).primaryColor
+                //       : Colors.grey,
+                //   padding:
+                //       const EdgeInsets.symmetric(horizontal: 40.0, vertical: 0),
+                // ),
+
+
+                MaterialButton(
+                  height: 20,
+                  minWidth: 50,
                   onPressed: _handleReset,
                   child: Padding(
                     padding: EdgeInsets.symmetric(vertical: 8),
@@ -272,7 +300,6 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                       "Reset",
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 20,
                       ),
                     ),
                   ),
@@ -280,7 +307,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                     borderRadius: BorderRadius.circular(30.0),
                   ),
                   elevation: 2.0,
-                  fillColor: karaokeCardDecorator.decoration.isEmpty
+                  color: karaokeCardDecorator.decoration.isEmpty
                       ? Colors.grey
                       : Theme.of(context).errorColor,
                   padding:
@@ -289,18 +316,20 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                 Padding(
                   padding: EdgeInsets.all(10),
                 ),
-                RawMaterialButton(
+                MaterialButton(
+                  height: 20,
+                  minWidth: 50,
                   onPressed: currentActivity.setNextSubStep,
                   child: Icon(
                     Icons.check,
                     color: Colors.white,
-                    size: 40,
+                    size: 30,
                   ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30.0),
                   ),
                   elevation: 2.0,
-                  fillColor: Theme.of(context).primaryColor,
+                  color: Theme.of(context).primaryColor,
                   padding:
                       const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
                 ),

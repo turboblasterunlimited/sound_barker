@@ -100,8 +100,8 @@ class _SongSelectInterfaceState extends State<SongSelectInterface> {
           ],
         ),
         Padding(padding: EdgeInsets.only(top: 20)),
-        Expanded(
-          // height: 300,
+        SizedBox(
+          height: MediaQuery.of(context).size.height / 3,
           child: AnimatedList(
             key: songs.listKey,
             initialItemCount: songs.all.length,
