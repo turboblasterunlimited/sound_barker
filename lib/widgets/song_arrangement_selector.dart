@@ -52,7 +52,7 @@ class SongArrangementSelector extends StatelessWidget {
                   children: <Widget>[
                     RawMaterialButton(
                       onPressed: () =>
-                          _createSong(songFormula.arrangement["pitched"]),
+                          _createSong(songFormula.arrangement["harmonized"]),
                       child: Text(
                         "Make my dog\nsound realistic",
                         style: TextStyle(
@@ -73,7 +73,7 @@ class SongArrangementSelector extends StatelessWidget {
                     Padding(padding: EdgeInsets.all(10)),
                     RawMaterialButton(
                       onPressed: () =>
-                          _createSong(songFormula.arrangement["harmonized"]),
+                          _createSong(songFormula.arrangement["pitched"]),
                       child: Text(
                         "Make my dog\nhit all the notes",
                         style: TextStyle(

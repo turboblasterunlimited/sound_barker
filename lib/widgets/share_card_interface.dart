@@ -116,25 +116,22 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   }
 
   Widget _shareLink() {
-    return Column(
-      children: [
-        GestureDetector(
-            onTap: () => Clipboard.setData(ClipboardData(text: shareLink))
-                    .then((result) {
-                  final snackBar = SnackBar(
-                    content: Text('Card link copied to Clipboard'),
-                  );
-                  Scaffold.of(context).showSnackBar(snackBar);
-                }),
-            child: Row(
-              children: [
-                Icon(Icons.content_copy),
-                Flexible(
-                  child: Text(shareLink),
-                )
-              ],
-            )),
-      ],
+    return GestureDetector(
+      onTap: () =>
+          Clipboard.setData(ClipboardData(text: shareLink)).then((result) {
+        final snackBar = SnackBar(
+          content: Text('Card link copied to Clipboard'),
+        );
+        Scaffold.of(context).showSnackBar(snackBar);
+      }),
+      child: Row(
+        children: [
+          Icon(Icons.content_copy),
+          FittedBox(
+            child: Text("Tap to copy Link"),
+          )
+        ],
+      ),
     );
   }
 
