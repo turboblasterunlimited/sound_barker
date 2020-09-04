@@ -314,6 +314,7 @@ class _MainScreenState extends State<MainScreen> {
                         behavior: HitTestBehavior.translucent,
                         onTap: _handleTapPuppet,
                         child: Stack(
+                          alignment: AlignmentDirectional.center,
                           children: [
                             Padding(
                               // 22px or 0
@@ -324,8 +325,8 @@ class _MainScreenState extends State<MainScreen> {
                                   // to shrink portrait to accomodate card frame
                                   padding: showFrame
                                       ? EdgeInsets.only(
-                                          left: constraints.biggest.height *
-                                              (72 / 778),
+                                          // left: constraints.biggest.height *
+                                          //     (72 / 778),
                                           top: constraints.biggest.height *
                                               (72 / 778),
                                           bottom: constraints.biggest.height *
