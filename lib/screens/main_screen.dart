@@ -349,7 +349,6 @@ class _MainScreenState extends State<MainScreen> {
                                     : 1,
                                 child: Image.file(
                                   File(cards.current.decorationImage.filePath),
-                                  fit: BoxFit.fill,
                                 ),
                               ),
                             if (_showDecorationCanvas && !_showDecorationImage)

@@ -75,7 +75,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
         cards.current.shouldDeleteOldDecoration = true;
       },
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 5),
+        // margin: EdgeInsets.symmetric(horizontal: 5),
         decoration: selectedFrame == fileName
             ? BoxDecoration(
                 border: Border.all(
@@ -86,23 +86,22 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
             : BoxDecoration(),
         child: SizedBox(
           child: Stack(
+            alignment: AlignmentDirectional.center,
             children: [
-              Positioned.fill(
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    return Padding(
-                      padding: EdgeInsets.only(
-                        top: constraints.biggest.height * 72 / 778,
-                        bottom: constraints.biggest.height * 194 / 778,
-                        left: constraints.biggest.width * 72 / 656,
-                        right: constraints.biggest.width * 72 / 656,
-                      ),
-                      child: Image.file(
-                        File(cards.current.picture.filePath),
-                      ),
-                    );
-                  },
-                ),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  return Padding(
+                    padding: EdgeInsets.only(
+                      top: constraints.biggest.height * 72 / 778,
+                      bottom: constraints.biggest.height * 194 / 778,
+                      // left: constraints.biggest.width * 72 / 656,
+                      // right: constraints.biggest.width * 72 / 656,
+                    ),
+                    child: Image.file(
+                      File(cards.current.picture.filePath),
+                    ),
+                  );
+                },
               ),
               Image.asset(rootPath + fileName),
             ],
@@ -192,12 +191,9 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     );
   }
 
-  int get listLength {
-    return frameFileNames.length +
-        (cards.current.decorationImage != null ? 2 : 1);
-  }
-
   Widget frameList() {
+    // first item should be no frame, and second is decoration image if exists.
+    var iOffset = cards.current.decorationImage == null ? 1 : 2;
     return Center(
       child: Container(
         height: 200,
@@ -207,21 +203,21 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
             SliverGrid(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
+                crossAxisSpacing: 4,
+                mainAxisSpacing: 4,
                 childAspectRatio: 778 / 656,
               ),
-              delegate:
-                  SliverChildBuilderDelegate((BuildContext context, int i) {
-                if (i >= listLength - 1)
-                  return null;
-                else if (i == 0)
-                  return noFrame();
-                else if (i == 1 && cards.current.decorationImage != null)
-                  return decorationImage();
-                else
-                  return frameSelectable(frameFileNames[i]);
-              }),
+              delegate: SliverChildBuilderDelegate(
+                (BuildContext context, int i) {
+                  if (i == 0)
+                    return noFrame();
+                  else if (i == 1 && cards.current.decorationImage != null)
+                    return decorationImage();
+                  else
+                    return frameSelectable(frameFileNames[i - iOffset]);
+                },
+                childCount: frameFileNames.length + iOffset,
+              ),
             ),
           ],
         ),
