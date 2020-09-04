@@ -265,12 +265,8 @@ class _MainScreenState extends State<MainScreen> {
         !cards.current.shouldDeleteOldDecoration;
   }
 
-  double get _maxHeightBasedOnPuppetDecoration {
-    return cards.current.hasFrame ? _frameMaxHeight : screenWidth;
-  }
-
-  double get _frameMaxHeight {
-    return frameToScreenWidth * 778;
+  bool get _useFramePadding {
+    return currentActivity.isStyle && cards.current.hasFrameDimension;
   }
 
   @override
@@ -316,14 +312,12 @@ class _MainScreenState extends State<MainScreen> {
                         child: Stack(
                           alignment: AlignmentDirectional.center,
                           children: [
-                            Padding(
-                              // 22px or 0
-                              padding: _portraitPadding,
+                            SizedBox(
                               child: LayoutBuilder(
                                   builder: (context, constraints) {
                                 return Padding(
                                   // to shrink portrait to accomodate card frame
-                                  padding: showFrame
+                                  padding: _useFramePadding
                                       ? EdgeInsets.only(
                                           // left: constraints.biggest.height *
                                           //     (72 / 778),

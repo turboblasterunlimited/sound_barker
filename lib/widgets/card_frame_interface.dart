@@ -75,7 +75,6 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
         cards.current.shouldDeleteOldDecoration = true;
       },
       child: Container(
-        // margin: EdgeInsets.symmetric(horizontal: 5),
         decoration: selectedFrame == fileName
             ? BoxDecoration(
                 border: Border.all(
@@ -94,8 +93,6 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
                     padding: EdgeInsets.only(
                       top: constraints.biggest.height * 72 / 778,
                       bottom: constraints.biggest.height * 194 / 778,
-                      // left: constraints.biggest.width * 72 / 656,
-                      // right: constraints.biggest.width * 72 / 656,
                     ),
                     child: Image.file(
                       File(cards.current.picture.filePath),
@@ -141,21 +138,17 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
 
   Widget decorationImageSelectable(image) {
     return cards.current.hasFrameDimension
-        ? Positioned.fill(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                return Padding(
-                    padding: EdgeInsets.only(
-                      top: constraints.biggest.height * 72 / 778,
-                      bottom: constraints.biggest.height * 194 / 778,
-                      left: constraints.biggest.width * 72 / 656,
-                      right: constraints.biggest.width * 72 / 656,
-                    ),
-                    child: image);
-              },
-            ),
+        ? LayoutBuilder(
+            builder: (context, constraints) {
+              return Padding(
+                  padding: EdgeInsets.only(
+                    top: constraints.biggest.height * 72 / 778,
+                    bottom: constraints.biggest.height * 194 / 778,
+                  ),
+                  child: image);
+            },
           )
-        : Positioned.fill(child: image);
+        : image;
   }
 
   Widget decorationImage() {
@@ -166,7 +159,6 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
         cards.current.shouldDeleteOldDecoration = false;
       },
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 5),
         decoration: selectedFrame == "decorationImage"
             ? BoxDecoration(
                 border: Border.all(
@@ -177,6 +169,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
             : BoxDecoration(),
         child: SizedBox(
           child: Stack(
+            alignment: AlignmentDirectional.center,
             children: [
               decorationImageSelectable(
                 Image.file(File(cards.current.picture.filePath)),
