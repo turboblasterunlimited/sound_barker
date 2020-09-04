@@ -246,18 +246,30 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
 
     return Column(
       children: [
-        interfaceTitleNav(context, "", backCallback: _backCallback),
-        Padding(
-          padding: const EdgeInsets.only(left: 30, right: 30, bottom: 15),
-          child: RawMaterialButton(
-            onPressed: _shareDialog,
-            child: Text("Save & Send", style: TextStyle(color: Colors.white)),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30.0),
-            ),
-            elevation: 2.0,
-            fillColor: Theme.of(context).primaryColor,
-            padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
+        interfaceTitleNav(context, "ALL DONE!", backCallback: _backCallback),
+        Container(
+          height: MediaQuery.of(context).size.height / 4,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 40),
+              ),
+              RawMaterialButton(
+                onPressed: _shareDialog,
+                child: Text(
+                  "Save & Send",
+                  style: TextStyle(color: Colors.white),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+                elevation: 2.0,
+                fillColor: Theme.of(context).primaryColor,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
+              ),
+              // Spacer()
+            ],
           ),
         ),
       ],

@@ -243,20 +243,11 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   EdgeInsets get _portraitPadding {
+    print("frame is $showFrame");
     return showFrame
         ? EdgeInsets.zero
         : EdgeInsets.only(left: portraitPadding, right: portraitPadding);
     // return EdgeInsets.only(left: portraitPadding, right: portraitPadding);
-  }
-
-  EdgeInsets get _framePadding {
-    return showFrame
-        ? EdgeInsets.only(
-            left: framePadding,
-            right: framePadding,
-            top: framePadding,
-            bottom: framePaddingBottom)
-        : EdgeInsets.zero;
   }
 
   bool get _showDecorationCanvas {
@@ -327,11 +318,22 @@ class _MainScreenState extends State<MainScreen> {
                             Padding(
                               // 22px or 0
                               padding: _portraitPadding,
-                              child: Padding(
-                                // to shrink portrait to accomodate card frame
-                                padding: _framePadding,
-                                child: SingingImage(),
-                              ),
+                              child: LayoutBuilder(
+                                  builder: (context, constraints) {
+                                return Padding(
+                                  // to shrink portrait to accomodate card frame
+                                  padding: showFrame
+                                      ? EdgeInsets.only(
+                                          left: constraints.biggest.height *
+                                              (72 / 778),
+                                          top: constraints.biggest.height *
+                                              (72 / 778),
+                                          bottom: constraints.biggest.height *
+                                              (194 / 778))
+                                      : EdgeInsets.zero,
+                                  child: SingingImage(),
+                                );
+                              }),
                             ),
                             if (showFrame)
                               AspectRatio(
