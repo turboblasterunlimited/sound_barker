@@ -41,6 +41,8 @@ class KaraokeCards with ChangeNotifier {
       CardDecorationImages decorations) async {
     var response = await RestAPI.retrieveAllCards();
     response.forEach((cardData) {
+      if (cardData["hidden"] == 1) return;
+
       try {
         final card = KaraokeCard(
           uuid: cardData["uuid"],
@@ -157,7 +159,8 @@ class KaraokeCard with ChangeNotifier {
   }
 
   bool get hasFrameDimension {
-    return hasFrame || (decorationImage != null && decorationImage.hasFrameDimension);
+    return hasFrame ||
+        (decorationImage != null && decorationImage.hasFrameDimension);
   }
 
   void setDecorationImage(decorationImage) {

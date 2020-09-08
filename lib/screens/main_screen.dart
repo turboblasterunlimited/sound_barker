@@ -266,6 +266,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   bool get _useFramePadding {
+    print("Has frame dimension: ${cards.current.hasFrameDimension}");
     return currentActivity.isStyle && cards.current.hasFrameDimension;
   }
 

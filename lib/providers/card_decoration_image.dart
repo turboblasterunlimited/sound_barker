@@ -20,13 +20,16 @@ class CardDecorationImages with ChangeNotifier {
     Bucket bucket = await Gcloud.accessBucket();
     String lastDecorationImage;
 
-    response.forEach((imageData) => all.add(
-          CardDecorationImage(
-            fileId: imageData["uuid"],
-            bucketFp: imageData["bucket_fp"],
-            frameDimension: imageData["has_frame_dimension"] == 1 ? true : false,
-          ),
-        ));
+    response.forEach((imageData) {
+      if (imageData["hidden"] == 1) return;
+      all.add(
+        CardDecorationImage(
+          fileId: imageData["uuid"],
+          bucketFp: imageData["bucket_fp"],
+          frameDimension: imageData["has_frame_dimension"] == 1 ? true : false,
+        ),
+      );
+    });
     await Future.wait(
       all.map(
         (decoration) async {

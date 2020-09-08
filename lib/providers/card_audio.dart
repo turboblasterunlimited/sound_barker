@@ -27,6 +27,7 @@ class CardAudios with ChangeNotifier {
     Bucket bucket = await Gcloud.accessBucket();
 
     response.forEach((audioData) {
+      if (audioData["hidden"] == 1) return;
       all.add(CardAudio(
           fileId: audioData["uuid"], bucketFp: audioData["bucket_fp"]));
     });
