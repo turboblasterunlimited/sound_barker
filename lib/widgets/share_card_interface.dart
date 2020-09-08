@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import 'package:intl/intl.dart';
 
@@ -228,6 +229,44 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
         : currentActivity.setPreviousSubStep();
   }
 
+  _deleteDialog() async {
+    await showDialog<Null>(
+        context: context,
+        builder: (ctx) {
+          return StatefulBuilder(
+              builder: (BuildContext context, Function setDialogState) {
+            return AlertDialog(
+              title: Text('Delete Card'),
+              content: Container(
+                height: 200,
+                child: Center(
+                  child: Text(
+                    "Are you sure?",
+                    style: TextStyle(color: Theme.of(context).primaryColor),
+                  ),
+                ),
+              ),
+              actions: [
+                FlatButton(
+                  child: Text('Yes'),
+                  onPressed: () async {
+                    await cards.remove(cards.current);
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pushNamed(MenuScreen.routeName);
+                  },
+                ),
+                FlatButton(
+                  child: Text('No'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          });
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     soundController ??= Provider.of<SoundController>(context, listen: false);
@@ -247,10 +286,8 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
         Container(
           height: MediaQuery.of(context).size.height / 4,
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 40),
-              ),
               RawMaterialButton(
                 onPressed: _shareDialog,
                 child: Text(
@@ -265,7 +302,20 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
               ),
-              // Spacer()
+              RawMaterialButton(
+                onPressed: _deleteDialog,
+                child: Text(
+                  "Delete",
+                  style: TextStyle(color: Colors.white),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+                elevation: 2.0,
+                fillColor: Theme.of(context).errorColor,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
+              ),
             ],
           ),
         ),

@@ -24,13 +24,12 @@ class KaraokeCards with ChangeNotifier {
     all.add(current);
   }
 
-  void remove(KaraokeCard card) async {
+  Future<void> remove(KaraokeCard card) async {
     print("TODO: implement delete");
     await RestAPI.deleteCardAudio(card.audio.fileId);
     await RestAPI.deleteDecorationImage(card.decorationImage.fileId);
     await RestAPI.deleteCard(card);
     all.remove(card);
-    notifyListeners();
   }
 
   void messageIsReady() {
