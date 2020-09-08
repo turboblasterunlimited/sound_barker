@@ -34,15 +34,6 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
   //   super.dispose();
   // }
 
-  void imageActions(String action) {
-    if (action == "DELETE") {
-      // animationController.reverse();
-      widget.cards.remove(widget.card);
-    } else if (action == "SHARE/EDIT") {
-      handleTap();
-    }
-  }
-
   void handleTap() {
     widget.cards.setCurrent(widget.card);
     imageController.createDog(widget.card.picture);
@@ -87,39 +78,6 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
                 ),
                 Image.file(
                   File(widget.card.decorationImage.filePath),
-                ),
-                Positioned(
-                  right: -25,
-                  top: -5,
-                  child: Stack(
-                    children: <Widget>[
-                      PopupMenuButton(
-                        onSelected: imageActions,
-                        child: RawMaterialButton(
-                          child: Icon(
-                            Icons.more_vert,
-                            color: Colors.black38,
-                            size: 20,
-                          ),
-                          shape: CircleBorder(),
-                          elevation: 2.0,
-                          fillColor: Colors.white,
-                        ),
-                        itemBuilder: (BuildContext context) {
-                          return [
-                            PopupMenuItem<String>(
-                              value: "DELETE",
-                              child: Text("Delete"),
-                            ),
-                            PopupMenuItem<String>(
-                              value: "SHARE/EDIT",
-                              child: Text("Share/Edit"),
-                            ),
-                          ];
-                        },
-                      ),
-                    ],
-                  ),
                 ),
               ],
             ),
