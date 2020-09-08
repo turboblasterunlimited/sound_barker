@@ -325,7 +325,7 @@ class _MainScreenState extends State<MainScreen> {
                                               (72 / 778),
                                           bottom: constraints.biggest.height *
                                               (194 / 778))
-                                      : EdgeInsets.zero,
+                                      : EdgeInsets.all(1),
                                   child: SingingImage(),
                                 );
                               }),
