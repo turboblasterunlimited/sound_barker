@@ -14,6 +14,7 @@ import 'package:K9_Karaoke/widgets/spinner_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
@@ -88,6 +89,10 @@ class _MainScreenState extends State<MainScreen> {
     SystemChrome.setEnabledSystemUIOverlays([]);
     SchedulerBinding.instance.addPostFrameCallback((_) {
       _navigate();
+    });
+    KeyboardVisibility.onChange.listen((bool visible) {
+      print('Keyboard visibility update. Is visible: ${visible}');
+      if (!visible) SystemChrome.setEnabledSystemUIOverlays([]);
     });
   }
 
@@ -284,7 +289,7 @@ class _MainScreenState extends State<MainScreen> {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false,
       appBar: everythingReady() ? mainAppBar() : null,
       // Background image
       body: Container(
