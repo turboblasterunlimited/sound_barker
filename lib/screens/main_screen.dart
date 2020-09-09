@@ -247,14 +247,6 @@ class _MainScreenState extends State<MainScreen> {
     return !_isPlaying && (_playbackFiles != null);
   }
 
-  EdgeInsets get _portraitPadding {
-    print("frame is $showFrame");
-    return showFrame
-        ? EdgeInsets.zero
-        : EdgeInsets.only(left: portraitPadding, right: portraitPadding);
-    // return EdgeInsets.only(left: portraitPadding, right: portraitPadding);
-  }
-
   bool get _showDecorationCanvas {
     return currentActivity.isStyle &&
         (currentActivity.isTwo || currentActivity.isThree);
@@ -389,7 +381,7 @@ class _MainScreenState extends State<MainScreen> {
                   if (spinnerState.isLoading) SpinnerHalfScreenWidget(),
                 ],
               ),
-              // Spinner
+              // Full screen Spinner
               if (!everythingReady())
                 SpinnerWidget("Loading animation engine..."),
             ],

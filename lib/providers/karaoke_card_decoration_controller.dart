@@ -14,9 +14,14 @@ class KaraokeCardDecorationController with ChangeNotifier {
   CardPainter cardPainter;
   double canvasLength;
   KaraokeCardDecorationController();
+  FocusNode focusNode;
 
   void newDrawing() {
     decoration.drawings.add(Drawing(color, size));
+  }
+
+  void triggerKeyboard() {
+
   }
 
   void reset() {
@@ -29,8 +34,9 @@ class KaraokeCardDecorationController with ChangeNotifier {
     return Offset(canvasLength / 2, canvasLength - 30);
   }
 
-  void setDecoration(cardDecoration, screenWidth) {
+  void setDecoration(cardDecoration, screenWidth, textFocusNode) {
     decoration = cardDecoration;
+    focusNode = textFocusNode;
     _initializeTyping(screenWidth);
     // notifyListeners();
   }

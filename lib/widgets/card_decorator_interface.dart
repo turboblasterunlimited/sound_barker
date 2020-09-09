@@ -28,6 +28,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
   void initState() {
     super.initState();
     focusNode = FocusNode();
+    
   }
 
   @override
@@ -69,7 +70,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
     canvasLength ??= MediaQuery.of(context).size.width;
     cards ??= Provider.of<KaraokeCards>(context);
     currentActivity ??= Provider.of<CurrentActivity>(context);
-    karaokeCardDecorator.setDecoration(cards.current.decoration, canvasLength);
+    karaokeCardDecorator.setDecoration(cards.current.decoration, canvasLength, focusNode);
 
     return Stack(
       children: <Widget>[

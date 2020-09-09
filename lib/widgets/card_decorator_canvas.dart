@@ -96,15 +96,14 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
           _getOffset(details),
         ),
       );
+      karaokeCardDecorator.focusNode.requestFocus();
     }
   }
 
   void _handleCreateOrSelectText(details) {
     if (karaokeCardDecorator.isTyping) {
       bool selected = _selectText(details);
-      if (!selected) {
-        _createNewTyping(details);
-      }
+      if (!selected) _createNewTyping(details);
     }
   }
 
