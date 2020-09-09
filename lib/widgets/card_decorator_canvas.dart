@@ -22,7 +22,7 @@ const List<int> frameDimensions = [656, 778];
 const List<int> portraitDimensions = [512, 512];
 
 class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
-  KaraokeCardDecorationController karaokeCardDecorator;
+  KaraokeCardDecorationController decorationController;
   KaraokeCards cards;
   double screenWidth;
 
@@ -43,10 +43,10 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
   }
 
   void _handleAddNewDrawing(details) {
-    if (karaokeCardDecorator.isDrawing)
+    if (decorationController.isDrawing)
       setState(() {
-        karaokeCardDecorator.newDrawing();
-        print("in karaoke card: ${karaokeCardDecorator.decoration.drawings}");
+        decorationController.newDrawing();
+        print("in karaoke card: ${decorationController.decoration.drawings}");
         print("Just drawings: $drawings");
         drawings.last.offsets.add(
           [_getOffset(details)],
@@ -55,7 +55,7 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
   }
 
   void _handleUpdateDrawing(details) {
-    if (karaokeCardDecorator.isDrawing)
+    if (decorationController.isDrawing)
       setState(() {
         drawings.last.offsets.last.add(
           _getOffset(details),
@@ -82,46 +82,46 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
     Typing selected = typings[index];
     typings.removeAt(index);
     setState(() => typings.add(selected));
-    karaokeCardDecorator.focusNode.requestFocus();
-    karaokeCardDecorator.updateTextField();
+    decorationController.focusNode.requestFocus();
+    decorationController.updateTextField();
     return true;
   }
 
   void _createNewTyping(details) {
-    if (karaokeCardDecorator.isTyping) {
+    if (decorationController.isTyping) {
       typings.add(
         Typing(
           TextSpan(
             text: "",
-            style: TextStyle(color: karaokeCardDecorator.color),
+            style: TextStyle(color: decorationController.color),
           ),
           _getOffset(details),
         ),
       );
-      karaokeCardDecorator.clearTextField();
-      karaokeCardDecorator.focusNode.requestFocus();
+      decorationController.clearTextField();
+      decorationController.focusNode.requestFocus();
     }
   }
 
   void _handleCreateOrSelectText(details) {
-    if (karaokeCardDecorator.isTyping) {
+    if (decorationController.isTyping) {
       bool selected = _selectText(details);
       if (!selected) _createNewTyping(details);
     }
   }
 
   List<Drawing> get drawings {
-    return karaokeCardDecorator.decoration.drawings;
+    return decorationController.decoration.drawings;
   }
 
   List<Typing> get typings {
-    return karaokeCardDecorator.decoration.typings;
+    return decorationController.decoration.typings;
   }
 
   @override
   Widget build(BuildContext context) {
     print("building decorator canvas!");
-    karaokeCardDecorator =
+    decorationController =
         Provider.of<KaraokeCardDecorationController>(context);
     cards = Provider.of<KaraokeCards>(context);
     screenWidth = MediaQuery.of(context).size.width;
@@ -142,31 +142,71 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
         _handleUpdateDrawing(details);
       },
       onPanEnd: (details) {
-        if (karaokeCardDecorator.isDrawing)
+        if (decorationController.isDrawing)
           setState(() {
             drawings.last.offsets.last.add(drawings.last.offsets.last.last);
           });
       },
-      child: CustomPaint(
-        painter: karaokeCardDecorator.cardPainter =
-            CardPainter(drawings, typings, [cardWidth, cardHeight]),
-        child: Container(
-          height: cardHeight,
-          width: cardWidth,
-          child: karaokeCardDecorator.isTyping
-              ? Positioned(
-                  top: typings.last.offset.dy,
-                  left: typings.last.offset.dx,
-                  child: Text(
-                    "XXX",
-                    style: TextStyle(fontSize: 30),
-                  ),
-                )
-              : Center(),
-        ),
+      child: Stack(
+        children: [
+          CustomPaint(
+            painter: decorationController.cardPainter =
+                CardPainter(drawings, typings, [cardWidth, cardHeight]),
+            child: Container(
+              height: cardHeight,
+              width: cardWidth,
+              child: Center(),
+            ),
+          ),
+          CustomPaint(
+            painter: CaretPainter(decorationController),
+            child: Container(
+              height: cardHeight,
+              width: cardWidth,
+              child: Center(),
+            ),
+          ),
+        ],
       ),
     );
   }
+}
+
+class CaretPainter extends CustomPainter {
+  final KaraokeCardDecorationController decorationController;
+
+  CaretPainter(this.decorationController) : super();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..style = PaintingStyle.fill
+      ..strokeWidth = 4.0
+      ..color = Colors.blue;
+
+    Offset caretOffset(Typing typing) {
+      var tp = TextPainter(
+          textScaleFactor: 3.0,
+          text: typing.textSpan,
+          textAlign: TextAlign.center,
+          textDirection: TextDirection.ltr);
+
+      tp.layout();
+
+      Offset oldOffset = typing.offset;
+      return Offset(oldOffset.dx + (tp.size.width / 2), oldOffset.dy);
+    }
+
+    if (decorationController.paintCarat) {
+      var typing = decorationController.decoration.typings.last;
+      var offset = caretOffset(
+        typing,
+      );
+      canvas.drawRect(Rect.fromLTWH(offset.dx, offset.dy, 10, 20), paint);
+    }
+  }
+
+  bool shouldRepaint(CustomPainter oldDeligate) => true;
 }
 
 class CardPainter extends CustomPainter {

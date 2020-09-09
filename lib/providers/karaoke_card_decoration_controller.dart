@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:K9_Karaoke/classes/decoration.dart';
 import 'package:K9_Karaoke/classes/drawing.dart';
 import 'package:K9_Karaoke/classes/typing.dart';
@@ -16,6 +18,9 @@ class KaraokeCardDecorationController with ChangeNotifier {
   KaraokeCardDecorationController();
   FocusNode focusNode;
   TextEditingController textController;
+
+  Timer caretBlinker;
+  bool paintCarat = false;
 
   void newDrawing() {
     decoration.drawings.add(Drawing(color, size));
@@ -62,7 +67,6 @@ class KaraokeCardDecorationController with ChangeNotifier {
       span,
       defaultTypingOffset,
     ));
-    print("decoration.typings now not empty");
   }
 
   void updateLastTextSpan(newTextSpan) {
@@ -89,13 +93,25 @@ class KaraokeCardDecorationController with ChangeNotifier {
   void startDrawing() {
     isDrawing = true;
     isTyping = false;
+    paintCarat = false;
+    caretBlinker.cancel();
     notifyListeners();
   }
 
   void startTyping() {
     isTyping = true;
     isDrawing = false;
+    caretBlinker.cancel();
+    caretBlinker = startCaretBlinker();
     notifyListeners();
+  }
+
+  Timer startCaretBlinker() {
+
+    return Timer.periodic(Duration(milliseconds: 1000), (timer) {
+      paintCarat = !paintCarat;
+      notifyListeners();
+    });
   }
 
   void setColor(Color newColor) {

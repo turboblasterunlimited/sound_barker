@@ -16,7 +16,7 @@ class CardDecoratorInterface extends StatefulWidget {
 
 class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
   SoundController soundController;
-  KaraokeCardDecorationController karaokeCardDecorator;
+  KaraokeCardDecorationController decorationController;
   ImageController imageController;
   CurrentActivity currentActivity;
   KaraokeCards cards;
@@ -24,11 +24,11 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
   double canvasLength;
   final textController = TextEditingController();
 
+
   @override
   void initState() {
     super.initState();
     focusNode = FocusNode();
-    
   }
 
   @override
@@ -45,15 +45,15 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
 
   void _handleUndo() {
     focusNode.unfocus();
-    karaokeCardDecorator.undoLast();
-    if (karaokeCardDecorator.isTyping)
+    decorationController.undoLast();
+    if (decorationController.isTyping)
       setState(() {
         textController.clear();
       });
   }
 
   void _handleReset() {
-    karaokeCardDecorator.reset();
+    decorationController.reset();
     setState(() {
       textController.clear();
     });
@@ -65,14 +65,14 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
   Widget build(BuildContext context) {
     soundController ??= Provider.of<SoundController>(context);
     imageController ??= Provider.of<ImageController>(context, listen: false);
-    karaokeCardDecorator ??=
+    decorationController ??=
         Provider.of<KaraokeCardDecorationController>(context);
     canvasLength ??= MediaQuery.of(context).size.width;
     cards ??= Provider.of<KaraokeCards>(context);
     currentActivity ??= Provider.of<CurrentActivity>(context);
-    karaokeCardDecorator.setDecoration(cards.current.decoration, canvasLength);
-    karaokeCardDecorator.setTextController(textController, focusNode);
-    
+    decorationController.setDecoration(cards.current.decoration, canvasLength);
+    decorationController.setTextController(textController, focusNode);
+
     return Stack(
       children: <Widget>[
         Opacity(
@@ -82,7 +82,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
             focusNode: focusNode,
             onChanged: (text) {
               print("Text: $text");
-              karaokeCardDecorator.updateText(text);
+              decorationController.updateText(text);
             },
             onSubmitted: (text) {},
           ),
@@ -111,25 +111,25 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                 Padding(
                   padding: EdgeInsets.only(bottom: 10),
                   child: IconButton(
-                    color: karaokeCardDecorator.isDrawing
+                    color: decorationController.isDrawing
                         ? Colors.blue
                         : Theme.of(context).primaryColor,
                     onPressed: () {
                       focusNode.unfocus();
-                      karaokeCardDecorator.startDrawing();
+                      decorationController.startDrawing();
                     },
                     icon: Icon(CustomIcons.draw, size: iconButtonSize + 10),
                   ),
                 ),
                 // Typing button
                 IconButton(
-                  color: karaokeCardDecorator.isTyping
+                  color: decorationController.isTyping
                       ? Colors.blue
                       : Theme.of(context).primaryColor,
                   onPressed: () {
                     focusNode.unfocus();
                     focusNode.requestFocus();
-                    karaokeCardDecorator.startTyping();
+                    decorationController.startTyping();
                   },
                   icon: Icon(CustomIcons.aa, size: iconButtonSize + 10),
                 ),
@@ -144,13 +144,13 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                           Theme.of(context).primaryColor),
                     ),
                     child: Slider(
-                      value: karaokeCardDecorator.size,
+                      value: decorationController.size,
                       min: 8,
                       max: 40,
                       divisions: 32,
-                      label: karaokeCardDecorator.size.round().toString(),
+                      label: decorationController.size.round().toString(),
                       onChanged: (double sliderVal) {
-                        karaokeCardDecorator.setSize(sliderVal);
+                        decorationController.setSize(sliderVal);
                       },
                     ),
                   ),
@@ -172,9 +172,9 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                     fillColor: Colors.black,
                     shape: CircleBorder(),
                     onPressed: () {
-                      karaokeCardDecorator.setColor(Colors.black);
+                      decorationController.setColor(Colors.black);
                     },
-                    child: karaokeCardDecorator.color == Colors.black
+                    child: decorationController.color == Colors.black
                         ? Icon(Icons.check, size: 20, color: Colors.white)
                         : Container(height: 20),
                   ),
@@ -185,9 +185,9 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                     fillColor: Colors.white,
                     shape: CircleBorder(),
                     onPressed: () {
-                      karaokeCardDecorator.setColor(Colors.white);
+                      decorationController.setColor(Colors.white);
                     },
-                    child: karaokeCardDecorator.color == Colors.white
+                    child: decorationController.color == Colors.white
                         ? Icon(Icons.check, size: 20)
                         : Container(height: 20),
                   ),
@@ -198,9 +198,9 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                     fillColor: Colors.green,
                     shape: CircleBorder(),
                     onPressed: () {
-                      karaokeCardDecorator.setColor(Colors.green);
+                      decorationController.setColor(Colors.green);
                     },
-                    child: karaokeCardDecorator.color == Colors.green
+                    child: decorationController.color == Colors.green
                         ? Icon(Icons.check, size: 20)
                         : Container(height: 20),
                   ),
@@ -211,9 +211,9 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                     fillColor: Colors.blue,
                     shape: CircleBorder(),
                     onPressed: () {
-                      karaokeCardDecorator.setColor(Colors.blue);
+                      decorationController.setColor(Colors.blue);
                     },
-                    child: karaokeCardDecorator.color == Colors.blue
+                    child: decorationController.color == Colors.blue
                         ? Icon(Icons.check, size: 20)
                         : Container(height: 20),
                   ),
@@ -224,9 +224,9 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                     fillColor: Colors.pink,
                     shape: CircleBorder(),
                     onPressed: () {
-                      karaokeCardDecorator.setColor(Colors.pink);
+                      decorationController.setColor(Colors.pink);
                     },
-                    child: karaokeCardDecorator.color == Colors.pink
+                    child: decorationController.color == Colors.pink
                         ? Icon(Icons.check, size: 20)
                         : Container(height: 20),
                   ),
@@ -237,9 +237,9 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                     fillColor: Colors.purple,
                     shape: CircleBorder(),
                     onPressed: () {
-                      karaokeCardDecorator.setColor(Colors.purple);
+                      decorationController.setColor(Colors.purple);
                     },
-                    child: karaokeCardDecorator.color == Colors.purple
+                    child: decorationController.color == Colors.purple
                         ? Icon(Icons.check, size: 20)
                         : Container(height: 20),
                   ),
@@ -250,9 +250,9 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                     fillColor: Colors.yellow,
                     shape: CircleBorder(),
                     onPressed: () {
-                      karaokeCardDecorator.setColor(Colors.yellow);
+                      decorationController.setColor(Colors.yellow);
                     },
-                    child: karaokeCardDecorator.color == Colors.yellow
+                    child: decorationController.color == Colors.yellow
                         ? Icon(Icons.check, size: 20)
                         : Container(height: 20),
                   ),
@@ -308,7 +308,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                     borderRadius: BorderRadius.circular(30.0),
                   ),
                   elevation: 2.0,
-                  color: karaokeCardDecorator.decoration.isEmpty
+                  color: decorationController.decoration.isEmpty
                       ? Colors.grey
                       : Theme.of(context).errorColor,
                   padding:
