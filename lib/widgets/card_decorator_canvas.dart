@@ -82,6 +82,8 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
     Typing selected = typings[index];
     typings.removeAt(index);
     setState(() => typings.add(selected));
+    karaokeCardDecorator.focusNode.requestFocus();
+    karaokeCardDecorator.updateTextField();
     return true;
   }
 
@@ -96,6 +98,7 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
           _getOffset(details),
         ),
       );
+      karaokeCardDecorator.clearTextField();
       karaokeCardDecorator.focusNode.requestFocus();
     }
   }

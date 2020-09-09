@@ -70,8 +70,9 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
     canvasLength ??= MediaQuery.of(context).size.width;
     cards ??= Provider.of<KaraokeCards>(context);
     currentActivity ??= Provider.of<CurrentActivity>(context);
-    karaokeCardDecorator.setDecoration(cards.current.decoration, canvasLength, focusNode);
-
+    karaokeCardDecorator.setDecoration(cards.current.decoration, canvasLength);
+    karaokeCardDecorator.setTextController(textController, focusNode);
+    
     return Stack(
       children: <Widget>[
         Opacity(

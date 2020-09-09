@@ -15,13 +15,18 @@ class KaraokeCardDecorationController with ChangeNotifier {
   double canvasLength;
   KaraokeCardDecorationController();
   FocusNode focusNode;
+  TextEditingController textController;
 
   void newDrawing() {
     decoration.drawings.add(Drawing(color, size));
   }
 
-  void triggerKeyboard() {
+  void updateTextField() {
+    textController.text = decoration.typings.last.textSpan.text;
+  }
 
+  void clearTextField() {
+    textController.text = "";
   }
 
   void reset() {
@@ -34,11 +39,16 @@ class KaraokeCardDecorationController with ChangeNotifier {
     return Offset(canvasLength / 2, canvasLength - 30);
   }
 
-  void setDecoration(cardDecoration, screenWidth, textFocusNode) {
+  void setDecoration(cardDecoration, screenWidth) {
     decoration = cardDecoration;
-    focusNode = textFocusNode;
     _initializeTyping(screenWidth);
     // notifyListeners();
+  }
+
+  void setTextController(textController, textFocusNode) {
+    this.textController = textController;
+    focusNode = textFocusNode;
+    notifyListeners();
   }
 
   void _initializeTyping(double length) {
