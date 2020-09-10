@@ -25,6 +25,7 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
   KaraokeCardDecorationController decorationController;
   KaraokeCards cards;
   double screenWidth;
+  Typing grabbing;
 
   double get cardHeight {
     if (cards.current.framePath != null) {
@@ -44,14 +45,23 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
 
   void _handleAddNewDrawing(details) {
     if (decorationController.isDrawing)
-      setState(() {
-        decorationController.newDrawing();
-        print("in karaoke card: ${decorationController.decoration.drawings}");
-        print("Just drawings: $drawings");
-        drawings.last.offsets.add(
-          [_getOffset(details)],
-        );
-      });
+      setState(
+        () {
+          decorationController.newDrawing();
+          print("in karaoke card: ${decorationController.decoration.drawings}");
+          print("Just drawings: $drawings");
+          drawings.last.offsets.add(
+            [_getOffset(details)],
+          );
+        },
+      );
+  }
+
+  void _handleEndDrawing() {
+    if (decorationController.isDrawing)
+      setState(
+        () => drawings.last.offsets.last.add(drawings.last.offsets.last.last),
+      );
   }
 
   void _handleUpdateDrawing(details) {
@@ -73,7 +83,7 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
     return false;
   }
 
-  bool _selectText(details) {
+  bool _selectTyping(details) {
     // selecting text, moves the text to the end of the List
     var index = typings
         .indexWhere((text) => _inProximity(details.localPosition, text.offset));
@@ -103,11 +113,37 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
     }
   }
 
-  void _handleCreateOrSelectText(details) {
+  void _handleCreateOrSelectTyping(details) {
     if (decorationController.isTyping) {
-      bool selected = _selectText(details);
+      bool selected = _selectTyping(details);
       if (!selected) _createNewTyping(details);
     }
+  }
+
+  void _handleStartDragTyping(DragStartDetails details) {
+    if (!decorationController.isTyping) return;
+    var touchedOffset =
+        Offset(details.localPosition.dx, details.localPosition.dy);
+    for (var typing in typings) {
+      if (_inProximity(typing.offset, touchedOffset)) {
+        grabbing = typing;
+        return;
+      }
+    }
+  }
+
+  void _handleDragTyping(DragUpdateDetails details) {
+    if (!decorationController.isTyping) return;
+    if (grabbing == null) return;
+
+    var touchedOffset =
+        Offset(details.localPosition.dx, details.localPosition.dy);
+
+    setState(() => grabbing.offset = touchedOffset);
+  }
+
+  void _handleEndDragTyping() {
+    setState(() => grabbing = null);
   }
 
   List<Drawing> get drawings {
@@ -132,20 +168,20 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
       onTapDown: (details) {
         print("Tapping canvas");
         _handleAddNewDrawing(details);
-        _handleCreateOrSelectText(details);
+        _handleCreateOrSelectTyping(details);
       },
       onPanStart: (details) {
         print("Drawing....");
         _handleAddNewDrawing(details);
+        _handleStartDragTyping(details);
       },
       onPanUpdate: (details) {
         _handleUpdateDrawing(details);
+        _handleDragTyping(details);
       },
       onPanEnd: (details) {
-        if (decorationController.isDrawing)
-          setState(() {
-            drawings.last.offsets.last.add(drawings.last.offsets.last.last);
-          });
+        _handleEndDrawing();
+        _handleEndDragTyping();
       },
       child: Stack(
         children: [

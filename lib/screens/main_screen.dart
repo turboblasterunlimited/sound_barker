@@ -146,16 +146,17 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget mainAppBar() {
+    var notificationPadding = MediaQuery.of(context).padding.top;
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
       automaticallyImplyLeading: false, // Don't show the leading button
-      toolbarHeight: 80,
+      toolbarHeight: 80 - notificationPadding,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Image.asset("assets/logos/K9_logotype.png", width: 100),
+          Image.asset("assets/logos/K9_logotype.png", width: 100 - notificationPadding),
           // if (!showFrame)
           Expanded(
             child: Center(
