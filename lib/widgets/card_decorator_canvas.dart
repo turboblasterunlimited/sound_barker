@@ -83,16 +83,23 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
     return false;
   }
 
+  void _putTypingOnTop() {
+    typings.remove(selectedTyping);
+    typings.add(selectedTyping);
+  }
+
   bool _selectTyping(details) {
     // selecting text, moves the text to the end of the List
     getTyping(details);
 
     if (selectedTyping == null) return false;
-    setState(() {
-      typings.remove(selectedTyping);
-      typings.add(selectedTyping);
-    });
-    decorationController.updateTextField();
+
+    _putTypingOnTop();
+
+    if (typings.last.textSpan.text != "") {
+      decorationController.updateTextField();
+      decorationController.updateSizeAndColor(selectedTyping);
+    }
     return true;
   }
 
@@ -241,13 +248,14 @@ class CaretPainter extends CustomPainter {
     if (!decorationController.isTyping) return;
 
     Typing lastTyping = decorationController.decoration.typings.last;
+    var size = lastTyping.textSpan.text == ""
+        ? decorationController.size
+        : lastTyping.textSpan.style.fontSize;
     //paint drag thumb
-    canvas.drawCircle(lastTyping.offset, 10, paint);
+    canvas.drawCircle(lastTyping.offset, size / 2, paint);
     //paint caret
     if (decorationController.paintCarat) {
-      var typing = lastTyping;
-      var size = decorationController.size;
-      var offset = caretOffset(typing);
+      var offset = caretOffset(lastTyping);
       canvas.drawRect(Rect.fromLTWH(offset.dx, offset.dy, 5, size * 4), paint);
     }
   }

@@ -29,7 +29,13 @@ class KaraokeCardDecorationController with ChangeNotifier {
   void updateTextField() {
     textController.text = decoration.typings.last.textSpan.text;
     textController.selection =
-        TextSelection(baseOffset: 0, extentOffset: textController.text.length);
+        TextSelection.collapsed(offset: textController.text.length);
+  }
+
+  void updateSizeAndColor(typing) {
+    if (typing.textSpan.text == "") return;
+    size = typing.textSpan.style.fontSize;
+    color = typing.textSpan.style.color;  
   }
 
   void clearTextField() {
@@ -55,7 +61,6 @@ class KaraokeCardDecorationController with ChangeNotifier {
   void setTextController(textController, textFocusNode) {
     this.textController = textController;
     focusNode = textFocusNode;
-    notifyListeners();
   }
 
   void _initializeTyping(double length) {
