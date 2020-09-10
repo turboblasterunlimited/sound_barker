@@ -25,7 +25,7 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
   KaraokeCardDecorationController decorationController;
   KaraokeCards cards;
   double screenWidth;
-  Typing grabbing;
+  Typing selectedTyping;
 
   double get cardHeight {
     if (cards.current.framePath != null) {
@@ -85,16 +85,28 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
 
   bool _selectTyping(details) {
     // selecting text, moves the text to the end of the List
-    var index = typings
-        .indexWhere((text) => _inProximity(details.localPosition, text.offset));
+    getTyping(details);
 
-    if (index == -1) return false;
-    Typing selected = typings[index];
-    typings.removeAt(index);
-    setState(() => typings.add(selected));
-    decorationController.focusNode.requestFocus();
+    if (selectedTyping == null) return false;
+    setState(() {
+      typings.remove(selectedTyping);
+      typings.add(selectedTyping);
+    });
     decorationController.updateTextField();
     return true;
+  }
+
+  void getTyping(details) {
+    var touchedOffset =
+        Offset(details.localPosition.dx, details.localPosition.dy);
+    for (var typing in typings) {
+      if (_inProximity(typing.offset, touchedOffset)) {
+        selectedTyping = typing;
+        return;
+      }
+    }
+    // wont get here if inProximity returns true
+    selectedTyping = null;
   }
 
   void _createNewTyping(details) {
@@ -109,41 +121,33 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
         ),
       );
       decorationController.clearTextField();
-      decorationController.focusNode.requestFocus();
     }
   }
 
   void _handleCreateOrSelectTyping(details) {
-    if (decorationController.isTyping) {
-      bool selected = _selectTyping(details);
-      if (!selected) _createNewTyping(details);
-    }
+    if (!decorationController.isTyping) return;
+    bool selected = _selectTyping(details);
+    if (!selected) _createNewTyping(details);
+    decorationController.focusNode.requestFocus();
   }
 
   void _handleStartDragTyping(DragStartDetails details) {
     if (!decorationController.isTyping) return;
-    var touchedOffset =
-        Offset(details.localPosition.dx, details.localPosition.dy);
-    for (var typing in typings) {
-      if (_inProximity(typing.offset, touchedOffset)) {
-        grabbing = typing;
-        return;
-      }
-    }
+    getTyping(details);
   }
 
   void _handleDragTyping(DragUpdateDetails details) {
     if (!decorationController.isTyping) return;
-    if (grabbing == null) return;
+    if (selectedTyping == null) return;
 
     var touchedOffset =
         Offset(details.localPosition.dx, details.localPosition.dy);
 
-    setState(() => grabbing.offset = touchedOffset);
+    setState(() => selectedTyping.offset = touchedOffset);
   }
 
   void _handleEndDragTyping() {
-    setState(() => grabbing = null);
+    setState(() => selectedTyping = null);
   }
 
   List<Drawing> get drawings {
@@ -234,8 +238,14 @@ class CaretPainter extends CustomPainter {
       // return Offset(oldOffset.dx, oldOffset.dy);
     }
 
+    if (!decorationController.isTyping) return;
+
+    Typing lastTyping = decorationController.decoration.typings.last;
+    //paint drag thumb
+    canvas.drawCircle(lastTyping.offset, 10, paint);
+    //paint caret
     if (decorationController.paintCarat) {
-      var typing = decorationController.decoration.typings.last;
+      var typing = lastTyping;
       var size = decorationController.size;
       var offset = caretOffset(typing);
       canvas.drawRect(Rect.fromLTWH(offset.dx, offset.dy, 5, size * 4), paint);

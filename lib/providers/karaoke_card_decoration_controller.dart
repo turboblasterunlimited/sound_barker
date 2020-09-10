@@ -28,6 +28,8 @@ class KaraokeCardDecorationController with ChangeNotifier {
 
   void updateTextField() {
     textController.text = decoration.typings.last.textSpan.text;
+    textController.selection =
+        TextSelection(baseOffset: 0, extentOffset: textController.text.length);
   }
 
   void clearTextField() {
@@ -90,11 +92,15 @@ class KaraokeCardDecorationController with ChangeNotifier {
     notifyListeners();
   }
 
+  void _cancelCaret() {
+    if (caretBlinker != null) caretBlinker.cancel();
+  }
+
   void startDrawing() {
     isDrawing = true;
     isTyping = false;
     paintCarat = false;
-    caretBlinker.cancel();
+    _cancelCaret();
     notifyListeners();
   }
 
@@ -102,13 +108,13 @@ class KaraokeCardDecorationController with ChangeNotifier {
     print("call start typing");
     isTyping = true;
     isDrawing = false;
-    // caretBlinker.cancel();
+    _cancelCaret();
     caretBlinker = startCaretBlinker();
     notifyListeners();
   }
 
   Timer startCaretBlinker() {
-    return Timer.periodic(Duration(milliseconds: 1000), (timer) {
+    return Timer.periodic(Duration(milliseconds: 500), (timer) {
       paintCarat = !paintCarat;
       notifyListeners();
     });
