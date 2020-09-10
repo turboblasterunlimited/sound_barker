@@ -317,7 +317,7 @@ class CardPainter extends CustomPainter {
 
     for (var drawing in drawings) {
       paint.color = drawing.color;
-      paint.strokeWidth = drawing.size / 2;
+      paint.strokeWidth = drawing.size / 4;
       for (var mark in drawing.offsets) {
         for (var i = 0; i < mark.length; i++) {
           canvas.drawCircle(mark[i], drawing.size / 2, paint);

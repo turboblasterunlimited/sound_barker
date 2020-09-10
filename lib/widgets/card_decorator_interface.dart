@@ -24,7 +24,6 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
   double canvasLength;
   final textController = TextEditingController();
 
-
   @override
   void initState() {
     super.initState();
@@ -320,7 +319,10 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                 MaterialButton(
                   height: 20,
                   minWidth: 50,
-                  onPressed: currentActivity.setNextSubStep,
+                  onPressed: () {
+                    decorationController.startDrawing();
+                    currentActivity.setNextSubStep();
+                  },
                   child: Icon(
                     Icons.check,
                     color: Colors.white,

@@ -35,7 +35,7 @@ class KaraokeCardDecorationController with ChangeNotifier {
   void updateSizeAndColor(typing) {
     if (typing.textSpan.text == "") return;
     size = typing.textSpan.style.fontSize;
-    color = typing.textSpan.style.color;  
+    color = typing.textSpan.style.color;
   }
 
   void clearTextField() {
@@ -55,7 +55,6 @@ class KaraokeCardDecorationController with ChangeNotifier {
   void setDecoration(cardDecoration, screenWidth) {
     decoration = cardDecoration;
     _initializeTyping(screenWidth);
-    // notifyListeners();
   }
 
   void setTextController(textController, textFocusNode) {
@@ -97,15 +96,15 @@ class KaraokeCardDecorationController with ChangeNotifier {
     notifyListeners();
   }
 
-  void _cancelCaret() {
+  void cancelCaret() {
+    paintCarat = false;
     if (caretBlinker != null) caretBlinker.cancel();
   }
 
   void startDrawing() {
     isDrawing = true;
     isTyping = false;
-    paintCarat = false;
-    _cancelCaret();
+    cancelCaret();
     notifyListeners();
   }
 
@@ -113,7 +112,7 @@ class KaraokeCardDecorationController with ChangeNotifier {
     print("call start typing");
     isTyping = true;
     isDrawing = false;
-    _cancelCaret();
+    cancelCaret();
     caretBlinker = startCaretBlinker();
     notifyListeners();
   }
