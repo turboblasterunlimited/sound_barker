@@ -68,8 +68,8 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
   }
 
   bool _inProximity(Offset existingXY, Offset touchedXY) {
-    if ((existingXY.dx - touchedXY.dx).abs() < 100.0 &&
-        (existingXY.dy - touchedXY.dy).abs() < 100.0) return true;
+    if ((existingXY.dx - touchedXY.dx).abs() < 40.0 &&
+        (existingXY.dy - touchedXY.dy).abs() < 40.0) return true;
     return false;
   }
 
@@ -195,14 +195,14 @@ class CaretPainter extends CustomPainter {
 
       Offset oldOffset = typing.offset;
       return Offset(oldOffset.dx + (tp.size.width / 2), oldOffset.dy);
+      // return Offset(oldOffset.dx, oldOffset.dy);
     }
 
     if (decorationController.paintCarat) {
       var typing = decorationController.decoration.typings.last;
-      var offset = caretOffset(
-        typing,
-      );
-      canvas.drawRect(Rect.fromLTWH(offset.dx, offset.dy, 10, 20), paint);
+      var size = decorationController.size;
+      var offset = caretOffset(typing);
+      canvas.drawRect(Rect.fromLTWH(offset.dx, offset.dy, 5, size * 4), paint);
     }
   }
 

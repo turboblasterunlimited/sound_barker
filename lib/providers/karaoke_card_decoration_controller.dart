@@ -99,15 +99,15 @@ class KaraokeCardDecorationController with ChangeNotifier {
   }
 
   void startTyping() {
+    print("call start typing");
     isTyping = true;
     isDrawing = false;
-    caretBlinker.cancel();
+    // caretBlinker.cancel();
     caretBlinker = startCaretBlinker();
     notifyListeners();
   }
 
   Timer startCaretBlinker() {
-
     return Timer.periodic(Duration(milliseconds: 1000), (timer) {
       paintCarat = !paintCarat;
       notifyListeners();
