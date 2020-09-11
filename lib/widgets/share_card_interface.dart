@@ -280,46 +280,49 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
 
     // print();
 
-    return Column(
-      children: [
-        interfaceTitleNav(context, "ALL DONE!", backCallback: _backCallback),
-        Container(
-          height: MediaQuery.of(context).size.height / 4,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              RawMaterialButton(
-                onPressed: _shareDialog,
-                child: Text(
-                  "Save & Send",
-                  style: TextStyle(color: Colors.white),
+    return Container(
+      // shares height with decorator interface to maintain art canvas art alignment.
+      height: 170,
+      child: Column(
+        children: [
+          interfaceTitleNav(context, "ALL DONE!", backCallback: _backCallback),
+          Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                RawMaterialButton(
+                  onPressed: _shareDialog,
+                  child: Text(
+                    "Save & Send",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                  elevation: 2.0,
+                  fillColor: Theme.of(context).primaryColor,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
                 ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30.0),
+                RawMaterialButton(
+                  onPressed: _deleteDialog,
+                  child: Text(
+                    "Delete",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                  elevation: 2.0,
+                  fillColor: Theme.of(context).errorColor,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
                 ),
-                elevation: 2.0,
-                fillColor: Theme.of(context).primaryColor,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
-              ),
-              RawMaterialButton(
-                onPressed: _deleteDialog,
-                child: Text(
-                  "Delete",
-                  style: TextStyle(color: Colors.white),
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30.0),
-                ),
-                elevation: 2.0,
-                fillColor: Theme.of(context).errorColor,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

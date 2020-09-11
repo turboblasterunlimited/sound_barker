@@ -12,8 +12,9 @@ import 'package:K9_Karaoke/providers/karaoke_card_decoration_controller.dart';
 import 'package:image/image.dart' as IMG;
 
 class CardDecoratorCanvas extends StatefulWidget {
-  final padding;
-  CardDecoratorCanvas({this.padding});
+  final width;
+  final height;
+  CardDecoratorCanvas(this.width, this.height);
   @override
   _CardDecoratorCanvasState createState() => _CardDecoratorCanvasState();
 }
@@ -24,24 +25,7 @@ const List<int> portraitDimensions = [512, 512];
 class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
   KaraokeCardDecorationController decorationController;
   KaraokeCards cards;
-  double screenWidth;
   Typing selectedTyping;
-
-  double get cardHeight {
-    if (cards.current.framePath != null) {
-      return screenWidth / frameDimensions[0] * frameDimensions[1];
-    } else {
-      return screenWidth - (widget.padding * 2);
-    }
-  }
-
-  double get cardWidth {
-    if (cards.current.framePath != null) {
-      return screenWidth;
-    } else {
-      return screenWidth - (widget.padding * 2);
-    }
-  }
 
   void _handleAddNewDrawing(details) {
     if (decorationController.isDrawing)
@@ -171,8 +155,6 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
     decorationController =
         Provider.of<KaraokeCardDecorationController>(context);
     cards = Provider.of<KaraokeCards>(context);
-    screenWidth = MediaQuery.of(context).size.width;
-    print("screenWidth: $screenWidth");
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
@@ -198,18 +180,18 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
         children: [
           CustomPaint(
             painter: decorationController.cardPainter =
-                CardPainter(drawings, typings, [cardWidth, cardHeight]),
+                CardPainter(drawings, typings, [widget.width, widget.height]),
             child: Container(
-              height: cardHeight,
-              width: cardWidth,
+              height: widget.height,
+              width: widget.width,
               child: Center(),
             ),
           ),
           CustomPaint(
             painter: CaretPainter(decorationController),
             child: Container(
-              height: cardHeight,
-              width: cardWidth,
+              height: widget.height,
+              width: widget.width,
               child: Center(),
             ),
           ),
@@ -317,10 +299,10 @@ class CardPainter extends CustomPainter {
 
     for (var drawing in drawings) {
       paint.color = drawing.color;
-      paint.strokeWidth = drawing.size / 4;
+      paint.strokeWidth = drawing.size / 2;
       for (var mark in drawing.offsets) {
         for (var i = 0; i < mark.length; i++) {
-          canvas.drawCircle(mark[i], drawing.size / 2, paint);
+          canvas.drawCircle(mark[i], drawing.size / 4, paint);
         }
       }
     }

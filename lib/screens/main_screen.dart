@@ -32,8 +32,6 @@ class MainScreen extends StatefulWidget {
   _MainScreenState createState() => _MainScreenState();
 }
 
-const double portraitPadding = 22;
-
 class _MainScreenState extends State<MainScreen> {
   User user;
   Barks barks;
@@ -156,7 +154,8 @@ class _MainScreenState extends State<MainScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Image.asset("assets/logos/K9_logotype.png", width: 100 - notificationPadding),
+          Image.asset("assets/logos/K9_logotype.png",
+              width: 100 - notificationPadding),
           // if (!showFrame)
           Expanded(
             child: Center(
@@ -349,8 +348,15 @@ class _MainScreenState extends State<MainScreen> {
                                 child: AspectRatio(
                                   aspectRatio:
                                       cards.current.hasFrame ? 656 / 778 : 1,
-                                  child: CardDecoratorCanvas(
-                                      padding: portraitPadding),
+                                  child: LayoutBuilder(
+                                      builder: (context, constraints) {
+                                    return Positioned.fill(
+                                      child: CardDecoratorCanvas(
+                                        constraints.biggest.width,
+                                        constraints.biggest.height,
+                                      ),
+                                    );
+                                  }),
                                 ),
                               ),
                             if (canPlay)

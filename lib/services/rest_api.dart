@@ -16,8 +16,8 @@ class RestAPI {
     } catch (e) {
       print("logout error: ${e.message}");
       return e.message;
+      print("logout: ${response.data["success"]}");
     }
-    print("logout: ${response.data["success"]}");
     return response.data["success"];
   }
 
@@ -34,8 +34,8 @@ class RestAPI {
       print(e.response.headers);
       print(e.response.data);
       print(e.response.request);
+      print("delete decoration image: ${response.data}");
     }
-    print("delete decoration image: ${response.data}");
   }
 
   static Future<void> deleteCardAudio(String audioId) async {
@@ -51,8 +51,8 @@ class RestAPI {
       print(e.response.headers);
       print(e.response.data);
       print(e.response.request);
+      print("delete card audio: ${response.data}");
     }
-    print("delete card audio: ${response.data}");
   }
 
   static Future<void> createCardDecorationImage(
@@ -75,8 +75,8 @@ class RestAPI {
       print(e.response.headers);
       print(e.response.data);
       print(e.response.request);
+      print("create decoration image body: ${response.data}");
     }
-    print("create decoration image body: ${response.data}");
   }
 
   static Future<void> createCardAudio(audioOrSong) async {
@@ -97,8 +97,8 @@ class RestAPI {
       print(e.response.headers);
       print(e.response.data);
       print(e.response.request);
+      print("create card audio body: ${response.data}");
     }
-    print("create card audio body: ${response.data}");
   }
 
   static Future updateCard(KaraokeCard card) async {
@@ -122,8 +122,8 @@ class RestAPI {
       print(e.response.headers);
       print(e.response.data);
       print(e.response.request);
+      print("update greeting card body: ${response.data}");
     }
-    print("update greeting card body: ${response.data}");
     return response.data;
   }
 
