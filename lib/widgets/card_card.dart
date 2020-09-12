@@ -54,8 +54,8 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
                     padding: EdgeInsets.only(
                       top: constraints.biggest.height * 72 / 778,
                       bottom: constraints.biggest.height * 194 / 778,
-                      left: 0,
-                      right: constraints.biggest.width * 72 / 656,
+                      // left: 0,
+                      // right: constraints.biggest.width * 72 / 656,
                     ),
                     child: image);
               },
@@ -72,6 +72,7 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
           margin: EdgeInsets.symmetric(horizontal: 5),
           child: SizedBox(
             child: Stack(
+              alignment: Alignment.center,
               children: [
                 decorationImageSelectable(
                   Image.file(File(widget.card.picture.filePath)),

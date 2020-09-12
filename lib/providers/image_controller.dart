@@ -95,6 +95,8 @@ class ImageController with ChangeNotifier {
       browGestureSettings =
           '0.${3 + random.nextInt(3)}, ${1 + random.nextInt(3)}0, ${1 + random.nextInt(3)}500';
       rNum = random.nextInt(30);
+
+      // Brow furrows
       if (rNum <= 4)
         webViewController
             .evaluateJavascript("left_brow_raise($browGestureSettings)");
@@ -107,18 +109,23 @@ class ImageController with ChangeNotifier {
       if (rNum <= 12 && rNum > 9)
         webViewController
             .evaluateJavascript("right_brow_furrow($browGestureSettings)");
-      if (rNum == 15 || rNum == 13) {
-        webViewController.evaluateJavascript("left_blink_quick()");
-        webViewController.evaluateJavascript("right_blink_quick()");
-      }
+      // blinks and winks
       if (rNum % 2 == 0) {
         webViewController.evaluateJavascript("left_blink_slow()");
         webViewController.evaluateJavascript("right_blink_slow()");
       }
-      if (rNum == 19)
+      if (rNum == 13)
+        webViewController.evaluateJavascript("left_blink_quick()");
+      if (rNum == 15)
         webViewController.evaluateJavascript("right_blink_quick()");
+      if (rNum == 17)
+        webViewController.evaluateJavascript("left_blink_slow()");
       if (rNum == 21)
         webViewController.evaluateJavascript("right_blink_slow()");
+      if (rNum > 21 && rNum % 2 != 0) {
+        webViewController.evaluateJavascript("left_blink_quick()");
+        webViewController.evaluateJavascript("right_blink_quick()");
+      }
     });
     return this.randomGestureTimer = timer;
   }
