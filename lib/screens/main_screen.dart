@@ -48,7 +48,6 @@ class _MainScreenState extends State<MainScreen> {
   double frameToScreenWidth;
   // Xs the frame padding in pixels
   double framePadding;
-  double framePaddingBottom;
 
   List get _playbackFiles {
     if (_canPlayAudio) {
@@ -137,10 +136,10 @@ class _MainScreenState extends State<MainScreen> {
     print("start all");
     setState(() => _isPlaying = true);
     // Only songs have a .csv amplitude file, barks, messages and card/combined audio have a List of amplitudes in memory.
+    soundController.startPlayer(_playbackFiles[0], stopAll);
     !_canPlayAudio && _canPlaySong
         ? imageController.mouthTrackSound(filePath: _playbackFiles[1])
         : imageController.mouthTrackSound(amplitudes: _playbackFiles[1]);
-    soundController.startPlayer(_playbackFiles[0], stopAll);
   }
 
   Widget mainAppBar() {
@@ -272,7 +271,6 @@ class _MainScreenState extends State<MainScreen> {
     screenWidth ??= MediaQuery.of(context).size.width;
     frameToScreenWidth ??= screenWidth / 656;
     framePadding ??= frameToScreenWidth * 72;
-    framePaddingBottom ??= frameToScreenWidth * 194;
 
     bool everythingReady() {
       return imageController.isReady;

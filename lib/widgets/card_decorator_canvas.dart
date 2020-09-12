@@ -264,7 +264,7 @@ class CardPainter extends CustomPainter {
     IMG.Image imgImage = IMG.decodeImage(test);
     IMG.Image resized =
         IMG.copyResize(imgImage, width: aspect[0], height: aspect[1]);
-    return IMG.encodePng(resized);
+    return IMG.encodePng(resized, level: 0);
   }
 
   Future<Uint8List> _mergeArtWithFrame(IMG.Image art, String framePath) async {
@@ -274,7 +274,7 @@ class CardPainter extends CustomPainter {
     final mergedImage = IMG.Image(656, 778);
     IMG.copyInto(mergedImage, frame, blend: true);
     IMG.copyInto(mergedImage, art, blend: true);
-    return IMG.encodePng(mergedImage);
+    return IMG.encodePng(mergedImage, level: 1);
   }
 
   Future<String> capturePNG(String uniqueId, [String framePath]) async {

@@ -304,7 +304,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
                 ),
-                RawMaterialButton(
+                if (cards.current.uuid != null) RawMaterialButton(
                   onPressed: _deleteDialog,
                   child: Text(
                     "Delete",
