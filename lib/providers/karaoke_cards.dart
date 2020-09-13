@@ -80,6 +80,7 @@ class KaraokeCards with ChangeNotifier {
 
   void setCurrentSong(Song newSong) {
     current.song = newSong;
+    current.markLastAudioForDelete();
     notifyListeners();
   }
 
@@ -100,6 +101,7 @@ class KaraokeCards with ChangeNotifier {
 
   void setCurrentPicture(newPicture) {
     current.picture = newPicture;
+    if (current.uuid != null) RestAPI.updateCardPicture(current);
     notifyListeners();
   }
 
@@ -147,6 +149,7 @@ class KaraokeCard with ChangeNotifier {
   CardDecoration decoration = CardDecoration();
   bool shouldDeleteOldDecoration = false;
   CardAudio oldCardAudio;
+  bool updateCardAudio = false;
 
   KaraokeCard(
       {this.uuid, this.picture, this.audio, this.song, this.decorationImage}) {
@@ -193,17 +196,17 @@ class KaraokeCard with ChangeNotifier {
     return song == null && hasMessage;
   }
 
-  void _markLastAudioForDelete() {
-    if (audio.filePath == null) return;
-    audio.deleteFile();
-    if (audio.bucketFp == null) return;
+  void markLastAudioForDelete() {
+    // updateCardAudio = true;
+    // if (audio.filePath == null) return;
+    // audio.deleteFile();
     oldCardAudio = audio;
-    audio = CardAudio();
   }
 
   Future<void> combineMessageAndSong() async {
     // if already have a combined audio file
-    _markLastAudioForDelete();
+    markLastAudioForDelete();
+    audio = CardAudio();
     audio.filePath = "$myAppStoragePath/${audio.fileId}.aac";
 
     // Combine with song
@@ -218,15 +221,16 @@ class KaraokeCard with ChangeNotifier {
       List songAmplitudes =
           await AmplitudeExtractor.fileToList(song.amplitudesPath);
       audio.amplitudes = message.amps + songAmplitudes;
-      return null;
+    } else {
+      // make card.message into card.audio
+      File(message.path).copySync(audio.filePath);
+      audio.amplitudes = message.amps;
     }
-    // make card.message into card.audio
-    File(message.path).copySync(audio.filePath);
-    audio.amplitudes = message.amps;
   }
 
   Future<void> songToAudio() async {
-    _markLastAudioForDelete();
+    markLastAudioForDelete();
+    audio = CardAudio();
     audio.filePath = "$myAppStoragePath/${audio.fileId}.aac";
     File(song.filePath).copySync(audio.filePath);
     audio.amplitudes = await AmplitudeExtractor.fileToList(song.amplitudesPath);

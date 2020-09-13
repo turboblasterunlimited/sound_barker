@@ -67,6 +67,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     if (cards.current.oldCardAudio != null) {
       setDialogState(() => _loadingMessage = "saving sounds...");
       await cards.current.deleteOldAudio();
+      setDialogState(() => _loadingMessage = "saving sounds...");
       await _uploadAndCreateCardAudio();
       changed = true;
     }
@@ -304,20 +305,21 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
                 ),
-                if (cards.current.uuid != null) RawMaterialButton(
-                  onPressed: _deleteDialog,
-                  child: Text(
-                    "Delete",
-                    style: TextStyle(color: Colors.white),
+                if (cards.current.uuid != null)
+                  RawMaterialButton(
+                    onPressed: _deleteDialog,
+                    child: Text(
+                      "Delete",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                    elevation: 2.0,
+                    fillColor: Theme.of(context).errorColor,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 40.0, vertical: 2),
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                  ),
-                  elevation: 2.0,
-                  fillColor: Theme.of(context).errorColor,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
-                ),
               ],
             ),
           ),

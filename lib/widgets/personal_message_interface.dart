@@ -163,18 +163,18 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
   }
 
   void skipCallback() async {
-    if (!cards.current.hasSong) {
+    // first time creation: audio and oldCardAudio are null. If new song is selected: audio is set to oldCardAudio
+    if (cards.current.oldCardAudio == cards.current.audio &&
+        cards.current.hasSong) {
+      await cards.current.songToAudio();
+      return currentActivity.setCardCreationStep(CardCreationSteps.style);
+      // already created audio but going back through and just clicking skip without having changed the song
+    } else if (cards.current.hasAudio) {
+      return currentActivity.setCardCreationStep(CardCreationSteps.style);
+    } else {
       showError(context, "Need a song or a message or both!");
       return null;
     }
-
-    message.deleteEverything();
-    if (cards.current.audio.exists) await cards.current.audio.delete();
-
-    // if just song
-    await cards.current.songToAudio();
-
-    currentActivity.setCardCreationStep(CardCreationSteps.style);
   }
 
   bool _canAddMessage() {

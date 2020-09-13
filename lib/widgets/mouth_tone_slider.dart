@@ -181,22 +181,7 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
             ),
           ),
         ),
-        Center(
-          child: RawMaterialButton(
-            onPressed: handleSubmitButton,
-            child: Icon(
-              Icons.check,
-              color: Colors.white,
-              size: 40,
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30.0),
-            ),
-            elevation: 2.0,
-            fillColor: Theme.of(context).primaryColor,
-            padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
-          ),
-        ),
+        
       ],
     );
   }

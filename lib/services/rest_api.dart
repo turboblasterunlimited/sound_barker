@@ -55,6 +55,26 @@ class RestAPI {
     }
   }
 
+  static Future<void> updateCardPicture(card) async {
+    var response;
+    final cardBody = {"image_id": card.picture.fileId};
+    final cardUrl = 'http://165.227.178.14/greeting_card/${card.uuid}';
+    print("update card request body: $cardBody");
+    try {
+      response = await HttpController.dio.patch(
+        cardUrl,
+        data: cardBody,
+      );
+    } catch (e) {
+      print("update card picture error: ${e.message}");
+      print(e.response.headers);
+      print(e.response.data);
+      print(e.response.request);
+      print("update greeting card body: ${response.data}");
+    }
+    return response.data;
+  }
+
   static Future<void> createCardDecorationImage(
       CardDecorationImage decorationImage) async {
     final imageBody = {

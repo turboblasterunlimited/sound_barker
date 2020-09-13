@@ -1,7 +1,5 @@
 import 'dart:io';
 
-import 'package:K9_Karaoke/providers/karaoke_cards.dart';
-import 'package:K9_Karaoke/providers/songs.dart';
 import 'package:K9_Karaoke/services/gcloud.dart';
 import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
@@ -69,6 +67,10 @@ class CardAudio {
     try {
       if (bucketFp != null) await RestAPI.deleteCardAudio(fileId);
       deleteFile();
+      amplitudes = null;
+      filePath = null;
+      fileId = null;
+      bucketFp = null;
     } catch (e) {
       print(e);
     }

@@ -26,7 +26,6 @@ class _MyCardsScreenState extends State<MyCardsScreen> {
     widgets.add(_addCardButton());
     cards.all.forEach((card) {
       widgets.add(CardCard(card, cards));
-      // widgets.add(Text("CHECK CHECK CHECK"));
     });
     return widgets;
   }
