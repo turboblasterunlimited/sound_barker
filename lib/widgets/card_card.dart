@@ -37,6 +37,7 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
   void handleTap() {
     widget.cards.setCurrent(widget.card);
     imageController.createDog(widget.card.picture);
+    currentActivity.current = Activities.cardCreation;
     currentActivity.setCardCreationStep(
         CardCreationSteps.style, CardCreationSubSteps.three);
     Navigator.popUntil(

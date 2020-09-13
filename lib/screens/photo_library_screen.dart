@@ -1,3 +1,4 @@
+import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,6 +17,7 @@ class PhotoLibraryScreen extends StatefulWidget {
 
 class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
   Pictures pictures;
+  KaraokeCards cards;
 
   List<Widget> _pictureGridTiles(List<Picture> pics) {
     List<Widget> widgets = [];
@@ -62,6 +64,13 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
     );
   }
 
+  void _backCallback() {
+    if (cards.current != null && cards.current.hasPicture)
+      Navigator.of(context).pop();
+    else
+      Navigator.of(context).pushNamed(MenuScreen.routeName);
+  }
+
   SliverChildListDelegate _dogGridDivider(String label) {
     return SliverChildListDelegate(
       [
@@ -85,6 +94,7 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
 
   Widget build(BuildContext context) {
     pictures = Provider.of<Pictures>(context, listen: false);
+    cards = Provider.of<KaraokeCards>(context, listen: false);
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomPadding: false,
@@ -134,8 +144,7 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
               context,
               "PHOTO LIBRARY",
               titleSize: 24,
-              backCallback: () =>
-                  Navigator.of(context).pushNamed(MenuScreen.routeName),
+              backCallback: _backCallback,
             ),
             Expanded(
               child: CustomScrollView(

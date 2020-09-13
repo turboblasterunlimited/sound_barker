@@ -116,7 +116,7 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
       children: <Widget>[
         interfaceTitleNav(context, "MOUTH TONE", backCallback: backCallback),
         SizedBox(
-          height: MediaQuery.of(context).size.height / 3,
+          height: MediaQuery.of(context).size.height / 4,
           child: Expanded(
             child: Padding(
               padding: const EdgeInsets.only(top: 20.0),
@@ -147,11 +147,11 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
                           } else if (sliderVal > 0) {
                             adjustedVal = sliderVal;
                           }
-                          print("Hex of rgba: ${hexOfRGB(
-                            sliderMouthTone[0],
-                            sliderMouthTone[1],
-                            sliderMouthTone[2],
-                          )}");
+                          // print("Hex of rgba: ${hexOfRGB(
+                          //   sliderMouthTone[0],
+                          //   sliderMouthTone[1],
+                          //   sliderMouthTone[2],
+                          // )}");
                           // var tempVal = _sliderValue;
                           // if (i == 0 && sliderVal > .5) tempVal /= _sliderValue;
                           // else if (sliderVal < .5) value *= 2;
@@ -181,7 +181,22 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
             ),
           ),
         ),
-        
+        Center(
+          child: RawMaterialButton(
+            onPressed: handleSubmitButton,
+            child: Icon(
+              Icons.check,
+              color: Colors.white,
+              size: 40,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30.0),
+            ),
+            elevation: 2.0,
+            fillColor: Theme.of(context).primaryColor,
+            padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
+          ),
+        ),
       ],
     );
   }

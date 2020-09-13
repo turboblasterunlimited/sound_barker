@@ -149,7 +149,6 @@ class KaraokeCard with ChangeNotifier {
   CardDecoration decoration = CardDecoration();
   bool shouldDeleteOldDecoration = false;
   CardAudio oldCardAudio;
-  bool updateCardAudio = false;
 
   KaraokeCard(
       {this.uuid, this.picture, this.audio, this.song, this.decorationImage}) {
@@ -197,9 +196,6 @@ class KaraokeCard with ChangeNotifier {
   }
 
   void markLastAudioForDelete() {
-    // updateCardAudio = true;
-    // if (audio.filePath == null) return;
-    // audio.deleteFile();
     oldCardAudio = audio;
   }
 

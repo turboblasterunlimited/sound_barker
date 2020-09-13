@@ -158,11 +158,6 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTapDown: (details) {
-        print("Tapping canvas");
-        _handleAddNewDrawing(details);
-        _handleCreateOrSelectTyping(details);
-      },
       onPanStart: (details) {
         print("Drawing....");
         _handleAddNewDrawing(details);
@@ -175,6 +170,11 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
       onPanEnd: (details) {
         _handleEndDrawing();
         _handleEndDragTyping();
+      },
+      onTapDown: (details) {
+        print("Tapping canvas");
+        _handleAddNewDrawing(details);
+        _handleCreateOrSelectTyping(details);
       },
       child: Stack(
         children: [
