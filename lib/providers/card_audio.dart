@@ -22,7 +22,7 @@ class CardAudios with ChangeNotifier {
 
   Future<void> retrieveAll() async {
     var response = await RestAPI.retrieveAllCardAudio();
-    Bucket bucket = await Gcloud.accessBucket();
+    Bucket bucket = await Gcloud.accessDownloadBucket();
 
     response.forEach((audioData) {
       if (audioData["hidden"] == 1) return;

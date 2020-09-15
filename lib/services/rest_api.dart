@@ -15,8 +15,8 @@ class RestAPI {
       response = await HttpController.dio.get("http://165.227.178.14/logout");
     } catch (e) {
       print("logout error: ${e.message}");
-      return e.message;
       print("logout: ${response.data["success"]}");
+      return e.message;
     }
     return response.data["success"];
   }

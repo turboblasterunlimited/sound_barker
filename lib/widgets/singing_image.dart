@@ -48,6 +48,7 @@ class _SingingImageState extends State<SingingImage>
               JavascriptChannel(
                 name: 'Print',
                 onMessageReceived: (JavascriptMessage message) async {
+                  // print(message.message);
                   if (message.message ==
                       "[puppet.js postMessage] finished init") {
                     imageController.makeInit();

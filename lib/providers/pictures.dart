@@ -71,7 +71,7 @@ class Pictures with ChangeNotifier {
   }
 
   Future downloadAllImagesFromBucket([List images]) async {
-    Bucket bucket = await Gcloud.accessBucket();
+    Bucket bucket = await Gcloud.accessDownloadBucket();
     images ??= all;
     int imagesCount = images.length;
     for (var i = 0; i < imagesCount; i++) {

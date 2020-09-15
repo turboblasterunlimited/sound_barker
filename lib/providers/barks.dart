@@ -72,7 +72,7 @@ class Barks with ChangeNotifier {
   // downloads the files either from all barks in memory or just the barks passed.
   Future downloadAllBarksFromBucket([List barks]) async {
     print("downloading all barks");
-    Bucket bucket = await Gcloud.accessBucket();
+    Bucket bucket = await Gcloud.accessDownloadBucket();
     barks ??= all;
     int barkCount = barks.length;
     for (var i = 0; i < barkCount; i++) {

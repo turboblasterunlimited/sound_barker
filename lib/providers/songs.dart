@@ -52,7 +52,7 @@ class Songs with ChangeNotifier {
   // ALL SONGS THAT AREN'T HIDDEN UNLESS THEY ALREADY EXIST ON THE CLIENT
   Future retrieveAll() async {
     List tempSongs = [];
-    Bucket bucket = await Gcloud.accessBucket();
+    Bucket bucket = await Gcloud.accessDownloadBucket();
     List serverSongs = await RestAPI.retrieveAllSongs();
     print("retriveallsongresponse: $serverSongs");
 
@@ -122,7 +122,7 @@ class Song with ChangeNotifier {
 
   Future<Song> retrieveSong(Map songData, [bucket]) async {
     print("retrieving song: $songData");
-    bucket ??= await Gcloud.accessBucket();
+    bucket ??= await Gcloud.accessDownloadBucket();
     this.backingTrackUrl = songData["backing_track_fp"];
     this.fileId = songData["uuid"];
     this.name = songData["name"];

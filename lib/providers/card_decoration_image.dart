@@ -17,7 +17,7 @@ class CardDecorationImages with ChangeNotifier {
 
   Future<void> retrieveAll() async {
     var response = await RestAPI.retrieveAllDecorationImages();
-    Bucket bucket = await Gcloud.accessBucket();
+    Bucket bucket = await Gcloud.accessDownloadBucket();
     String lastDecorationImage;
 
     response.forEach((imageData) {
