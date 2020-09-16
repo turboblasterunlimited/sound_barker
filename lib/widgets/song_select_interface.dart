@@ -28,64 +28,69 @@ class _SongSelectInterfaceState extends State<SongSelectInterface> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Spacer(),
-            RawMaterialButton(
-              onPressed: () {},
-              child: Text("My Songs",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontSize: 16)),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(40.0),
-                side:
-                    BorderSide(color: Theme.of(context).primaryColor, width: 3),
-              ),
-              elevation: 2.0,
-              fillColor: Theme.of(context).primaryColor,
-              padding:
-                  const EdgeInsets.symmetric(vertical: 13, horizontal: 22.0),
-            ),
-            Padding(padding: EdgeInsets.all(10)),
-            RawMaterialButton(
-              onPressed: spinnerState.isLoading
-                  ? null
-                  : () {
-                      Navigator.pushNamed(
-                          context, CreatableSongSelectScreen.routeName);
-                    },
-              child: spinnerState.isLoading
-                  ? SpinKitWave(
-                      color: Colors.white,
-                      size: 20,
-                    )
-                  : Text("Make Song",
+        Stack(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                RawMaterialButton(
+                  onPressed: () {},
+                  child: Text("My Songs",
                       style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).primaryColor,
-                        fontSize: 16,
-                      )),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(40.0),
-                side:
-                    BorderSide(color: Theme.of(context).primaryColor, width: 3),
-              ),
-              elevation: 2.0,
-              padding:
-                  const EdgeInsets.symmetric(vertical: 13, horizontal: 22.0),
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontSize: 16)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(40.0),
+                    side: BorderSide(
+                        color: Theme.of(context).primaryColor, width: 3),
+                  ),
+                  elevation: 2.0,
+                  fillColor: Theme.of(context).primaryColor,
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 13, horizontal: 22.0),
+                ),
+                Padding(padding: EdgeInsets.all(10)),
+                RawMaterialButton(
+                  onPressed: spinnerState.isLoading
+                      ? null
+                      : () {
+                          Navigator.pushNamed(
+                              context, CreatableSongSelectScreen.routeName);
+                        },
+                  child: spinnerState.isLoading
+                      ? SpinKitWave(
+                          color: Colors.white,
+                          size: 20,
+                        )
+                      : Text("Make Song",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).primaryColor,
+                            fontSize: 16,
+                          )),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(40.0),
+                    side: BorderSide(
+                        color: Theme.of(context).primaryColor, width: 3),
+                  ),
+                  elevation: 2.0,
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 13, horizontal: 22.0),
+                ),
+              ],
             ),
-            GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onTap: () {
-                card.noSongNoFormula();
-                currentActivity.setCardCreationStep(
-                    CardCreationSteps.speak, CardCreationSubSteps.seven);
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(left: 10),
+            Positioned(
+              right: 0,
+              bottom: 0,
+              top: 0,
+              child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: () {
+                  card.noSongNoFormula();
+                  currentActivity.setCardCreationStep(
+                      CardCreationSteps.speak, CardCreationSubSteps.seven);
+                },
                 child: Row(
                   children: <Widget>[
                     Text('Skip', style: TextStyle(color: Colors.grey)),
