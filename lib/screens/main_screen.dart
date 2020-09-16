@@ -314,7 +314,7 @@ class _MainScreenState extends State<MainScreen> {
                                   // to shrink portrait to accomodate card frame
                                   padding: _useFramePadding
                                       ? EdgeInsets.only(
-                                          // left: constraints.biggest.height *
+                                          // left: constraints.biPositioned(left: 0.0, top: 0.0, right: 0.0, bottom: 0.0)ggest.height *
                                           //     (72 / 778),
                                           top: constraints.biggest.height *
                                               (72 / 778),
@@ -348,7 +348,8 @@ class _MainScreenState extends State<MainScreen> {
                                       cards.current.hasFrame ? 656 / 778 : 1,
                                   child: LayoutBuilder(
                                       builder: (context, constraints) {
-                                    return Positioned.fill(
+                                    return Align(
+                                      alignment: Alignment.center,
                                       child: CardDecoratorCanvas(
                                         constraints.biggest.width,
                                         constraints.biggest.height,
