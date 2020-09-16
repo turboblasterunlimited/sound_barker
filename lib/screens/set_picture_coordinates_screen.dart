@@ -372,9 +372,8 @@ class _SetPictureCoordinatesScreenState
                       // possible issue
                       child: FittedBox(
                         fit: BoxFit.fill,
-                        child: Image.file(
-                          File(widget.newPicture.filePath),
-                        ),
+                        child: Image.file(File(widget.newPicture.filePath),
+                        width: 512, height: 512),
                       ),
                     ),
                     // Points and lines

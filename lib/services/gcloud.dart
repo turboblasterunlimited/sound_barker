@@ -5,9 +5,10 @@ import '../services/http_controller.dart';
 
 class Gcloud {
   static Future<String> _uploadBucketLink(fileName, directory) async {
-    final body = {"filename": "$directory/$fileName"};
+    final body = {"filepath": "$directory/$fileName"};
     final url = 'http://165.227.178.14/signed-upload-url';
 
+    print("upload bucket link body: $body");
     var response;
     try {
       response = await HttpController.dio.post(
@@ -33,21 +34,27 @@ class Gcloud {
     var fileName = basename(filePath);
     String uploadUrl = await _uploadBucketLink(fileName, directory);
     File file = File(filePath);
+    var response;
     try {
-      await HttpController.dio.post(
+      response = await HttpController.dio.post(
         uploadUrl,
         data: File(filePath).openRead(), // Post with Stream<List<int>>
         options: Options(
           headers: {
-            HttpHeaders.contentTypeHeader: ContentType.text,
+            HttpHeaders.contentTypeHeader: ContentType.binary,
             HttpHeaders.contentLengthHeader: file.lengthSync(),
             // HttpHeaders.authorizationHeader: "Bearer $token",
           },
         ),
       );
     } catch (e) {
-      print(e);
+      print("Upload Error: $e");
+      print("upload bucket link: ${e.message}");
+      print(e.response.headers);
+      print(e.response.data);
+      print(e.response.request);
     }
+    print("upload response: $response");
     final bucketFp = "$directory/$fileName";
     return bucketFp;
   }

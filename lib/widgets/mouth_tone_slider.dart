@@ -116,9 +116,8 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
       children: <Widget>[
         interfaceTitleNav(context, "MOUTH TONE", backCallback: backCallback),
         SizedBox(
-          height: MediaQuery.of(context).size.height / 4,
-          child: Expanded(
-            child: Padding(
+          height: 170,
+          child: Padding(
               padding: const EdgeInsets.only(top: 20.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -180,7 +179,7 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
               ),
             ),
           ),
-        ),
+        
         Center(
           child: RawMaterialButton(
             onPressed: handleSubmitButton,
