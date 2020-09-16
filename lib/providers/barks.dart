@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gcloud/storage.dart';
 import 'package:K9_Karaoke/tools/amplitude_extractor.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:uuid/uuid.dart';
@@ -72,7 +71,6 @@ class Barks with ChangeNotifier {
   // downloads the files either from all barks in memory or just the barks passed.
   Future downloadAllBarksFromBucket([List barks]) async {
     print("downloading all barks");
-    Bucket bucket = await Gcloud.accessDownloadBucket();
     barks ??= all;
     int barkCount = barks.length;
     for (var i = 0; i < barkCount; i++) {
@@ -85,8 +83,7 @@ class Barks with ChangeNotifier {
       // download and generate amplitude file if none exist
       if (!File(barks[i].filePath).existsSync()) {
         await Gcloud.downloadFromBucket(
-            barks[i].fileUrl, barks[i].filePath,
-            bucket: bucket);
+            barks[i].fileUrl, barks[i].filePath);
       }
       if (!File(barks[i].amplitudesPath).existsSync()) {
         await AmplitudeExtractor.createAmplitudeFile(

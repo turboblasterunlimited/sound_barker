@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:gcloud/storage.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/foundation.dart';
@@ -71,7 +70,6 @@ class Pictures with ChangeNotifier {
   }
 
   Future downloadAllImagesFromBucket([List images]) async {
-    Bucket bucket = await Gcloud.accessDownloadBucket();
     images ??= all;
     int imagesCount = images.length;
     for (var i = 0; i < imagesCount; i++) {
@@ -79,8 +77,7 @@ class Pictures with ChangeNotifier {
       String filePath = myAppStoragePath + '/' + fileName;
       images[i].filePath = filePath;
       if (!await File(filePath).exists())
-        await Gcloud.downloadFromBucket(images[i].fileUrl, filePath,
-            bucket: bucket);
+        await Gcloud.downloadFromBucket(images[i].fileUrl, filePath);
     }
   }
 }

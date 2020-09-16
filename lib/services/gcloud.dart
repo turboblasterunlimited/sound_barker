@@ -1,24 +1,9 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:path/path.dart';
-import 'package:flutter/services.dart';
-import 'package:gcloud/storage.dart';
-import 'package:googleapis_auth/auth_io.dart' as AUTH;
 import '../services/http_controller.dart';
 
 class Gcloud {
-  static Future<Bucket> accessDownloadBucket(
-      [bucket_name = "song_barker_sequences"]) async {
-    var credData =
-        await rootBundle.loadString('credentials/gcloud_credentials.json');
-    var credentials = AUTH.ServiceAccountCredentials.fromJson(credData);
-    List<String> scopes = []..addAll(Storage.SCOPES);
-    AUTH.AutoRefreshingAuthClient client =
-        await AUTH.clientViaServiceAccount(credentials, scopes);
-    var storage = Storage(client, 'songbarker');
-    return storage.bucket(bucket_name);
-  }
-
   static Future<String> _uploadBucketLink(fileName, directory) async {
     final body = {"filename": "$directory/$fileName"};
     final url = 'http://165.227.178.14/signed-upload-url';
@@ -48,7 +33,6 @@ class Gcloud {
     var fileName = basename(filePath);
     String uploadUrl = await _uploadBucketLink(fileName, directory);
     File file = File(filePath);
-
     try {
       await HttpController.dio.post(
         uploadUrl,
@@ -68,12 +52,22 @@ class Gcloud {
     return bucketFp;
   }
 
-  static Future<String> downloadFromBucket(String bucketFp, String filePath,
-      {Bucket bucket}) async {
-    // if (bucketFp == null) return null;
-    bucket ??= await accessDownloadBucket();
+  static Future<String> downloadFromBucket(
+      String bucketFp, String filePath) async {
     try {
-      await bucket.read(bucketFp).pipe(File(filePath).openWrite());
+      Response response = await HttpController.dio.get(
+        "https://storage.googleapis.com/song_barker_sequences/$bucketFp",
+        //Received data with List<int>
+        options: Options(
+            responseType: ResponseType.bytes,
+            followRedirects: false,
+            receiveTimeout: 0),
+      );
+      File file = File(filePath);
+      var raf = file.openSync(mode: FileMode.write);
+      // response.data is List<int> type
+      raf.writeFromSync(response.data);
+      await raf.close();
     } catch (e) {
       print(e);
     }
@@ -82,9 +76,9 @@ class Gcloud {
 
   static Future<String> uploadRawBark(fileId, filePath) async {
     String bucketWritePath = "$fileId/raw.aac";
-    Bucket bucket = await accessDownloadBucket();
+
     try {
-      await File(filePath).openRead().pipe(bucket.write(bucketWritePath));
+      // await File(filePath).openRead().pipe(bucket.write(bucketWritePath));
     } catch (e) {
       print(e);
       return e;

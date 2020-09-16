@@ -1,7 +1,6 @@
 import 'package:K9_Karaoke/providers/creatable_songs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:gcloud/storage.dart';
 import '../services/gcloud.dart';
 import 'dart:io';
 
@@ -52,13 +51,12 @@ class Songs with ChangeNotifier {
   // ALL SONGS THAT AREN'T HIDDEN UNLESS THEY ALREADY EXIST ON THE CLIENT
   Future retrieveAll() async {
     List tempSongs = [];
-    Bucket bucket = await Gcloud.accessDownloadBucket();
     List serverSongs = await RestAPI.retrieveAllSongs();
     print("retriveallsongresponse: $serverSongs");
 
     for (Map<String, dynamic> serverSong in serverSongs) {
       if (serverSong["hidden"] == 1) continue;
-      final song = await Song().retrieveSong(serverSong, bucket);
+      final song = await Song().retrieveSong(serverSong);
       tempSongs.add(song);
       print("song created: ${song.created}");
     }
@@ -120,9 +118,8 @@ class Song with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<Song> retrieveSong(Map songData, [bucket]) async {
+  Future<Song> retrieveSong(Map songData) async {
     print("retrieving song: $songData");
-    bucket ??= await Gcloud.accessDownloadBucket();
     this.backingTrackUrl = songData["backing_track_fp"];
     this.fileId = songData["uuid"];
     this.name = songData["name"];
@@ -133,11 +130,10 @@ class Song with ChangeNotifier {
 
     if (_setIfFilesExist(filePathBase)) return this;
 
-    await _getMelodyAndGenerateAmplitudeFile(bucket, filePathBase);
+    await _getMelodyAndGenerateAmplitudeFile(filePathBase);
     if (backingTrackUrl != null) {
       String backingTrackPath = filePathBase + "backing.aac";
-      await Gcloud.downloadFromBucket(backingTrackUrl, backingTrackPath,
-          bucket: bucket);
+      await Gcloud.downloadFromBucket(backingTrackUrl, backingTrackPath);
       await _mergeTracks(backingTrackPath, filePathBase);
     }
     return this;
@@ -153,10 +149,9 @@ class Song with ChangeNotifier {
     return false;
   }
 
-  Future<void> _getMelodyAndGenerateAmplitudeFile(bucket, filePathBase) async {
+  Future<void> _getMelodyAndGenerateAmplitudeFile(filePathBase) async {
     this.filePath = await Gcloud.downloadFromBucket(
-        bucketFp, filePathBase + '.aac',
-        bucket: bucket);
+        bucketFp, filePathBase + '.aac');
     this.amplitudesPath = await AmplitudeExtractor.createAmplitudeFile(
         this.filePath, filePathBase);
   }

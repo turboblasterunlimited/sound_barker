@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:K9_Karaoke/services/gcloud.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:flutter/material.dart';
-import 'package:gcloud/storage.dart';
 import 'package:image/image.dart' as IMG;
 import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:uuid/uuid.dart';
@@ -17,7 +16,6 @@ class CardDecorationImages with ChangeNotifier {
 
   Future<void> retrieveAll() async {
     var response = await RestAPI.retrieveAllDecorationImages();
-    Bucket bucket = await Gcloud.accessDownloadBucket();
     String lastDecorationImage;
 
     response.forEach((imageData) {
@@ -38,8 +36,7 @@ class CardDecorationImages with ChangeNotifier {
 
           if (File(filePath).existsSync()) return;
           try {
-            await Gcloud.downloadFromBucket(decoration.bucketFp, filePath,
-                bucket: bucket);
+            await Gcloud.downloadFromBucket(decoration.bucketFp, filePath);
           } catch (e) {
             // hack to get around bad bucket_fp
             print(e);

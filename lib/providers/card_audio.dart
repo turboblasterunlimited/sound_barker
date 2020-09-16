@@ -4,7 +4,6 @@ import 'package:K9_Karaoke/services/gcloud.dart';
 import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:flutter/material.dart';
-import 'package:gcloud/storage.dart';
 import 'package:uuid/uuid.dart';
 
 class CardAudios with ChangeNotifier {
@@ -22,7 +21,6 @@ class CardAudios with ChangeNotifier {
 
   Future<void> retrieveAll() async {
     var response = await RestAPI.retrieveAllCardAudio();
-    Bucket bucket = await Gcloud.accessDownloadBucket();
 
     response.forEach((audioData) {
       if (audioData["hidden"] == 1) return;
@@ -37,8 +35,7 @@ class CardAudios with ChangeNotifier {
       // print("file length: ${File(filePath).lengthSync()}");
 
       if (!File(filePath).existsSync())
-        await Gcloud.downloadFromBucket(audio.bucketFp, filePath,
-            bucket: bucket);
+        await Gcloud.downloadFromBucket(audio.bucketFp, filePath);
     }));
     notifyListeners();
   }

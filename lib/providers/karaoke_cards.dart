@@ -126,7 +126,7 @@ class KaraokeCards with ChangeNotifier {
   }
 
   bool get currentPictureIsStock {
-    return current.picture.isStock;
+    return current.picture != null && current.picture.isStock;
   }
 }
 
