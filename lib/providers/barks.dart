@@ -82,8 +82,7 @@ class Barks with ChangeNotifier {
 
       // download and generate amplitude file if none exist
       if (!File(barks[i].filePath).existsSync()) {
-        await Gcloud.downloadFromBucket(
-            barks[i].fileUrl, barks[i].filePath);
+        await Gcloud.downloadFromBucket(barks[i].fileUrl, barks[i].filePath);
       }
       if (!File(barks[i].amplitudesPath).existsSync()) {
         await AmplitudeExtractor.createAmplitudeFile(
@@ -96,17 +95,20 @@ class Barks with ChangeNotifier {
     return all;
   }
 
-  void remove(barkToDelete) {
+  void remove(Bark barkToDelete) {
     if (barkToDelete.isStock)
       return print("can't delete stock bark"); // should throw error
     barkToDelete.deleteFromServer();
     all.remove(barkToDelete);
-    File(barkToDelete.filePath).delete();
+    barkToDelete.deleteFiles();
     notifyListeners();
   }
 
-  Future<List> uploadRawBarkAndRetrieveCroppedBarks(imageId) async {
+  void deleteAll() {
+    all.forEach((bark) => bark.deleteFiles());
+  }
 
+  Future<List> uploadRawBarkAndRetrieveCroppedBarks(imageId) async {
     await Gcloud.uploadRawBark(tempRawBark.fileId, tempRawBark.filePath);
     List responseBody = await RestAPI.splitRawBark(tempRawBark.fileId, imageId);
     List newBarks = await parseCroppedBarks(responseBody);
@@ -182,6 +184,15 @@ class Bark with ChangeNotifier {
   String get getName {
     if (name == "" || name == null) return "Unnamed";
     return name;
+  }
+
+  void deleteFiles() {
+    try {
+      File(filePath).deleteSync();
+      File(amplitudesPath).deleteSync();
+    } catch (e) {
+      print("Error: $e");
+    }
   }
 
   Future<void> rename(newName) async {

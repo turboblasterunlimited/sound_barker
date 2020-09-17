@@ -7,7 +7,7 @@ class User with ChangeNotifier {
 
   User({this.email});
 
-  dynamic logout() async {
+  Future<dynamic> logout() async {
     return await RestAPI.logoutUser(email);
   }
 
@@ -20,5 +20,9 @@ class User with ChangeNotifier {
     email = userEmail;
     print("signIn email from within: $email");
     notifyListeners();
+  }
+
+  Future<dynamic> delete() async {
+    return await RestAPI.deleteUser(email);
   }
 }

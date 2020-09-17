@@ -1,3 +1,7 @@
+import 'package:K9_Karaoke/providers/barks.dart';
+import 'package:K9_Karaoke/providers/karaoke_cards.dart';
+import 'package:K9_Karaoke/providers/pictures.dart';
+import 'package:K9_Karaoke/providers/songs.dart';
 import 'package:K9_Karaoke/providers/user.dart';
 import 'package:K9_Karaoke/screens/authentication_screen.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +18,10 @@ class AccountScreen extends StatefulWidget {
 class _AccountState extends State<AccountScreen> {
   User user;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  KaraokeCards cards;
+  Songs songs;
+  Barks barks;
+  Pictures pictures;
 
   void _showError(message) {
     _scaffoldKey.currentState.showSnackBar(
@@ -23,18 +31,49 @@ class _AccountState extends State<AccountScreen> {
     );
   }
 
-  void _handleLogout(c) async {
+  void _removeData() {
+    cards.all = [];
+    pictures.all = [];
+    barks.all = [];
+    songs.all = [];
+  }
+
+  void _deleteFiles() {
+    cards.deleteAll();
+    pictures.deleteAll();
+    barks.deleteAll();
+    songs.deleteAll();
+  }
+
+  void _handleLogout() async {
     var response = await user.logout();
-    if (response == true) {
+    if (response["success"]) {
+      _removeData();
       Navigator.of(context).popUntil(ModalRoute.withName("main-screen"));
       Navigator.of(context).popAndPushNamed(AuthenticationScreen.routeName);
     } else {
-      _showError(response);
+      _showError(response["error"]);
+    }
+  }
+
+  void _handleDeleteAccount() async {
+    var response = await user.delete();
+    if (response["success"]) {
+      _deleteFiles();
+      _removeData();
+      Navigator.of(context).popUntil(ModalRoute.withName("main-screen"));
+      Navigator.of(context).popAndPushNamed(AuthenticationScreen.routeName);
+    } else {
+      _showError(response["error"]);
     }
   }
 
   Widget build(BuildContext context) {
     user = Provider.of<User>(context, listen: false);
+    cards = Provider.of<KaraokeCards>(context, listen: false);
+    songs = Provider.of<Songs>(context, listen: false);
+    barks = Provider.of<Barks>(context, listen: false);
+    pictures = Provider.of<Pictures>(context, listen: false);
 
     return Scaffold(
       key: _scaffoldKey,
@@ -83,7 +122,7 @@ class _AccountState extends State<AccountScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               GestureDetector(
-                onTap: () => _handleLogout(context),
+                onTap: () => _handleLogout(),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text("Logout",
@@ -102,6 +141,15 @@ class _AccountState extends State<AccountScreen> {
                 child: Text("Subscription",
                     style: TextStyle(
                         fontSize: 40, color: Theme.of(context).primaryColor)),
+              ),
+              GestureDetector(
+                onTap: () => _handleDeleteAccount(),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("Delete Account",
+                      style: TextStyle(
+                          fontSize: 40, color: Theme.of(context).primaryColor)),
+                ),
               ),
               Container(
                 width: 120,

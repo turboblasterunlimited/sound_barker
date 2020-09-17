@@ -39,7 +39,11 @@ class Songs with ChangeNotifier {
   void removeSong(songToDelete) {
     RestAPI.deleteSong(songToDelete);
     all.remove(songToDelete);
-    File(songToDelete.filePath).delete();
+    songToDelete.deleteFiles();
+  }
+
+  void deleteAll() {
+    all.forEach((song) => song.deleteFiles());
   }
 
   String getSongFamily(String id) {
@@ -100,9 +104,10 @@ class Song with ChangeNotifier {
     return name;
   }
 
-  void removeFromStorage() {
+  void deleteFiles() {
     try {
-      File(filePath).deleteSync(recursive: false);
+      File(filePath).deleteSync();
+      File(amplitudesPath).deleteSync();
     } catch (e) {
       print("Error: $e");
     }
@@ -150,8 +155,8 @@ class Song with ChangeNotifier {
   }
 
   Future<void> _getMelodyAndGenerateAmplitudeFile(filePathBase) async {
-    this.filePath = await Gcloud.downloadFromBucket(
-        bucketFp, filePathBase + '.aac');
+    this.filePath =
+        await Gcloud.downloadFromBucket(bucketFp, filePathBase + '.aac');
     this.amplitudesPath = await AmplitudeExtractor.createAmplitudeFile(
         this.filePath, filePathBase);
   }

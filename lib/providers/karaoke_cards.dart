@@ -24,12 +24,17 @@ class KaraokeCards with ChangeNotifier {
     all.add(current);
   }
 
+  void deleteAll() {
+    all.forEach((card) => card.removeFiles());
+  }
+
   Future<void> remove(KaraokeCard card) async {
     print("TODO: implement delete");
     await RestAPI.deleteCardAudio(card.audio.fileId);
     await RestAPI.deleteDecorationImage(card.decorationImage.fileId);
     await RestAPI.deleteCard(card);
     all.remove(card);
+    card.removeFiles();
   }
 
   void messageIsReady() {
@@ -153,6 +158,16 @@ class KaraokeCard with ChangeNotifier {
   KaraokeCard(
       {this.uuid, this.picture, this.audio, this.song, this.decorationImage}) {
     this.audio ??= CardAudio();
+  }
+
+  void removeFiles() {
+    try {
+      if (File(decorationImage.filePath).existsSync())
+        File(decorationImage.filePath).deleteSync();
+      if (File(audio.filePath).existsSync()) File(audio.filePath).deleteSync();
+    } catch (e) {
+      print(e);
+    }
   }
 
   bool get hasFrame {

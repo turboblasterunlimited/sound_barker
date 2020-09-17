@@ -33,8 +33,12 @@ class Pictures with ChangeNotifier {
       return;
     }
     all.remove(picture);
-    File(picture.filePath).delete();
+    picture.delete();
     notifyListeners();
+  }
+
+  void deleteAll() {
+    all.forEach((picture) => picture.delete());
   }
 
   Future<Picture> retrieveAll() async {

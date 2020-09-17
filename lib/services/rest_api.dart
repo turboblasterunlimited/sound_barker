@@ -8,6 +8,54 @@ import '../providers/barks.dart';
 import '../providers/pictures.dart';
 
 class RestAPI {
+  static Future<dynamic> userManualSignUp(email, password) async {
+    Map data = {"email": email.toLowerCase(), "password": password};
+    var response;
+    try {
+      response = await HttpController.dio.post(
+        'http://165.227.178.14/create-account',
+        data: data,
+      );
+    } catch (e) {
+      response.data["success"] = false;
+      response.data["error"] = e.message;
+    }
+    return response.data;
+  }
+
+  static Future<dynamic> userManualSignIn(email, password) async {
+    Map data = {"email": email.toLowerCase(), "password": password};
+    var response;
+    try {
+      response = await HttpController.dio.post(
+        'http://165.227.178.14/manual-login',
+        data: data,
+      );
+      print("Manual sign in response: $response");
+      print("Manual sign in response: ${response.data}");
+    } catch (e) {
+      response.data["success"] = false;
+      response.data["error"] = e.message;
+    }
+    return response.data;
+  }
+
+  static Future<dynamic> deleteUser(email) async {
+    print("Deleting account...");
+    var response;
+    try {
+      response =
+          await HttpController.dio.post("http://165.227.178.14/delete-account");
+    } catch (e) {
+      print("delete account error: ${e.message}");
+      print("delete account: ${response.data["success"]}");
+      response.data["success"] = false;
+      response.data["error"] = e.message;
+    }
+    print("delete account data response: ${response.data["success"]}");
+    return response.data;
+  }
+
   static Future<dynamic> logoutUser(email) async {
     print("logging out...");
     var response;
@@ -16,9 +64,10 @@ class RestAPI {
     } catch (e) {
       print("logout error: ${e.message}");
       print("logout: ${response.data["success"]}");
-      return e.message;
+      response.data["success"] = false;
+      response.data["error"] = e.message;
     }
-    return response.data["success"];
+    return response.data;
   }
 
   static Future<void> deleteDecorationImage(imageId) async {
@@ -80,7 +129,7 @@ class RestAPI {
     final imageBody = {
       'uuid': decorationImage.fileId,
       'bucket_fp': decorationImage.bucketFp,
-      'has_frame_dimension': decorationImage.hasFrameDimension == true ? 1 : 0,
+      'has_frame_dimension': decorationImage.hasFrameDimension ? 1 : 0,
     };
     final imageUrl = 'http://165.227.178.14/decoration_image';
 

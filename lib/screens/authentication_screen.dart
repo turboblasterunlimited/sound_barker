@@ -8,7 +8,9 @@ import 'package:K9_Karaoke/providers/pictures.dart';
 import 'package:K9_Karaoke/providers/songs.dart';
 import 'package:K9_Karaoke/providers/user.dart';
 import 'package:K9_Karaoke/screens/main_screen.dart';
+import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:K9_Karaoke/widgets/spinner_widget.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
@@ -50,6 +52,34 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     _scaffoldKey.currentState.showSnackBar(
       SnackBar(
         content: Text(message),
+      ),
+    );
+  }
+
+  void _showVerifyEmail() async {
+    await showDialog<Null>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Verify email address'),
+        content: Text('Verification sent to $email.'),
+        actions: <Widget>[
+          FlatButton(
+              child: Text("re-send email"),
+              onPressed: () {
+                Navigator.of(ctx).pop();
+              }),
+          FlatButton(
+              child: Text('sign in'),
+              onPressed: () async {
+                var response = await _handleManualSignIn();
+                if (!response["success"])
+                  _showError(response["error"]);
+                else {
+                  Navigator.of(ctx).pop();
+                  _handleServerResponse(response);
+                }
+              })
+        ],
       ),
     );
   }
@@ -154,39 +184,24 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         'http://165.227.178.14/openid-token/${platform}',
         data: token,
       );
-      _handleServerResponse(response.data);
+      _handleServerResponse(response);
     } catch (e) {
       _showError();
     }
   }
 
-  void _handleManualSignUp() async {
+  Future _handleManualSignUp() async {
     FocusScope.of(context).unfocus();
-    Map data = {"email": email.toLowerCase(), "password": password};
-    try {
-      var response = await HttpController.dio.post(
-        'http://165.227.178.14/create-account',
-        data: data,
-      );
-      _handleServerResponse(response.data);
-    } catch (e) {
-      _showError();
+    Map response = await RestAPI.userManualSignUp(email, password);
+    if (!response["success"])
+      _showError(response["error"]);
+    else {
+      _showVerifyEmail();
     }
   }
 
-  void _handleManualSignIn() async {
-    FocusScope.of(context).unfocus();
-    Map data = {"email": email.toLowerCase(), "password": password};
-    try {
-      var response = await HttpController.dio.post(
-        'http://165.227.178.14/manual-login',
-        data: data,
-      );
-      print(response);
-      _handleServerResponse(response.data);
-    } catch (e) {
-      _showError(e);
-    }
+  Future<dynamic> _handleManualSignIn() async {
+    return await RestAPI.userManualSignIn(email, password);
   }
 
   @override
@@ -202,11 +217,12 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   }
 
   Future<void> downloadEverything() async {
-    setState(() {
-      everythingDownloaded = false;
-      signingIn = false;
-      downloadMessage = "Retrieving Pictures...";
-    });
+    if (mounted)
+      setState(() {
+        everythingDownloaded = false;
+        signingIn = false;
+        downloadMessage = "Retrieving Pictures...";
+      });
     await pictures.retrieveAll();
     print("pictures count: ${pictures.all.length}");
     // need creatableSongData to get songIds
@@ -223,7 +239,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     setState(() => downloadMessage = "Retrieving Cards Themselves...");
     await cards.retrieveAll(pictures, cardAudios, songs, decorationImages);
     print("card count ${cards.all.length}");
-    setState(() => downloadMessage = "Done.");
+    if (mounted) setState(() => downloadMessage = "Done.");
   }
 
   @override
@@ -240,7 +256,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     cards = Provider.of<KaraokeCards>(context, listen: false);
 
     var responseData = await checkIfSignedIn();
-    if (responseData["logged_in"] == true) {
+    if (responseData["logged_in"]) {
       _handleSignedIn(responseData["user_id"]);
     } else {
       setState(() => signingIn = false);
@@ -341,7 +357,14 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                             child:
                                 Text("Sign In", style: TextStyle(fontSize: 20)),
                             color: Theme.of(context).primaryColor,
-                            onPressed: _handleManualSignIn,
+                            onPressed: () async {
+                              FocusScope.of(context).unfocus();
+                              var response = await _handleManualSignIn();
+                              if (!response["success"])
+                                _showError(response["error"]);
+                              else
+                                _handleServerResponse(response);
+                            },
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(22.0),
                             ),
