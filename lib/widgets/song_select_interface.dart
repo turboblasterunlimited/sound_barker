@@ -16,7 +16,33 @@ class SongSelectInterface extends StatefulWidget {
   _SongSelectInterfaceState createState() => _SongSelectInterfaceState();
 }
 
-class _SongSelectInterfaceState extends State<SongSelectInterface> with SingleTickerProviderStateMixin {
+class _SongSelectInterfaceState extends State<SongSelectInterface>
+    with SingleTickerProviderStateMixin {
+  AnimationController animationController;
+  var tween;
+
+
+  @override
+  void initState() {
+    super.initState();
+    animationController = AnimationController(
+      vsync: this,
+      // lowerBound: -60,
+      // upperBound: -40,
+      duration: Duration(seconds: 1),
+    )
+      // ..addListener(() => setState(() {}))
+      ..repeat(reverse: true);
+
+    tween = Tween(begin: -60.0, end: -40.0).animate(animationController);
+  }
+
+  @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
+  }
+
   Widget build(BuildContext context) {
     final songs = Provider.of<Songs>(context);
     final soundController = Provider.of<SoundController>(context);
@@ -24,17 +50,6 @@ class _SongSelectInterfaceState extends State<SongSelectInterface> with SingleTi
     final card = Provider.of<KaraokeCards>(context, listen: false).current;
     final currentActivity =
         Provider.of<CurrentActivity>(context, listen: false);
-    AnimationController animationController;
-
-    initState() {
-      super.initState();
-      animationController = AnimationController();
-    }
-
-    void dispose() {            
-       animationController.dispose();            
-       super.dispose();            
-      }
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -88,13 +103,18 @@ class _SongSelectInterfaceState extends State<SongSelectInterface> with SingleTi
                           vertical: 8, horizontal: 18),
                     ),
                     if (songs.all.isEmpty)
-                      Positioned(
-                        bottom: -40,
-                        left: 0,
-                        right: 0,
-                        child: Icon(Icons.arrow_upward,
-                            size: 50, color: Theme.of(context).primaryColor),
-                      ),
+                      AnimatedBuilder(
+                          animation: animationController,
+                          builder: (BuildContext context, Widget child) {
+                            return Positioned(
+                              bottom: tween.value,
+                              left: 0,
+                              right: 0,
+                              child: Icon(Icons.arrow_upward,
+                                  size: 50,
+                                  color: Theme.of(context).primaryColor),
+                            );
+                          }),
                   ],
                 ),
               ],
