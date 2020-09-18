@@ -10,7 +10,6 @@ import 'package:K9_Karaoke/providers/user.dart';
 import 'package:K9_Karaoke/screens/main_screen.dart';
 import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:K9_Karaoke/widgets/spinner_widget.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';

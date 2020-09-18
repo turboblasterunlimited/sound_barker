@@ -16,7 +16,7 @@ class SongSelectInterface extends StatefulWidget {
   _SongSelectInterfaceState createState() => _SongSelectInterfaceState();
 }
 
-class _SongSelectInterfaceState extends State<SongSelectInterface> {
+class _SongSelectInterfaceState extends State<SongSelectInterface> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     final songs = Provider.of<Songs>(context);
     final soundController = Provider.of<SoundController>(context);
@@ -24,6 +24,17 @@ class _SongSelectInterfaceState extends State<SongSelectInterface> {
     final card = Provider.of<KaraokeCards>(context, listen: false).current;
     final currentActivity =
         Provider.of<CurrentActivity>(context, listen: false);
+    AnimationController animationController;
+
+    initState() {
+      super.initState();
+      animationController = AnimationController();
+    }
+
+    void dispose() {            
+       animationController.dispose();            
+       super.dispose();            
+      }
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -39,7 +50,7 @@ class _SongSelectInterfaceState extends State<SongSelectInterface> {
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
-                          fontSize: 16)),
+                          fontSize: 15)),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(40.0),
                     side: BorderSide(
@@ -47,36 +58,44 @@ class _SongSelectInterfaceState extends State<SongSelectInterface> {
                   ),
                   elevation: 2.0,
                   fillColor: Theme.of(context).primaryColor,
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 13, horizontal: 22.0),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 18),
                 ),
-                Padding(padding: EdgeInsets.all(10)),
-                RawMaterialButton(
-                  onPressed: spinnerState.isLoading
-                      ? null
-                      : () {
-                          Navigator.pushNamed(
-                              context, CreatableSongSelectScreen.routeName);
-                        },
-                  child: spinnerState.isLoading
-                      ? SpinKitWave(
-                          color: Colors.white,
-                          size: 20,
-                        )
-                      : Text("Make Song",
+                Padding(padding: EdgeInsets.only(left: 16)),
+                Stack(
+                  overflow: Overflow.visible,
+                  children: [
+                    RawMaterialButton(
+                      onPressed: spinnerState.isLoading
+                          ? null
+                          : () {
+                              Navigator.pushNamed(
+                                  context, CreatableSongSelectScreen.routeName);
+                            },
+                      child: Text("Make Song",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Theme.of(context).primaryColor,
-                            fontSize: 16,
+                            fontSize: 15,
                           )),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(40.0),
-                    side: BorderSide(
-                        color: Theme.of(context).primaryColor, width: 3),
-                  ),
-                  elevation: 2.0,
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 13, horizontal: 22.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(40.0),
+                        side: BorderSide(
+                            color: Theme.of(context).primaryColor, width: 3),
+                      ),
+                      elevation: 2.0,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 18),
+                    ),
+                    if (songs.all.isEmpty)
+                      Positioned(
+                        bottom: -40,
+                        left: 0,
+                        right: 0,
+                        child: Icon(Icons.arrow_upward,
+                            size: 50, color: Theme.of(context).primaryColor),
+                      ),
+                  ],
                 ),
               ],
             ),
@@ -104,17 +123,32 @@ class _SongSelectInterfaceState extends State<SongSelectInterface> {
             ),
           ],
         ),
-        Padding(padding: EdgeInsets.only(top: 20)),
+        Padding(padding: EdgeInsets.only(top: 14)),
         SizedBox(
           height: MediaQuery.of(context).size.height / 3,
-          child: AnimatedList(
-            key: songs.listKey,
-            initialItemCount: songs.all.length,
-            padding: const EdgeInsets.all(0),
-            itemBuilder: (ctx, i, Animation<double> animation) =>
-                SongPlaybackCard(
-                    i, songs.all[i], songs, soundController, animation),
-          ),
+          child: songs.all.isEmpty
+              ? Align(
+                  alignment: Alignment.topCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 50.0),
+                    child: Text(
+                      "You have no songs.\nTap 'Make Song'.",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ),
+                  ),
+                )
+              : AnimatedList(
+                  key: songs.listKey,
+                  initialItemCount: songs.all.length,
+                  padding: const EdgeInsets.all(0),
+                  itemBuilder: (ctx, i, Animation<double> animation) =>
+                      SongPlaybackCard(
+                          i, songs.all[i], songs, soundController, animation),
+                ),
         ),
       ],
     );

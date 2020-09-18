@@ -57,15 +57,35 @@ class _AccountState extends State<AccountScreen> {
   }
 
   void _handleDeleteAccount() async {
-    var response = await user.delete();
-    if (response["success"]) {
-      _deleteFiles();
-      _removeData();
-      Navigator.of(context).popUntil(ModalRoute.withName("main-screen"));
-      Navigator.of(context).popAndPushNamed(AuthenticationScreen.routeName);
-    } else {
-      _showError(response["error"]);
-    }
+    await showDialog<Null>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Are you sure?'),
+        content: Text('This cannot be undone.'),
+        actions: <Widget>[
+          FlatButton(
+              child: Text("Go back"),
+              onPressed: () {
+                Navigator.of(ctx).pop();
+              }),
+          FlatButton(
+              child: Text('Delete'),
+              onPressed: () async {
+                var response = await user.delete();
+                if (response["success"]) {
+                  _deleteFiles();
+                  _removeData();
+                  Navigator.of(context)
+                      .popUntil(ModalRoute.withName("main-screen"));
+                  Navigator.of(context)
+                      .popAndPushNamed(AuthenticationScreen.routeName);
+                } else {
+                  _showError(response["error"]);
+                }
+              })
+        ],
+      ),
+    );
   }
 
   Widget build(BuildContext context) {

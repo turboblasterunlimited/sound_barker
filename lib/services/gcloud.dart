@@ -4,8 +4,9 @@ import 'package:path/path.dart';
 import '../services/http_controller.dart';
 
 class Gcloud {
-  static Future<String> _uploadBucketLink(fileName, directory) async {
-    final body = {"filepath": "$directory/$fileName"};
+  static Future<String> _uploadBucketLink(String fileName, String directory) async {
+    // final contentType = fileName.split(".")[1] == 'aac' ? 'audio/mpeg' : 'application/octet-stream';
+    final body = {"filepath": "$directory/$fileName", "content_type": "image/jpeg"};
     final url = 'http://165.227.178.14/signed-upload-url';
 
     print("upload bucket link body: $body");
@@ -41,7 +42,7 @@ class Gcloud {
         data: File(filePath).openRead(), // Post with Stream<List<int>>
         options: Options(
           headers: {
-            HttpHeaders.contentTypeHeader: ContentType.binary,
+            HttpHeaders.contentTypeHeader: "image/jpeg",
             HttpHeaders.contentLengthHeader: file.lengthSync(),
             // HttpHeaders.authorizationHeader: "Bearer $token",
           },
