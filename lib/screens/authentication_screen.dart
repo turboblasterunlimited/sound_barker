@@ -128,7 +128,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         'http://165.227.178.14/facebook-token',
         data: tokenData,
       );
-      return response.data;
+      return response;
     } catch (e) {
       _showError("");
     }
@@ -144,7 +144,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         case FacebookLoginStatus.loggedIn:
           responseData =
               await _sendFacebookTokenToServer(result.accessToken.token);
-          _handleServerResponse(responseData);
+
+          _handleServerResponse(responseData.data);
           break;
         case FacebookLoginStatus.cancelledByUser:
           _showError(
@@ -184,7 +185,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         'http://165.227.178.14/openid-token/${platform}',
         data: token,
       );
-      _handleServerResponse(response);
+      _handleServerResponse(response.data);
     } catch (e) {
       _showError();
     }
