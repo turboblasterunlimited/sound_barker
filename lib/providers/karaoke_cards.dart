@@ -211,7 +211,7 @@ class KaraokeCard with ChangeNotifier {
   }
 
   void markLastAudioForDelete() {
-    oldCardAudio = audio;
+    if (audio.exists) oldCardAudio = audio;
   }
 
   Future<void> combineMessageAndSong() async {

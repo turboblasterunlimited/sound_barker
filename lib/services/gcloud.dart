@@ -4,9 +4,12 @@ import 'package:path/path.dart';
 import '../services/http_controller.dart';
 
 class Gcloud {
-  static Future<String> _uploadBucketLink(String fileName, String directory) async {
-    // final contentType = fileName.split(".")[1] == 'aac' ? 'audio/mpeg' : 'application/octet-stream';
-    final body = {"filepath": "$directory/$fileName", "content_type": "image/jpeg"};
+  static Future<String> _uploadBucketLink(
+      String fileName, String directory, String contentType) async {
+    final body = {
+      "filepath": "$directory/$fileName",
+      "content_type": contentType,
+    };
     final url = 'http://165.227.178.14/signed-upload-url';
 
     print("upload bucket link body: $body");
@@ -23,6 +26,7 @@ class Gcloud {
       print(e.response.request);
       print("create decoration image body: ${response.data}");
     }
+    print("upload bucket link response: $response");
     return response.data["url"];
     // example response
     // {
@@ -31,20 +35,27 @@ class Gcloud {
     // }
   }
 
-  static Future<String> upload(String filePath, String directory) async {
+  static Future<String> uploadRawBark(fileId, filePath) async {
+    String bucketWritePath = "$fileId/raw.aac";
+    return await upload(bucketWritePath, fileId, filePath);
+  }
+
+  static Future<String> upload(String filePath, String directory,
+      [String clientFilePath]) async {
     var fileName = basename(filePath);
-    String uploadUrl = await _uploadBucketLink(fileName, directory);
-    File file = File(filePath);
+    final contentType =
+        fileName.split(".")[1] == 'aac' ? 'audio/mpeg' : 'image/jpeg';
+    String uploadUrl =
+        await _uploadBucketLink(fileName, directory, contentType);
+    File file = File(clientFilePath ?? filePath);
     var response;
     try {
-      response = await HttpController.dio.post(
+      response = await HttpController.dio.put(
         uploadUrl,
-        data: File(filePath).openRead(), // Post with Stream<List<int>>
+        data: Stream.fromIterable(file.readAsBytesSync().map((e) => [e])),
         options: Options(
           headers: {
-            HttpHeaders.contentTypeHeader: "image/jpeg",
-            HttpHeaders.contentLengthHeader: file.lengthSync(),
-            // HttpHeaders.authorizationHeader: "Bearer $token",
+            HttpHeaders.contentTypeHeader: contentType,
           },
         ),
       );
@@ -80,17 +91,5 @@ class Gcloud {
       print(e);
     }
     return filePath;
-  }
-
-  static Future<String> uploadRawBark(fileId, filePath) async {
-    String bucketWritePath = "$fileId/raw.aac";
-
-    try {
-      // await File(filePath).openRead().pipe(bucket.write(bucketWritePath));
-    } catch (e) {
-      print(e);
-      return e;
-    }
-    return bucketWritePath;
   }
 }

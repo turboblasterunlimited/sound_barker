@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import 'package:intl/intl.dart';
@@ -64,6 +63,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
       cards.current.shouldDeleteOldDecoration = false;
       changed = true;
     }
+    print("old card audio: ${cards.current.oldCardAudio}");
     if (cards.current.oldCardAudio != null) {
       setDialogState(() => _loadingMessage = "saving sounds...");
       await cards.current.deleteOldAudio();
@@ -209,12 +209,15 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   }
 
   Future<void> _handleUploadAndShare(Function setDialogState) async {
-    if (!cards.current.audio.exists)
-      return showError(context, "Card has no audio");
-
-    if (_editingCard()) {
+    if (shareLink != null)
+      _handleShare(cards.current.uuid, setDialogState);
+    else if (!cards.current.audio.exists)
+      showError(context, "Card has no audio");
+    else if (_editingCard()) {
+      print("editing card");
       await _updateCard(setDialogState);
     } else {
+      print("creating new card");
       await _createCard(setDialogState);
     }
     SystemChrome.restoreSystemUIOverlays();

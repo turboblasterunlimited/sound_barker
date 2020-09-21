@@ -13,7 +13,8 @@ class BarkSelectInterface extends StatefulWidget {
   _BarkSelectInterfaceState createState() => _BarkSelectInterfaceState();
 }
 
-class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
+class _BarkSelectInterfaceState extends State<BarkSelectInterface>
+    with SingleTickerProviderStateMixin {
   bool viewingStockBarks = false;
   CurrentActivity currentActivity;
   Barks barks;
@@ -23,6 +24,29 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
   final _stockListKey = GlobalKey<AnimatedListState>();
   SoundController soundController;
   bool _isFirstLoad = true;
+  AnimationController animationController;
+  var tween;
+
+  @override
+  void initState() {
+    super.initState();
+    animationController = AnimationController(
+      vsync: this,
+      // lowerBound: -60,
+      // upperBound: -40,
+      duration: Duration(seconds: 1),
+    )
+      // ..addListener(() => setState(() {}))
+      ..repeat(reverse: true);
+
+    tween = Tween(begin: -60.0, end: -40.0).animate(animationController);
+  }
+
+  @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
+  }
 
   String _barkSelectInstruction() {
     print(
@@ -144,7 +168,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
                     color: viewingStockBarks
                         ? Theme.of(context).primaryColor
                         : Colors.white,
-                    fontSize: 16),
+                    fontSize: 15),
               ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(40.0),
@@ -155,63 +179,94 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface> {
               fillColor:
                   viewingStockBarks ? null : Theme.of(context).primaryColor,
               padding:
-                  const EdgeInsets.symmetric(vertical: 13, horizontal: 22.0),
+                  const EdgeInsets.symmetric(vertical: 8, horizontal: 18.0),
             ),
             Padding(padding: EdgeInsets.all(10)),
-            RawMaterialButton(
-              onPressed: () {
-                setState(() => viewingStockBarks = true);
-              },
-              child: Text(
-                "Stock Barks",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: viewingStockBarks
-                      ? Colors.white
-                      : Theme.of(context).primaryColor,
-                  fontSize: 16,
+            Stack(
+              children: [
+                RawMaterialButton(
+                  onPressed: () {
+                    setState(() => viewingStockBarks = true);
+                  },
+                  child: Text(
+                    "Stock Barks",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: viewingStockBarks
+                          ? Colors.white
+                          : Theme.of(context).primaryColor,
+                      fontSize: 15,
+                    ),
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(40.0),
+                    side: BorderSide(
+                        color: Theme.of(context).primaryColor, width: 3),
+                  ),
+                  elevation: 2.0,
+                  fillColor:
+                      viewingStockBarks ? Theme.of(context).primaryColor : null,
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 8, horizontal: 18),
                 ),
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(40.0),
-                side:
-                    BorderSide(color: Theme.of(context).primaryColor, width: 3),
-              ),
-              elevation: 2.0,
-              fillColor:
-                  viewingStockBarks ? Theme.of(context).primaryColor : null,
-              padding:
-                  const EdgeInsets.symmetric(vertical: 13, horizontal: 22.0),
+                if (barks.all.isEmpty)
+                  AnimatedBuilder(
+                      animation: animationController,
+                      builder: (BuildContext context, Widget child) {
+                        return Positioned(
+                          bottom: tween.value,
+                          left: 0,
+                          right: 0,
+                          child: Icon(Icons.arrow_upward,
+                              size: 50, color: Theme.of(context).primaryColor),
+                        );
+                      }),
+              ],
             ),
           ],
         ),
         Padding(padding: EdgeInsets.only(top: 20)),
         SizedBox(
           height: MediaQuery.of(context).size.height / 3,
-          child: viewingStockBarks
-              ? AnimatedList(
-                  key: _stockListKey,
-                  initialItemCount: displayedBarksStock.length,
-                  itemBuilder: (ctx, i, animation) => BarkPlaybackCard(
-                    i,
-                    displayedBarksStock[i],
-                    barks,
-                    soundController,
-                    animation,
+          child: barks.all.isEmpty
+              ? Align(
+                  alignment: Alignment.topCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 50.0),
+                    child: Text(
+                      "No short barks recorded.\nTry 'Stock Barks',\nor go back.",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ),
                   ),
                 )
-              : AnimatedList(
-                  key: _listKey,
-                  initialItemCount: displayedBarks.length,
-                  itemBuilder: (ctx, i, animation) => BarkPlaybackCard(
-                    i,
-                    displayedBarks[i],
-                    barks,
-                    soundController,
-                    animation,
-                    deleteCallback: deleteBark,
-                  ),
-                ),
+              : viewingStockBarks
+                  ? AnimatedList(
+                      key: _stockListKey,
+                      initialItemCount: displayedBarksStock.length,
+                      itemBuilder: (ctx, i, animation) => BarkPlaybackCard(
+                        i,
+                        displayedBarksStock[i],
+                        barks,
+                        soundController,
+                        animation,
+                      ),
+                    )
+                  : AnimatedList(
+                      key: _listKey,
+                      initialItemCount: displayedBarks.length,
+                      itemBuilder: (ctx, i, animation) => BarkPlaybackCard(
+                        i,
+                        displayedBarks[i],
+                        barks,
+                        soundController,
+                        animation,
+                        deleteCallback: deleteBark,
+                      ),
+                    ),
         ),
       ],
     );

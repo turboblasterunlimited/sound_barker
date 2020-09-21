@@ -45,17 +45,6 @@ class _AccountState extends State<AccountScreen> {
     songs.deleteAll();
   }
 
-  void _handleLogout() async {
-    var response = await user.logout();
-    if (response["success"]) {
-      _removeData();
-      Navigator.of(context).popUntil(ModalRoute.withName("main-screen"));
-      Navigator.of(context).popAndPushNamed(AuthenticationScreen.routeName);
-    } else {
-      _showError(response["error"]);
-    }
-  }
-
   void _handleDeleteAccount() async {
     await showDialog<Null>(
       context: context,
@@ -74,6 +63,37 @@ class _AccountState extends State<AccountScreen> {
                 var response = await user.delete();
                 if (response["success"]) {
                   _deleteFiles();
+                  _removeData();
+                  Navigator.of(context)
+                      .popUntil(ModalRoute.withName("main-screen"));
+                  Navigator.of(context)
+                      .popAndPushNamed(AuthenticationScreen.routeName);
+                } else {
+                  _showError(response["error"]);
+                }
+              })
+        ],
+      ),
+    );
+  }
+
+  void _handleLogout() async {
+    await showDialog<Null>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Are you sure?'),
+        content: Text('Logout from ${user.email}?'),
+        actions: <Widget>[
+          FlatButton(
+              child: Text("Go back"),
+              onPressed: () {
+                Navigator.of(ctx).pop();
+              }),
+          FlatButton(
+              child: Text('Yes'),
+              onPressed: () async {
+                var response = await user.logout();
+                if (response["success"]) {
                   _removeData();
                   Navigator.of(context)
                       .popUntil(ModalRoute.withName("main-screen"));
