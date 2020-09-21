@@ -289,13 +289,14 @@ class _MainScreenState extends State<MainScreen> {
             fit: BoxFit.cover,
           ),
         ),
-        child: Padding(
-          padding: const EdgeInsets.only(top: 70.0),
-          // loading spinner or card creation
-          child: Stack(
-            children: <Widget>[
-              // portrait, progress bar, interface, spinner
-              Column(
+
+        // loading spinner or card creation
+        child: Stack(
+          children: <Widget>[
+            // portrait, progress bar, interface, spinner
+            Padding(
+              padding: const EdgeInsets.only(top: 70.0),
+              child: Column(
                 children: <Widget>[
                   // frame and portrait
                   Expanded(
@@ -386,11 +387,11 @@ class _MainScreenState extends State<MainScreen> {
                   if (spinnerState.isLoading) SpinnerHalfScreenWidget(),
                 ],
               ),
-              // Full screen Spinner
-              if (!everythingReady())
-                SpinnerWidget("Loading animation engine..."),
-            ],
-          ),
+            ),
+            // Full screen Spinner
+            if (!everythingReady())
+              SpinnerWidget("Loading animation engine..."),
+          ],
         ),
       ),
     );

@@ -40,6 +40,7 @@ class Songs with ChangeNotifier {
     RestAPI.deleteSong(songToDelete);
     all.remove(songToDelete);
     songToDelete.deleteFiles();
+    notifyListeners();
   }
 
   void deleteAll() {

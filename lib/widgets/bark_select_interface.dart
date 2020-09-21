@@ -106,7 +106,6 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
         shownBarks.insert(0, newBark);
       }
     });
-    print("user's displayed barks: ${displayedBarks.map((el) => el.length)}");
   }
 
   _updateDisplayBarks() {
@@ -140,12 +139,14 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
     return _canSkip() ? currentActivity.setNextSubStep : null;
   }
 
+  _noRecordedShortBarks() {
+    return currentActivity.isTwo && displayedBarks.length == 0;
+  }
+
   Widget build(BuildContext context) {
     barks = Provider.of<Barks>(context);
     soundController = Provider.of<SoundController>(context);
     currentActivity = Provider.of<CurrentActivity>(context);
-    print(
-        "Bark select interface and Substep: ${currentActivity.cardCreationSubStep}");
     _updateDisplayBarks();
 
     return Column(
@@ -206,8 +207,8 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
                   elevation: 2.0,
                   fillColor:
                       viewingStockBarks ? Theme.of(context).primaryColor : null,
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 8, horizontal: 18),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 18),
                 ),
                 if (barks.all.isEmpty)
                   AnimatedBuilder(
@@ -225,34 +226,34 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
             ),
           ],
         ),
-        Padding(padding: EdgeInsets.only(top: 20)),
+        Padding(padding: EdgeInsets.only(top: 5)),
         SizedBox(
-          height: MediaQuery.of(context).size.height / 3,
-          child: barks.all.isEmpty
-              ? Align(
-                  alignment: Alignment.topCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 50.0),
-                    child: Text(
-                      "No short barks recorded.\nTry 'Stock Barks',\nor go back.",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
+          height: MediaQuery.of(context).size.height / 2.2,
+          child: viewingStockBarks
+              ? AnimatedList(
+                  key: _stockListKey,
+                  initialItemCount: displayedBarksStock.length,
+                  itemBuilder: (ctx, i, animation) => BarkPlaybackCard(
+                    i,
+                    displayedBarksStock[i],
+                    barks,
+                    soundController,
+                    animation,
                   ),
                 )
-              : viewingStockBarks
-                  ? AnimatedList(
-                      key: _stockListKey,
-                      initialItemCount: displayedBarksStock.length,
-                      itemBuilder: (ctx, i, animation) => BarkPlaybackCard(
-                        i,
-                        displayedBarksStock[i],
-                        barks,
-                        soundController,
-                        animation,
+              : _noRecordedShortBarks()
+                  ? Align(
+                      alignment: Alignment.topCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 40.0),
+                        child: Text(
+                          "No short barks recorded.\nTry 'Stock Barks',\nor go back.",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
                       ),
                     )
                   : AnimatedList(
