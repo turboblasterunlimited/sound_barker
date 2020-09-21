@@ -73,7 +73,10 @@ class CardProgressBar extends StatelessWidget {
     }
 
     void navigateToSpeak() {
-      if (card.hasSongFormula)
+      if (card.hasSong) {
+        currentActivity.setCardCreationStep(
+            CardCreationSteps.speak, CardCreationSubSteps.seven);
+      } else if (card.hasSongFormula)
         currentActivity.setCardCreationStep(CardCreationSteps.speak);
       else
         currentActivity.setCardCreationStep(
