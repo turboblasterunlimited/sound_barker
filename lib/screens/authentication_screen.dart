@@ -12,6 +12,7 @@ import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:K9_Karaoke/widgets/spinner_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:openid_client/openid_client_io.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
@@ -52,6 +53,24 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       SnackBar(
         content: Text(message),
       ),
+    );
+  }
+
+  void _showLoadingModal(Function getLoadingContext) async {
+    await showDialog<Null>(
+      context: context,
+      builder: (ctx) {
+        getLoadingContext(ctx);
+        return AlertDialog(
+          title: Text('Verifying...'),
+          content: Container(
+            height: 100,
+            child: Center(
+              child: SpinKitWave(color: Theme.of(context).primaryColor),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -192,7 +211,10 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
 
   Future _handleManualSignUp() async {
     FocusScope.of(context).unfocus();
+    BuildContext loadingContext;
+    _showLoadingModal((ctx) => loadingContext = ctx);
     Map response = await RestAPI.userManualSignUp(email, password);
+    Navigator.of(loadingContext).pop();
     if (!response["success"])
       _showError(response["error"]);
     else {
@@ -221,7 +243,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       setState(() {
         everythingDownloaded = false;
         signingIn = false;
-        downloadMessage = "Retrieving Pictures...";
+        downloadMessage =
+            "First time start up? This might take a few moments...";
       });
     await pictures.retrieveAll();
     print("pictures count: ${pictures.all.length}");
