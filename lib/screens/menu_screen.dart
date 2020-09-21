@@ -5,6 +5,7 @@ import 'package:K9_Karaoke/screens/account_screen.dart';
 import 'package:K9_Karaoke/screens/my_cards.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 
@@ -36,8 +37,8 @@ class _MenuState extends State<MenuScreen> {
   Widget build(BuildContext context) {
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
     cards = Provider.of<KaraokeCards>(context, listen: false);
-    cardDecorator = Provider.of<KaraokeCardDecorationController>(context, listen: false);
-
+    cardDecorator =
+        Provider.of<KaraokeCardDecorationController>(context, listen: false);
 
     return Scaffold(
       resizeToAvoidBottomPadding: false,
@@ -72,7 +73,10 @@ class _MenuState extends State<MenuScreen> {
               elevation: 2.0,
               // fillColor: Theme.of(context).accentColor,
               onPressed: currentActivity.isCreateCard
-                  ? () => Navigator.of(context).pop()
+                  ? () {
+                      SystemChrome.setEnabledSystemUIOverlays([]);
+                      Navigator.of(context).pop();
+                    }
                   : null,
             ),
           ),

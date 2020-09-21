@@ -21,7 +21,6 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
   AnimationController animationController;
   var tween;
 
-
   @override
   void initState() {
     super.initState();
@@ -61,11 +60,13 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
               children: <Widget>[
                 RawMaterialButton(
                   onPressed: () {},
-                  child: Text("My Songs",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          fontSize: 15)),
+                  child: Text(
+                    "My Songs",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontSize: 15),
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(40.0),
                     side: BorderSide(

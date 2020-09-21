@@ -199,6 +199,7 @@ class _MainScreenState extends State<MainScreen> {
             shape: CircleBorder(),
             elevation: 2.0,
             onPressed: () {
+              SystemChrome.setEnabledSystemUIOverlays([]);
               Navigator.of(context).pushNamed(MenuScreen.routeName);
             },
           ),

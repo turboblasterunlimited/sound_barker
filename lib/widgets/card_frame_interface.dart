@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:K9_Karaoke/providers/sound_controller.dart';
+import 'package:flutter/services.dart';
 import 'package:path/path.dart' as PATH;
 
 import 'package:K9_Karaoke/providers/current_activity.dart';
@@ -73,6 +74,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
         setState(() => selectedFrame = fileName);
         cards.setFrame(rootPath + fileName);
         cards.current.shouldDeleteOldDecoration = true;
+        SystemChrome.setEnabledSystemUIOverlays([]);
       },
       child: Container(
         decoration: selectedFrame == fileName
@@ -113,6 +115,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       onTap: () {
         setState(() => selectedFrame = "");
         cards.setFrame(null);
+        SystemChrome.setEnabledSystemUIOverlays([]);
       },
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 5),
@@ -157,6 +160,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
         setState(() => selectedFrame = "decorationImage");
         cards.setFrame(null);
         cards.current.shouldDeleteOldDecoration = false;
+        SystemChrome.setEnabledSystemUIOverlays([]);
       },
       child: Container(
         decoration: selectedFrame == "decorationImage"

@@ -6,6 +6,7 @@ import 'package:K9_Karaoke/providers/spinner_state.dart';
 import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:path_provider/path_provider.dart';
@@ -153,6 +154,7 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
         await AmplitudeExtractor.getAmplitudes(message.alteredFilePath);
     setState(() => _isProcessingAudio = false);
     cards.messageIsReady();
+    SystemChrome.setEnabledSystemUIOverlays([]);
   }
 
   void backCallback() {
