@@ -53,11 +53,14 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
 
   List<Text> frameCategories = [
     Text('Birthday', style: TextStyle(fontSize: 20)),
-    Text('Holiday', style: TextStyle(fontSize: 15)),
-    Text('Xmas/Hannuka', style: TextStyle(fontSize: 15)),
+    Text('Christmas', style: TextStyle(fontSize: 15)),
+    Text('Jewish', style: TextStyle(fontSize: 15)),
+    Text('New Years', style: TextStyle(fontSize: 15)),
+    Text('USA Holidays', style: TextStyle(fontSize: 15)),
+    Text('Other Holidays', style: TextStyle(fontSize: 15)),
     Text('Sports', style: TextStyle(fontSize: 15)),
-    Text('Theme', style: TextStyle(fontSize: 15)),
-    Text('Simple', style: TextStyle(fontSize: 15)),
+    Text('Themes', style: TextStyle(fontSize: 15)),
+    Text('Designs', style: TextStyle(fontSize: 15)),
   ];
 
   Map<String, List<String>> frameFileNames = {
@@ -72,34 +75,40 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       'birthday-package-orange.png',
       'birthday-package-pink.png',
     ],
-    "Holiday": [
-      'thanksgiving.png',
-      'halloween.png',
-      'july-4th.png',
-      'liberty-flag.png',
-      'new-year-baby.png',
-      'new-year-cat.png',
-      'new-year-dog.png',
-      'new-year-champagne.png',
-      'new-year-fireworks.png',
-      'fireworks.png',
-      'flag.png',
-      'liberty.png',
-    ],
-    "Xmas/Hannuka": [
+    "Christmas": [
       "christmas-package.png",
       'christmas-santa.png',
       'christmas-gifts.png',
+    ],
+    "Jewish": [
       'hanukkah-dreidel.png',
       'hanukkah-dreidel2.png',
       'hanukkah-package.png',
       'kiddush-cup.png',
       'torah.png',
     ],
+    "New Years": [
+      'new-year-baby.png',
+      'new-year-cat.png',
+      'new-year-dog.png',
+      'new-year-champagne.png',
+      'new-year-fireworks.png',
+    ],
+    "USA Holidays": [
+      'july-4th.png',
+      'liberty-flag.png',
+      'fireworks.png',
+      'flag.png',
+      'liberty.png',
+    ],
+    "Other Holidays": [
+      'thanksgiving.png',
+      'halloween.png',
+    ],
     "Sports": [
       'baseball.png',
     ],
-    "Theme": [
+    "Themes": [
       '50s.png',
       'beach.png',
       'farm.png',
@@ -108,7 +117,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       'space.png',
       'odor.png',
     ],
-    "Simple": [
+    "Designs": [
       'abstract1.png',
       'abstract2.png',
       'abstract3.png',
@@ -255,7 +264,9 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     setState(() {
       String label = frameCategories[index].data;
       _resetSizes();
-      frameCategories[index] = Text(label, style: TextStyle(fontSize: 20, color: Theme.of(context).primaryColor));
+      frameCategories[index] = Text(label,
+          style:
+              TextStyle(fontSize: 20, color: Theme.of(context).primaryColor));
       selectedFrameCategory = label;
     });
   }
