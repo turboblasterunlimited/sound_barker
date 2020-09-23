@@ -190,7 +190,7 @@ class BarkRecorderState extends State<BarkRecorder>
           maintainSize: true,
           child: GestureDetector(
             onTap: () async {
-              spinnerState.startLoading();
+              spinnerState.startLoading("Processing barks...");
               await barks.uploadRawBarkAndRetrieveCroppedBarks(
                   cards.current.picture.fileId);
               spinnerState.stopLoading();

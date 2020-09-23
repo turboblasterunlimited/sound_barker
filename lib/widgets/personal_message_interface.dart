@@ -166,8 +166,9 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
 
   void skipCallback() async {
     // first time creation: audio and oldCardAudio are null. If new song is selected: audio is set to oldCardAudio
-    if (cards.current.oldCardAudio == cards.current.audio &&
-        cards.current.hasSong) {
+    // if (cards.current.oldCardAudio == cards.current.audio &&
+    //     cards.current.hasSong) {
+    if (cards.current.hasSong) {
       await cards.current.songToAudio();
       return currentActivity.setCardCreationStep(CardCreationSteps.style);
       // already created audio but going back through and just clicking skip without having changed the song

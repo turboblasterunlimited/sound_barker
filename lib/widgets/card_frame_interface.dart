@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:K9_Karaoke/providers/sound_controller.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart' as PATH;
 
@@ -21,6 +22,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   String selectedFrame;
   ImageController imageController;
   SoundController soundController;
+  String selectedFrameCategory = "Birthday";
 
   @override
   void dispose() {
@@ -49,24 +51,78 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
 
   String rootPath = "assets/card_borders/";
 
-  List frameFileNames = [
-    'white.png',
-    'black.png',
-    'magenta.png',
-    'teal.png',
-    'red.png',
-    'blue.png',
-    'bd-balloons.png',
-    'bd-bone.png',
-    'bd-cake-1.png',
-    'bd-cake-2.png',
-    'bd-cake-3.png',
-    'pres-1.png',
-    'pres-2.png',
-    'pres-3.png',
-    'pres-hannuka.png',
-    'pres-xmas.png',
+  List<Text> frameCategories = [
+    Text('Birthday', style: TextStyle(fontSize: 20)),
+    Text('Holiday', style: TextStyle(fontSize: 15)),
+    Text('Xmas/Hannuka', style: TextStyle(fontSize: 15)),
+    Text('Sports', style: TextStyle(fontSize: 15)),
+    Text('Theme', style: TextStyle(fontSize: 15)),
+    Text('Simple', style: TextStyle(fontSize: 15)),
   ];
+
+  Map<String, List<String>> frameFileNames = {
+    "Birthday": [
+      'birthday-bone.png',
+      'birthday-4.png',
+      'birthday-1.png',
+      'birthday-2.png',
+      'birthday-3.png',
+      'birthday-package.png',
+      'birthday-package-blue.png',
+      'birthday-package-orange.png',
+      'birthday-package-pink.png',
+    ],
+    "Holiday": [
+      'thanksgiving.png',
+      'halloween.png',
+      'july-4th.png',
+      'liberty-flag.png',
+      'new-year-baby.png',
+      'new-year-cat.png',
+      'new-year-dog.png',
+      'new-year-champagne.png',
+      'new-year-fireworks.png',
+      'fireworks.png',
+      'flag.png',
+      'liberty.png',
+    ],
+    "Xmas/Hannuka": [
+      "christmas-package.png",
+      'christmas-santa.png',
+      'christmas-gifts.png',
+      'hanukkah-dreidel.png',
+      'hanukkah-dreidel2.png',
+      'hanukkah-package.png',
+      'kiddush-cup.png',
+      'torah.png',
+    ],
+    "Sports": [
+      'baseball.png',
+    ],
+    "Theme": [
+      '50s.png',
+      'beach.png',
+      'farm.png',
+      'flowers.png',
+      'ocean.png',
+      'space.png',
+      'odor.png',
+    ],
+    "Simple": [
+      'abstract1.png',
+      'abstract2.png',
+      'abstract3.png',
+      'abstract4.png',
+      'abstract-rainbow.png',
+      'abstract-psychedelic.png',
+      'color-white.png',
+      'color-black.png',
+      'color-magenta.png',
+      'color-teal.png',
+      'color-red.png',
+      'color-blue.png',
+    ],
+  };
 
   Widget frameSelectable(fileName) {
     return GestureDetector(
@@ -188,20 +244,54 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     );
   }
 
+  void _resetSizes() {
+    for (var i = 0; i < frameCategories.length; i++) {
+      frameCategories[i] =
+          Text(frameCategories[i].data, style: TextStyle(fontSize: 15));
+    }
+  }
+
+  void _handleCategoryChange(index) {
+    setState(() {
+      String label = frameCategories[index].data;
+      _resetSizes();
+      frameCategories[index] = Text(label, style: TextStyle(fontSize: 20, color: Theme.of(context).primaryColor));
+      selectedFrameCategory = label;
+    });
+  }
+
+  Widget categoryList() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 5.0),
+      child: CarouselSlider(
+        items: frameCategories,
+        options: CarouselOptions(
+          onPageChanged: (index, CarouselPageChangedReason reason) {
+            _handleCategoryChange(index);
+          },
+          scrollPhysics: FixedExtentScrollPhysics(),
+          initialPage: 0,
+          height: 30,
+          viewportFraction: 0.4,
+        ),
+      ),
+    );
+  }
+
   Widget frameList() {
     // first item should be no frame, and second is decoration image if exists.
     var iOffset = cards.current.decorationImage == null ? 1 : 2;
     return Center(
       child: Container(
-        height: 200,
+        height: 140,
         child: CustomScrollView(
           scrollDirection: Axis.horizontal,
           slivers: <Widget>[
             SliverGrid(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 4,
-                mainAxisSpacing: 4,
+                crossAxisCount: 1,
+                crossAxisSpacing: 5,
+                mainAxisSpacing: 5,
                 childAspectRatio: 778 / 656,
               ),
               delegate: SliverChildBuilderDelegate(
@@ -211,9 +301,11 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
                   else if (i == 1 && cards.current.decorationImage != null)
                     return decorationImage();
                   else
-                    return frameSelectable(frameFileNames[i - iOffset]);
+                    return frameSelectable(
+                        frameFileNames[selectedFrameCategory][i - iOffset]);
                 },
-                childCount: frameFileNames.length + iOffset,
+                childCount:
+                    frameFileNames[selectedFrameCategory].length + iOffset,
               ),
             ),
           ],
@@ -278,6 +370,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       children: <Widget>[
         interfaceTitleNav(context, "CHOOSE ART",
             backCallback: backCallback, skipCallback: skipCallback),
+        categoryList(),
         frameList(),
         submitButton(),
       ],
