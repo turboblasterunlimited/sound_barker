@@ -106,6 +106,7 @@ class Barks with ChangeNotifier {
 
   void deleteAll() {
     all.forEach((bark) => bark.deleteFiles());
+    stockBarks.forEach((bark) => bark.deleteFiles());
   }
 
   Future<List> uploadRawBarkAndRetrieveCroppedBarks(imageId) async {

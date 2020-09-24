@@ -39,6 +39,7 @@ class Pictures with ChangeNotifier {
 
   void deleteAll() {
     all.forEach((picture) => picture.delete());
+    stockPictures.forEach((picture) => picture.delete());
   }
 
   Future<Picture> retrieveAll() async {

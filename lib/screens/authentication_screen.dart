@@ -244,7 +244,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         everythingDownloaded = false;
         signingIn = false;
         downloadMessage =
-            "First time start up? This might take a few moments...";
+            "First time start up?\nThis might take a few moments...";
       });
     await pictures.retrieveAll();
     print("pictures count: ${pictures.all.length}");

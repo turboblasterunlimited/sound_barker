@@ -23,6 +23,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   ImageController imageController;
   SoundController soundController;
   String selectedFrameCategory = "Birthday";
+  List<Widget> currentFrameCategories;
 
   @override
   void dispose() {
@@ -51,17 +52,19 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
 
   String rootPath = "assets/card_borders/";
 
-  List<Text> frameCategories = [
-    Text('Birthday', style: TextStyle(fontSize: 20)),
-    Text('Christmas', style: TextStyle(fontSize: 15)),
-    Text('Jewish', style: TextStyle(fontSize: 15)),
-    Text('New Years', style: TextStyle(fontSize: 15)),
-    Text('USA Holidays', style: TextStyle(fontSize: 15)),
-    Text('Other Holidays', style: TextStyle(fontSize: 15)),
-    Text('Sports', style: TextStyle(fontSize: 15)),
-    Text('Themes', style: TextStyle(fontSize: 15)),
-    Text('Designs', style: TextStyle(fontSize: 15)),
-  ];
+  List<Widget> getFrameCategories() {
+    return [
+      Text('Birthday', style: TextStyle(fontSize: 15)),
+      Text('Christmas', style: TextStyle(fontSize: 15)),
+      Text('Jewish', style: TextStyle(fontSize: 15)),
+      Text('New Years', style: TextStyle(fontSize: 15)),
+      Text('USA Holidays', style: TextStyle(fontSize: 15)),
+      Text('Other Holidays', style: TextStyle(fontSize: 15)),
+      Text('Sports', style: TextStyle(fontSize: 15)),
+      Text('Themes', style: TextStyle(fontSize: 15)),
+      Text('Designs', style: TextStyle(fontSize: 15)),
+    ];
+  }
 
   Map<String, List<String>> frameFileNames = {
     "Birthday": [
@@ -253,20 +256,27 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     );
   }
 
-  void _resetSizes() {
-    for (var i = 0; i < frameCategories.length; i++) {
-      frameCategories[i] =
-          Text(frameCategories[i].data, style: TextStyle(fontSize: 15));
+  void _resetSizes(List<Widget> categories) {
+    for (var i = 0; i < currentFrameCategories.length; i++) {
+      currentFrameCategories[i] = categories[i];
     }
   }
 
   void _handleCategoryChange(index) {
+    var categories = getFrameCategories();
+    var selectedWidget = categories[index] as Text;
+    String label = selectedWidget.data;
     setState(() {
-      String label = frameCategories[index].data;
-      _resetSizes();
-      frameCategories[index] = Text(label,
-          style:
-              TextStyle(fontSize: 20, color: Theme.of(context).primaryColor));
+      _resetSizes(categories);
+      currentFrameCategories[index] = Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            label,
+            style: TextStyle(fontSize: 20, color: Colors.blue),
+          ),
+        ],
+      );
       selectedFrameCategory = label;
     });
   }
@@ -275,8 +285,9 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 5.0),
       child: CarouselSlider(
-        items: frameCategories,
+        items: currentFrameCategories,
         options: CarouselOptions(
+          enlargeCenterPage: true,
           onPageChanged: (index, CarouselPageChangedReason reason) {
             _handleCategoryChange(index);
           },
@@ -374,13 +385,20 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
     imageController = Provider.of<ImageController>(context, listen: false);
     soundController = Provider.of<SoundController>(context, listen: false);
-
+    if (currentFrameCategories == null) {
+      currentFrameCategories = getFrameCategories();
+      _handleCategoryChange(0);
+    }
     _setFrameSelection();
 
     return Column(
       children: <Widget>[
         interfaceTitleNav(context, "CHOOSE ART",
             backCallback: backCallback, skipCallback: skipCallback),
+        // Divider(
+        //   color: Theme.of(context).primaryColor,
+        //   thickness: 3,
+        // ),
         categoryList(),
         frameList(),
         submitButton(),
