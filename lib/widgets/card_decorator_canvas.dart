@@ -32,8 +32,8 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
       setState(
         () {
           decorationController.newDrawing();
-          print("in karaoke card: ${decorationController.decoration.drawings}");
-          print("Just drawings: $drawings");
+          // print("in karaoke card: ${decorationController.decoration.drawings}");
+          // print("Just drawings: $drawings");
           drawings.last.offsets.add(
             [_getOffset(details)],
           );
@@ -142,11 +142,11 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
   }
 
   List<Drawing> get drawings {
-    return decorationController.decoration.drawings;
+    return decorationController.decoration?.drawings;
   }
 
   List<Typing> get typings {
-    return decorationController.decoration.typings;
+    return decorationController.decoration?.typings;
   }
 
   @override

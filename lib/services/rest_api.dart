@@ -175,7 +175,7 @@ class RestAPI {
     final cardBody = {
       'card_audio_id': card.audio.fileId,
       "image_id": card.picture.fileId,
-      'decoration_image_id': card.decorationImage.fileId,
+      'decoration_image_id': card.decorationImage?.fileId,
       'animation_json':
           '{"mouth_positions": ${card.audio.amplitudes.toString()}}',
     };
@@ -203,7 +203,7 @@ class RestAPI {
       'card_audio_id': card.audio.fileId,
       'song_id': card.song?.fileId,
       "image_id": card.picture.fileId,
-      'decoration_image_id': card.decorationImage.fileId,
+      'decoration_image_id': card.decorationImage?.fileId,
       'animation_json':
           '{"mouth_positions": ${card.audio.amplitudes.toString()}}',
     };
@@ -322,7 +322,7 @@ class RestAPI {
   static Future<List> retrieveAllCards() async {
     final url = 'http://165.227.178.14/all/greeting_card';
     final response = await HttpController.dio.get(url);
-    print("Get all Cards response body: ${response.data}");
+    print("Get all Cards response body: ${response.data.map((card) => card["hidden"])}");
     return response.data;
   }
 

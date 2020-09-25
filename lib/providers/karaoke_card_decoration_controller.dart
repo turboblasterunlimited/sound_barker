@@ -64,15 +64,15 @@ class KaraokeCardDecorationController with ChangeNotifier {
 
   void _initializeTyping(double length) {
     this.canvasLength = length;
-    if (decoration.typings.isNotEmpty) return;
-    final span = TextSpan(
-      text: "",
-      style: TextStyle(color: color, fontSize: size),
-    );
-    decoration.typings.add(Typing(
-      span,
-      defaultTypingOffset,
-    ));
+    // if (decoration.typings.isNotEmpty) return;
+    // final span = TextSpan(
+    //   text: "",
+    //   style: TextStyle(color: color, fontSize: size),
+    // );
+    // decoration.typings.add(Typing(
+    //   span,
+    //   defaultTypingOffset,
+    // ));
   }
 
   void updateLastTextSpan(newTextSpan) {
@@ -109,6 +109,16 @@ class KaraokeCardDecorationController with ChangeNotifier {
   }
 
   void startTyping() {
+    if (decoration.typings.isEmpty) {
+      final span = TextSpan(
+        text: "",
+        style: TextStyle(color: color, fontSize: size),
+      );
+      decoration.typings.add(Typing(
+        span,
+        defaultTypingOffset,
+      ));
+    }
     print("call start typing");
     isTyping = true;
     isDrawing = false;

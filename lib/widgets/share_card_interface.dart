@@ -58,8 +58,13 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     if (cards.current.shouldDeleteOldDecoration) {
       setDialogState(() => _loadingMessage = "updating artwork...");
       await cards.current.deleteOldDecorationImage();
-      await _captureArtwork();
-      await _uploadAndCreateDecorationImage();
+      if (cards.current.noFrameOrDecoration) {
+        print("capturing artwork...");
+        print("decoration is empty: ${cards.current.decoration.isEmpty}");
+        print("has frame: ${cards.current.hasFrame}");
+        await _captureArtwork();
+        await _uploadAndCreateDecorationImage();
+      }
       cards.current.shouldDeleteOldDecoration = false;
       changed = true;
     }
@@ -103,9 +108,11 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   }
 
   Future<void> _createCard(Function setDialogState) async {
-    await _captureArtwork();
-    setDialogState(() => _loadingMessage = "saving artwork...");
-    _handleDecorationImage();
+    if (cards.current.noFrameOrDecoration) {
+      await _captureArtwork();
+      setDialogState(() => _loadingMessage = "saving artwork...");
+      _handleDecorationImage();
+    }
 
     setDialogState(() => _loadingMessage = "saving sounds...");
     await _handleAudio();

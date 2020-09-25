@@ -5,4 +5,8 @@ class Typing {
   TextSpan textSpan;
   Offset offset;
   Typing(this.textSpan, this.offset);
+
+  bool isEmpty() {
+    return textSpan.text.isEmpty;
+  }
 }

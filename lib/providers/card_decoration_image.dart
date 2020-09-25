@@ -11,7 +11,14 @@ class CardDecorationImages with ChangeNotifier {
   List<CardDecorationImage> all = [];
 
   CardDecorationImage findById(id) {
-    return all.firstWhere((decoration) => decoration.fileId == id);
+    var result;
+    try {
+      result = all.firstWhere((decoration) => decoration.fileId == id);
+    } catch (e) {
+      print(e);
+      return null;
+    }
+    return result;
   }
 
   Future<void> retrieveAll() async {
@@ -63,6 +70,10 @@ class CardDecorationImage {
     this.frameDimension,
   }) {
     this.fileId ??= Uuid().v4();
+  }
+
+  bool get exists {
+    return filePath != null;
   }
 
   Future<void> delete() async {

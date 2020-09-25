@@ -121,7 +121,7 @@ class KaraokeCards with ChangeNotifier {
   }
 
   void setFrame(newFramePath) {
-    current.shouldDeleteOldDecoration = true;
+    current.setShouldDeleteOldDecortionImage();
     current.framePath = newFramePath;
     notifyListeners();
   }
@@ -170,6 +170,10 @@ class KaraokeCard with ChangeNotifier {
     }
   }
 
+  bool get noFrameOrDecoration {
+    return !hasFrame && !decoration.isEmpty;
+  }
+
   bool get hasFrame {
     return framePath != null;
   }
@@ -195,6 +199,10 @@ class KaraokeCard with ChangeNotifier {
   Future<void> deleteOldDecorationImage() async {
     await decorationImage.delete();
     decorationImage = null;
+  }
+
+  void setShouldDeleteOldDecortionImage() {
+    if (decorationImage != null && decorationImage.exists) shouldDeleteOldDecoration = true;
   }
 
   Future<void> deleteOldAudio() async {

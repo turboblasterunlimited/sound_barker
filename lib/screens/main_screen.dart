@@ -249,7 +249,8 @@ class _MainScreenState extends State<MainScreen> {
 
   bool get _showDecorationCanvas {
     return currentActivity.isStyle &&
-        (currentActivity.isTwo || currentActivity.isThree);
+        (currentActivity.isTwo ||
+            currentActivity.isThree && cards.current.hasDecoration);
   }
 
   bool get showFrame {

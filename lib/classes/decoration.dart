@@ -13,4 +13,12 @@ class CardDecoration {
   bool get isEmpty {
     return drawings.isEmpty && typings.isEmpty;
   }
+
+  void removeEmptyTypings() {
+    List<Typing> result = [];
+    typings.forEach((typing) {
+      if (!typing.isEmpty()) result.add(typing);
+    });
+    typings = result;
+  }
 }

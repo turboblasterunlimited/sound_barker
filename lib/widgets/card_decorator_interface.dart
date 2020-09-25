@@ -34,6 +34,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
   @override
   void dispose() {
     stopPlayback();
+    cards.current.decoration.removeEmptyTypings();
     focusNode.dispose();
     super.dispose();
   }

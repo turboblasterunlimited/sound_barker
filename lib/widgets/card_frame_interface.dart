@@ -141,7 +141,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       onTap: () {
         setState(() => selectedFrame = fileName);
         cards.setFrame(rootPath + fileName);
-        cards.current.shouldDeleteOldDecoration = true;
+        cards.current.setShouldDeleteOldDecortionImage();
         SystemChrome.setEnabledSystemUIOverlays([]);
       },
       child: Container(
@@ -184,6 +184,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
         setState(() => selectedFrame = "");
         cards.setFrame(null);
         SystemChrome.setEnabledSystemUIOverlays([]);
+        cards.current.setShouldDeleteOldDecortionImage();
       },
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 5),

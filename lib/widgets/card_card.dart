@@ -46,8 +46,8 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
     );
   }
 
-  Widget decorationImageSelectable(image) {
-    return widget.card.decorationImage.hasFrameDimension
+  Widget _decorationImageSelectable(image) {
+    return (widget.card.decorationImage != null && widget.card.decorationImage.hasFrameDimension)
         ? Positioned.fill(
             child: LayoutBuilder(
               builder: (context, constraints) {
@@ -75,10 +75,10 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
             child: Stack(
               alignment: Alignment.center,
               children: [
-                decorationImageSelectable(
+                _decorationImageSelectable(
                   Image.file(File(widget.card.picture.filePath)),
                 ),
-                Image.file(
+                if (widget.card.decorationImage != null) Image.file(
                   File(widget.card.decorationImage.filePath),
                 ),
               ],
