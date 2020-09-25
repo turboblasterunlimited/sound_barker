@@ -84,8 +84,8 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
     shownBarks.asMap().forEach((i, bark) {
       if (newBarks.indexOf(bark) == -1) toRemove.add(i);
     });
-    print("toRemove: $toRemove");
-    print("shownBarks before removal: $shownBarks");
+    // print("toRemove: $toRemove");
+    // print("shownBarks before removal: $shownBarks");
 
     toRemove.reversed.forEach((i) {
       shownBarks.removeAt(i);
@@ -158,6 +158,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Spacer(),
             RawMaterialButton(
               onPressed: () {
                 setState(() => viewingStockBarks = false);
@@ -224,6 +225,30 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
                       }),
               ],
             ),
+            RawMaterialButton(
+              onPressed: () {
+                setState(() => viewingStockBarks = true);
+              },
+              child: Text(
+                "FX",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: viewingStockBarks
+                      ? Colors.white
+                      : Theme.of(context).primaryColor,
+                  fontSize: 15,
+                ),
+              ),
+              shape: CircleBorder(
+                side:
+                    BorderSide(color: Theme.of(context).primaryColor, width: 3),
+              ),
+              elevation: 2.0,
+              fillColor:
+                  viewingStockBarks ? Theme.of(context).primaryColor : null,
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+            ),
+            Spacer(),
           ],
         ),
         Padding(padding: EdgeInsets.only(top: 5)),

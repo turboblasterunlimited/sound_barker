@@ -142,6 +142,7 @@ class Barks with ChangeNotifier {
   _serverDataToBark(serverBark) {
     return Bark(
       isStock: serverBark["is_stock"] == 1 ? true : false,
+      type: serverBark["crop_type"],
       name: serverBark["name"],
       fileUrl: serverBark["bucket_fp"],
       fileId: serverBark["uuid"],
@@ -161,6 +162,7 @@ class Bark with ChangeNotifier {
   String amplitudesPath;
   String length;
   bool isStock;
+  String type;
 
   Bark({
     String name,
@@ -171,7 +173,9 @@ class Bark with ChangeNotifier {
     String amplitudesPath,
     String length,
     bool isStock,
+    String type,
   }) {
+    this.type = type;
     this.name = name;
     this.filePath = filePath;
     this.fileUrl = fileUrl;

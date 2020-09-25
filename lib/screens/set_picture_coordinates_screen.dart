@@ -418,6 +418,7 @@ class _SetPictureCoordinatesScreenState
               ),
             ),
             CardProgressBar(),
+            Padding(padding: EdgeInsets.only(top: 6),),
             interfaceTitleNav(
               context,
               _instructionalText,

@@ -7,7 +7,6 @@ import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -212,7 +211,7 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
 
     return Column(
       children: <Widget>[
-        interfaceTitleNav(context, "PERSONAL MESSAGE",
+        interfaceTitleNav(context, cards.current.hasSong ? "PRE-SONG MESSAGE" : "CARD MESSAGE",
             backCallback: backCallback, skipCallback: skipCallback),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

@@ -41,7 +41,7 @@ class _SingingImageState extends State<SingingImage>
             print("WEB VIEW \"FINISHED\"");
             imageController.mountController(webviewController);
           },
-          initialUrl: "https://thedogbarksthesong.ml/puppet_002/puppet.html",
+          initialUrl: "https://thedogbarksthesong.ml/puppet/app_puppet.html",
           javascriptMode: JavascriptMode.unrestricted,
           javascriptChannels: Set.from(
             [
