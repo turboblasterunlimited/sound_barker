@@ -49,7 +49,8 @@ class KaraokeCardDecorationController with ChangeNotifier {
   }
 
   Offset get defaultTypingOffset {
-    return Offset(canvasLength / 2, canvasLength - 30);
+    var center = canvasLength / 2;
+    return Offset(center, center);
   }
 
   void setDecoration(cardDecoration, screenWidth) {
@@ -90,8 +91,11 @@ class KaraokeCardDecorationController with ChangeNotifier {
     }
     if (isTyping) {
       if (decoration.typings.isEmpty) return;
-      print("Typing length: ${decoration.typings.length}");
-      decoration.typings.removeLast();
+      if (decoration.typings.length == 1) {
+        decoration.typings.removeLast();
+        _addTextSpan();
+      } else
+        decoration.typings.removeLast();
     }
     notifyListeners();
   }
@@ -108,16 +112,20 @@ class KaraokeCardDecorationController with ChangeNotifier {
     notifyListeners();
   }
 
+  _addTextSpan() {
+    final span = TextSpan(
+      text: "",
+      style: TextStyle(color: color, fontSize: size),
+    );
+    decoration.typings.add(Typing(
+      span,
+      defaultTypingOffset,
+    ));
+  }
+
   void startTyping() {
     if (decoration.typings.isEmpty) {
-      final span = TextSpan(
-        text: "",
-        style: TextStyle(color: color, fontSize: size),
-      );
-      decoration.typings.add(Typing(
-        span,
-        defaultTypingOffset,
-      ));
+      _addTextSpan();
     }
     print("call start typing");
     isTyping = true;
