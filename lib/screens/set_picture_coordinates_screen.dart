@@ -373,7 +373,7 @@ class _SetPictureCoordinatesScreenState
                       child: FittedBox(
                         fit: BoxFit.fill,
                         child: Image.file(File(widget.newPicture.filePath),
-                        width: 512, height: 512),
+                            width: 512, height: 512),
                       ),
                     ),
                     // Points and lines
@@ -418,7 +418,9 @@ class _SetPictureCoordinatesScreenState
               ),
             ),
             CardProgressBar(),
-            Padding(padding: EdgeInsets.only(top: 6),),
+            Padding(
+              padding: EdgeInsets.only(top: 6),
+            ),
             interfaceTitleNav(
               context,
               _instructionalText,

@@ -95,15 +95,15 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
       Colors.pinkAccent,
     ]
         .map(
-          (color) => Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: GestureDetector(
-              onTap: () {
-                decorationController.setColor(color);
-              },
+          (color) => GestureDetector(
+            onTap: () {
+              decorationController.setColor(color);
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(5.0),
               child: Container(
-                height: 15,
-                width: 20,
+                height: 30,
+                width: 28,
                 decoration: decorationController.color == color
                     ? BoxDecoration(
                         color: color,
@@ -154,7 +154,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
             ),
           ),
           Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               // back, draw, write, sizeSlider, undo
               Row(
@@ -175,7 +175,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                   ),
                   // Drawing button
                   Padding(
-                    padding: EdgeInsets.only(bottom: 10),
+                    padding: const EdgeInsets.only(left: 15.0),
                     child: IconButton(
                       color: decorationController.isDrawing
                           ? Colors.blue
@@ -184,22 +184,32 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                         focusNode.unfocus();
                         decorationController.startDrawing();
                       },
-                      icon: Icon(CustomIcons.draw, size: iconButtonSize + 10),
+                      icon: Icon(Icons.edit, size: iconButtonSize),
+
+                      // icon: Icon(CustomIcons.draw, size: iconButtonSize + 10),
                     ),
                   ),
+
                   // Typing button
-                  IconButton(
-                    color: decorationController.isTyping
-                        ? Colors.blue
-                        : Theme.of(context).primaryColor,
-                    onPressed: () {
-                      focusNode.unfocus();
-                      focusNode.requestFocus();
-                      decorationController.startTyping();
-                    },
-                    icon: Icon(CustomIcons.aa, size: iconButtonSize + 10),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10.0),
+                    child: IconButton(
+                      color: decorationController.isTyping
+                          ? Colors.blue
+                          : Theme.of(context).primaryColor,
+                      onPressed: () {
+                        focusNode.unfocus();
+                        focusNode.requestFocus();
+                        decorationController.startTyping();
+                      },
+                      icon: Icon(Icons.font_download, size: iconButtonSize),
+
+                      // icon: Icon(CustomIcons.aa, size: iconButtonSize + 10),
+                    ),
                   ),
+
                   // Text/Drawing Size slider
+
                   SizedBox(
                     width: 105,
                     child: SliderTheme(
@@ -221,20 +231,27 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                       ),
                     ),
                   ),
+
                   // Undo button
-                  IconButton(
-                    color: Theme.of(context).primaryColor,
-                    onPressed: _handleUndo,
-                    icon: Icon(CustomIcons.undo, size: iconButtonSize),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 5.0, bottom: 5.0),
+                    child: IconButton(
+                      color: Theme.of(context).primaryColor,
+                      onPressed: _handleUndo,
+                      icon: Icon(CustomIcons.undo, size: iconButtonSize),
+                    ),
                   ),
                 ],
               ),
               // Color Select
               Expanded(
-                child: ListView(
-                    // This next line does the trick.
-                    scrollDirection: Axis.horizontal,
-                    children: _colorButtons()),
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 5.0),
+                  child: ListView(
+                      // This next line does the trick.
+                      scrollDirection: Axis.horizontal,
+                      children: _colorButtons()),
+                ),
               ),
               // Row(
               //   children: <Widget>[
