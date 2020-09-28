@@ -45,6 +45,7 @@ class KaraokeCardDecorationController with ChangeNotifier {
   void reset() {
     decoration?.drawings?.clear();
     decoration?.typings?.clear();
+    if (isTyping) _addTextSpan();
     notifyListeners();
   }
 
@@ -53,27 +54,14 @@ class KaraokeCardDecorationController with ChangeNotifier {
     return Offset(center, center);
   }
 
-  void setDecoration(cardDecoration, screenWidth) {
+  void setDecoration(cardDecoration, double screenWidth) {
     decoration = cardDecoration;
-    _initializeTyping(screenWidth);
+    this.canvasLength = screenWidth;
   }
 
   void setTextController(textController, textFocusNode) {
     this.textController = textController;
     focusNode = textFocusNode;
-  }
-
-  void _initializeTyping(double length) {
-    this.canvasLength = length;
-    // if (decoration.typings.isNotEmpty) return;
-    // final span = TextSpan(
-    //   text: "",
-    //   style: TextStyle(color: color, fontSize: size),
-    // );
-    // decoration.typings.add(Typing(
-    //   span,
-    //   defaultTypingOffset,
-    // ));
   }
 
   void updateLastTextSpan(newTextSpan) {
