@@ -171,7 +171,7 @@ class KaraokeCard with ChangeNotifier {
   }
 
   bool get noFrameOrDecoration {
-    return !hasFrame && !decoration.isEmpty;
+    return !hasFrame && decoration.isEmpty;
   }
 
   bool get hasFrame {
