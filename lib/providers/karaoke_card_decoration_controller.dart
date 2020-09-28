@@ -43,9 +43,10 @@ class KaraokeCardDecorationController with ChangeNotifier {
   }
 
   void reset() {
-    decoration?.drawings?.clear();
-    decoration?.typings?.clear();
-    if (isTyping) _addTextSpan();
+    if (decoration == null || decoration.isEmpty) return;
+    decoration.drawings?.clear();
+    decoration.typings?.clear();
+    if (isTyping) _addTyping();
     notifyListeners();
   }
 
@@ -81,7 +82,7 @@ class KaraokeCardDecorationController with ChangeNotifier {
       if (decoration.typings.isEmpty) return;
       if (decoration.typings.length == 1) {
         decoration.typings.removeLast();
-        _addTextSpan();
+        _addTyping();
       } else
         decoration.typings.removeLast();
     }
@@ -100,7 +101,7 @@ class KaraokeCardDecorationController with ChangeNotifier {
     notifyListeners();
   }
 
-  _addTextSpan() {
+  _addTyping() {
     final span = TextSpan(
       text: "",
       style: TextStyle(color: color, fontSize: size),
@@ -113,7 +114,7 @@ class KaraokeCardDecorationController with ChangeNotifier {
 
   void startTyping() {
     if (decoration.typings.isEmpty) {
-      _addTextSpan();
+      _addTyping();
     }
     print("call start typing");
     isTyping = true;

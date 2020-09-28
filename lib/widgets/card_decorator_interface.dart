@@ -4,6 +4,7 @@ import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/sound_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:image/image.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/karaoke_card_decoration_controller.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
@@ -60,6 +61,68 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
     });
   }
 
+  List<Widget> _colorButtons() {
+    return [
+      Colors.black,
+      Colors.white,
+      Colors.blueGrey,
+      Colors.brown,
+      Colors.red[800],
+      Colors.red,
+      Colors.redAccent,
+      Colors.deepOrange,
+      Colors.deepOrangeAccent,
+      Colors.orange,
+      Colors.orangeAccent,
+      Colors.amber,
+      Colors.amberAccent,
+      Colors.yellow,
+      Colors.yellowAccent,
+      Colors.lightGreenAccent,
+      Colors.green,
+      Colors.lightGreen,
+      Colors.greenAccent,
+      Colors.tealAccent,
+      Colors.cyanAccent,
+      Colors.cyan,
+      Colors.blueAccent,
+      Colors.indigoAccent,
+      Colors.indigo,
+      Colors.deepPurple,
+      Colors.deepPurpleAccent,
+      Colors.purpleAccent,
+      Colors.pink,
+      Colors.pinkAccent,
+    ]
+        .map(
+          (color) => Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: GestureDetector(
+              onTap: () {
+                decorationController.setColor(color);
+              },
+              child: Container(
+                height: 15,
+                width: 20,
+                decoration: decorationController.color == color
+                    ? BoxDecoration(
+                        color: color,
+                        borderRadius: BorderRadius.all(Radius.circular(15)),
+                        border: Border.all(
+                          color: Colors.blue,
+                          width: 3,
+                        ),
+                      )
+                    : BoxDecoration(
+                        color: color,
+                        borderRadius: BorderRadius.all(Radius.circular(15))),
+              ),
+            ),
+          ),
+        )
+        .toList();
+  }
+
   double iconButtonSize = 35;
 
   @override
@@ -96,7 +159,6 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
               // back, draw, write, sizeSlider, undo
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   GestureDetector(
                     behavior: HitTestBehavior.translucent,
@@ -168,155 +230,165 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                 ],
               ),
               // Color Select
-              Row(
-                children: <Widget>[
-                  Flexible(
-                    flex: 1,
-                    child: RawMaterialButton(
-                      fillColor: Colors.black,
-                      shape: CircleBorder(),
-                      onPressed: () {
-                        decorationController.setColor(Colors.black);
-                      },
-                      child: decorationController.color == Colors.black
-                          ? Icon(Icons.check, size: 20, color: Colors.white)
-                          : Container(height: 20),
-                    ),
-                  ),
-                  Flexible(
-                    flex: 1,
-                    child: RawMaterialButton(
-                      fillColor: Colors.white,
-                      shape: CircleBorder(),
-                      onPressed: () {
-                        decorationController.setColor(Colors.white);
-                      },
-                      child: decorationController.color == Colors.white
-                          ? Icon(Icons.check, size: 20)
-                          : Container(height: 20),
-                    ),
-                  ),
-                  Flexible(
-                    flex: 1,
-                    child: RawMaterialButton(
-                      fillColor: Colors.green,
-                      shape: CircleBorder(),
-                      onPressed: () {
-                        decorationController.setColor(Colors.green);
-                      },
-                      child: decorationController.color == Colors.green
-                          ? Icon(Icons.check, size: 20)
-                          : Container(height: 20),
-                    ),
-                  ),
-                  Flexible(
-                    flex: 1,
-                    child: RawMaterialButton(
-                      fillColor: Colors.blue,
-                      shape: CircleBorder(),
-                      onPressed: () {
-                        decorationController.setColor(Colors.blue);
-                      },
-                      child: decorationController.color == Colors.blue
-                          ? Icon(Icons.check, size: 20)
-                          : Container(height: 20),
-                    ),
-                  ),
-                  Flexible(
-                    flex: 1,
-                    child: RawMaterialButton(
-                      fillColor: Colors.pink,
-                      shape: CircleBorder(),
-                      onPressed: () {
-                        decorationController.setColor(Colors.pink);
-                      },
-                      child: decorationController.color == Colors.pink
-                          ? Icon(Icons.check, size: 20)
-                          : Container(height: 20),
-                    ),
-                  ),
-                  Flexible(
-                    flex: 1,
-                    child: RawMaterialButton(
-                      fillColor: Colors.purple,
-                      shape: CircleBorder(),
-                      onPressed: () {
-                        decorationController.setColor(Colors.purple);
-                      },
-                      child: decorationController.color == Colors.purple
-                          ? Icon(Icons.check, size: 20)
-                          : Container(height: 20),
-                    ),
-                  ),
-                  Flexible(
-                    flex: 1,
-                    child: RawMaterialButton(
-                      fillColor: Colors.yellow,
-                      shape: CircleBorder(),
-                      onPressed: () {
-                        decorationController.setColor(Colors.yellow);
-                      },
-                      child: decorationController.color == Colors.yellow
-                          ? Icon(Icons.check, size: 20)
-                          : Container(height: 20),
-                    ),
-                  ),
-                ],
+              Expanded(
+                child: ListView(
+                    // This next line does the trick.
+                    scrollDirection: Axis.horizontal,
+                    children: _colorButtons()),
               ),
+              // Row(
+              //   children: <Widget>[
+              //     Flexible(
+              //       flex: 1,
+              //       child: RawMaterialButton(
+              //         fillColor: Colors.black,
+              //         shape: CircleBorder(),
+              //         onPressed: () {
+              //           decorationController.setColor(Colors.black);
+              //         },
+              //         child: decorationController.color == Colors.black
+              //             ? Icon(Icons.check, size: 20, color: Colors.white)
+              //             : Container(height: 20),
+              //       ),
+              //     ),
+              //     Flexible(
+              //       flex: 1,
+              //       child: RawMaterialButton(
+              //         fillColor: Colors.white,
+              //         shape: CircleBorder(),
+              //         onPressed: () {
+              //           decorationController.setColor(Colors.white);
+              //         },
+              //         child: decorationController.color == Colors.white
+              //             ? Icon(Icons.check, size: 20)
+              //             : Container(height: 20),
+              //       ),
+              //     ),
+              //     Flexible(
+              //       flex: 1,
+              //       child: RawMaterialButton(
+              //         fillColor: Colors.green,
+              //         shape: CircleBorder(),
+              //         onPressed: () {
+              //           decorationController.setColor(Colors.green);
+              //         },
+              //         child: decorationController.color == Colors.green
+              //             ? Icon(Icons.check, size: 20)
+              //             : Container(height: 20),
+              //       ),
+              //     ),
+              //     Flexible(
+              //       flex: 1,
+              //       child: RawMaterialButton(
+              //         fillColor: Colors.blue,
+              //         shape: CircleBorder(),
+              //         onPressed: () {
+              //           decorationController.setColor(Colors.blue);
+              //         },
+              //         child: decorationController.color == Colors.blue
+              //             ? Icon(Icons.check, size: 20)
+              //             : Container(height: 20),
+              //       ),
+              //     ),
+              //     Flexible(
+              //       flex: 1,
+              //       child: RawMaterialButton(
+              //         fillColor: Colors.pink,
+              //         shape: CircleBorder(),
+              //         onPressed: () {
+              //           decorationController.setColor(Colors.pink);
+              //         },
+              //         child: decorationController.color == Colors.pink
+              //             ? Icon(Icons.check, size: 20)
+              //             : Container(height: 20),
+              //       ),
+              //     ),
+              //     Flexible(
+              //       flex: 1,
+              //       child: RawMaterialButton(
+              //         fillColor: Colors.purple,
+              //         shape: CircleBorder(),
+              //         onPressed: () {
+              //           decorationController.setColor(Colors.purple);
+              //         },
+              //         child: decorationController.color == Colors.purple
+              //             ? Icon(Icons.check, size: 20)
+              //             : Container(height: 20),
+              //       ),
+              //     ),
+              //     Flexible(
+              //       flex: 1,
+              //       child: RawMaterialButton(
+              //         fillColor: Colors.yellow,
+              //         shape: CircleBorder(),
+              //         onPressed: () {
+              //           decorationController.setColor(Colors.yellow);
+              //         },
+              //         child: decorationController.color == Colors.yellow
+              //             ? Icon(Icons.check, size: 20)
+              //             : Container(height: 20),
+              //       ),
+              //     ),
+              //   ],
+              // ),
               // Reset/Check buttons
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  MaterialButton(
-                    height: 20,
-                    minWidth: 50,
-                    onPressed: _handleReset,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8),
-                      child: FittedBox(
-                        child: Text(
-                          "Reset",
-                          style: TextStyle(
-                            color: Colors.white,
+              Padding(
+                padding: const EdgeInsets.only(bottom: 15.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    MaterialButton(
+                      height: 20,
+                      minWidth: 50,
+                      onPressed: _handleReset,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 8),
+                        child: FittedBox(
+                          child: Text(
+                            "Reset",
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      elevation: 2.0,
+                      // color: decorationController.decoration.isEmpty
+                      //     ? Colors.grey
+                      //     : Theme.of(context).errorColor,
+                      color: Theme.of(context).errorColor,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 40.0, vertical: 2),
                     ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
+                    Padding(
+                      padding: EdgeInsets.only(left: 20),
                     ),
-                    elevation: 2.0,
-                    color: decorationController.decoration.isEmpty
-                        ? Colors.grey
-                        : Theme.of(context).errorColor,
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 20),
-                  ),
-                  MaterialButton(
-                    height: 20,
-                    minWidth: 50,
-                    onPressed: () {
-                      decorationController.startDrawing();
-                      currentActivity.setNextSubStep();
-                    },
-                    child: Icon(
-                      Icons.check,
-                      color: Colors.white,
-                      size: 30,
+                    MaterialButton(
+                      height: 20,
+                      minWidth: 50,
+                      onPressed: () {
+                        decorationController.startDrawing();
+                        currentActivity.setNextSubStep();
+                      },
+                      child: Icon(
+                        Icons.check,
+                        color: Colors.white,
+                        size: 30,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      elevation: 2.0,
+                      color: Theme.of(context).primaryColor,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 40.0, vertical: 2),
                     ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    elevation: 2.0,
-                    color: Theme.of(context).primaryColor,
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),
