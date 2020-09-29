@@ -1,15 +1,13 @@
 import 'package:K9_Karaoke/components/triangular_slider_track_shape.dart';
-import 'package:K9_Karaoke/providers/card_decoration_image.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/sound_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:image/image.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/karaoke_card_decoration_controller.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
-import '../icons/custom_icons_old.dart';
+import '../icons/custom_icons.dart';
 
 class CardDecoratorInterface extends StatefulWidget {
   @override
@@ -184,7 +182,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                         focusNode.unfocus();
                         decorationController.startDrawing();
                       },
-                      icon: Icon(Icons.edit, size: iconButtonSize),
+                      icon: Icon(CustomIcons.draw, size: iconButtonSize),
 
                       // icon: Icon(CustomIcons.draw, size: iconButtonSize + 10),
                     ),
@@ -192,7 +190,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
 
                   // Typing button
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 5, left: 7.0),
+                    padding: const EdgeInsets.only(right: 5),
                     child: IconButton(
                       color: decorationController.isTyping
                           ? Colors.blue
@@ -202,7 +200,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                         focusNode.requestFocus();
                         decorationController.startTyping();
                       },
-                      icon: Icon(CustomIcons.aa, size: iconButtonSize + 15),
+                      icon: Icon(CustomIcons.aa, size: iconButtonSize - 5),
 
                       // icon: Icon(CustomIcons.aa, size: iconButtonSize + 10),
                     ),
@@ -234,7 +232,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
 
                   // Undo button
                   Padding(
-                    padding: const EdgeInsets.only(right: 5.0, bottom: 5.0),
+                    padding: const EdgeInsets.only(right: 10.0, bottom: 5.0),
                     child: IconButton(
                       color: Theme.of(context).primaryColor,
                       onPressed: _handleUndo,
