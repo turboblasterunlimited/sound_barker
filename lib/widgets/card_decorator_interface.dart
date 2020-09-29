@@ -183,11 +183,9 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                         decorationController.startDrawing();
                       },
                       icon: Icon(CustomIcons.draw, size: iconButtonSize),
-
                       // icon: Icon(CustomIcons.draw, size: iconButtonSize + 10),
                     ),
                   ),
-
                   // Typing button
                   Padding(
                     padding: const EdgeInsets.only(right: 5),
@@ -201,13 +199,10 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                         decorationController.startTyping();
                       },
                       icon: Icon(CustomIcons.aa, size: iconButtonSize - 5),
-
                       // icon: Icon(CustomIcons.aa, size: iconButtonSize + 10),
                     ),
                   ),
-
                   // Text/Drawing Size slider
-
                   SizedBox(
                     width: 105,
                     child: SliderTheme(

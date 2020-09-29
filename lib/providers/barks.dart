@@ -64,11 +64,14 @@ class Barks with ChangeNotifier {
       tempBarks.add(bark);
     });
     await downloadAllBarksFromBucket(tempBarks);
-    tempBarks.sort((bark1, bark2) {
-      return bark1.created.compareTo(bark2.created);
-    });
     tempBarks.forEach((bark) {
       bark.isStock ? addStockBark(bark) : addBark(bark);
+    });
+    all.sort((bark1, bark2) {
+      return bark1.created.compareTo(bark2.created);
+    });
+    stockBarks.sort((bark1, bark2) {
+      return bark1.name.compareTo(bark2.name);
     });
   }
 

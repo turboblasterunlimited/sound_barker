@@ -138,8 +138,6 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
       updateDisplayedBarks(
           stock: currentBarks == BarkTypes.stock,
           fx: currentBarks == BarkTypes.fx);
-      // updateDisplayedBarks(stock: true);
-      // updateDisplayedBarks(fx: true);
     }
   }
 
@@ -237,96 +235,116 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Spacer(),
-            RawMaterialButton(
-              onPressed: () => setState(() => currentBarks = BarkTypes.myBarks),
-              child: Text(
-                "My Barks",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: currentBarks == BarkTypes.myBarks
-                        ? Colors.white
-                        : Theme.of(context).primaryColor,
-                    fontSize: 15),
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(40.0),
-                side:
-                    BorderSide(color: Theme.of(context).primaryColor, width: 3),
-              ),
-              elevation: 2.0,
-              fillColor: currentBarks == BarkTypes.myBarks
-                  ? Theme.of(context).primaryColor
-                  : null,
-              padding:
-                  const EdgeInsets.symmetric(vertical: 8, horizontal: 18.0),
-            ),
-            Padding(padding: EdgeInsets.all(10)),
-            Stack(
-              children: [
-                RawMaterialButton(
-                  onPressed: () {
-                    setState(() => currentBarks = BarkTypes.stock);
-                  },
-                  child: Text(
-                    "Stock Barks",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: currentBarks == BarkTypes.stock
-                          ? Colors.white
-                          : Theme.of(context).primaryColor,
-                      fontSize: 15,
+            // Spacer(),
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  RawMaterialButton(
+                    onPressed: () =>
+                        setState(() => currentBarks = BarkTypes.myBarks),
+                    child: Text(
+                      "My Barks",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: currentBarks == BarkTypes.myBarks
+                              ? Colors.white
+                              : Theme.of(context).primaryColor,
+                          fontSize: 15),
                     ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(40.0),
+                      side: BorderSide(
+                          color: Theme.of(context).primaryColor, width: 3),
+                    ),
+                    elevation: 2.0,
+                    fillColor: currentBarks == BarkTypes.myBarks
+                        ? Theme.of(context).primaryColor
+                        : null,
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 8, horizontal: 18.0),
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(40.0),
-                    side: BorderSide(
-                        color: Theme.of(context).primaryColor, width: 3),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Stack(
+                    children: [
+                      RawMaterialButton(
+                        constraints:
+                            const BoxConstraints(minWidth: 33, minHeight: 33),
+                        onPressed: () {
+                          setState(() => currentBarks = BarkTypes.stock);
+                        },
+                        child: Text(
+                          "Stock Barks",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: currentBarks == BarkTypes.stock
+                                ? Colors.white
+                                : Theme.of(context).primaryColor,
+                            fontSize: 15,
+                          ),
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(40.0),
+                          side: BorderSide(
+                              color: Theme.of(context).primaryColor, width: 3),
+                        ),
+                        elevation: 2.0,
+                        fillColor: currentBarks == BarkTypes.stock
+                            ? Theme.of(context).primaryColor
+                            : null,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 18),
+                      ),
+                      if (barks.all.isEmpty)
+                        AnimatedBuilder(
+                            animation: animationController,
+                            builder: (BuildContext context, Widget child) {
+                              return Positioned(
+                                bottom: tween.value,
+                                left: 0,
+                                right: 0,
+                                child: Icon(Icons.arrow_upward,
+                                    size: 50,
+                                    color: Theme.of(context).primaryColor),
+                              );
+                            }),
+                    ],
                   ),
-                  elevation: 2.0,
-                  fillColor: currentBarks == BarkTypes.stock
-                      ? Theme.of(context).primaryColor
-                      : null,
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 18),
-                ),
-                if (barks.all.isEmpty)
-                  AnimatedBuilder(
-                      animation: animationController,
-                      builder: (BuildContext context, Widget child) {
-                        return Positioned(
-                          bottom: tween.value,
-                          left: 0,
-                          right: 0,
-                          child: Icon(Icons.arrow_upward,
-                              size: 50, color: Theme.of(context).primaryColor),
-                        );
-                      }),
-              ],
-            ),
-            RawMaterialButton(
-              onPressed: () => setState(() => currentBarks = BarkTypes.fx),
-              child: Text(
-                "FX",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: currentBarks == BarkTypes.fx
-                      ? Colors.white
-                      : Theme.of(context).primaryColor,
-                  fontSize: 15,
-                ),
+                  RawMaterialButton(
+                    constraints:
+                        const BoxConstraints(minWidth: 33, minHeight: 33),
+                    onPressed: () =>
+                        setState(() => currentBarks = BarkTypes.fx),
+                    child: Text(
+                      "FX",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: currentBarks == BarkTypes.fx
+                            ? Colors.white
+                            : Theme.of(context).primaryColor,
+                        fontSize: 15,
+                      ),
+                    ),
+                    shape: CircleBorder(
+                      side: BorderSide(
+                          color: Theme.of(context).primaryColor, width: 3),
+                    ),
+                    elevation: 2.0,
+                    fillColor: currentBarks == BarkTypes.fx
+                        ? Theme.of(context).primaryColor
+                        : null,
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                  ),
+                ],
               ),
-              shape: CircleBorder(
-                side:
-                    BorderSide(color: Theme.of(context).primaryColor, width: 3),
-              ),
-              elevation: 2.0,
-              fillColor: currentBarks == BarkTypes.fx
-                  ? Theme.of(context).primaryColor
-                  : null,
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
             ),
-            Spacer(),
           ],
         ),
         Padding(padding: EdgeInsets.only(top: 5)),
