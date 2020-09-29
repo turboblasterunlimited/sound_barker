@@ -37,12 +37,17 @@ class Barks with ChangeNotifier {
     if (fx == true) stock = true;
     List<Bark> barks = stock ? stockBarks : all;
     if (fx == true) {
+      print("test: fx");
       return List.from(barks
           .where((Bark bark) => bark.length == length && bark.type != "bark"));
     } else if (stock == true) {
-      return List.from(barks.where((Bark bark) =>
-          bark.length == length && bark.isStock && bark.type == "bark"));
+      print("test: stock");
+      return List.from(barks.where((Bark bark) {
+        print("${bark.name}: ${bark.length == length && bark.isStock && bark.type == "bark"}");
+        return bark.length == length && bark.isStock && bark.type == "bark";
+      }));
     } else {
+      print("test: mybarks");
       return List.from(barks.where((Bark bark) =>
           bark.length == length && !bark.isStock && bark.type == "bark"));
     }

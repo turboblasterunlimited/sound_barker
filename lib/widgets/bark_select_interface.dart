@@ -92,12 +92,15 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
     List shownBarks;
     var listKey;
     if (currentBarks == BarkTypes.myBarks) {
+      print("mybarks");
       shownBarks = displayedBarks;
       listKey = _listKey;
     } else if (currentBarks == BarkTypes.stock) {
+      print("stock");
       shownBarks = displayedBarksStock;
       listKey = _stockListKey;
     } else if (currentBarks == BarkTypes.fx) {
+      print("FX");
       shownBarks = displayedFX;
       listKey = _fxListKey;
     }
@@ -119,9 +122,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
 
     newBarks.forEach((newBark) {
       if (shownBarks.indexOf(newBark) == -1) {
-        print("checkpoint before: ${listKey}, ${listKey.currentState}");
         listKey.currentState?.insertItem(0);
-        print("checkpoint after");
         shownBarks.insert(0, newBark);
       }
     });
@@ -134,9 +135,11 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
       displayedFX = getBarksOfCurrentLength(fx: true);
       setState(() => _isFirstLoad = false);
     } else {
-      updateDisplayedBarks();
-      updateDisplayedBarks(stock: true);
-      updateDisplayedBarks(fx: true);
+      updateDisplayedBarks(
+          stock: currentBarks == BarkTypes.stock,
+          fx: currentBarks == BarkTypes.fx);
+      // updateDisplayedBarks(stock: true);
+      // updateDisplayedBarks(fx: true);
     }
   }
 
