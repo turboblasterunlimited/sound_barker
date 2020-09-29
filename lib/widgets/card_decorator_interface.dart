@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/karaoke_card_decoration_controller.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
-import '../icons/custom_icons.dart';
+import '../icons/custom_icons_old.dart';
 
 class CardDecoratorInterface extends StatefulWidget {
   @override
@@ -192,7 +192,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
 
                   // Typing button
                   Padding(
-                    padding: const EdgeInsets.only(left: 10.0),
+                    padding: const EdgeInsets.only(bottom: 5, left: 7.0),
                     child: IconButton(
                       color: decorationController.isTyping
                           ? Colors.blue
@@ -202,7 +202,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                         focusNode.requestFocus();
                         decorationController.startTyping();
                       },
-                      icon: Icon(Icons.font_download, size: iconButtonSize),
+                      icon: Icon(CustomIcons.aa, size: iconButtonSize + 15),
 
                       // icon: Icon(CustomIcons.aa, size: iconButtonSize + 10),
                     ),

@@ -13,15 +13,23 @@ class BarkSelectInterface extends StatefulWidget {
   _BarkSelectInterfaceState createState() => _BarkSelectInterfaceState();
 }
 
+enum BarkTypes {
+  stock,
+  fx,
+  myBarks,
+}
+
 class _BarkSelectInterfaceState extends State<BarkSelectInterface>
     with SingleTickerProviderStateMixin {
-  bool viewingStockBarks = false;
+  BarkTypes currentBarks = BarkTypes.myBarks;
   CurrentActivity currentActivity;
   Barks barks;
   List<Bark> displayedBarks;
   List<Bark> displayedBarksStock;
+  List<Bark> displayedFX;
   final _listKey = GlobalKey<AnimatedListState>();
   final _stockListKey = GlobalKey<AnimatedListState>();
+  final _fxListKey = GlobalKey<AnimatedListState>();
   SoundController soundController;
   bool _isFirstLoad = true;
   AnimationController animationController;
@@ -65,20 +73,34 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
     return currentActivity.cardCreationSubStep == CardCreationSubSteps.three;
   }
 
-  getBarksOfCurrentLength([bool isStock = false]) {
+  getBarksOfCurrentLength({bool stock = false, bool fx = false}) {
     if (currentActivity.isTwo) {
-      return barks.short(isStock);
+      return barks.barksOfLength("short", stock: stock, fx: fx);
     } else if (currentActivity.isThree) {
-      return barks.medium(isStock) + barks.short(isStock);
+      return barks.barksOfLength("medium", stock: stock, fx: fx) +
+          barks.barksOfLength("short", stock: stock, fx: fx);
     } else if (currentActivity.isFour) {
-      return barks.long(isStock) + barks.medium(isStock) + barks.short(isStock);
+      return barks.barksOfLength("long", stock: stock, fx: fx) +
+          barks.barksOfLength("medium", stock: stock, fx: fx) +
+          barks.barksOfLength("short", stock: stock, fx: fx);
     }
   }
 
-  updateDisplayedBarks([bool isStock = false]) {
-    List newBarks = getBarksOfCurrentLength(isStock);
-    List shownBarks = isStock ? displayedBarksStock : displayedBarks;
-    var listKey = isStock ? _stockListKey : _listKey;
+  updateDisplayedBarks({bool stock = false, bool fx = false}) {
+    List newBarks = getBarksOfCurrentLength(stock: stock, fx: fx);
+
+    List shownBarks;
+    var listKey;
+    if (currentBarks == BarkTypes.myBarks) {
+      shownBarks = displayedBarks;
+      listKey = _listKey;
+    } else if (currentBarks == BarkTypes.stock) {
+      shownBarks = displayedBarksStock;
+      listKey = _stockListKey;
+    } else if (currentBarks == BarkTypes.fx) {
+      shownBarks = displayedFX;
+      listKey = _fxListKey;
+    }
     List toRemove = [];
     // remove barks
     shownBarks.asMap().forEach((i, bark) {
@@ -94,9 +116,6 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
           (context, animation) => BarkPlaybackCard(
               i, shownBarks[i], barks, soundController, animation));
     });
-    // add barks
-    print("newBarks: $newBarks");
-    print("shownBarks $isStock: $shownBarks");
 
     newBarks.forEach((newBark) {
       if (shownBarks.indexOf(newBark) == -1) {
@@ -111,11 +130,13 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
   _updateDisplayBarks() {
     if (_isFirstLoad) {
       displayedBarks = getBarksOfCurrentLength();
-      displayedBarksStock = getBarksOfCurrentLength(true);
+      displayedBarksStock = getBarksOfCurrentLength(stock: true);
+      displayedFX = getBarksOfCurrentLength(fx: true);
       setState(() => _isFirstLoad = false);
     } else {
       updateDisplayedBarks();
-      updateDisplayedBarks(true);
+      updateDisplayedBarks(stock: true);
+      updateDisplayedBarks(fx: true);
     }
   }
 
@@ -143,6 +164,61 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
     return currentActivity.isTwo && displayedBarks.length == 0;
   }
 
+  Widget _showBarks() {
+    if (currentBarks == BarkTypes.myBarks && _noRecordedShortBarks())
+      return Align(
+        alignment: Alignment.topCenter,
+        child: Padding(
+          padding: const EdgeInsets.only(top: 40.0),
+          child: Text(
+            "No short barks recorded.\nTry 'Stock Barks' or 'FX',\nor go back.",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 20,
+              color: Theme.of(context).primaryColor,
+            ),
+          ),
+        ),
+      );
+    else if (currentBarks == BarkTypes.myBarks)
+      return AnimatedList(
+        key: _listKey,
+        initialItemCount: displayedBarks.length,
+        itemBuilder: (ctx, i, animation) => BarkPlaybackCard(
+          i,
+          displayedBarks[i],
+          barks,
+          soundController,
+          animation,
+          deleteCallback: deleteBark,
+        ),
+      );
+    else if (currentBarks == BarkTypes.stock)
+      return AnimatedList(
+        key: _stockListKey,
+        initialItemCount: displayedBarksStock.length,
+        itemBuilder: (ctx, i, animation) => BarkPlaybackCard(
+          i,
+          displayedBarksStock[i],
+          barks,
+          soundController,
+          animation,
+        ),
+      );
+    else if (currentBarks == BarkTypes.fx)
+      return AnimatedList(
+        key: _fxListKey,
+        initialItemCount: displayedFX.length,
+        itemBuilder: (ctx, i, animation) => BarkPlaybackCard(
+          i,
+          displayedFX[i],
+          barks,
+          soundController,
+          animation,
+        ),
+      );
+  }
+
   Widget build(BuildContext context) {
     barks = Provider.of<Barks>(context);
     soundController = Provider.of<SoundController>(context);
@@ -160,16 +236,14 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
           children: <Widget>[
             Spacer(),
             RawMaterialButton(
-              onPressed: () {
-                setState(() => viewingStockBarks = false);
-              },
+              onPressed: () => setState(() => currentBarks = BarkTypes.myBarks),
               child: Text(
                 "My Barks",
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: viewingStockBarks
-                        ? Theme.of(context).primaryColor
-                        : Colors.white,
+                    color: currentBarks == BarkTypes.myBarks
+                        ? Colors.white
+                        : Theme.of(context).primaryColor,
                     fontSize: 15),
               ),
               shape: RoundedRectangleBorder(
@@ -178,8 +252,9 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
                     BorderSide(color: Theme.of(context).primaryColor, width: 3),
               ),
               elevation: 2.0,
-              fillColor:
-                  viewingStockBarks ? null : Theme.of(context).primaryColor,
+              fillColor: currentBarks == BarkTypes.myBarks
+                  ? Theme.of(context).primaryColor
+                  : null,
               padding:
                   const EdgeInsets.symmetric(vertical: 8, horizontal: 18.0),
             ),
@@ -188,13 +263,13 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
               children: [
                 RawMaterialButton(
                   onPressed: () {
-                    setState(() => viewingStockBarks = true);
+                    setState(() => currentBarks = BarkTypes.stock);
                   },
                   child: Text(
                     "Stock Barks",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: viewingStockBarks
+                      color: currentBarks == BarkTypes.stock
                           ? Colors.white
                           : Theme.of(context).primaryColor,
                       fontSize: 15,
@@ -206,8 +281,9 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
                         color: Theme.of(context).primaryColor, width: 3),
                   ),
                   elevation: 2.0,
-                  fillColor:
-                      viewingStockBarks ? Theme.of(context).primaryColor : null,
+                  fillColor: currentBarks == BarkTypes.stock
+                      ? Theme.of(context).primaryColor
+                      : null,
                   padding:
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 18),
                 ),
@@ -226,14 +302,12 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
               ],
             ),
             RawMaterialButton(
-              onPressed: () {
-                setState(() => viewingStockBarks = true);
-              },
+              onPressed: () => setState(() => currentBarks = BarkTypes.fx),
               child: Text(
                 "FX",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: viewingStockBarks
+                  color: currentBarks == BarkTypes.fx
                       ? Colors.white
                       : Theme.of(context).primaryColor,
                   fontSize: 15,
@@ -244,8 +318,9 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
                     BorderSide(color: Theme.of(context).primaryColor, width: 3),
               ),
               elevation: 2.0,
-              fillColor:
-                  viewingStockBarks ? Theme.of(context).primaryColor : null,
+              fillColor: currentBarks == BarkTypes.fx
+                  ? Theme.of(context).primaryColor
+                  : null,
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
             ),
             Spacer(),
@@ -254,45 +329,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
         Padding(padding: EdgeInsets.only(top: 5)),
         SizedBox(
           height: MediaQuery.of(context).size.height / 2.2,
-          child: viewingStockBarks
-              ? AnimatedList(
-                  key: _stockListKey,
-                  initialItemCount: displayedBarksStock.length,
-                  itemBuilder: (ctx, i, animation) => BarkPlaybackCard(
-                    i,
-                    displayedBarksStock[i],
-                    barks,
-                    soundController,
-                    animation,
-                  ),
-                )
-              : _noRecordedShortBarks()
-                  ? Align(
-                      alignment: Alignment.topCenter,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 40.0),
-                        child: Text(
-                          "No short barks recorded.\nTry 'Stock Barks',\nor go back.",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        ),
-                      ),
-                    )
-                  : AnimatedList(
-                      key: _listKey,
-                      initialItemCount: displayedBarks.length,
-                      itemBuilder: (ctx, i, animation) => BarkPlaybackCard(
-                        i,
-                        displayedBarks[i],
-                        barks,
-                        soundController,
-                        animation,
-                        deleteCallback: deleteBark,
-                      ),
-                    ),
+          child: _showBarks(),
         ),
       ],
     );

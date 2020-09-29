@@ -32,21 +32,20 @@ class Barks with ChangeNotifier {
     notifyListeners();
   }
 
-  List<Bark> barksOfLength(String length, [bool stock = false]) {
+  List<Bark> barksOfLength(String length,
+      {bool stock = false, bool fx = false}) {
+    if (fx == true) stock = true;
     List<Bark> barks = stock ? stockBarks : all;
-    return List.from(barks.where((bark) => bark.length == length));
-  }
-
-  List<Bark> short([bool isStock = false]) {
-    return barksOfLength("short", isStock);
-  }
-
-  List<Bark> medium([bool isStock = false]) {
-    return barksOfLength("medium", isStock);
-  }
-
-  List<Bark> long([bool isStock = false]) {
-    return barksOfLength("long", isStock);
+    if (fx == true) {
+      return List.from(barks
+          .where((Bark bark) => bark.length == length && bark.type != "bark"));
+    } else if (stock == true) {
+      return List.from(barks.where((Bark bark) =>
+          bark.length == length && bark.isStock && bark.type == "bark"));
+    } else {
+      return List.from(barks.where((Bark bark) =>
+          bark.length == length && !bark.isStock && bark.type == "bark"));
+    }
   }
 
   Future retrieveAll() async {
