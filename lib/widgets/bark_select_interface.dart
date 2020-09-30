@@ -120,7 +120,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
               i, shownBarks[i], barks, soundController, animation));
     });
 
-    newBarks.forEach((newBark) {
+    newBarks.reversed.forEach((newBark) {
       if (shownBarks.indexOf(newBark) == -1) {
         listKey.currentState?.insertItem(0);
         shownBarks.insert(0, newBark);
