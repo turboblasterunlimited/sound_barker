@@ -85,11 +85,15 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     }
   }
 
+  String get _getCleanedRecipientName {
+    return recipientName.replaceAll(RegExp(r'[\s+]'),'%20');
+  }
+
   void _handleShare(uuid, setDialogState) {
     String name = toBeginningOfSentenceCase(cards.current.picture.name);
     setDialogState(() => _loadingMessage = null);
     setDialogState(() => shareLink =
-        "https://www.thedogbarksthesong.ml/card/$uuid?recipient_name=$recipientName");
+        "https://www.thedogbarksthesong.ml/card/$uuid?recipient_name=$_getCleanedRecipientName");
     print("Share Link $shareLink");
     Share.share(
         "$name has a message for you.\n\n$shareLink\n\nCreated with K-9 Karaoke.",
