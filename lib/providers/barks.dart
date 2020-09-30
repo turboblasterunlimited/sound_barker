@@ -133,7 +133,7 @@ class Barks with ChangeNotifier {
     else if (seconds < 1.1)
       return "medium";
     else
-      return "long";
+      return "finale";
   }
 
   Future<List> parseCroppedBarks(List serverBarks) async {

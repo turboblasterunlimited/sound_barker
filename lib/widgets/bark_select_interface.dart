@@ -56,15 +56,13 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
     super.dispose();
   }
 
-  String _barkSelectInstruction() {
-    print(
-        "activity within instructions call: ${currentActivity.cardCreationSubStep}");
+  String get _currentBarkLength {
     if (currentActivity.isTwo) {
-      return "SHORT BARK";
+      return "SHORT";
     } else if (currentActivity.isThree) {
-      return "MEDIUM BARK";
+      return "MEDIUM";
     } else if (currentActivity.isFour) {
-      return "FINALE BARK";
+      return "FINALE";
     }
   }
 
@@ -80,7 +78,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
       return barks.barksOfLength("medium", stock: stock, fx: fx) +
           barks.barksOfLength("short", stock: stock, fx: fx);
     } else if (currentActivity.isFour) {
-      return barks.barksOfLength("long", stock: stock, fx: fx) +
+      return barks.barksOfLength("finale", stock: stock, fx: fx) +
           barks.barksOfLength("medium", stock: stock, fx: fx) +
           barks.barksOfLength("short", stock: stock, fx: fx);
     }
@@ -161,18 +159,18 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
     return _canSkip() ? currentActivity.setNextSubStep : null;
   }
 
-  _noRecordedShortBarks() {
-    return currentActivity.isTwo && displayedBarks.length == 0;
+  bool _noDisplayedBarks() {
+    return currentBarks == BarkTypes.myBarks && displayedBarks.length == 0;
   }
 
   Widget _showBarks() {
-    if (currentBarks == BarkTypes.myBarks && _noRecordedShortBarks())
+    if (_noDisplayedBarks())
       return Align(
         alignment: Alignment.topCenter,
         child: Padding(
-          padding: const EdgeInsets.only(top: 40.0),
+          padding: const EdgeInsets.only(top: 48.0),
           child: Text(
-            "No short barks recorded.\nTry 'Stock Barks' or 'FX',\nor go back.",
+            "No ${_currentBarkLength.toLowerCase()} barks recorded.\nTry 'Stock Barks' or 'FX',\nor go back.",
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 20,
@@ -229,7 +227,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        interfaceTitleNav(context, "PICK " + _barkSelectInstruction(),
+        interfaceTitleNav(context, "PICK $_currentBarkLength BARK",
             skipCallback: _skipCallback(),
             backCallback: currentActivity.setPreviousSubStep),
         Row(
@@ -272,6 +270,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Stack(
+                    overflow: Overflow.visible,
                     children: [
                       RawMaterialButton(
                         constraints:
@@ -301,7 +300,8 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
                         padding: const EdgeInsets.symmetric(
                             vertical: 8, horizontal: 18),
                       ),
-                      if (barks.all.isEmpty)
+                      if (currentBarks == BarkTypes.myBarks &&
+                          displayedBarks.length == 0)
                         AnimatedBuilder(
                             animation: animationController,
                             builder: (BuildContext context, Widget child) {
@@ -316,31 +316,50 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
                             }),
                     ],
                   ),
-                  RawMaterialButton(
-                    constraints:
-                        const BoxConstraints(minWidth: 33, minHeight: 33),
-                    onPressed: () =>
-                        setState(() => currentBarks = BarkTypes.fx),
-                    child: Text(
-                      "FX",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: currentBarks == BarkTypes.fx
-                            ? Colors.white
-                            : Theme.of(context).primaryColor,
-                        fontSize: 15,
+                  Stack(
+                    overflow: Overflow.visible,
+                    children: [
+                      RawMaterialButton(
+                        constraints:
+                            const BoxConstraints(minWidth: 33, minHeight: 33),
+                        onPressed: () =>
+                            setState(() => currentBarks = BarkTypes.fx),
+                        child: Text(
+                          "FX",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: currentBarks == BarkTypes.fx
+                                ? Colors.white
+                                : Theme.of(context).primaryColor,
+                            fontSize: 15,
+                          ),
+                        ),
+                        shape: CircleBorder(
+                          side: BorderSide(
+                              color: Theme.of(context).primaryColor, width: 3),
+                        ),
+                        elevation: 2.0,
+                        fillColor: currentBarks == BarkTypes.fx
+                            ? Theme.of(context).primaryColor
+                            : null,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 8),
                       ),
-                    ),
-                    shape: CircleBorder(
-                      side: BorderSide(
-                          color: Theme.of(context).primaryColor, width: 3),
-                    ),
-                    elevation: 2.0,
-                    fillColor: currentBarks == BarkTypes.fx
-                        ? Theme.of(context).primaryColor
-                        : null,
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                      if (currentBarks == BarkTypes.myBarks &&
+                          displayedBarks.length == 0)
+                        AnimatedBuilder(
+                            animation: animationController,
+                            builder: (BuildContext context, Widget child) {
+                              return Positioned(
+                                bottom: tween.value,
+                                left: 0,
+                                right: 0,
+                                child: Icon(Icons.arrow_upward,
+                                    size: 50,
+                                    color: Theme.of(context).primaryColor),
+                              );
+                            }),
+                    ],
                   ),
                 ],
               ),
