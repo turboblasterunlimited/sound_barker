@@ -1,3 +1,4 @@
+import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import 'package:intl/intl.dart';
@@ -86,7 +87,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   }
 
   String get _getCleanedRecipientName {
-    return recipientName.replaceAll(RegExp(r'[\s+]'),'%20');
+    return recipientName.replaceAll(RegExp(r'[\s+]'), '%20');
   }
 
   void _handleShare(uuid, setDialogState) {
@@ -252,32 +253,83 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
           return StatefulBuilder(
               builder: (BuildContext context, Function setDialogState) {
             return AlertDialog(
-              title: Text('Delete Card'),
-              content: Container(
-                height: 200,
-                child: Center(
-                  child: Text(
-                    "Are you sure?",
-                    style: TextStyle(color: Theme.of(context).primaryColor),
-                  ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(32),
                 ),
               ),
-              actions: [
-                FlatButton(
-                  child: Text('Yes'),
-                  onPressed: () async {
-                    await cards.remove(cards.current);
-                    Navigator.of(context).pop();
-                    Navigator.of(context).pushNamed(MenuScreen.routeName);
-                  },
+              // title: Text('Delete Card'),
+              content: Container(
+                width: 300,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Stack(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Center(
+                            child: Text(
+                              "Are you sure?",
+                              style: TextStyle(
+                                  color: Theme.of(context).primaryColor,
+                                  fontSize: 20),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          right: 0,
+                          child: Icon(
+                            CustomIcons.modal_trashcan,
+                            size: 30,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Center(
+                      child: Text(
+                        "You will no longer be able to edit or share this card from the app.",
+                        textAlign: TextAlign.justify,
+                      ),
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                          child: FlatButton(
+                            padding: EdgeInsets.all(0),
+                            textColor: Colors.white,
+                            splashColor: Colors.blue,
+                            color: Theme.of(context).primaryColor,
+                            child: Text('Yes'),
+                            onPressed: () async {
+                              await cards.remove(cards.current);
+                              Navigator.of(context).pop();
+                              Navigator.of(context)
+                                  .pushNamed(MenuScreen.routeName);
+                            },
+                          ),
+                        ),
+                        Expanded(
+                          child: FlatButton(
+                            padding: EdgeInsets.all(0),
+                            textColor: Colors.white,
+                            color: Theme.of(context).errorColor,
+                            splashColor: Colors.redAccent,
+                            child: Text('No'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-                FlatButton(
-                  child: Text('No'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
+              ),
             );
           });
         });
