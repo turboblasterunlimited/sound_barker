@@ -54,7 +54,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     await RestAPI.createCardAudio(cards.current.audio);
   }
 
-  Future<void> _updateCard(Function setDialogState) async {
+  Future<String> _updateCard(Function setDialogState) async {
     print("updating card");
     bool changed = false;
     if (cards.current.shouldDeleteOldDecoration) {
@@ -80,9 +80,9 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     }
     if (changed) {
       var responseData = await RestAPI.updateCard(cards.current);
-      _handleShare(responseData["uuid"], setDialogState);
+      return responseData["uuid"];
     } else {
-      _handleShare(cards.current.uuid, setDialogState);
+      return cards.current.uuid;
     }
   }
 
@@ -91,14 +91,11 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   }
 
   void _handleShare(uuid, setDialogState) {
-    String name = toBeginningOfSentenceCase(cards.current.picture.name);
-    setDialogState(() => _loadingMessage = null);
-    setDialogState(() => shareLink =
-        "https://www.thedogbarksthesong.ml/card/$uuid?recipient_name=$_getCleanedRecipientName");
-    print("Share Link $shareLink");
+    String name = _getShareLink(uuid, setDialogState);
     Share.share(
         "$name has a message for you.\n\n$shareLink\n\nCreated with K-9 Karaoke.",
         subject: "$name has a message for you.");
+    SystemChrome.restoreSystemUIOverlays();
   }
 
   Future<void> _handleAudio() async {
@@ -113,7 +110,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     await RestAPI.createCardDecorationImage(cards.current.decorationImage);
   }
 
-  Future<void> _createCard(Function setDialogState) async {
+  Future<String> _createCard(Function setDialogState) async {
     if (!cards.current.noFrameOrDecoration) {
       await _captureArtwork();
       setDialogState(() => _loadingMessage = "saving artwork...");
@@ -127,11 +124,24 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     cards.current.uuid = Uuid().v4();
     cards.addCurrent();
     var responseData = await RestAPI.createCard(cards.current);
-    _handleShare(responseData["uuid"], setDialogState);
+    return responseData["uuid"];
   }
 
-  void _shareToClipboard() {
-    
+  String _getShareLink(uuid, setDialogState) {
+    String name = toBeginningOfSentenceCase(cards.current.picture.name);
+    setDialogState(() {
+      _loadingMessage = null;
+      shareLink =
+          "https://www.thedogbarksthesong.ml/card/$uuid?recipient_name=$_getCleanedRecipientName";
+    });
+    return name;
+  }
+
+  void _shareToClipboard(setDialogState) async {
+    if (shareLink == null) {
+      String uuid = await _handleUpload(setDialogState);
+      _getShareLink(uuid, setDialogState);
+    }
     Clipboard.setData(ClipboardData(text: shareLink)).then((result) {
       final snackBar = SnackBar(
         content: Text('Card link copied to Clipboard'),
@@ -219,8 +229,9 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                                       onChanged: (name) {
                                         recipientName = name;
                                       },
-                                      onSubmitted: (_) {
-                                        _handleUploadAndShare(setDialogState);
+                                      onSubmitted: (_) async {
+                                        await _handleUploadAndShare(
+                                            setDialogState);
                                       },
                                       decoration: InputDecoration(
                                         filled: true,
@@ -256,7 +267,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                           child: InkWell(
                             onTap: _loadingMessage != null
                                 ? null
-                                : _shareToClipboard,
+                                : () => _shareToClipboard(setDialogState),
                             child: Container(
                               padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
                               decoration: BoxDecoration(
@@ -309,19 +320,23 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
         });
   }
 
-  Future<void> _handleUploadAndShare(Function setDialogState) async {
+  Future<void> _handleUploadAndShare(setDialogState) async {
     if (shareLink != null)
-      _handleShare(cards.current.uuid, setDialogState);
-    else if (!cards.current.audio.exists)
+      return _handleShare(cards.current.uuid, setDialogState);
+    String uuid = await _handleUpload(setDialogState);
+    _handleShare(uuid, setDialogState);
+  }
+
+  Future<String> _handleUpload(Function setDialogState) async {
+    if (!cards.current.audio.exists)
       showError(context, "Card has no audio");
     else if (_editingCard()) {
       print("editing card");
-      await _updateCard(setDialogState);
+      return await _updateCard(setDialogState);
     } else {
       print("creating new card");
-      await _createCard(setDialogState);
+      return await _createCard(setDialogState);
     }
-    SystemChrome.restoreSystemUIOverlays();
   }
 
   bool _editingCard() {
