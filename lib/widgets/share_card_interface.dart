@@ -247,25 +247,22 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   }
 
   _deleteDialog() async {
-    await showDialog<Null>(
+    return showDialog(
         context: context,
         builder: (ctx) {
           return StatefulBuilder(
               builder: (BuildContext context, Function setDialogState) {
             return AlertDialog(
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(32),
-                ),
-              ),
-              // title: Text('Delete Card'),
+                  borderRadius: BorderRadius.all(Radius.circular(32.0))),
+              contentPadding: EdgeInsets.only(top: 10.0),
               content: Container(
-                width: 300,
+                width: 300.0,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   mainAxisSize: MainAxisSize.min,
-                  children: [
+                  children: <Widget>[
                     Stack(
                       children: [
                         Padding(
@@ -280,49 +277,76 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                           ),
                         ),
                         Positioned(
-                          right: 0,
+                          right: 20,
+                          bottom: 5,
                           child: Icon(
                             CustomIcons.modal_trashcan,
-                            size: 30,
-                            color: Colors.grey,
+                            size: 42,
+                            color: Colors.grey[300],
                           ),
                         ),
                       ],
                     ),
-                    Center(
-                      child: Text(
-                        "You will no longer be able to edit or share this card from the app.",
-                        textAlign: TextAlign.justify,
+                    Divider(
+                      color: Colors.grey[300],
+                      thickness: 2,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 30.0, right: 30.0),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          hintText:
+                              "You will no longer be able to edit or share this card from the app.",
+                          border: InputBorder.none,
+                        ),
+                        maxLines: 6,
                       ),
                     ),
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Expanded(
-                          child: FlatButton(
-                            padding: EdgeInsets.all(0),
-                            textColor: Colors.white,
-                            splashColor: Colors.blue,
-                            color: Theme.of(context).primaryColor,
-                            child: Text('Yes'),
-                            onPressed: () async {
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Container(
+                              padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).errorColor,
+                                borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(32.0),
+                                ),
+                              ),
+                              child: Text(
+                                "NO",
+                                style: TextStyle(color: Colors.white),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: InkWell(
+                            onTap: () async {
                               await cards.remove(cards.current);
                               Navigator.of(context).pop();
                               Navigator.of(context)
                                   .pushNamed(MenuScreen.routeName);
                             },
-                          ),
-                        ),
-                        Expanded(
-                          child: FlatButton(
-                            padding: EdgeInsets.all(0),
-                            textColor: Colors.white,
-                            color: Theme.of(context).errorColor,
-                            splashColor: Colors.redAccent,
-                            child: Text('No'),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
+                            child: Container(
+                              padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).primaryColor,
+                                borderRadius: BorderRadius.only(
+                                  bottomRight: Radius.circular(32.0),
+                                ),
+                              ),
+                              child: Text(
+                                "YES",
+                                style: TextStyle(color: Colors.white),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
                           ),
                         ),
                       ],
@@ -332,6 +356,110 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
               ),
             );
           });
+
+          // await showDialog<Null>(
+          //     context: context,
+          //     builder: (ctx) {
+          //       return StatefulBuilder(
+          //           builder: (BuildContext context, Function setDialogState) {
+          //         return AlertDialog(
+          //           shape: RoundedRectangleBorder(
+          //             borderRadius: BorderRadius.all(
+          //               Radius.circular(32),
+          //             ),
+          //           ),
+          //           // title: Text('Delete Card'),
+          //           content: Container(
+          //             width: 300,
+          //             child: Column(
+          //               mainAxisAlignment: MainAxisAlignment.start,
+          //               crossAxisAlignment: CrossAxisAlignment.stretch,
+          //               mainAxisSize: MainAxisSize.min,
+          //               children: [
+          // Stack(
+          //   children: [
+          //     Padding(
+          //       padding: const EdgeInsets.all(20.0),
+          //       child: Center(
+          //         child: Text(
+          //           "Are you sure?",
+          //           style: TextStyle(
+          //               color: Theme.of(context).primaryColor,
+          //               fontSize: 20),
+          //         ),
+          //       ),
+          //     ),
+          //     Positioned(
+          //       right: 0,
+          //       child: Icon(
+          //         CustomIcons.modal_trashcan,
+          //         size: 30,
+          //         color: Colors.grey,
+          //       ),
+          //     ),
+          //   ],
+          // ),
+          // Center(
+          //   child: Text(
+          //     "You will no longer be able to edit or share this card from the app.",
+          //     textAlign: TextAlign.justify,
+          //   ),
+          // ),
+          //                 // Row(
+          //                 //   crossAxisAlignment: CrossAxisAlignment.stretch,
+          //                 //   children: [
+          //                 //     Expanded(
+          //                 //       child: FlatButton(
+
+          //                 //         padding: EdgeInsets.all(0),
+          //                 //         textColor: Colors.white,
+          //                 //         splashColor: Colors.blue,
+          //                 //         color: Theme.of(context).primaryColor,
+          //                 //         child: Text('Yes'),
+          //                 //         onPressed: () async {
+          //                 //           await cards.remove(cards.current);
+          //                 //           Navigator.of(context).pop();
+          //                 //           Navigator.of(context)
+          //                 //               .pushNamed(MenuScreen.routeName);
+          //                 //         },
+          //                 //       ),
+          //                 //     ),
+          //                 //     Expanded(
+          //                 //       child: FlatButton(
+          //                 //         padding: EdgeInsets.all(0),
+          //                 //         textColor: Colors.white,
+          //                 //         color: Theme.of(context).errorColor,
+          //                 //         splashColor: Colors.redAccent,
+          //                 //         child: Text('No'),
+          //                 //         onPressed: () {
+          //                 //           Navigator.of(context).pop();
+          //                 //         },
+          //                 //       ),
+          //                 //     ),
+          //                 //   ],
+          //                 // ),
+          //                 InkWell(
+          //                   child: Container(
+          //                     padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+          //                     decoration: BoxDecoration(
+          //                       color: Colors.blue,
+          //                       borderRadius: BorderRadius.only(
+          //                           bottomLeft: Radius.circular(32.0),
+          //                           bottomRight: Radius.circular(32.0)),
+          //                     ),
+          //                     child: Text(
+          //                       "Rate Product",
+          //                       style: TextStyle(color: Colors.white),
+          //                       textAlign: TextAlign.center,
+          //                     ),
+          //                   ),
+          //                 ),
+          //               ],
+          //             ),
+          //           ),
+          //         );
+          //       });
+          //     });
         });
   }
 

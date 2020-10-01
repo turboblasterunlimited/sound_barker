@@ -31,7 +31,8 @@ class KaraokeCards with ChangeNotifier {
   Future<void> remove(KaraokeCard card) async {
     print("TODO: implement delete");
     await RestAPI.deleteCardAudio(card.audio.fileId);
-    await RestAPI.deleteDecorationImage(card.decorationImage.fileId);
+    if (card.decorationImage != null)
+      await RestAPI.deleteDecorationImage(card.decorationImage.fileId);
     await RestAPI.deleteCard(card);
     all.remove(card);
     card.removeFiles();
@@ -162,7 +163,8 @@ class KaraokeCard with ChangeNotifier {
 
   void removeFiles() {
     try {
-      if (File(decorationImage.filePath).existsSync())
+      if (decorationImage != null &&
+          File(decorationImage.filePath).existsSync())
         File(decorationImage.filePath).deleteSync();
       if (File(audio.filePath).existsSync()) File(audio.filePath).deleteSync();
     } catch (e) {
@@ -202,7 +204,8 @@ class KaraokeCard with ChangeNotifier {
   }
 
   void setShouldDeleteOldDecortionImage() {
-    if (decorationImage != null && decorationImage.exists) shouldDeleteOldDecoration = true;
+    if (decorationImage != null && decorationImage.exists)
+      shouldDeleteOldDecoration = true;
   }
 
   Future<void> deleteOldAudio() async {
