@@ -1,5 +1,6 @@
 import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
+import 'package:K9_Karaoke/widgets/custom_dialog.dart';
 import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import 'package:intl/intl.dart';
 
@@ -146,7 +147,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
       final snackBar = SnackBar(
         content: Text('Card link copied to Clipboard'),
       );
-
+      Navigator.of(context).pop();
       Scaffold.of(context).showSnackBar(snackBar);
     });
   }
@@ -161,6 +162,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     );
   }
 
+// Based on customDialog, but code is decoupled.
   _shareDialog() async {
     await showDialog<Null>(
         context: context,
@@ -353,125 +355,27 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     return showDialog(
         context: context,
         builder: (ctx) {
-          return StatefulBuilder(
-              builder: (BuildContext context, Function setDialogState) {
-            return AlertDialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(32.0))),
-              contentPadding: EdgeInsets.only(top: 10.0),
-              content: Container(
-                width: 300.0,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Stack(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Center(
-                            child: Text(
-                              "Are you sure?",
-                              style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
-                                  fontSize: 20),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          right: 20,
-                          bottom: 5,
-                          child: Icon(
-                            CustomIcons.modal_trashcan,
-                            size: 42,
-                            color: Colors.grey[300],
-                          ),
-                        ),
-                      ],
-                    ),
-                    Divider(
-                      color: Colors.grey[300],
-                      thickness: 2,
-                    ),
-                    Stack(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(left: 30.0, right: 30.0),
-                          child: TextField(
-                            decoration: InputDecoration(
-                              hintText:
-                                  "You will no longer be able to edit or share this card from the app.",
-                              border: InputBorder.none,
-                            ),
-                            maxLines: 6,
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 20,
-                          left: 20,
-                          child: Icon(
-                            CustomIcons.modal_paws_topleft,
-                            size: 42,
-                            color: Colors.grey[300],
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: Container(
-                              padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).errorColor,
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(32.0),
-                                ),
-                              ),
-                              child: Text(
-                                "NO",
-                                style: TextStyle(color: Colors.white),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: InkWell(
-                            onTap: () async {
-                              await cards.remove(cards.current);
-                              Navigator.of(context).pop();
-                              Navigator.of(context)
-                                  .pushNamed(MenuScreen.routeName);
-                            },
-                            child: Container(
-                              padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).primaryColor,
-                                borderRadius: BorderRadius.only(
-                                  bottomRight: Radius.circular(32.0),
-                                ),
-                              ),
-                              child: Text(
-                                "YES",
-                                style: TextStyle(color: Colors.white),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            );
-          });
+          return CustomDialog(
+            header: "Are you Sure?",
+            bodyText:
+                "You will no longer be able to edit or share this card from the app.",
+            primaryFunction: (con) async {
+              await cards.remove(cards.current);
+              Navigator.of(con).pop();
+              Navigator.of(con).pushNamed(MenuScreen.routeName);
+            },
+            iconPrimary: Icon(
+              CustomIcons.modal_trashcan,
+              size: 42,
+              color: Colors.grey[300],
+            ),
+            iconSecondary: Icon(
+              CustomIcons.modal_paws_topleft,
+              size: 42,
+              color: Colors.grey[300],
+            ),
+            isYesNo: true,
+          );
         });
   }
 
