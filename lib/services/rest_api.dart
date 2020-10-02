@@ -24,7 +24,7 @@ class RestAPI {
   }
 
   static Future<dynamic> userManualSignIn(email, password) async {
-    Map data = {"email": email.toLowerCase(), "password": password};
+    Map data = {"email": email?.toLowerCase(), "password": password};
     var response;
     try {
       response = await HttpController.dio.post(

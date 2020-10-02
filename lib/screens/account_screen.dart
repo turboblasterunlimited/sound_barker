@@ -1,9 +1,11 @@
+import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/barks.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/pictures.dart';
 import 'package:K9_Karaoke/providers/songs.dart';
 import 'package:K9_Karaoke/providers/user.dart';
 import 'package:K9_Karaoke/screens/authentication_screen.dart';
+import 'package:K9_Karaoke/widgets/custom_dialog.dart';
 import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -40,66 +42,79 @@ class _AccountState extends State<AccountScreen> {
   }
 
   void _handleDeleteAccount() async {
-    await showDialog<Null>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('Are you sure?'),
-        content: Text('This cannot be undone.'),
-        actions: <Widget>[
-          FlatButton(
-              child: Text("Go back"),
-              onPressed: () {
-                Navigator.of(ctx).pop();
-              }),
-          FlatButton(
-              child: Text('Delete'),
-              onPressed: () async {
-                var response = await user.delete();
-                if (response["success"]) {
-                  _deleteFiles();
-                  _removeData();
-                  Navigator.of(context)
-                      .popUntil(ModalRoute.withName("main-screen"));
-                  Navigator.of(context)
-                      .popAndPushNamed(AuthenticationScreen.routeName);
-                } else {
-                  showError(context, response["error"]);
-                }
-              })
-        ],
-      ),
-    );
+    return showDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return CustomDialog(
+            header: "Delete account?",
+            bodyText:
+                "All of your barks, songs, photos, and cards will be gone forever.\n\nThis cannot be undone.",
+            primaryFunction: (BuildContext modalContext) {
+              Navigator.of(modalContext).pop();
+            },
+            secondaryFunction: (BuildContext modalContext) async {
+              var response = await user.delete();
+              if (response["success"]) {
+                _deleteFiles();
+                _removeData();
+                Navigator.of(modalContext)
+                    .popUntil(ModalRoute.withName("main-screen"));
+                Navigator.of(modalContext)
+                    .popAndPushNamed(AuthenticationScreen.routeName);
+              } else {
+                showError(modalContext, response["error"]);
+              }
+            },
+            iconPrimary: Icon(
+              CustomIcons.modal_trashcan,
+              size: 42,
+              color: Colors.grey[300],
+            ),
+            iconSecondary: Icon(
+              CustomIcons.modal_paws_topleft,
+              size: 42,
+              color: Colors.grey[300],
+            ),
+            isYesNo: true,
+            primaryButtonText: "Go back",
+            secondaryButtonText: "Delete",
+          );
+        });
   }
 
   void _handleLogout() async {
-    await showDialog<Null>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('Are you sure?'),
-        content: Text('Logout from ${user.email}?'),
-        actions: <Widget>[
-          FlatButton(
-              child: Text("Go back"),
-              onPressed: () {
-                Navigator.of(ctx).pop();
-              }),
-          FlatButton(
-              child: Text('Yes'),
-              onPressed: () async {
-                var response = await user.logout();
-                if (response["success"]) {
-                  _removeData();
-                  Navigator.of(context)
-                      .popUntil(ModalRoute.withName("main-screen"));
-                  Navigator.of(context)
-                      .popAndPushNamed(AuthenticationScreen.routeName);
-                } else {
-                  showError(context, response["error"]);
-                }
-              })
-        ],
-      ),
-    );
+    return showDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return CustomDialog(
+            header: "Logout from ${user.email}?",
+            bodyText:
+                "You don't have to logout to exit the app.\n\nYou will have to login again to use K-9 Karaoke.",
+            primaryFunction: (BuildContext modalContext) async {
+              var response = await user.logout();
+              if (response["success"]) {
+                _removeData();
+                Navigator.of(modalContext)
+                    .popUntil(ModalRoute.withName("main-screen"));
+                Navigator.of(modalContext)
+                    .popAndPushNamed(AuthenticationScreen.routeName);
+              } else {
+                showError(modalContext, response["error"]);
+              }
+            },
+            iconPrimary: Icon(
+              CustomIcons.modal_logout,
+              size: 42,
+              color: Colors.grey[300],
+            ),
+            iconSecondary: Icon(
+              CustomIcons.modal_paws_topleft,
+              size: 42,
+              color: Colors.grey[300],
+            ),
+            isYesNo: true,
+          );
+        });
   }
 
   Widget build(BuildContext context) {
