@@ -4,7 +4,9 @@ import 'package:K9_Karaoke/providers/pictures.dart';
 import 'package:K9_Karaoke/providers/songs.dart';
 import 'package:K9_Karaoke/providers/user.dart';
 import 'package:K9_Karaoke/screens/authentication_screen.dart';
+import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 
@@ -22,14 +24,6 @@ class _AccountState extends State<AccountScreen> {
   Songs songs;
   Barks barks;
   Pictures pictures;
-
-  void _showError(message) {
-    _scaffoldKey.currentState.showSnackBar(
-      SnackBar(
-        content: Text("The following error occured: $message"),
-      ),
-    );
-  }
 
   void _removeData() {
     cards.all = [];
@@ -69,7 +63,7 @@ class _AccountState extends State<AccountScreen> {
                   Navigator.of(context)
                       .popAndPushNamed(AuthenticationScreen.routeName);
                 } else {
-                  _showError(response["error"]);
+                  showError(context, response["error"]);
                 }
               })
         ],
@@ -100,7 +94,7 @@ class _AccountState extends State<AccountScreen> {
                   Navigator.of(context)
                       .popAndPushNamed(AuthenticationScreen.routeName);
                 } else {
-                  _showError(response["error"]);
+                  showError(context, response["error"]);
                 }
               })
         ],

@@ -116,7 +116,7 @@ class _MainScreenState extends State<MainScreen> {
 
   // void didChangeAppLifecycleState(AppLifecycleState state) {
   //   if (state == AppLifecycleState.resumed) {
-  //     SystemChrome.restoreSystemUIOverlays();
+      // SystemChrome.restoreSystemUIOverlays();
   //     print("App State $state");
   //     print("restoring system ui overlays");
   //   } else {

@@ -43,6 +43,7 @@ class _CustomDialogState extends State<CustomDialog> {
           children: <Widget>[
             Stack(
               children: [
+                Positioned(right: 20, bottom: 5, child: widget.iconPrimary),
                 Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Center(
@@ -53,7 +54,6 @@ class _CustomDialogState extends State<CustomDialog> {
                     ),
                   ),
                 ),
-                Positioned(right: 20, bottom: 5, child: widget.iconPrimary),
               ],
             ),
             Divider(
@@ -62,6 +62,11 @@ class _CustomDialogState extends State<CustomDialog> {
             ),
             Stack(
               children: [
+                Positioned(
+                  bottom: 20,
+                  left: 20,
+                  child: widget.iconSecondary,
+                ),
                 Padding(
                   padding: EdgeInsets.only(left: 30.0, right: 30.0),
                   child: TextField(
@@ -71,11 +76,6 @@ class _CustomDialogState extends State<CustomDialog> {
                     ),
                     maxLines: 6,
                   ),
-                ),
-                Positioned(
-                  bottom: 20,
-                  left: 20,
-                  child: widget.iconSecondary,
                 ),
               ],
             ),

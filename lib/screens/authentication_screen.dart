@@ -1,4 +1,5 @@
 import 'dart:io' show Platform;
+import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/card_audio.dart';
 import 'package:K9_Karaoke/providers/card_decoration_image.dart';
 import 'package:K9_Karaoke/providers/barks.dart';
@@ -9,8 +10,11 @@ import 'package:K9_Karaoke/providers/songs.dart';
 import 'package:K9_Karaoke/providers/user.dart';
 import 'package:K9_Karaoke/screens/main_screen.dart';
 import 'package:K9_Karaoke/services/rest_api.dart';
+import 'package:K9_Karaoke/widgets/custom_dialog.dart';
+import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import 'package:K9_Karaoke/widgets/spinner_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
@@ -48,14 +52,6 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   bool everythingDownloaded = true;
   String downloadMessage = "Initializing...";
 
-  void _showError([message = "You must be connected to the internet"]) {
-    _scaffoldKey.currentState.showSnackBar(
-      SnackBar(
-        content: Text(message),
-      ),
-    );
-  }
-
   void _showLoadingModal(Function getLoadingContext) async {
     await showDialog<Null>(
       context: context,
@@ -75,31 +71,38 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   }
 
   void _showVerifyEmail() async {
-    await showDialog<Null>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('Verify email address'),
-        content: Text('Verification sent to $email.'),
-        actions: <Widget>[
-          FlatButton(
-              child: Text("re-send email"),
-              onPressed: () {
-                Navigator.of(ctx).pop();
-              }),
-          FlatButton(
-              child: Text('sign in'),
-              onPressed: () async {
-                var response = await _handleManualSignIn();
-                if (!response["success"])
-                  _showError(response["error"]);
-                else {
-                  Navigator.of(ctx).pop();
-                  _handleServerResponse(response);
-                }
-              })
-        ],
-      ),
-    );
+    return showDialog(
+        context: context,
+        builder: (ctx) {
+          return CustomDialog(
+            header: 'Verify email address',
+            bodyText:
+                'Verification email sent to $email.\nGo to your inbox and click the link to confirm.',
+            primaryFunction: (con) async {
+              var response = await _handleManualSignIn();
+              if (!response["success"])
+                showError(context, response["error"]);
+              else {
+                Navigator.of(con).pop();
+                _handleServerResponse(response);
+              }
+              SystemChrome.setEnabledSystemUIOverlays([]);
+            },
+            primaryButtonText: "Sign In",
+            secondaryButtonText: "Cancel",
+            iconPrimary: Icon(
+              CustomIcons.modal_mailbox,
+              size: 42,
+              color: Colors.grey[300],
+            ),
+            iconSecondary: Icon(
+              CustomIcons.modal_paws_topleft,
+              size: 42,
+              color: Colors.grey[300],
+            ),
+            isYesNo: true,
+          );
+        });
   }
 
   Future<Map> checkIfSignedIn() async {
@@ -108,7 +111,9 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
               .get('http://165.227.178.14/is-logged-in'))
           .data;
     } catch (e) {
-      _showError();
+      showError(
+        context,
+      );
       return {};
     }
   }
@@ -134,7 +139,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       print("the response data: $responseData");
       _handleSignedIn(responseData["payload"]["email"]);
     } else {
-      _showError(responseData["error"]);
+      showError(context, responseData["error"]);
     }
   }
 
@@ -148,7 +153,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       );
       return response;
     } catch (e) {
-      _showError("");
+      showError(context, "");
     }
   }
 
@@ -166,11 +171,11 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
           _handleServerResponse(responseData.data);
           break;
         case FacebookLoginStatus.cancelledByUser:
-          _showError(
+          showError(context,
               "To sign in with Facebook, accept Facebook's permission request");
           break;
         case FacebookLoginStatus.error:
-          _showError("Facebook credentials denied");
+          showError(context, "Facebook credentials denied");
           break;
       }
     } catch (e) {
@@ -205,7 +210,9 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       );
       _handleServerResponse(response.data);
     } catch (e) {
-      _showError();
+      showError(
+        context,
+      );
     }
   }
 
@@ -216,7 +223,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     Map response = await RestAPI.userManualSignUp(email, password);
     Navigator.of(loadingContext).pop();
     if (!response["success"])
-      _showError(response["error"]);
+      showError(context, response["error"]);
     else {
       _showVerifyEmail();
     }
@@ -383,9 +390,9 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                             onPressed: () async {
                               FocusScope.of(context).unfocus();
                               var response = await _handleManualSignIn();
-                              if (!response["success"])
-                                _showError(response["error"]);
-                              else
+                              if (!response["success"]) {
+                                showError(context, response["error"]);
+                              } else
                                 _handleServerResponse(response);
                             },
                             shape: RoundedRectangleBorder(
