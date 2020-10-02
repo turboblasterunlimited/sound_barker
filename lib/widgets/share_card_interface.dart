@@ -359,10 +359,10 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
             header: "Are you Sure?",
             bodyText:
                 "You will no longer be able to edit or share this card from the app.",
-            primaryFunction: (con) async {
+            primaryFunction: (BuildContext modalContext) async {
               await cards.remove(cards.current);
-              Navigator.of(con).pop();
-              Navigator.of(con).pushNamed(MenuScreen.routeName);
+              Navigator.of(modalContext).pop();
+              Navigator.of(modalContext).pushNamed(MenuScreen.routeName);
             },
             iconPrimary: Icon(
               CustomIcons.modal_trashcan,

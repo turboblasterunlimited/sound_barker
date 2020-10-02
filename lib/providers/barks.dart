@@ -15,6 +15,11 @@ class Barks with ChangeNotifier {
   Bark tempRawBark;
   List tempRawBarkAmplitudes;
 
+  void removeAll() {
+    all = [];
+    stockBarks = [];
+  }
+
   Future<void> setTempRawBark(rawBark) async {
     tempRawBark = rawBark;
     tempRawBarkAmplitudes =
@@ -43,7 +48,8 @@ class Barks with ChangeNotifier {
     } else if (stock == true) {
       print("test: stock");
       return List.from(barks.where((Bark bark) {
-        print("${bark.name}: ${bark.length == length && bark.isStock && bark.type == "bark"}");
+        print(
+            "${bark.name}: ${bark.length == length && bark.isStock && bark.type == "bark"}");
         return bark.length == length && bark.isStock && bark.type == "bark";
       }));
     } else {

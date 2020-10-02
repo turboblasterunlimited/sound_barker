@@ -16,6 +16,10 @@ class Songs with ChangeNotifier {
   final listKey = GlobalKey<AnimatedListState>();
   List<CreatableSong> creatableSongs;
 
+  void removeAll() {
+    all = [];
+  }
+
   void setCreatableSongs(List<CreatableSong> creatables) {
     print("creatables: $creatables");
     creatableSongs = creatables;

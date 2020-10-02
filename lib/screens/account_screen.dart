@@ -28,10 +28,10 @@ class _AccountState extends State<AccountScreen> {
   Pictures pictures;
 
   void _removeData() {
-    cards.all = [];
-    pictures.all = [];
-    barks.all = [];
-    songs.all = [];
+    cards.removeAll();
+    pictures.removeAll();
+    barks.removeAll();
+    songs.removeAll();
   }
 
   void _deleteFiles() {

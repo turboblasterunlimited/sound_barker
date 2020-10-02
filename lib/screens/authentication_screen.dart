@@ -79,12 +79,12 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
             header: 'Verify email address',
             bodyText:
                 'Verification email sent to $email.\n\nGo to your inbox and click the link to confirm.',
-            primaryFunction: (con) async {
+            primaryFunction: (BuildContext modalContext) async {
               var response = await _handleManualSignIn();
               if (!response["success"])
-                showError(ctx, response["error"]);
+                showError(modalContext, response["error"]);
               else {
-                Navigator.of(con).pop();
+                Navigator.of(modalContext).pop();
                 _handleServerResponse(response);
               }
               SystemChrome.setEnabledSystemUIOverlays([]);

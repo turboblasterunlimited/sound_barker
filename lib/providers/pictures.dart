@@ -12,6 +12,11 @@ class Pictures with ChangeNotifier {
   List<Picture> all = [];
   List<Picture> stockPictures = [];
 
+  void removeAll() {
+    all = [];
+    stockPictures = [];
+  }
+
   List<Picture> get combinedPictures {
     return all + stockPictures;
   }

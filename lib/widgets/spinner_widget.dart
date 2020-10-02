@@ -31,10 +31,18 @@ class _SpinnerWidgetState extends State<SpinnerWidget> {
             color: Colors.blue,
             size: 100,
           ),
-          Center(
-            child: Text(
-              // toString incase null
-              widget.messageText.toString(),
+          Padding(
+            padding: const EdgeInsets.only(top: 25.0),
+            child: Center(
+              child: Text(
+                // toString incase null
+                widget.messageText.toString(),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                  fontSize: 25,
+                ),
+              ),
             ),
           ),
         ],

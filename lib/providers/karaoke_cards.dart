@@ -20,6 +20,10 @@ class KaraokeCards with ChangeNotifier {
   List<KaraokeCard> all = [];
   KaraokeCard current;
 
+  void removeAll() {
+    all = [];
+  }
+
   void addCurrent() {
     all.add(current);
   }
