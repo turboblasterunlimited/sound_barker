@@ -49,8 +49,11 @@ class _CustomDialogState extends State<CustomDialog> {
                   child: Center(
                     child: Text(
                       widget.header,
+                      textAlign: TextAlign.center,
                       style: TextStyle(
-                          color: Theme.of(context).primaryColor, fontSize: 20),
+                        color: Theme.of(context).primaryColor,
+                        fontSize: 20,
+                      ),
                     ),
                   ),
                 ),

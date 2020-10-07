@@ -21,7 +21,6 @@ class Songs with ChangeNotifier {
   }
 
   void setCreatableSongs(List<CreatableSong> creatables) {
-    print("creatables: $creatables");
     creatableSongs = creatables;
   }
 

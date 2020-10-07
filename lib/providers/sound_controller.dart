@@ -6,22 +6,7 @@ class SoundController with ChangeNotifier {
   FlutterSoundPlayer player = FlutterSoundPlayer();
   Function lastCallback;
 
-  SoundController() {
-    player.openAudioSession(
-        focus: AudioFocus.requestFocusTransient,
-        category: SessionCategory.playback,
-        mode: SessionMode.modeDefault);
-    recorder.openAudioSession(
-        focus: AudioFocus.requestFocusTransient,
-        category: SessionCategory.record,
-        mode: SessionMode.modeDefault);
-  }
-
-  void stopPlayer() {
-    if (player.isPlaying) {
-      player.stopPlayer();
-    }
-  }
+  SoundController();
 
   Future<void> startPlayer(String path, [Function callback]) async {
     if (player.isPlaying) {
@@ -29,7 +14,33 @@ class SoundController with ChangeNotifier {
       lastCallback();
     }
     print("audio path: $path");
+    player.openAudioSession(
+        focus: AudioFocus.requestFocusTransient,
+        category: SessionCategory.playback,
+        mode: SessionMode.modeDefault);
     player.startPlayer(fromURI: path, whenFinished: callback);
     lastCallback = callback;
+  }
+
+  void stopPlayer() {
+    if (player.isPlaying) {
+      // player.stopPlayer();
+      player.closeAudioSession();
+    }
+  }
+
+  Future<void> record(filePath) {
+    recorder.openAudioSession(
+        focus: AudioFocus.requestFocusTransient,
+        category: SessionCategory.record,
+        mode: SessionMode.modeDefault);
+
+    recorder.startRecorder(
+        toFile: filePath, sampleRate: 44100, bitRate: 192000);
+  }
+
+  void stopRecording() {
+    // recorder.stopRecorder();
+    recorder.closeAudioSession();
   }
 }

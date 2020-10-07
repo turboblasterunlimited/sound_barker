@@ -65,8 +65,7 @@ class BarkRecorderState extends State<BarkRecorder>
     }
 
     try {
-      await soundController.recorder.startRecorder(
-          toFile: this.filePath, sampleRate: 44100, bitRate: 192000);
+      await soundController.record(this.filePath);
       _recordingTimer = Timer(Duration(seconds: 10), stopRecorder);
 
       this.setState(() {

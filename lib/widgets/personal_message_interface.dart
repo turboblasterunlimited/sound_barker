@@ -91,8 +91,7 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
     message.deleteEverything();
 
     try {
-      await soundController.recorder.startRecorder(
-          toFile: message.filePath, sampleRate: 44100, bitRate: 192000);
+      await soundController.record(message.filePath);
 
       this.setState(() {
         this._isRecording = true;
