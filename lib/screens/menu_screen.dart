@@ -99,7 +99,7 @@ class _MenuState extends State<MenuScreen> {
                 onTap: handleCreateNewCard,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text("Create New Card",
+                  child: Text("New Card",
                       style: TextStyle(
                           fontSize: 40, color: Theme.of(context).primaryColor)),
                 ),
@@ -113,24 +113,24 @@ class _MenuState extends State<MenuScreen> {
                           fontSize: 40, color: Theme.of(context).primaryColor)),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("My Photos",
-                    style: TextStyle(
-                        fontSize: 40, color: Theme.of(context).primaryColor)),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("My Songs",
-                    style: TextStyle(
-                        fontSize: 40, color: Theme.of(context).primaryColor)),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("My Barks",
-                    style: TextStyle(
-                        fontSize: 40, color: Theme.of(context).primaryColor)),
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.all(8.0),
+              //   child: Text("My Photos",
+              //       style: TextStyle(
+              //           fontSize: 40, color: Theme.of(context).primaryColor)),
+              // ),
+              // Padding(
+              //   padding: const EdgeInsets.all(8.0),
+              //   child: Text("My Songs",
+              //       style: TextStyle(
+              //           fontSize: 40, color: Theme.of(context).primaryColor)),
+              // ),
+              // Padding(
+              //   padding: const EdgeInsets.all(8.0),
+              //   child: Text("My Barks",
+              //       style: TextStyle(
+              //           fontSize: 40, color: Theme.of(context).primaryColor)),
+              // ),
               GestureDetector(
                 onTap: () =>
                     Navigator.of(context).pushNamed(AccountScreen.routeName),

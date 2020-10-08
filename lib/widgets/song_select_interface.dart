@@ -20,17 +20,17 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
     with SingleTickerProviderStateMixin {
   AnimationController animationController;
   var tween;
+  final _listKey = GlobalKey<AnimatedListState>();
+  Songs songs;
+
 
   @override
   void initState() {
     super.initState();
     animationController = AnimationController(
       vsync: this,
-      // lowerBound: -60,
-      // upperBound: -40,
       duration: Duration(seconds: 1),
     )
-      // ..addListener(() => setState(() {}))
       ..repeat(reverse: true);
 
     tween = Tween(begin: -60.0, end: -40.0).animate(animationController);
@@ -43,7 +43,7 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
   }
 
   Widget build(BuildContext context) {
-    final songs = Provider.of<Songs>(context);
+    songs = Provider.of<Songs>(context);
     final soundController = Provider.of<SoundController>(context);
     final spinnerState = Provider.of<SpinnerState>(context, listen: true);
     final card = Provider.of<KaraokeCards>(context, listen: false).current;
@@ -163,7 +163,7 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
                   ),
                 )
               : AnimatedList(
-                  key: songs.listKey,
+                  key: _listKey,
                   initialItemCount: songs.all.length,
                   padding: const EdgeInsets.all(0),
                   itemBuilder: (ctx, i, Animation<double> animation) =>

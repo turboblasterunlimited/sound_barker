@@ -1,5 +1,7 @@
+import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
+import 'package:K9_Karaoke/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -70,35 +72,32 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
   void deleteSong() async {
     await showDialog<Null>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('Are you sure?'),
-        content:
-            Text('Are you sure you want to delete ${widget.song.getName}?'),
-        actions: <Widget>[
-          FlatButton(
-              child: Text("No, Don't delete it."),
-              onPressed: () {
-                Navigator.of(ctx).pop();
-              }),
-          FlatButton(
-              child: Text('Yes. Delete it.'),
-              onPressed: () {
-                Navigator.of(ctx).pop();
-                try {
-                  widget.songs.removeSong(widget.song);
-                  AnimatedList.of(context).removeItem(
-                      widget.index,
-                      (context, animation) => SongPlaybackCard(
-                          widget.index,
-                          widget.song,
-                          widget.songs,
-                          widget.soundController,
-                          animation));
-                } catch (e) {
-                  showError(ctx, e.toString());
-                } finally {}
-              })
-        ],
+      builder: (ctx) => CustomDialog(
+        header: 'Are you sure?',
+        bodyText: 'Are you sure you want to delete ${widget.song.getName}?',
+        isYesNo: true,
+        iconPrimary: Icon(CustomIcons.modal_trashcan),
+        iconSecondary: Icon(CustomIcons.modal_paws_topleft),
+        secondaryButtonText: 'Yes',
+        primaryButtonText: 'No',
+        secondaryFunction: (con) {
+          Navigator.of(con).pop();
+          try {
+            AnimatedList.of(context).removeItem(
+                widget.index,
+                (context, animation) => SongPlaybackCard(
+                    widget.index,
+                    widget.song,
+                    widget.songs,
+                    widget.soundController,
+                    animation));
+            widget.songs.removeSong(widget.song);
+          } catch (e) {
+            print(e);
+            showError(context, "Something went wrong.");
+          }
+        },
+        primaryFunction: (con) => Navigator.of(con).pop(),
       ),
     );
   }

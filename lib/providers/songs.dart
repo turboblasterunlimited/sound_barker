@@ -13,7 +13,6 @@ final captureBackingFileName = RegExp(r'\/([0-9a-zA-Z_ ]*.[a-zA-Z]{3})$');
 
 class Songs with ChangeNotifier {
   List<Song> all = [];
-  final listKey = GlobalKey<AnimatedListState>();
   List<CreatableSong> creatableSongs;
 
   void removeAll() {
@@ -35,7 +34,7 @@ class Songs with ChangeNotifier {
   void addSong(song) {
     song.songFamily = getSongFamily(song.formulaId);
     all.insert(0, song);
-    if (listKey.currentState != null) listKey.currentState.insertItem(0);
+    // if (listKey.currentState != null) listKey.currentState.insertItem(0);
     notifyListeners();
   }
 
