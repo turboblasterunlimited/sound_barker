@@ -82,6 +82,8 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       "christmas-package.png",
       'christmas-santa.png',
       'christmas-gifts.png',
+      'christmas-ornaments.png'
+      'christmas-wreath.png'
     ],
     "Jewish": [
       'hanukkah-dreidel.png',
@@ -103,13 +105,24 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       'fireworks.png',
       'flag.png',
       'liberty.png',
+      'liberty-flag-4th1.png',
+      'flag-4th2.png'
     ],
     "Other Holidays": [
       'thanksgiving.png',
       'halloween.png',
+      'easter.png',
+      'fathers-day.png',
+      'mothers-day.png',
+      'valentine.png',
     ],
     "Sports": [
       'baseball.png',
+      'basketball.png',
+      'football.png',
+      'hockey.png',
+      'soccer.png',
+
     ],
     "Themes": [
       '50s.png',

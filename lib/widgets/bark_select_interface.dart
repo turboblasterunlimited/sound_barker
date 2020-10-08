@@ -66,11 +66,6 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
     }
   }
 
-  bool _canSkip() {
-    // Can only Skip medium bark.
-    return currentActivity.cardCreationSubStep == CardCreationSubSteps.three;
-  }
-
   getBarksOfCurrentLength({bool stock = false, bool fx = false}) {
     if (currentActivity.isTwo) {
       return barks.barksOfLength("short", stock: stock, fx: fx);
@@ -156,10 +151,6 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
     print("${bark.name} deleted...");
   }
 
-  _skipCallback() {
-    return _canSkip() ? currentActivity.setNextSubStep : null;
-  }
-
   bool _noDisplayedBarks() {
     return currentBarks == BarkTypes.myBarks && displayedBarks.length == 0;
   }
@@ -229,7 +220,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         interfaceTitleNav(context, "PICK $_currentBarkLength BARK",
-            skipCallback: _skipCallback(),
+            skipCallback: null,
             backCallback: currentActivity.setPreviousSubStep),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
