@@ -40,6 +40,7 @@ class Barks with ChangeNotifier {
   List<Bark> barksOfLength(String length,
       {bool stock = false, bool fx = false}) {
     if (fx == true) stock = true;
+
     List<Bark> barks = stock ? stockBarks : all;
     if (fx == true) {
       print("test: fx");
@@ -48,14 +49,13 @@ class Barks with ChangeNotifier {
     } else if (stock == true) {
       print("test: stock");
       return List.from(barks.where((Bark bark) {
-        print(
-            "${bark.name}: ${bark.length == length && bark.isStock && bark.type == "bark"}");
         return bark.length == length && bark.isStock && bark.type == "bark";
       }));
     } else {
       print("test: mybarks");
-      return List.from(barks.where((Bark bark) =>
-          bark.length == length && !bark.isStock && bark.type == "bark"));
+      return List.from(barks.where((Bark bark) {
+        return bark.length == length && !bark.isStock;
+      }));
     }
   }
 

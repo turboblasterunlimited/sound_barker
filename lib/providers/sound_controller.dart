@@ -14,11 +14,11 @@ class SoundController with ChangeNotifier {
       lastCallback();
     }
     print("audio path: $path");
-    player.openAudioSession(
+    await player.openAudioSession(
         focus: AudioFocus.requestFocusTransient,
         category: SessionCategory.playback,
         mode: SessionMode.modeDefault);
-    player.startPlayer(fromURI: path, whenFinished: callback);
+    await player.startPlayer(fromURI: path, whenFinished: callback);
     lastCallback = callback;
   }
 
@@ -29,18 +29,18 @@ class SoundController with ChangeNotifier {
     }
   }
 
-  Future<void> record(filePath) {
-    recorder.openAudioSession(
+  Future<void> record(filePath) async {
+    await recorder.openAudioSession(
         focus: AudioFocus.requestFocusTransient,
         category: SessionCategory.record,
         mode: SessionMode.modeDefault);
 
-    recorder.startRecorder(
+    await recorder.startRecorder(
         toFile: filePath, sampleRate: 44100, bitRate: 192000);
   }
 
-  void stopRecording() {
+  Future<void> stopRecording() async {
     // recorder.stopRecorder();
-    recorder.closeAudioSession();
+    await recorder.closeAudioSession();
   }
 }

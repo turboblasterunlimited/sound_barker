@@ -84,7 +84,7 @@ class BarkRecorderState extends State<BarkRecorder>
       this._isRecording = false;
     });
     try {
-      await soundController.recorder.stopRecorder();
+      await soundController.stopRecording();
     } catch (err) {
       print('stopRecorder error: $err');
     }

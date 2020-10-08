@@ -90,7 +90,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
     List shownBarks;
     var listKey;
     if (currentBarks == BarkTypes.myBarks) {
-      print("mybarks");
+      print("shownBarks: $displayedBarks");
       shownBarks = displayedBarks;
       listKey = _listKey;
     } else if (currentBarks == BarkTypes.stock) {
@@ -124,6 +124,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
         shownBarks.insert(0, newBark);
       }
     });
+    print("ShownBarks after: $shownBarks");
   }
 
   _updateDisplayBarks() {
