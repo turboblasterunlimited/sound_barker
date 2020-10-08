@@ -82,8 +82,8 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       "christmas-package.png",
       'christmas-santa.png',
       'christmas-gifts.png',
-      'christmas-ornaments.png'
-      'christmas-wreath.png'
+      'christmas-ornaments.png',
+      'christmas-wreath.png',
     ],
     "Jewish": [
       'hanukkah-dreidel.png',
