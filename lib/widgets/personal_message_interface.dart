@@ -3,6 +3,7 @@ import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/spinner_state.dart';
+import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:flutter/material.dart';
@@ -100,6 +101,9 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
         this.messagePitch = 100;
       });
     } catch (err) {
+      print("recording error");
+      print(err);
+      print(err.message);
       setState(() {
         this._isRecording = false;
       });
@@ -112,7 +116,7 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
     });
 
     try {
-      await soundController.recorder.stopRecorder();
+      await soundController.stopRecording();
       if (_recorderSubscription != null) {
         _recorderSubscription.cancel();
         _recorderSubscription = null;
@@ -132,9 +136,11 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
   }
 
   void _createFilePaths() async {
-    Directory tempDir = await getTemporaryDirectory();
-    message.filePath = '${tempDir.path}/card_message.aac';
-    message.alteredFilePath = '${tempDir.path}/altered_card_message.aac';
+    // Directory tempDir = await getTemporaryDirectory();
+    // message.filePath = '${tempDir.path}/card_message.aac';
+    // message.alteredFilePath = '${tempDir.path}/altered_card_message.aac';
+    message.filePath = '$myAppStoragePath/card_message.aac';
+    message.alteredFilePath = '$myAppStoragePath/altered_card_message.aac';
   }
 
   Future<void> generateAlteredAudioFiles() async {
@@ -210,7 +216,8 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
 
     return Column(
       children: <Widget>[
-        interfaceTitleNav(context, cards.current.hasSong ? "PRE-SONG MESSAGE" : "CARD MESSAGE",
+        interfaceTitleNav(context,
+            cards.current.hasSong ? "PRE-SONG MESSAGE" : "CARD MESSAGE",
             backCallback: backCallback, skipCallback: skipCallback),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

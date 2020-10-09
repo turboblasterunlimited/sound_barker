@@ -74,7 +74,7 @@ class AmplitudeExtractor {
         .transform(utf8.decoder)
         .transform(CsvToListConverter(shouldParseNumbers: true))
         .toList();
-    print("Amplitudes: $amplitudes");
+    // print("Amplitudes: $amplitudes");
     return amplitudes[0];
   }
 }

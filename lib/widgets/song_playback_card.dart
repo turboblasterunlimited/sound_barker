@@ -55,10 +55,11 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
   }
 
   void stopAll() {
+    widget.soundController.stopPlayer();
+    imageController.stopAnimation();
+
     if (_isPlaying) {
       setState(() => _isPlaying = false);
-      imageController.stopAnimation();
-      widget.soundController.stopPlayer();
     }
   }
 
