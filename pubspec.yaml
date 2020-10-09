@@ -23,8 +23,8 @@ dependencies:
   # flutter_ffmpeg: ^0.3.0
   # flutter_sound_lite: ^5.0.1
   # flutter_sound: ^6.1.4
-  # sounds: ^1.0.0-beta.5
-  sounds: ^0.9.3
+  sounds: ^1.0.0-beta.5
+  # sounds: ^0.9.3
   intl: ^0.16.1
   uuid: ^2.0.4
   http: ^0.12.0+4

@@ -524,7 +524,7 @@ packages:
       name: sounds
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.9.3"
+    version: "1.0.0-beta13"
   sounds_common:
     dependency: transitive
     description:

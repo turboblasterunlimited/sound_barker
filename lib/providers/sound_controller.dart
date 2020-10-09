@@ -49,21 +49,11 @@
 // }
 
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-// import 'package:flutter_sound/flutter_sound.dart';
-
-// import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:sounds/sounds.dart';
 import 'package:sounds/src/quality.dart';
 
-/// A native media format
-/// MediaFormat: adts/aac
-/// Format/Container: ADTS in an MPEG container.
-///
-/// Support by both ios and android
 class AACMediaFormat extends NativeMediaFormat {
-  /// ctor
   const AACMediaFormat({
     int sampleRate = 44100,
     int numChannels = 1,
@@ -78,15 +68,10 @@ class AACMediaFormat extends NativeMediaFormat {
   @override
   String get extension => 'aac';
 
-  // Whilst the actual index is MediaRecorder.AudioEncoder.AAC (3)
   @override
   int get androidEncoder => 3;
-
-  /// MediaRecorder.OutputFormat.AAC_ADTS
   @override
   int get androidFormat => 6;
-
-  /// kAudioFormatMPEG4AAC
   @override
   int get iosFormat => 1633772320;
 }
@@ -103,7 +88,7 @@ class SoundController with ChangeNotifier {
       await stopPlayer();
     }
 
-    player.onStopped = ({wasUser: false}) {
+    player.onStopped = ({wasUser: true}) {
       print("Audio Stopped test");
       callback();
     };
@@ -114,7 +99,8 @@ class SoundController with ChangeNotifier {
 
   Future<void> stopPlayer() async {
     if (player.isPlaying) {
-      await player.stop();
+      print("tapping STOP");
+      await player.stop(wasUser: true);
     }
   }
 
