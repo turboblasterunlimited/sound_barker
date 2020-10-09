@@ -64,23 +64,23 @@ class SoundController with ChangeNotifier {
 
   SoundController();
 
-  Future<void> startPlayer(String path, [Function callback]) async {
+  Future<void> startPlayer(String path, [Function callback, bool url]) async {
     if (player.isPlaying) {
       print("Pressing play while player is playing");
       await stopPlayer();
     }
 
-    player.onStopped = ({wasUser: false}) {
+    player.onStopped = ({wasUser: true}) {
       print("Audio Stopped test");
       callback();
     };
-    await player.play(Track.fromFile(path));
+    url == null ? await player.play(Track.fromFile(path)) : player.play(Track.fromURL(path));
   }
 
   Future<void> stopPlayer() async {
     if (player.isPlaying) {
       print("Pressing stop while player is playing");
-      await player.stop(wasUser: false);
+      await player.stop(wasUser: true);
     }
   }
 
