@@ -90,10 +90,10 @@ class SoundController with ChangeNotifier {
       await stopPlayer();
     }
 
-    // player.onStopped = ({wasUser: true}) {
-    //   print("Audio Stopped test");
-    //   callback();
-    // };
+    // is annoyingly only triggered when audio playback completes, hence 'lastCallback' implementation
+    player.onStopped = ({wasUser: true}) {
+      callback();
+    };
 
     lastCallback = callback;
 
