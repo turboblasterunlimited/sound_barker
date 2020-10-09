@@ -60,7 +60,8 @@ import 'package:sounds/src/quality.dart';
 class SoundController with ChangeNotifier {
   SoundRecorder recorder = SoundRecorder();
   SoundPlayer player = SoundPlayer.noUI();
-  Function lastCallback;
+  MediaFormat mediaFormat =
+      AdtsAacMediaFormat(sampleRate: 44100, bitRate: 192000);
 
   SoundController();
 
@@ -74,7 +75,9 @@ class SoundController with ChangeNotifier {
       print("Audio Stopped test");
       callback();
     };
-    url == null ? await player.play(Track.fromFile(path)) : player.play(Track.fromURL(path));
+    url == null
+        ? await player.play(Track.fromFile(path))
+        : player.play(Track.fromURL(path));
   }
 
   Future<void> stopPlayer() async {
@@ -94,13 +97,11 @@ class SoundController with ChangeNotifier {
 
     if (File(filePath).existsSync()) print("Filepath now exists.");
 
-    await recorder.record(
-        Track.fromFile(filePath, mediaFormat: AdtsAacMediaFormat()),
+    await recorder.record(Track.fromFile(filePath, mediaFormat: mediaFormat),
         quality: Quality.high);
   }
 
   Future<void> stopRecording() async {
-    // recorder.stopRecorder();
     if (recorder.isRecording) {
       recorder.stop();
     }
