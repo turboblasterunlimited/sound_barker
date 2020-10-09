@@ -79,19 +79,24 @@ class AACMediaFormat extends NativeMediaFormat {
 class SoundController with ChangeNotifier {
   SoundRecorder recorder = SoundRecorder();
   SoundPlayer player = SoundPlayer.noUI();
+  Function lastCallback;
 
   SoundController();
 
   Future<void> startPlayer(String path, [Function callback, bool url]) async {
     if (player.isPlaying) {
       print("Pressing play while player is playing");
+      lastCallback();
       await stopPlayer();
     }
 
-    player.onStopped = ({wasUser: true}) {
-      print("Audio Stopped test");
-      callback();
-    };
+    // player.onStopped = ({wasUser: true}) {
+    //   print("Audio Stopped test");
+    //   callback();
+    // };
+
+    lastCallback = callback;
+
     url == null
         ? await player.play(Track.fromFile(path))
         : player.play(Track.fromURL(path));
@@ -100,7 +105,7 @@ class SoundController with ChangeNotifier {
   Future<void> stopPlayer() async {
     if (player.isPlaying) {
       print("tapping STOP");
-      await player.stop(wasUser: true);
+      await player.stop(wasUser: false);
     }
   }
 
