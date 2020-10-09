@@ -57,11 +57,43 @@ import 'package:flutter/material.dart';
 import 'package:sounds/sounds.dart';
 import 'package:sounds/src/quality.dart';
 
+/// A native media format
+/// MediaFormat: adts/aac
+/// Format/Container: ADTS in an MPEG container.
+///
+/// Support by both ios and android
+class AACMediaFormat extends NativeMediaFormat {
+  /// ctor
+  const AACMediaFormat({
+    int sampleRate = 44100,
+    int numChannels = 1,
+    int bitRate = 192000,
+  }) : super.detail(
+          name: 'adts/aac',
+          sampleRate: 44100,
+          numChannels: 1,
+          bitRate: 192000,
+        );
+
+  @override
+  String get extension => 'aac';
+
+  // Whilst the actual index is MediaRecorder.AudioEncoder.AAC (3)
+  @override
+  int get androidEncoder => 3;
+
+  /// MediaRecorder.OutputFormat.AAC_ADTS
+  @override
+  int get androidFormat => 6;
+
+  /// kAudioFormatMPEG4AAC
+  @override
+  int get iosFormat => 1633772320;
+}
+
 class SoundController with ChangeNotifier {
   SoundRecorder recorder = SoundRecorder();
   SoundPlayer player = SoundPlayer.noUI();
-  MediaFormat mediaFormat =
-      AdtsAacMediaFormat(sampleRate: 44100, bitRate: 192000);
 
   SoundController();
 
@@ -71,7 +103,7 @@ class SoundController with ChangeNotifier {
       await stopPlayer();
     }
 
-    player.onStopped = ({wasUser: true}) {
+    player.onStopped = ({wasUser: false}) {
       print("Audio Stopped test");
       callback();
     };
@@ -82,23 +114,25 @@ class SoundController with ChangeNotifier {
 
   Future<void> stopPlayer() async {
     if (player.isPlaying) {
-      print("Pressing stop while player is playing");
-      await player.stop(wasUser: true);
+      await player.stop();
     }
   }
 
   Future<void> record(filePath) async {
-    if (File(filePath).existsSync()) {
-      print("Filepath exists.");
-      File(filePath).deleteSync();
-    } else
-      print("Filepath does not exist.");
+    if (File(filePath).existsSync()) File(filePath).deleteSync();
+
     File(filePath).createSync();
+    var mediaFormat = AACMediaFormat();
 
-    if (File(filePath).existsSync()) print("Filepath now exists.");
+    print("mediaFormat: ${mediaFormat.bitRate}, ${mediaFormat.sampleRate}");
 
-    await recorder.record(Track.fromFile(filePath, mediaFormat: mediaFormat),
-        quality: Quality.high);
+    await recorder.record(
+      Track.fromFile(
+        filePath,
+        mediaFormat: mediaFormat,
+      ),
+      quality: Quality.high,
+    );
   }
 
   Future<void> stopRecording() async {
