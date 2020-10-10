@@ -8,6 +8,7 @@ import 'dart:io';
 import '../services/gcloud.dart';
 import '../services/rest_api.dart';
 import '../tools/amplitude_extractor.dart';
+import 'asset.dart';
 
 class Barks with ChangeNotifier {
   List<Bark> all = [];
@@ -69,7 +70,7 @@ class Barks with ChangeNotifier {
       Bark bark = _serverDataToBark(serverBark);
       tempBarks.add(bark);
     });
-    await downloadAllBarksFromBucket(tempBarks);
+    // await downloadAllBarksFromBucket(tempBarks);
     tempBarks.forEach((bark) {
       bark.isStock ? addStockBark(bark) : addBark(bark);
     });
@@ -165,7 +166,7 @@ class Barks with ChangeNotifier {
   }
 }
 
-class Bark with ChangeNotifier {
+class Bark extends Asset {
   String name;
   String fileUrl;
   // filePath is initially used for file upload from temp directory. Later (for cropped barks) it can be used for playback.
@@ -178,25 +179,25 @@ class Bark with ChangeNotifier {
   String type;
 
   Bark({
-    String name,
-    String filePath,
-    String fileUrl,
-    String fileId,
-    DateTime created,
-    String amplitudesPath,
-    String length,
-    bool isStock,
-    String type,
+    this.name,
+    this.filePath,
+    this.fileUrl,
+    this.fileId,
+    this.created,
+    this.amplitudesPath,
+    this.length,
+    this.isStock,
+    this.type,
   }) {
-    this.type = type;
-    this.name = name;
-    this.filePath = filePath;
-    this.fileUrl = fileUrl;
     this.fileId = fileId ??= Uuid().v4();
     this.created = created ??= DateTime.now();
-    this.amplitudesPath = amplitudesPath;
-    this.length = length;
     this.isStock = isStock ??= false;
+    inferFilePath();
+  }
+
+  void inferFilePath() {
+    String fileName = fileId + '.aac';
+    this.filePath = myAppStoragePath + '/' + fileName;
   }
 
   String get getName {
@@ -211,6 +212,13 @@ class Bark with ChangeNotifier {
     } catch (e) {
       print("Error: $e");
     }
+  }
+
+  Future<void> retrieve() async {
+    await download();
+    print("step one");
+    this.amplitudesPath = await AmplitudeExtractor.createAmplitudeFile(filePath, filePathBase);
+    print("step two");
   }
 
   Future<void> rename(newName) async {

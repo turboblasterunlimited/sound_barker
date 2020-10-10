@@ -73,6 +73,7 @@ class Gcloud {
 
   static Future<String> downloadFromBucket(
       String bucketFp, String filePath) async {
+        print("Downloading!!! $filePath");
     try {
       Response response = await HttpController.dio.get(
         "https://storage.googleapis.com/song_barker_sequences/$bucketFp",

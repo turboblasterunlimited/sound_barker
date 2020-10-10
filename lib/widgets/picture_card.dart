@@ -82,22 +82,24 @@ class _PictureCardState extends State<PictureCard>
 
   Widget _imageWidget() {
     return Image.file(
-        File(widget.picture.filePath),
-        fit: BoxFit.cover,
-      );
+      File(widget.picture.filePath),
+      fit: BoxFit.cover,
+    );
   }
 
   Widget _getImage() {
     if (widget.picture.hasFile) {
       return _imageWidget();
     } else {
-      return FutureBuilder(future: widget.picture.download(), builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          print("it's done:");
-          return _imageWidget();
-        }
-        else return SpinKitRipple();
-      });
+      return FutureBuilder(
+          future: widget.picture.download(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              print("it's done:");
+              return _imageWidget();
+            } else
+              return SpinKitWave(color: Theme.of(context).primaryColor);
+          });
     }
   }
 

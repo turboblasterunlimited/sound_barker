@@ -1,6 +1,7 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
+import 'package:K9_Karaoke/providers/asset.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
+import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:io';
@@ -64,7 +65,6 @@ class Pictures with ChangeNotifier {
         mouthColor: jsonDecode(serverImage["mouth_color"].toString()),
         created: DateTime.parse(serverImage["created"]),
       );
-      print("imageUrl: ${pic.fileUrl}");
       tempPics.add(pic);
     });
     // await downloadAllImagesFromBucket(tempPics);
@@ -90,7 +90,7 @@ class Pictures with ChangeNotifier {
   }
 }
 
-class Picture with ChangeNotifier, Gcloud {
+class Picture extends Asset {
   String name;
   String fileUrl;
   String filePath;
@@ -125,28 +125,15 @@ class Picture with ChangeNotifier, Gcloud {
         };
     this.mouthColor = mouthColor ?? [0.0, 0.0, 0.0];
     this.name = name ?? "Name";
-    this.filePath = filePath;
-    this.fileUrl = fileUrl;
     this.fileId = fileId ??= Uuid().v4();
     this.creationAnimation = true;
-    this.created = created;
     this.isStock = isStock ?? false;
+    inferFilePath();
   }
 
   void inferFilePath() {
     String fileName = fileId + '.jpg';
     this.filePath = myAppStoragePath + '/' + fileName;
-  }
-
-  bool get hasFile {
-    print("FilePAth: $filePath");
-    return filePath != null && File(filePath).existsSync();
-  }
-
-  Future<void> download() async {
-    inferFilePath();
-    await Gcloud.downloadFromBucket(fileUrl, filePath);
-    notifyListeners();
   }
 
   void delete() {

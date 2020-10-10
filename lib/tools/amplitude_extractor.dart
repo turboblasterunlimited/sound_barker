@@ -52,6 +52,8 @@ class AmplitudeExtractor {
     final csvAmplitudes = const ListToCsvConverter().convert([amplitudes]);
     File file = File("$filePathBase.csv");
     file.writeAsStringSync(csvAmplitudes);
+    print("Finish writing amps");
+    print(file.path);
     return file.path;
   }
 
