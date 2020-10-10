@@ -3,6 +3,7 @@ import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/sound_controller.dart';
@@ -170,6 +171,41 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
     currentActivity.setCardCreationSubStep(CardCreationSubSteps.seven);
   }
 
+  Widget _getAudio() {
+    if (widget.song.hasFile) {
+      return _playbackButton();
+    } else {
+      return FutureBuilder(
+          future: widget.song.downloadAndCombineSong(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              print("it's done:");
+              return _playbackButton();
+            } else
+              return IconButton(
+                  onPressed: null,
+                  icon: SpinKitWave(
+                      size: 10, color: Theme.of(context).primaryColor));
+          });
+    }
+  }
+
+  Widget _playbackButton() {
+    return IconButton(
+        color: Colors.blue,
+        onPressed: () {
+          if (_isPlaying) {
+            stopAll();
+          } else {
+            startAll();
+          }
+        },
+        icon: _isPlaying
+            ? Icon(Icons.stop, color: Theme.of(context).errorColor, size: 30)
+            : Icon(Icons.play_arrow,
+                color: Theme.of(context).primaryColor, size: 30));
+  }
+
   @override
   Widget build(BuildContext context) {
     cards = Provider.of<KaraokeCards>(context, listen: false);
@@ -180,20 +216,7 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
       child: Row(
         children: <Widget>[
           // Playback button
-          IconButton(
-              color: Colors.blue,
-              onPressed: () {
-                if (_isPlaying) {
-                  stopAll();
-                } else {
-                  startAll();
-                }
-              },
-              icon: _isPlaying
-                  ? Icon(Icons.stop,
-                      color: Theme.of(context).errorColor, size: 30)
-                  : Icon(Icons.play_arrow,
-                      color: Theme.of(context).primaryColor, size: 30)),
+          _getAudio(),
 
           // Select song button
           Expanded(

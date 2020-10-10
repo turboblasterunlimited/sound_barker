@@ -27,7 +27,8 @@ class SongArrangementSelector extends StatelessWidget {
       var songData =
           await RestAPI.createSong(cards.current.barkIds, songFormulaId);
       Song song = Song();
-      await song.retrieveSong(songData);
+      await song.setSongData(songData);
+      await song.downloadAndCombineSong();
       print("ADDING SONG");
       songs.addSong(song);
       cards.setCurrentSong(song);

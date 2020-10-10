@@ -1,3 +1,4 @@
+import 'package:K9_Karaoke/providers/asset.dart';
 import 'package:K9_Karaoke/providers/creatable_songs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
@@ -61,7 +62,7 @@ class Songs with ChangeNotifier {
 
     for (Map<String, dynamic> serverSong in serverSongs) {
       if (serverSong["hidden"] == 1) continue;
-      final song = await Song().retrieveSong(serverSong);
+      final song = await Song().setSongData(serverSong);
       tempSongs.add(song);
       print("song created: ${song.created}");
     }
@@ -75,7 +76,7 @@ class Songs with ChangeNotifier {
   }
 }
 
-class Song with ChangeNotifier {
+class Song extends Asset {
   String name;
   String filePath;
   String fileId;
@@ -124,7 +125,7 @@ class Song with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<Song> retrieveSong(Map songData) async {
+  Future<Song> setSongData(Map songData) async {
     print("retrieving song: $songData");
     this.backingTrackUrl = songData["backing_track_fp"];
     this.fileId = songData["uuid"];
@@ -132,17 +133,19 @@ class Song with ChangeNotifier {
     this.bucketFp = songData["bucket_fp"];
     this.formulaId = songData["song_id"];
     this.created = DateTime.parse(songData["created"]);
-    String filePathBase = myAppStoragePath + '/' + fileId;
 
-    if (_setIfFilesExist(filePathBase)) return this;
+    _setIfFilesExist(filePathBase);
 
+    return this;
+  }
+
+  Future<void> downloadAndCombineSong() async {
     await _getMelodyAndGenerateAmplitudeFile(filePathBase);
     if (backingTrackUrl != null) {
       String backingTrackPath = filePathBase + "backing.aac";
       await Gcloud.downloadFromBucket(backingTrackUrl, backingTrackPath);
       await _mergeTracks(backingTrackPath, filePathBase);
     }
-    return this;
   }
 
   bool _setIfFilesExist(filePathBase) {
