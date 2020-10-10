@@ -4,6 +4,7 @@ import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/sound_controller.dart';
@@ -181,6 +182,14 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
             if (snapshot.connectionState == ConnectionState.done) {
               print("it's done:");
               return _playbackButton();
+            } else if (snapshot.hasError) {
+              IconButton(
+                onPressed: null,
+                icon: Icon(
+                  LineAwesomeIcons.exclamation_circle,
+                  color: Theme.of(context).errorColor,
+                ),
+              );
             } else
               return IconButton(
                   onPressed: null,

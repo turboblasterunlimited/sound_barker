@@ -3,6 +3,7 @@ import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/widgets/spinner_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'dart:io';
@@ -97,6 +98,13 @@ class _PictureCardState extends State<PictureCard>
             if (snapshot.connectionState == ConnectionState.done) {
               print("it's done:");
               return _imageWidget();
+            } else if (snapshot.hasError) {
+              FittedBox(
+                child: Icon(
+                  LineAwesomeIcons.exclamation_circle,
+                  color: Theme.of(context).errorColor,
+                ),
+              );
             } else
               return SpinKitWave(color: Theme.of(context).primaryColor);
           });

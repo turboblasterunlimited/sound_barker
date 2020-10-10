@@ -23,15 +23,13 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
   final _listKey = GlobalKey<AnimatedListState>();
   Songs songs;
 
-
   @override
   void initState() {
     super.initState();
     animationController = AnimationController(
       vsync: this,
       duration: Duration(seconds: 1),
-    )
-      ..repeat(reverse: true);
+    )..repeat(reverse: true);
 
     tween = Tween(begin: -60.0, end: -40.0).animate(animationController);
   }
@@ -168,7 +166,12 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
                   padding: const EdgeInsets.all(0),
                   itemBuilder: (ctx, i, Animation<double> animation) =>
                       SongPlaybackCard(
-                          i, songs.all[i], songs, soundController, animation),
+                    i,
+                    songs.all[i],
+                    songs,
+                    soundController,
+                    animation,
+                  ),
                 ),
         ),
       ],
