@@ -25,11 +25,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
   CurrentActivity currentActivity;
   Barks barks;
   List<Bark> displayedBarks;
-  List<Bark> displayedBarksStock;
-  List<Bark> displayedFX;
   final _listKey = GlobalKey<AnimatedListState>();
-  final _stockListKey = GlobalKey<AnimatedListState>();
-  final _fxListKey = GlobalKey<AnimatedListState>();
   SoundController soundController;
   bool _isFirstLoad = true;
   AnimationController animationController;
@@ -73,58 +69,41 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
       return barks.barksOfLength("medium", stock: stock, fx: fx);
     } else if (currentActivity.isFour) {
       return barks.barksOfLength("finale", stock: stock, fx: fx);
-
     }
   }
 
   updateDisplayedBarks({bool stock = false, bool fx = false}) {
     List newBarks = getBarksOfCurrentLength(stock: stock, fx: fx);
-
-    List shownBarks;
-    var listKey;
-    if (currentBarks == BarkTypes.myBarks) {
-      print("shownBarks: $displayedBarks");
-      shownBarks = displayedBarks;
-      listKey = _listKey;
-    } else if (currentBarks == BarkTypes.stock) {
-      print("stock");
-      shownBarks = displayedBarksStock;
-      listKey = _stockListKey;
-    } else if (currentBarks == BarkTypes.fx) {
-      print("FX");
-      shownBarks = displayedFX;
-      listKey = _fxListKey;
-    }
     List toRemove = [];
     // remove barks
-    shownBarks.asMap().forEach((i, bark) {
+    displayedBarks.asMap().forEach((i, bark) {
       if (newBarks.indexOf(bark) == -1) toRemove.add(i);
     });
     // print("toRemove: $toRemove");
     // print("shownBarks before removal: $shownBarks");
 
     toRemove.reversed.forEach((i) {
-      shownBarks.removeAt(i);
-      listKey.currentState?.removeItem(
-          i,
-          (context, animation) => BarkPlaybackCard(
-              i, shownBarks[i], barks, soundController, animation));
+      Bark removedBark = displayedBarks[i];
+      displayedBarks.remove(removedBark);
+      _listKey.currentState?.removeItem(
+        i,
+        (context, animation) =>
+            BarkPlaybackCard(i, removedBark, barks, soundController, animation),
+      );
     });
 
     newBarks.reversed.forEach((newBark) {
-      if (shownBarks.indexOf(newBark) == -1) {
-        listKey.currentState?.insertItem(0);
-        shownBarks.insert(0, newBark);
+      if (displayedBarks.indexOf(newBark) == -1) {
+        displayedBarks.insert(0, newBark);
+        _listKey.currentState?.insertItem(0);
       }
     });
-    print("ShownBarks after: $shownBarks");
+    print("ShownBarks after: $displayedBarks");
   }
 
   _updateDisplayBarks() {
     if (_isFirstLoad) {
       displayedBarks = getBarksOfCurrentLength();
-      displayedBarksStock = getBarksOfCurrentLength(stock: true);
-      displayedFX = getBarksOfCurrentLength(fx: true);
       setState(() => _isFirstLoad = false);
     } else {
       updateDisplayedBarks(
@@ -169,7 +148,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
           ),
         ),
       );
-    else if (currentBarks == BarkTypes.myBarks)
+    else
       return AnimatedList(
         key: _listKey,
         initialItemCount: displayedBarks.length,
@@ -180,30 +159,6 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
           soundController,
           animation,
           deleteCallback: deleteBark,
-        ),
-      );
-    else if (currentBarks == BarkTypes.stock)
-      return AnimatedList(
-        key: _stockListKey,
-        initialItemCount: displayedBarksStock.length,
-        itemBuilder: (ctx, i, animation) => BarkPlaybackCard(
-          i,
-          displayedBarksStock[i],
-          barks,
-          soundController,
-          animation,
-        ),
-      );
-    else if (currentBarks == BarkTypes.fx)
-      return AnimatedList(
-        key: _fxListKey,
-        initialItemCount: displayedFX.length,
-        itemBuilder: (ctx, i, animation) => BarkPlaybackCard(
-          i,
-          displayedFX[i],
-          barks,
-          soundController,
-          animation,
         ),
       );
   }
