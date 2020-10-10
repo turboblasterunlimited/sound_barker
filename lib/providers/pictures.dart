@@ -67,7 +67,7 @@ class Pictures with ChangeNotifier {
       print("imageUrl: ${pic.fileUrl}");
       tempPics.add(pic);
     });
-    await downloadAllImagesFromBucket(tempPics);
+    // await downloadAllImagesFromBucket(tempPics);
     tempPics.sort((pic1, pic2) {
       return pic1.created.compareTo(pic2.created);
     });
@@ -79,15 +79,13 @@ class Pictures with ChangeNotifier {
     notifyListeners();
   }
 
-  Future downloadAllImagesFromBucket([List images]) async {
+  Future downloadAllImagesFromBucket([List<Picture> images]) async {
     images ??= all;
     int imagesCount = images.length;
     for (var i = 0; i < imagesCount; i++) {
-      String fileName = images[i].fileId + '.jpg';
-      String filePath = myAppStoragePath + '/' + fileName;
-      images[i].filePath = filePath;
-      if (!await File(filePath).exists())
-        await Gcloud.downloadFromBucket(images[i].fileUrl, filePath);
+      images[i].inferFilePath();
+      if (!await File(images[i].filePath).exists())
+        await Gcloud.downloadFromBucket(images[i].fileUrl, images[i].filePath);
     }
   }
 }
@@ -133,6 +131,22 @@ class Picture with ChangeNotifier, Gcloud {
     this.creationAnimation = true;
     this.created = created;
     this.isStock = isStock ?? false;
+  }
+
+  void inferFilePath() {
+    String fileName = fileId + '.jpg';
+    this.filePath = myAppStoragePath + '/' + fileName;
+  }
+
+  bool get hasFile {
+    print("FilePAth: $filePath");
+    return filePath != null && File(filePath).existsSync();
+  }
+
+  Future<void> download() async {
+    inferFilePath();
+    await Gcloud.downloadFromBucket(fileUrl, filePath);
+    notifyListeners();
   }
 
   void delete() {

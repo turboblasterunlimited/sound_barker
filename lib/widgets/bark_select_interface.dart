@@ -70,12 +70,10 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
     if (currentActivity.isTwo) {
       return barks.barksOfLength("short", stock: stock, fx: fx);
     } else if (currentActivity.isThree) {
-      return barks.barksOfLength("medium", stock: stock, fx: fx) +
-          barks.barksOfLength("short", stock: stock, fx: fx);
+      return barks.barksOfLength("medium", stock: stock, fx: fx);
     } else if (currentActivity.isFour) {
-      return barks.barksOfLength("finale", stock: stock, fx: fx) +
-          barks.barksOfLength("medium", stock: stock, fx: fx) +
-          barks.barksOfLength("short", stock: stock, fx: fx);
+      return barks.barksOfLength("finale", stock: stock, fx: fx);
+
     }
   }
 

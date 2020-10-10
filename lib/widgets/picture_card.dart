@@ -1,6 +1,8 @@
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
+import 'package:K9_Karaoke/widgets/spinner_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'dart:io';
@@ -78,6 +80,27 @@ class _PictureCardState extends State<PictureCard>
     Navigator.popUntil(context, ModalRoute.withName("main-screen"));
   }
 
+  Widget _imageWidget() {
+    return Image.file(
+        File(widget.picture.filePath),
+        fit: BoxFit.cover,
+      );
+  }
+
+  Widget _getImage() {
+    if (widget.picture.hasFile) {
+      return _imageWidget();
+    } else {
+      return FutureBuilder(future: widget.picture.download(), builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          print("it's done:");
+          return _imageWidget();
+        }
+        else return SpinKitRipple();
+      });
+    }
+  }
+
   Widget pictureCard(animation) {
     return Container(
       child: ClipRRect(
@@ -89,10 +112,7 @@ class _PictureCardState extends State<PictureCard>
                 onTap: handleTap,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Image.file(
-                    File(widget.picture.filePath),
-                    fit: BoxFit.cover,
-                  ),
+                  child: _getImage(),
                 ),
               ),
               Visibility(
