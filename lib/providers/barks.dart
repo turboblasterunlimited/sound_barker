@@ -22,6 +22,7 @@ class Barks with ChangeNotifier {
   }
 
   Future<void> setTempRawBark(rawBark) async {
+    print("Raw check: ${rawBark.filePath}");
     tempRawBark = rawBark;
     tempRawBarkAmplitudes =
         await AmplitudeExtractor.getAmplitudes(tempRawBark.filePath);
@@ -196,6 +197,8 @@ class Bark extends Asset {
   }
 
   void inferFilePath() {
+    // if its a raw bark, filePath will be set to rawBark.aac
+    if (filePath != null) return;
     String fileName = fileId + '.aac';
     this.filePath = myAppStoragePath + '/' + fileName;
   }
@@ -216,9 +219,8 @@ class Bark extends Asset {
 
   Future<void> retrieve() async {
     await download();
-    print("step one");
-    this.amplitudesPath = await AmplitudeExtractor.createAmplitudeFile(filePath, filePathBase);
-    print("step two");
+    this.amplitudesPath =
+        await AmplitudeExtractor.createAmplitudeFile(filePath, filePathBase);
   }
 
   Future<void> rename(newName) async {

@@ -113,14 +113,11 @@ class SoundController with ChangeNotifier {
     if (File(filePath).existsSync()) File(filePath).deleteSync();
 
     File(filePath).createSync();
-    var mediaFormat = AACMediaFormat();
-
-    print("mediaFormat: ${mediaFormat.bitRate}, ${mediaFormat.sampleRate}");
 
     await recorder.record(
       Track.fromFile(
         filePath,
-        mediaFormat: mediaFormat,
+        mediaFormat: AACMediaFormat(),
       ),
       quality: Quality.high,
     );

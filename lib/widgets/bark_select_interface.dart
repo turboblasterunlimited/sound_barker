@@ -3,7 +3,6 @@ import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/widgets/bark_playback_card.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:flutter/material.dart';
-import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/sound_controller.dart';
@@ -98,7 +97,6 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
         _listKey.currentState?.insertItem(0);
       }
     });
-    print("ShownBarks after: $displayedBarks");
   }
 
   _updateDisplayBarks() {

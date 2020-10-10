@@ -90,6 +90,7 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
     }
 
     message.deleteEverything();
+    print("message filepath: ${message.filePath}");
 
     try {
       await soundController.record(message.filePath);
