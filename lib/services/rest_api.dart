@@ -7,7 +7,27 @@ import '../providers/songs.dart';
 import '../providers/barks.dart';
 import '../providers/pictures.dart';
 
+Map<String, dynamic> noInternetResponse = {
+  "error": "You must be connected to the internet",
+  "success": false
+};
+
 class RestAPI {
+  static dynamic _handleAccountError(response, e) {
+    print("Error: $e");
+    if (response == null) return noInternetResponse;
+    response?.data["success"] = false;
+    response?.data["error"] = e.message;
+    return response;
+  }
+
+  static _handleAssetError(response, e) {
+    if (response == null) return noInternetResponse;
+    print(e.response.headers);
+    print(e.response.data);
+    print(e.response.request);
+  }
+
   static Future<dynamic> userManualSignUp(email, password) async {
     Map data = {"email": email.toLowerCase(), "password": password};
     var response;
@@ -17,10 +37,9 @@ class RestAPI {
         data: data,
       );
     } catch (e) {
-      response.data["success"] = false;
-      response.data["error"] = e.message;
+      return _handleAccountError(response, e);
     }
-    return response.data;
+    return response?.data;
   }
 
   static Future<dynamic> userManualSignIn(email, password) async {
@@ -32,12 +51,12 @@ class RestAPI {
         data: data,
       );
       print("Manual sign in response: $response");
-      print("Manual sign in response: ${response.data}");
+      print("Manual sign in response: ${response?.data}");
     } catch (e) {
-      response.data["success"] = false;
-      response.data["error"] = e.message;
+      print("manual sign in error: $e");
+      return _handleAccountError(response, e);
     }
-    return response.data;
+    return response?.data;
   }
 
   static Future<dynamic> deleteUser(email) async {
@@ -47,13 +66,9 @@ class RestAPI {
       response =
           await HttpController.dio.post("http://165.227.178.14/delete-account");
     } catch (e) {
-      print("delete account error: ${e.message}");
-      print("delete account: ${response.data["success"]}");
-      response.data["success"] = false;
-      response.data["error"] = e.message;
+      return _handleAccountError(response, e);
     }
-    print("delete account data response: ${response.data["success"]}");
-    return response.data;
+    return response?.data;
   }
 
   static Future<dynamic> logoutUser(email) async {
@@ -62,12 +77,9 @@ class RestAPI {
     try {
       response = await HttpController.dio.get("http://165.227.178.14/logout");
     } catch (e) {
-      print("logout error: ${e.message}");
-      print("logout: ${response.data["success"]}");
-      response.data["success"] = false;
-      response.data["error"] = e.message;
+      return _handleAccountError(response, e);
     }
-    return response.data;
+    return response?.data;
   }
 
   static Future<void> deleteDecorationImage(imageId) async {
@@ -80,10 +92,7 @@ class RestAPI {
       );
     } catch (e) {
       print("delete decoration image request error message: ${e.message}");
-      print(e.response.headers);
-      print(e.response.data);
-      print(e.response.request);
-      print("delete decoration image: ${response.data}");
+      _handleAssetError(response, e);
     }
   }
 
@@ -97,10 +106,7 @@ class RestAPI {
       );
     } catch (e) {
       print("delete card audio request error message: ${e.message}");
-      print(e.response.headers);
-      print(e.response.data);
-      print(e.response.request);
-      print("delete card audio: ${response.data}");
+      _handleAssetError(response, e);
     }
   }
 
@@ -116,12 +122,9 @@ class RestAPI {
       );
     } catch (e) {
       print("update card picture error: ${e.message}");
-      print(e.response.headers);
-      print(e.response.data);
-      print(e.response.request);
-      print("update greeting card body: ${response.data}");
+      _handleAssetError(response, e);
     }
-    return response.data;
+    return response?.data;
   }
 
   static Future<void> createCardDecorationImage(
@@ -141,10 +144,7 @@ class RestAPI {
       );
     } catch (e) {
       print("create decoration image: ${e.message}");
-      print(e.response.headers);
-      print(e.response.data);
-      print(e.response.request);
-      print("create decoration image body: ${response.data}");
+      _handleAssetError(response, e);
     }
   }
 
@@ -163,10 +163,7 @@ class RestAPI {
       );
     } catch (e) {
       print("create card audio error: ${e.message}");
-      print(e.response.headers);
-      print(e.response.data);
-      print(e.response.request);
-      print("create card audio body: ${response.data}");
+      _handleAssetError(response, e);
     }
   }
 
@@ -188,12 +185,9 @@ class RestAPI {
       );
     } catch (e) {
       print("update greeting card error: ${e.message}");
-      print(e.response.headers);
-      print(e.response.data);
-      print(e.response.request);
-      print("update greeting card body: ${response.data}");
+      _handleAssetError(response, e);
     }
-    return response.data;
+    return response?.data;
   }
 
   static Future createCard(KaraokeCard card, {songId}) async {
@@ -216,12 +210,10 @@ class RestAPI {
       );
     } catch (e) {
       print("create greeting card error: ${e.message}");
-      print(e.response.headers);
-      print(e.response.data);
-      print(e.response.request);
+      _handleAssetError(response, e);
     }
-    print("create greeting card body: ${response.data}");
-    return response.data;
+    print("create greeting card body: ${response?.data}");
+    return response?.data;
   }
 
   static Future<Map> createSong(List<String> cropIds, int songId) async {
@@ -237,23 +229,27 @@ class RestAPI {
       );
     } catch (e) {
       print("Split RAw bark error message: ${e.message}");
-      print(e.response.headers);
-      print(e.response.data);
-      print(e.response.request);
+      _handleAssetError(response, e);
     }
-    print("create Song on server response body: ${response.data}");
-    return response.data;
+    print("create Song on server response body: ${response?.data}");
+    return response?.data;
   }
 
   static Future<void> renameSong(Song song, String newName) async {
     Map body = {'name': newName};
     print(body);
     final url = 'http://165.227.178.14/sequence/${song.fileId}';
-    final response = await HttpController.dio.patch(
-      url,
-      data: body,
-    );
-    print("Edit bark name response body: ${response.data}");
+    var response;
+    try {
+      response = await HttpController.dio.patch(
+        url,
+        data: body,
+      );
+    } catch (e) {
+      print("Edit bark name response body: ${response?.data}");
+      _handleAssetError(response, e);
+    }
+    return response?.data;
   }
 
   static Future<void> updateImage(Picture image) async {
@@ -264,11 +260,17 @@ class RestAPI {
     };
     print("Image update body: $body");
     final url = 'http://165.227.178.14/image/${image.fileId}';
-    final response = await HttpController.dio.patch(
-      url,
-      data: body,
-    );
-    print("Edit Image on server response body: ${response.data}");
+    var response;
+    try {
+      response = await HttpController.dio.patch(
+        url,
+        data: body,
+      );
+    } catch (e) {
+      print("Edit Image on server response body: ${response?.data}");
+      _handleAssetError(response, e);
+    }
+    return response?.data;
   }
 
   static Future<Map> createImage(Picture image) async {
@@ -281,101 +283,169 @@ class RestAPI {
     };
     print("Image upload body: $body");
     final url = 'http://165.227.178.14/image';
-    final response = await HttpController.dio.post(
-      url,
-      data: body,
-    );
-    return response.data;
+    var response;
+    try {
+      response = await HttpController.dio.post(
+        url,
+        data: body,
+      );
+    } catch (e) {
+      print("Create Image response body: ${response?.data}");
+      _handleAssetError(response, e);
+    }
+    return response?.data;
   }
 
   static void renameBark(Bark bark, newName) async {
     Map body = {'name': newName};
     final url = 'http://165.227.178.14/crop/${bark.fileId}';
-    final response = await HttpController.dio.patch(
-      url,
-      data: body,
-    );
-    print("Edit bark name response body: ${response.data}");
+    var response;
+    try {
+      response = await HttpController.dio.patch(
+        url,
+        data: body,
+      );
+    } catch (e) {
+      print("Edit bark name response body: ${response?.data}");
+      _handleAssetError(response, e);
+    }
+    return response?.data;
   }
 
   static Future<List> retrieveAllDecorationImages() async {
     final url = 'http://165.227.178.14/all/decoration_image';
-    final response = await HttpController.dio.get(url);
-    print("Get all decoration images response body: ${response.data}");
-    return response.data;
+    var response;
+    try {
+      response = await HttpController.dio.get(url);
+    } catch (e) {
+      print("Get all decoration images response body: ${response?.data}");
+      _handleAssetError(response, e);
+    }
+    return response?.data;
   }
 
   static Future<List> retrieveAllCardAudio() async {
     final url = 'http://165.227.178.14/all/card_audio';
-    final response = await HttpController.dio.get(url);
-    print("Get all card audio response body: ${response.data}");
-    return response.data;
+    var response;
+    try {
+      response = await HttpController.dio.get(url);
+    } catch (e) {
+      print("Get all card audio response body: ${response?.data}");
+      _handleAssetError(response, e);
+    }
+    return response?.data;
   }
 
   static Future<List> retrieveAllSongs() async {
     final url = 'http://165.227.178.14/all/sequence';
-    final response = await HttpController.dio.get(url);
-    print("Get all Songs response body: ${response.data}");
-    return response.data;
+    var response;
+    try {
+      response = await HttpController.dio.get(url);
+    } catch (e) {
+      print("Get all Songs response body: ${response?.data}");
+      _handleAssetError(response, e);
+    }
+    return response?.data;
   }
 
   static Future<List> retrieveAllCards() async {
     final url = 'http://165.227.178.14/all/greeting_card';
-    final response = await HttpController.dio.get(url);
-    print("Get all Cards response body: ${response.data.map((card) => card["hidden"])}");
-    return response.data;
+    var response;
+    try {
+      response = await HttpController.dio.get(url);
+    } catch (e) {
+      print(
+          "Get all Cards response body: ${response?.data.map((card) => card["hidden"])}");
+      _handleAssetError(response, e);
+    }
+    return response?.data;
   }
 
   static Future<List> retrieveAllImages() async {
     final url = 'http://165.227.178.14/all/image';
     print("retrieveAllImages req url: $url");
-    final response = await HttpController.dio.get(url);
-    print("Get all Images response body: ${response.data}");
-    return response.data;
+    var response;
+    try {
+      response = await HttpController.dio.get(url);
+    } catch (e) {
+      print("Get all Images response body: ${response?.data}");
+      _handleAssetError(response, e);
+    }
+    return response?.data;
   }
 
   static Future<List> retrieveAllCreatableSongs() async {
     final url = 'http://165.227.178.14/all/song';
     print("retrieveAllCreatableSongs req url: $url");
-    final response = await HttpController.dio.get(url);
-    print("Get all Creatable Songs response body: ${response.data}");
-    return response.data;
+    var response;
+    try {
+      response = await HttpController.dio.get(url);
+    } catch (e) {
+      print("Get all Creatable Songs response body: ${response?.data}");
+      _handleAssetError(response, e);
+    }
+    return response?.data;
   }
 
   static Future<List<dynamic>> retrieveAllBarks() async {
     final url = 'http://165.227.178.14/all/crop';
     print("retrieveAllBarks req url: $url");
-    final response = await HttpController.dio.get(url);
-    print("Get all Barks response body: ${response.data}");
-    return response.data;
+    var response;
+    try {
+      response = await HttpController.dio.get(url);
+    } catch (e) {
+      print("Get all Barks response body: ${response?.data}");
+      _handleAssetError(response, e);
+    }
+    return response?.data;
   }
 
   static void deleteImage(Picture image) async {
     final url = 'http://165.227.178.14/image/${image.fileId}';
     print("deleteImage req url: $url");
-    final response = await HttpController.dio.delete(url);
-    print("Delete picture response body: ${response.data}");
+    var response;
+    try {
+      response = await HttpController.dio.delete(url);
+    } catch (e) {
+      print("Delete picture response body: ${response?.data}");
+      _handleAssetError(response, e);
+    }
   }
 
   static Future<void> deleteCard(KaraokeCard card) async {
     final url = 'http://165.227.178.14/greeting_card/${card.uuid}';
     print("delete Card req url: $url");
-    final response = await HttpController.dio.delete(url);
-    print("Delete card response body: ${response.data}");
+    var response;
+    try {
+      response = await HttpController.dio.delete(url);
+    } catch (e) {
+      print("Delete card response body: ${response?.data}");
+      _handleAssetError(response, e);
+    }
   }
 
   static void deleteSong(Song song) async {
     final url = 'http://165.227.178.14/sequence/${song.fileId}';
     print("deleteSong req url: $url");
-    final response = await HttpController.dio.delete(url);
-    print("Delete song response body: ${response.data}");
+    var response;
+    try {
+      response = await HttpController.dio.delete(url);
+    } catch (e) {
+      _handleAssetError(response, e);
+    }
+    print("Delete song response body: ${response?.data}");
   }
 
   static deleteBark(Bark bark) async {
     final url = 'http://165.227.178.14/crop/${bark.fileId}';
     print("deleteBark req url: $url");
-    final response = await HttpController.dio.delete(url);
-    print("Delete bark response body: ${response.data}");
+    var response;
+    try {
+      response = await HttpController.dio.delete(url);
+    } catch (e) {
+      _handleAssetError(response, e);
+    }
+    print("Delete bark response body: ${response?.data}");
   }
 
   static Future<List> splitRawBark(fileId, imageId) async {
@@ -393,9 +463,9 @@ class RestAPI {
       );
     } catch (e) {
       print("Split RAw bark error message: ${e.message}");
-      print(e.response.headers);
+      _handleAssetError(response, e);
     }
     print("split bark server response body content: ${response}");
-    return response.data;
+    return response?.data;
   }
 }

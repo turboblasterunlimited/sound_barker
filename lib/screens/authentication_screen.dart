@@ -110,10 +110,10 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     try {
       return (await HttpController.dio
               .get('http://165.227.178.14/is-logged-in'))
-          .data;
+          ?.data;
     } catch (e) {
       showError(
-        context,
+        c,
       );
       return {};
     }
@@ -169,7 +169,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
           responseData =
               await _sendFacebookTokenToServer(result.accessToken.token);
 
-          _handleServerResponse(responseData.data);
+          _handleServerResponse(responseData?.data);
           break;
         case FacebookLoginStatus.cancelledByUser:
           showError(c,
@@ -209,10 +209,10 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         'http://165.227.178.14/openid-token/${platform}',
         data: token,
       );
-      _handleServerResponse(response.data);
+      _handleServerResponse(response?.data);
     } catch (e) {
       showError(
-        context,
+        c,
       );
     }
   }
@@ -253,14 +253,11 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       setState(() {
         everythingDownloaded = false;
         signingIn = false;
-        downloadMessage =
-            "First time start up?\nThis might take a few moments...";
+        downloadMessage = "Getting your stuff...";
       });
     await pictures.retrieveAll();
-    print("pictures count: ${pictures.all.length}");
     // need creatableSongData to get songIds
     await creatableSongs.retrieveFromServer();
-    setState(() => downloadMessage = "Retrieving Barks...");
     await barks.retrieveAll();
     songs.setCreatableSongs(creatableSongs.all);
     setState(() => downloadMessage = "Retrieving Songs...");
@@ -289,7 +286,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     cards = Provider.of<KaraokeCards>(context, listen: false);
 
     var responseData = await checkIfSignedIn();
-    if (responseData["logged_in"]) {
+    if (responseData["logged_in"] != null && responseData["logged_in"]) {
       _handleSignedIn(responseData["user_id"]);
     } else {
       setState(() => signingIn = false);
@@ -325,8 +322,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
             fit: BoxFit.cover,
           ),
         ),
-        child: Builder(builder: (context) {
-          c = context;
+        child: Builder(builder: (con) {
+          c = con;
           return Stack(
             children: <Widget>[
               Visibility(
@@ -395,6 +392,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                               onPressed: () async {
                                 FocusScope.of(context).unfocus();
                                 var response = await _handleManualSignIn();
+                                print("Response check: $response");
                                 if (!response["success"]) {
                                   showError(c, response["error"]);
                                 } else
@@ -438,9 +436,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                       Padding(
                         padding: const EdgeInsets.all(20.0),
                         child: FacebookSignInButton(
-                          onPressed: () {
-                            _handleFacebookAuthentication();
-                          },
+                          onPressed: _handleFacebookAuthentication,
                         ),
                       ),
                     ],
