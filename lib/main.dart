@@ -41,6 +41,7 @@ void main() async {
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   await appStoragePath();
   HttpController();
+  // Sentry
   runZonedGuarded(
     () => runApp(MyApp()),
     (error, stackTrace) async {
@@ -51,6 +52,7 @@ void main() async {
     },
   );
 
+  // Sentry
   FlutterError.onError = (details, {bool forceReport = false}) {
     sentry.captureException(
       exception: details.exception,
