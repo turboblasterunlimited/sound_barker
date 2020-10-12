@@ -1,4 +1,4 @@
-package com.turbo_blaster_unlimited.k9_karaoke
+package com.turboblasterunlimited.k9karaoke
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity
