@@ -4,7 +4,7 @@ import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/sound_controller.dart';
 import 'package:K9_Karaoke/providers/spinner_state.dart';
-import 'package:K9_Karaoke/providers/user.dart';
+import 'package:K9_Karaoke/providers/the_user.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/widgets/card_creation_interface.dart';
 import 'package:K9_Karaoke/widgets/card_decorator_canvas.dart';
@@ -33,7 +33,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  User user;
+  TheUser user;
   Barks barks;
   Songs songs;
   Pictures pictures;
@@ -103,7 +103,7 @@ class _MainScreenState extends State<MainScreen> {
   void didChangeDependencies() {
     print("Did change Dep");
     super.didChangeDependencies();
-    user = Provider.of<User>(context);
+    user = Provider.of<TheUser>(context);
     barks = Provider.of<Barks>(context);
     songs = Provider.of<Songs>(context, listen: false);
     pictures = Provider.of<Pictures>(context, listen: true);

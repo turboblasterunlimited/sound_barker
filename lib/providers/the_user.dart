@@ -1,11 +1,11 @@
 import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:flutter/material.dart';
 
-class User with ChangeNotifier {
+class TheUser with ChangeNotifier {
   String email;
   bool filesLoaded = false;
 
-  User({this.email});
+  TheUser({this.email});
 
   Future<dynamic> logout() async {
     return await RestAPI.logoutUser(email);

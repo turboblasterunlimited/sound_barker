@@ -7,7 +7,7 @@ import 'package:K9_Karaoke/providers/creatable_songs.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/pictures.dart';
 import 'package:K9_Karaoke/providers/songs.dart';
-import 'package:K9_Karaoke/providers/user.dart';
+import 'package:K9_Karaoke/providers/the_user.dart';
 import 'package:K9_Karaoke/screens/main_screen.dart';
 import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:K9_Karaoke/widgets/custom_dialog.dart';
@@ -40,7 +40,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   String password = "";
   bool obscurePassword = true;
 
-  User user;
+  TheUser user;
   Barks barks;
   Songs songs;
   Pictures pictures;
@@ -236,6 +236,16 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     return await RestAPI.userManualSignIn(email, password);
   }
 
+  Future<void> _handleSignInButton() async {
+    FocusScope.of(context).unfocus();
+    var response = await _handleManualSignIn();
+    print("Response check: $response");
+    if (!response["success"]) {
+      showError(c, response["error"]);
+    } else
+      _handleServerResponse(response);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -275,7 +285,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
-    user = Provider.of<User>(context, listen: false);
+    user = Provider.of<TheUser>(context, listen: false);
     barks = Provider.of<Barks>(context, listen: false);
     songs = Provider.of<Songs>(context, listen: false);
     pictures = Provider.of<Pictures>(context, listen: false);
@@ -389,15 +399,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                               child: Text("Sign In",
                                   style: TextStyle(fontSize: 20)),
                               color: Theme.of(context).primaryColor,
-                              onPressed: () async {
-                                FocusScope.of(context).unfocus();
-                                var response = await _handleManualSignIn();
-                                print("Response check: $response");
-                                if (!response["success"]) {
-                                  showError(c, response["error"]);
-                                } else
-                                  _handleServerResponse(response);
-                              },
+                              onPressed: _handleSignInButton,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(22.0),
                               ),

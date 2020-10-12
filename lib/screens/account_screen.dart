@@ -3,12 +3,11 @@ import 'package:K9_Karaoke/providers/barks.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/pictures.dart';
 import 'package:K9_Karaoke/providers/songs.dart';
-import 'package:K9_Karaoke/providers/user.dart';
+import 'package:K9_Karaoke/providers/the_user.dart';
 import 'package:K9_Karaoke/screens/authentication_screen.dart';
 import 'package:K9_Karaoke/widgets/custom_dialog.dart';
 import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 
@@ -20,7 +19,7 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _AccountState extends State<AccountScreen> {
-  User user;
+  TheUser user;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   KaraokeCards cards;
   Songs songs;
@@ -118,7 +117,7 @@ class _AccountState extends State<AccountScreen> {
   }
 
   Widget build(BuildContext context) {
-    user = Provider.of<User>(context, listen: false);
+    user = Provider.of<TheUser>(context, listen: false);
     cards = Provider.of<KaraokeCards>(context, listen: false);
     songs = Provider.of<Songs>(context, listen: false);
     barks = Provider.of<Barks>(context, listen: false);

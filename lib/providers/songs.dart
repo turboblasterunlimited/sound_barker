@@ -140,7 +140,6 @@ class Song extends Asset {
   }
 
   Future<void> downloadAndCombineSong() async {
-    print("downloading song: ${name}");
     await _getMelodyAndGenerateAmplitudeFile(filePathBase);
     if (backingTrackUrl != null) {
       String backingTrackPath = filePathBase + "backing.aac";

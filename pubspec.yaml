@@ -52,6 +52,7 @@ dependencies:
   share: ^0.6.4+3
   flutter_keyboard_visibility: ^3.2.2
   carousel_slider: ^2.2.1
+  sentry: ^3.0.1
 
 dev_dependencies:
   flutter_test:

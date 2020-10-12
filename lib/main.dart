@@ -1,9 +1,11 @@
+import 'dart:async';
+
 import 'package:K9_Karaoke/providers/card_audio.dart';
 import 'package:K9_Karaoke/providers/card_decoration_image.dart';
 import 'package:K9_Karaoke/providers/creatable_songs.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
-import 'package:K9_Karaoke/providers/user.dart';
+import 'package:K9_Karaoke/providers/the_user.dart';
 import 'package:K9_Karaoke/screens/account_screen.dart';
 import 'package:K9_Karaoke/screens/authentication_screen.dart';
 import 'package:K9_Karaoke/screens/camera_or_upload_screen.dart';
@@ -16,6 +18,7 @@ import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/karaoke_card_decoration_controller.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:flutter/rendering.dart';
+import 'package:sentry/sentry.dart';
 
 import 'package:K9_Karaoke/providers/active_wave_streamer.dart';
 import 'package:K9_Karaoke/services/http_controller.dart';
@@ -29,13 +32,31 @@ import './providers/image_controller.dart';
 import './providers/sound_controller.dart';
 import './providers/spinner_state.dart';
 
+final sentry =
+    SentryClient(dsn: "https://31ded6d00ce54b96b36f5606649333a1@o460285.ingest.sentry.io/5460225");
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   await appStoragePath();
   HttpController();
-  runApp(MyApp());
+  runZonedGuarded(
+    () => runApp(MyApp()),
+    (error, stackTrace) async {
+      await sentry.captureException(
+        exception: error,
+        stackTrace: stackTrace,
+      );
+    },
+  );
+
+  FlutterError.onError = (details, {bool forceReport = false}) {
+    sentry.captureException(
+      exception: details.exception,
+      stackTrace: details.stack,
+    );
+  };
 }
 
 class MyApp extends StatelessWidget {
@@ -81,7 +102,7 @@ class MyApp extends StatelessWidget {
           value: KaraokeCardDecorationController(),
         ),
         ChangeNotifierProvider.value(
-          value: User(),
+          value: TheUser(),
         ),
         ChangeNotifierProvider.value(
           value: CurrentActivity(),

@@ -86,7 +86,7 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
                               Navigator.pushNamed(
                                   context, CreatableSongSelectScreen.routeName);
                             },
-                      child: Text("Make Song",
+                      child: Text("New Song",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Theme.of(context).primaryColor,
@@ -151,7 +151,7 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
                   child: Padding(
                     padding: const EdgeInsets.only(top: 50.0),
                     child: Text(
-                      "You have no songs.\nTap 'Make Song'.",
+                      "You have no songs.\nTap 'New Song'.",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 20,
