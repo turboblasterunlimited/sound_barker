@@ -159,7 +159,7 @@ class _MainScreenState extends State<MainScreen> {
           Expanded(
             child: Center(
               child: Container(
-                width: 170,
+                width: 190,
                 child: TextFormField(
                   enabled: !cards.currentPictureIsStock,
                   style: TextStyle(color: Colors.grey[600], fontSize: 20),

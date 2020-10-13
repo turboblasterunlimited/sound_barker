@@ -30,6 +30,6 @@ Future<bool> cropImage(picture, toolbarColor, widgetColor) async {
   if (newFile == null) return false;
   newFile.renameSync(picture.filePath);
   // make it 512x512
-  resizeImage(picture.filePath);
+  await resizeImage(picture.filePath);
   return true;
 }
