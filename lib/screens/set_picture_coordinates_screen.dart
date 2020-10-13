@@ -32,7 +32,6 @@ class SetPictureCoordinatesScreen extends StatefulWidget {
   bool coordinatesSet;
 
   SetPictureCoordinatesScreen(this.newPicture, {this.editing = false}) {
-    this.editing;
     this.isNamed = editing ? true : false;
     this.coordinatesSet = editing ? true : false;
   }

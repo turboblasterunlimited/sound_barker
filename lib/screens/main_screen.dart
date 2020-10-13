@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/sound_controller.dart';
@@ -48,6 +49,9 @@ class _MainScreenState extends State<MainScreen> {
   double frameToScreenWidth;
   // Xs the frame padding in pixels
   double framePadding;
+  double _logoWidth;
+  double _nameWidth;
+  double _menuButtonWidth;
 
   List get _playbackFiles {
     if (_canPlayAudio) {
@@ -116,7 +120,7 @@ class _MainScreenState extends State<MainScreen> {
 
   // void didChangeAppLifecycleState(AppLifecycleState state) {
   //   if (state == AppLifecycleState.resumed) {
-      // SystemChrome.restoreSystemUIOverlays();
+  // SystemChrome.restoreSystemUIOverlays();
   //     print("App State $state");
   //     print("restoring system ui overlays");
   //   } else {
@@ -142,6 +146,11 @@ class _MainScreenState extends State<MainScreen> {
         : imageController.mouthTrackSound(amplitudes: _playbackFiles[1]);
   }
 
+  double get _nameRightPadding {
+    int nameLength = cards.currentName.length ?? 0;
+    return 45.0 - (nameLength * 3);
+  }
+
   Widget mainAppBar() {
     var notificationPadding = MediaQuery.of(context).padding.top;
     return AppBar(
@@ -153,58 +162,51 @@ class _MainScreenState extends State<MainScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Image.asset("assets/logos/K9_logotype.png",
-              width: 100 - notificationPadding),
+          Container(
+            width: _logoWidth,
+            child: Image.asset("assets/logos/K9_logotype.png",
+                width: 80 - notificationPadding),
+          ),
           // if (!showFrame)
           Expanded(
-            child: Center(
-              child: Container(
-                width: 190,
-                child: TextFormField(
-                  enabled: !cards.currentPictureIsStock,
-                  style: TextStyle(color: Colors.grey[600], fontSize: 20),
-                  maxLength: 12,
-                  textAlign: cards.currentPictureIsStock
-                      ? TextAlign.center
-                      : TextAlign.right,
-                  decoration: InputDecoration(
-                      hintText: cards.currentName,
-                      counterText: "",
-                      suffixIcon: cards.currentPictureIsStock
-                          ? null
-                          : Icon(LineAwesomeIcons.edit),
-                      border: InputBorder.none),
-                  onFieldSubmitted: (val) {
-                    cards.setCurrentName(val);
-                    FocusScope.of(context).unfocus();
-                    SystemChrome.restoreSystemUIOverlays();
-                  },
-                ),
-                // This rename field works differently than on the coordinates setting page.
+            child: Padding(
+              padding: EdgeInsets.only(right: _nameRightPadding),
+              child: TextFormField(
+                controller: TextEditingController(text: cards.currentName ?? "Name"),
+                enabled: !cards.currentPictureIsStock,
+                style: TextStyle(color: Colors.grey[600], fontSize: 20),
+                textAlign: cards.currentPictureIsStock
+                    ? TextAlign.center
+                    : TextAlign.right,
+                decoration: InputDecoration(
+                    // hintText: cards.currentName ?? "Name",
+                    counterText: "",
+                    suffixIcon: cards.currentPictureIsStock
+                        ? null
+                        : Icon(LineAwesomeIcons.edit),
+                    border: InputBorder.none),
+                onFieldSubmitted: (val) {
+                  cards.setCurrentName(val);
+                  FocusScope.of(context).unfocus();
+                  SystemChrome.restoreSystemUIOverlays();
+                },
               ),
             ),
+            // This rename field works differently than on the coordinates setting page.
           ),
-        ],
-      ),
-      actions: <Widget>[
-        // if (!showFrame)
-        Padding(
-          padding: const EdgeInsets.only(top: 5),
-          child: RawMaterialButton(
-            child: Icon(
-              Icons.menu,
+          IconButton(
+            icon: Icon(
+              CustomIcons.hambooger,
               color: Colors.black,
               size: 30,
             ),
-            shape: CircleBorder(),
-            elevation: 2.0,
             onPressed: () {
               SystemChrome.setEnabledSystemUIOverlays([]);
               Navigator.of(context).pushNamed(MenuScreen.routeName);
             },
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

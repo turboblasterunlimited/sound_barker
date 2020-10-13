@@ -83,7 +83,10 @@ class KaraokeCards with ChangeNotifier {
     notifyListeners();
   }
 
-  void setCurrentName(newName) {
+  void setCurrentName(String newName) {
+    if (newName.length > 14) {
+      newName = newName.substring(0, 13);
+    }
     current.picture.setName(newName);
     notifyListeners();
   }
