@@ -226,7 +226,6 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
         children: <Widget>[
           // Playback button
           _getAudio(),
-
           // Select song button
           Expanded(
             child: RawMaterialButton(

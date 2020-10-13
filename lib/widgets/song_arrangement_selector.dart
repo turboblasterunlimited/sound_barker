@@ -37,67 +37,66 @@ class SongArrangementSelector extends StatelessWidget {
     }
 
     return Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          interfaceTitleNav(context, "CHOOSE A STYLE",
-              titleSize: 20, backCallback: currentActivity.setPreviousSubStep),
-          SizedBox(
-            height: MediaQuery.of(context).size.height / 3,
-            child: Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    RawMaterialButton(
-                      onPressed: () =>
-                          _createSong(songFormula.arrangement["harmonized"]),
-                      child: Text(
-                        "Make my dog\nsound realistic",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).primaryColor,
-                            fontSize: 16),
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                        side: BorderSide(
-                            color: Theme.of(context).primaryColor, width: 3),
-                      ),
-                      elevation: 2.0,
-                      fillColor: null,
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 13, horizontal: 22.0),
-                    ),
-                    Padding(padding: EdgeInsets.all(10)),
-                    RawMaterialButton(
-                      onPressed: () =>
-                          _createSong(songFormula.arrangement["pitched"]),
-                      child: Text(
-                        "Make my dog\nhit all the notes",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 16,
-                        ),
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                        side: BorderSide(
-                            color: Theme.of(context).primaryColor, width: 3),
-                      ),
-                      elevation: 2.0,
-                      fillColor: null,
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 13, horizontal: 22.0),
-                    ),
-                  ],
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        interfaceTitleNav(context, "CHOOSE A STYLE",
+            titleSize: 20, backCallback: currentActivity.setPreviousSubStep),
+        SizedBox(
+          height: MediaQuery.of(context).size.height / 3,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 20.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                RawMaterialButton(
+                  onPressed: () =>
+                      _createSong(songFormula.arrangement["harmonized"]),
+                  child: Text(
+                    "Make my dog\nsound realistic",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).primaryColor,
+                        fontSize: 16),
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                    side: BorderSide(
+                        color: Theme.of(context).primaryColor, width: 3),
+                  ),
+                  elevation: 2.0,
+                  fillColor: null,
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 13, horizontal: 22.0),
                 ),
-              ),
+                Padding(padding: EdgeInsets.all(10)),
+                RawMaterialButton(
+                  onPressed: () =>
+                      _createSong(songFormula.arrangement["pitched"]),
+                  child: Text(
+                    "Make my dog\nhit all the notes",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
+                      fontSize: 16,
+                    ),
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                    side: BorderSide(
+                        color: Theme.of(context).primaryColor, width: 3),
+                  ),
+                  elevation: 2.0,
+                  fillColor: null,
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 13, horizontal: 22.0),
+                ),
+              ],
             ),
           ),
-        ]);
+        ),
+      ],
+    );
   }
 }

@@ -32,50 +32,48 @@ class SongPlaybackInterface extends StatelessWidget {
         ),
         SizedBox(
           height: MediaQuery.of(context).size.height / 4,
-          child: Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 20.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  RawMaterialButton(
-                    onPressed: () =>
-                        _handleButtonPress(currentActivity.setPreviousSubStep),
-                    child: Icon(
-                      Icons.close,
-                      color: Colors.white,
-                      size: 40,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    elevation: 2.0,
-                    fillColor: Theme.of(context).errorColor,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 40.0, vertical: 2),
+          child: Padding(
+            padding: const EdgeInsets.only(top: 20.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                RawMaterialButton(
+                  onPressed: () =>
+                      _handleButtonPress(currentActivity.setPreviousSubStep),
+                  child: Icon(
+                    Icons.close,
+                    color: Colors.white,
+                    size: 40,
                   ),
-                  Padding(
-                    padding: EdgeInsets.all(10),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
                   ),
-                  RawMaterialButton(
-                    onPressed: () =>
-                        _handleButtonPress(currentActivity.setNextSubStep),
-                    child: Icon(
-                      Icons.check,
-                      color: Colors.white,
-                      size: 40,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    elevation: 2.0,
-                    fillColor: Theme.of(context).primaryColor,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 40.0, vertical: 2),
+                  elevation: 2.0,
+                  fillColor: Theme.of(context).errorColor,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(10),
+                ),
+                RawMaterialButton(
+                  onPressed: () =>
+                      _handleButtonPress(currentActivity.setNextSubStep),
+                  child: Icon(
+                    Icons.check,
+                    color: Colors.white,
+                    size: 40,
                   ),
-                ],
-              ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                  elevation: 2.0,
+                  fillColor: Theme.of(context).primaryColor,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
+                ),
+              ],
             ),
           ),
         ),
