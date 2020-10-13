@@ -65,6 +65,7 @@ class _SetPictureCoordinatesScreenState
   KaraokeCards cards;
   KaraokeCard card;
   CurrentActivity currentActivity;
+  bool _isFirstBuild = true;
 
   String _getInstructionalText() {
     return widget.isNamed ? "ALIGN FACE MARKERS" : "NAME YOUR PHOTO";
@@ -76,24 +77,11 @@ class _SetPictureCoordinatesScreenState
     super.initState();
   }
 
-  @override
-  void didChangeDependencies() {
-    print("did change dep set picture coordinates screen");
+  // @override
+  // void didChangeDependencies() {
+  //   print("did change dep set picture coordinates screen");
 
-    _tempName = widget.newPicture.name;
-    _instructionalText = _getInstructionalText();
-
-    canvasLength ??= MediaQuery.of(context).size.width;
-    middle ??= canvasLength / 2;
-    super.didChangeDependencies();
-    imageSizeDifference = magImageSize - canvasLength;
-    print("imageSizeDifference: $imageSizeDifference");
-    var bytes = File(widget.newPicture.filePath).readAsBytesSync();
-    print("bytes count: ${bytes.length}");
-    imageData = IMG.decodeImage(bytes);
-    imageDataBytes =
-        IMG.encodePng(IMG.copyResize(imageData, width: magImageSize));
-  }
+  // }
 
   _puppetXtoCanvasX(x) {
     double offset = x * middle * 2;
@@ -231,6 +219,21 @@ class _SetPictureCoordinatesScreenState
     Navigator.popAndPushNamed(context, PhotoLibraryScreen.routeName);
   }
 
+  _getImageData() {
+    _isFirstBuild = false;
+    _tempName = widget.newPicture.name;
+    _instructionalText = _getInstructionalText();
+    canvasLength ??= MediaQuery.of(context).size.width;
+    middle ??= canvasLength / 2;
+    imageSizeDifference = magImageSize - canvasLength;
+    print("imageSizeDifference: $imageSizeDifference");
+    var bytes = File(widget.newPicture.filePath).readAsBytesSync();
+    print("bytes count: ${bytes.length}");
+    imageData = IMG.decodeImage(bytes);
+    imageDataBytes =
+        IMG.encodePng(IMG.copyResize(imageData, width: magImageSize));
+  }
+
   @override
   Widget build(BuildContext context) {
     print("building set picture coordinates screen");
@@ -240,6 +243,8 @@ class _SetPictureCoordinatesScreenState
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
     cards = Provider.of<KaraokeCards>(context, listen: false);
     SystemChrome.restoreSystemUIOverlays();
+
+    if (_isFirstBuild) _getImageData();
 
     return Scaffold(
       extendBodyBehindAppBar: true,

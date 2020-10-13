@@ -259,27 +259,23 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   }
 
   Future<void> downloadEverything() async {
-    if (mounted)
+    if (mounted) {
       setState(() {
         everythingDownloaded = false;
         signingIn = false;
         downloadMessage = "Getting your stuff...";
       });
-    await pictures.retrieveAll();
-    // need creatableSongData to get songIds
-    await creatableSongs.retrieveFromServer();
-    await barks.retrieveAll();
-    songs.setCreatableSongs(creatableSongs.all);
-    setState(() => downloadMessage = "Retrieving Songs...");
-    await songs.retrieveAll();
-    setState(() => downloadMessage = "Retrieving Cards...");
-    await cardAudios.retrieveAll();
-    setState(() => downloadMessage = "Retrieving Card Decorations...");
-    await decorationImages.retrieveAll();
-    setState(() => downloadMessage = "Retrieving Cards Themselves...");
-    await cards.retrieveAll(pictures, cardAudios, songs, decorationImages);
-    print("card count ${cards.all.length}");
-    if (mounted) setState(() => downloadMessage = "Done.");
+      await pictures.retrieveAll();
+      // need creatableSongData to get songIds
+      await creatableSongs.retrieveFromServer();
+      await barks.retrieveAll();
+      songs.setCreatableSongs(creatableSongs.all);
+      await songs.retrieveAll();
+      await cardAudios.retrieveAll();
+      await decorationImages.retrieveAll();
+      await cards.retrieveAll(pictures, cardAudios, songs, decorationImages);
+      setState(() => downloadMessage = "Done.");
+    }
   }
 
   @override
