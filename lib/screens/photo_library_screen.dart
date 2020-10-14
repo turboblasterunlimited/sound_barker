@@ -1,3 +1,4 @@
+import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -116,7 +117,7 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
             padding: const EdgeInsets.only(top: 5),
             child: RawMaterialButton(
               child: Icon(
-                Icons.menu,
+                CustomIcons.hambooger,
                 color: Colors.black,
                 size: 30,
               ),

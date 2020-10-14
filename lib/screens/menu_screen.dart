@@ -1,3 +1,4 @@
+import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_card_decoration_controller.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
@@ -59,18 +60,16 @@ class _MenuState extends State<MenuScreen> {
         // Can only close if activity already selected
         actions: <Widget>[
           Padding(
-            padding: const EdgeInsets.only(top: 5),
-            child: RawMaterialButton(
-              child: Visibility(
+            padding: const EdgeInsets.only(right: 5),
+            child: IconButton(
+              icon: Visibility(
                 visible: currentActivity.isCreateCard,
                 child: Icon(
-                  Icons.close,
+                  CustomIcons.hambooger_close,
                   color: Colors.black,
-                  size: 30,
+                  size: 35,
                 ),
               ),
-              shape: CircleBorder(),
-              elevation: 2.0,
               // fillColor: Theme.of(context).accentColor,
               onPressed: currentActivity.isCreateCard
                   ? () {

@@ -142,15 +142,13 @@ class _AccountState extends State<AccountScreen> {
         ),
         actions: <Widget>[
           Padding(
-            padding: const EdgeInsets.only(top: 5),
-            child: RawMaterialButton(
-              child: Icon(
-                Icons.close,
+            padding: const EdgeInsets.only(right: 5),
+            child: IconButton(
+              icon: Icon(
+                CustomIcons.hambooger_close,
                 color: Colors.black,
-                size: 30,
+                size: 35,
               ),
-              shape: CircleBorder(),
-              elevation: 2.0,
               onPressed: Navigator.of(context).pop,
             ),
           ),

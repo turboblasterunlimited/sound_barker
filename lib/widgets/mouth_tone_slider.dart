@@ -111,92 +111,92 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
 
   @override
   Widget build(BuildContext context) {
+    print("Current picture: ${card.picture?.name}");
     imageController.startMouthOpenAndClose();
-    return SizedBox(
-      height: 170,
-      child: Column(
-        children: <Widget>[
-          interfaceTitleNav(context, "MOUTH TONE", backCallback: backCallback),
-          Padding(
-            padding: const EdgeInsets.only(top: 20.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                ClipOval(
-                  child: Material(
-                    color: Colors.black,
-                    child: InkWell(
-                      child: SizedBox(width: 56, height: 56),
-                    ),
+    print("Building mouth tone slider");
+    return Column(
+      children: <Widget>[
+        interfaceTitleNav(context, "MOUTH TONE", backCallback: backCallback),
+        Container(
+          padding: const EdgeInsets.only(top: 20.0),
+          // height: 100,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              ClipOval(
+                child: Material(
+                  color: Colors.black,
+                  child: InkWell(
+                    child: SizedBox(width: 56, height: 56),
                   ),
                 ),
-                Slider.adaptive(
-                  value: _sliderValue,
-                  min: 0,
-                  max: 3,
-                  onChanged: (double sliderVal) {
-                    setState(() {
-                      _sliderValue = sliderVal;
-                      sliderMouthTone.asMap().forEach((i, value) {
-                        double adjustedVal;
-                        if (sliderVal > 2) {
-                          adjustedVal = sliderVal - 2;
-                        } else if (sliderVal > 1) {
-                          adjustedVal = sliderVal - 1;
-                        } else if (sliderVal > 0) {
-                          adjustedVal = sliderVal;
-                        }
-                        // print("Hex of rgba: ${hexOfRGB(
-                        //   sliderMouthTone[0],
-                        //   sliderMouthTone[1],
-                        //   sliderMouthTone[2],
-                        // )}");
-                        // var tempVal = _sliderValue;
-                        // if (i == 0 && sliderVal > .5) tempVal /= _sliderValue;
-                        // else if (sliderVal < .5) value *= 2;
-                        currentMouthTone[i] = (value * adjustedVal).round();
-                      });
+              ),
+              Slider.adaptive(
+                value: _sliderValue,
+                min: 0,
+                max: 3,
+                onChanged: (double sliderVal) {
+                  setState(() {
+                    _sliderValue = sliderVal;
+                    sliderMouthTone.asMap().forEach((i, value) {
+                      double adjustedVal;
+                      if (sliderVal > 2) {
+                        adjustedVal = sliderVal - 2;
+                      } else if (sliderVal > 1) {
+                        adjustedVal = sliderVal - 1;
+                      } else if (sliderVal > 0) {
+                        adjustedVal = sliderVal;
+                      }
+                      // print("Hex of rgba: ${hexOfRGB(
+                      //   sliderMouthTone[0],
+                      //   sliderMouthTone[1],
+                      //   sliderMouthTone[2],
+                      // )}");
+                      // var tempVal = _sliderValue;
+                      // if (i == 0 && sliderVal > .5) tempVal /= _sliderValue;
+                      // else if (sliderVal < .5) value *= 2;
+                      currentMouthTone[i] = (value * adjustedVal).round();
                     });
-                    imageController.setMouthColor(mouthColorToDecimal());
-                  },
-                  onChangeEnd: (_) {},
-                ),
-                ClipOval(
-                  child: Material(
-                    color: Color(
-                      hexOfRGB(
-                        sliderMouthTone[0],
-                        sliderMouthTone[1],
-                        sliderMouthTone[2],
-                      ),
-                    ),
-                    child: InkWell(
-                      child: SizedBox(width: 56, height: 56),
+                  });
+                  imageController.setMouthColor(mouthColorToDecimal());
+                },
+                onChangeEnd: (_) {},
+              ),
+              ClipOval(
+                child: Material(
+                  color: Color(
+                    hexOfRGB(
+                      sliderMouthTone[0],
+                      sliderMouthTone[1],
+                      sliderMouthTone[2],
                     ),
                   ),
+                  child: InkWell(
+                    child: SizedBox(width: 56, height: 56),
+                  ),
                 ),
-              ],
-            ),
-          ),
-          Center(
-            child: RawMaterialButton(
-              onPressed: handleSubmitButton,
-              child: Icon(
-                Icons.check,
-                color: Colors.white,
-                size: 40,
               ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30.0),
-              ),
-              elevation: 2.0,
-              fillColor: Theme.of(context).primaryColor,
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
-            ),
+            ],
           ),
-        ],
-      ),
+        ),
+        Center(
+          child: RawMaterialButton(
+            onPressed: handleSubmitButton,
+            child: Icon(
+              Icons.check,
+              color: Colors.white,
+              size: 30,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30.0),
+            ),
+            elevation: 2.0,
+            fillColor: Theme.of(context).primaryColor,
+            padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
+          ),
+        ),
+        Padding(padding: EdgeInsets.only(top: 20.0),)
+      ],
     );
   }
 }

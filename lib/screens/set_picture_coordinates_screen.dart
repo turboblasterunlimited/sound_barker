@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
@@ -56,11 +57,9 @@ class _SetPictureCoordinatesScreenState
   List<double> mouthRightStartingPosition = [0.0, 0.0];
   bool grabbing = false;
   Map<String, List<double>> grabPoint = {};
-  final _nameTextController = TextEditingController();
   String _instructionalText = "";
   Pictures pictures;
   ImageController imageController;
-  String _tempName;
   KaraokeCards cards;
   KaraokeCard card;
   CurrentActivity currentActivity;
@@ -175,11 +174,11 @@ class _SetPictureCoordinatesScreenState
     return posY;
   }
 
-  void _submitPicture() {
+  void _submitPicture() async {
     widget.newPicture.uploadPictureAndSaveToServer();
     pictures.add(widget.newPicture);
     cards.setCurrentPicture(widget.newPicture);
-    imageController.createDog(widget.newPicture);
+    await imageController.createDog(widget.newPicture);
   }
 
   void _submitEditedPicture() {
@@ -188,10 +187,10 @@ class _SetPictureCoordinatesScreenState
     imageController.setMouthColor();
   }
 
-  void handleSubmitButton() {
+  Future<void> handleSubmitButton() async {
     if (widget.editing || (widget.isNamed & widget.coordinatesSet)) {
       saveCanvasToPictureCoordinates();
-      widget.editing ? _submitEditedPicture() : _submitPicture();
+      widget.editing ? _submitEditedPicture() : await _submitPicture();
       Navigator.popUntil(
         context,
         ModalRoute.withName("main-screen"),
@@ -201,12 +200,10 @@ class _SetPictureCoordinatesScreenState
     }
   }
 
-  void handleNameChange(_) {
+  void handleNameChange(name) {
     setState(() {
-      widget.newPicture.name = _tempName;
+      widget.newPicture.name = name;
       widget.isNamed = true;
-      print("instructional text: _getInstructionalText()");
-      print("is named: ${widget.isNamed}");
       _instructionalText = _getInstructionalText();
     });
     FocusScope.of(context).unfocus();
@@ -220,7 +217,6 @@ class _SetPictureCoordinatesScreenState
 
   _getImageData() {
     _isFirstBuild = false;
-    _tempName = widget.newPicture.name;
     _instructionalText = _getInstructionalText();
     canvasLength ??= MediaQuery.of(context).size.width;
     middle ??= canvasLength / 2;
@@ -233,6 +229,11 @@ class _SetPictureCoordinatesScreenState
         IMG.encodePng(IMG.copyResize(imageData, width: magImageSize));
   }
 
+  double get _nameRightPadding {
+    int nameLength = widget.newPicture.name.length ?? 0;
+    return 45.0 - (nameLength * 3);
+  }
+
   @override
   Widget build(BuildContext context) {
     print("building set picture coordinates screen");
@@ -241,6 +242,8 @@ class _SetPictureCoordinatesScreenState
     card = Provider.of<KaraokeCards>(context, listen: false).current;
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
     cards = Provider.of<KaraokeCards>(context, listen: false);
+    var notificationPadding = MediaQuery.of(context).padding.top;
+
     SystemChrome.restoreSystemUIOverlays();
 
     if (_isFirstBuild) _getImageData();
@@ -255,59 +258,70 @@ class _SetPictureCoordinatesScreenState
         elevation: 0,
         centerTitle: true,
         automaticallyImplyLeading: false, // Don't show the leading button
-        titleSpacing: 3.0,
+        // titleSpacing: 3.0,
         toolbarHeight: 80,
 
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Image.asset("assets/logos/K9_logotype.png", width: 80),
+            Container(
+              child: Image.asset("assets/logos/K9_logotype.png",
+                  width: 80 - notificationPadding),
+            ),
             Expanded(
-              child: Center(
-                child: Container(
-                  width: 170,
-                  child: TextFormField(
-                    autofocus: widget.isNamed ? false : true,
-                    style: TextStyle(color: Colors.grey[600], fontSize: 20),
-                    maxLength: 12,
-                    textAlign: TextAlign.right,
-                    decoration: InputDecoration(
-                        hintText: widget.newPicture.name ?? "Name",
-                        counterText: "",
-                        suffixIcon: Icon(LineAwesomeIcons.edit),
-                        border: InputBorder.none),
-                    onChanged: (val) {
-                      print("Changed: $val");
-                      setState(() {
-                        _tempName = val;
-                      });
-                    },
-                    // onEditingComplete: handleNameChange,
-                    onFieldSubmitted: handleNameChange,
-                  ),
+              child: Padding(
+                padding: EdgeInsets.only(right: _nameRightPadding),
+                child: TextFormField(
+                  autofocus: widget.isNamed ? false : true,
+                  controller:
+                      TextEditingController(text: widget.newPicture.name),
+                  enabled: !cards.currentPictureIsStock,
+                  style: TextStyle(color: Colors.grey[600], fontSize: 20),
+                  textAlign: cards.currentPictureIsStock
+                      ? TextAlign.center
+                      : TextAlign.right,
+                  decoration: InputDecoration(
+                      // hintText: cards.currentName ?? "Name",
+                      counterText: "",
+                      suffixIcon: cards.currentPictureIsStock
+                          ? null
+                          : Icon(LineAwesomeIcons.edit),
+                      border: InputBorder.none),
+                  onFieldSubmitted: (val) => handleNameChange(val),
                 ),
               ),
             ),
-          ],
-        ),
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(top: 5),
-            child: RawMaterialButton(
-              child: Icon(
-                Icons.menu,
+            IconButton(
+              icon: Icon(
+                CustomIcons.hambooger,
                 color: Colors.black,
                 size: 30,
               ),
-              shape: CircleBorder(),
-              elevation: 2.0,
               onPressed: () {
+                SystemChrome.setEnabledSystemUIOverlays([]);
                 Navigator.of(context).pushNamed(MenuScreen.routeName);
               },
             ),
-          ),
-        ],
+          ],
+        ),
+        // actions: <Widget>[
+        //   Padding(
+        //     padding: const EdgeInsets.only(top: 5),
+        //     child: RawMaterialButton(
+        //       child: Icon(
+        //         Icons.menu,
+        //         color: Colors.black,
+        //         size: 30,
+        //       ),
+        //       shape: CircleBorder(),
+        //       elevation: 2.0,
+        //       onPressed: () {
+        //         Navigator.of(context).pushNamed(MenuScreen.routeName);
+        //       },
+        //     ),
+        //   ),
+        // ],
       ),
       body: Container(
         // appbar offset

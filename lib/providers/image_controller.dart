@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'dart:math';
-import 'dart:typed_data';
 import 'package:K9_Karaoke/tools/amplitude_extractor.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:convert';
 import 'dart:io';
@@ -134,8 +132,8 @@ class ImageController with ChangeNotifier {
     // This is to handle createDog(pic) getting on startup after pics download, if it completes before webview is init.
     if (!isInit) {
       print("Not ready");
-      return await Future.delayed(Duration(seconds: 1), () {
-        createDog(picture);
+      return await Future.delayed(Duration(seconds: 1), () async {
+         await createDog(picture);
       });
     }
     print("picture from within createDog: ${picture.name}");
