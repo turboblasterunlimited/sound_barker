@@ -165,6 +165,10 @@ class KaraokeCard with ChangeNotifier {
     this.audio ??= CardAudio();
   }
 
+   bool hasBark(bark) {
+     return bark == shortBark || bark == mediumBark || bark == longBark;
+  }
+
   void removeFiles() {
     try {
       if (decorationImage != null &&

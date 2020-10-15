@@ -190,7 +190,7 @@ class _SetPictureCoordinatesScreenState
   Future<void> handleSubmitButton() async {
     if (widget.editing || (widget.isNamed & widget.coordinatesSet)) {
       saveCanvasToPictureCoordinates();
-      widget.editing ? _submitEditedPicture() : await _submitPicture();
+      widget.editing ? _submitEditedPicture() : _submitPicture();
       Navigator.popUntil(
         context,
         ModalRoute.withName("main-screen"),

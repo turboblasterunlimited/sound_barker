@@ -1,5 +1,6 @@
 import 'package:K9_Karaoke/providers/barks.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
+import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/widgets/bark_playback_card.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +30,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
   bool _isFirstLoad = true;
   AnimationController animationController;
   var tween;
+  var cards = KaraokeCards();
 
   @override
   void initState() {
@@ -161,18 +163,41 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
       );
   }
 
+  bool get _canSkipShort {
+    return currentActivity.isTwo && cards.current.shortBark != null;
+  }
+
+  bool get _canSkipMedium {
+    return currentActivity.isThree && cards.current.mediumBark != null;
+  }
+
+  bool get _canSkipLong {
+    return currentActivity.isFour && cards.current.longBark != null;
+  }
+
+  Function skipLogic() {
+    if (_canSkipShort || _canSkipMedium || _canSkipLong)
+      return currentActivity.setNextSubStep;
+    else
+      return null;
+  }
+
   Widget build(BuildContext context) {
     barks = Provider.of<Barks>(context);
     soundController = Provider.of<SoundController>(context);
     currentActivity = Provider.of<CurrentActivity>(context);
+    cards = Provider.of<KaraokeCards>(context);
     _updateDisplayBarks();
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        interfaceTitleNav(context, "PICK $_currentBarkLength BARK",
-            skipCallback: null,
-            backCallback: currentActivity.setPreviousSubStep),
+        interfaceTitleNav(
+          context,
+          "PICK $_currentBarkLength BARK",
+          skipCallback: skipLogic(),
+          backCallback: currentActivity.setPreviousSubStep,
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[

@@ -131,7 +131,7 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
                   ),
                 ),
               ),
-              Slider.adaptive(
+              Slider(
                 value: _sliderValue,
                 min: 0,
                 max: 3,
@@ -147,14 +147,6 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
                       } else if (sliderVal > 0) {
                         adjustedVal = sliderVal;
                       }
-                      // print("Hex of rgba: ${hexOfRGB(
-                      //   sliderMouthTone[0],
-                      //   sliderMouthTone[1],
-                      //   sliderMouthTone[2],
-                      // )}");
-                      // var tempVal = _sliderValue;
-                      // if (i == 0 && sliderVal > .5) tempVal /= _sliderValue;
-                      // else if (sliderVal < .5) value *= 2;
                       currentMouthTone[i] = (value * adjustedVal).round();
                     });
                   });

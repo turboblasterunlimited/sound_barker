@@ -163,14 +163,13 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
     );
   }
 
-  selectBark() {
+  selectBark() async {
     if (currentActivity.isTwo)
       cards.setCurrentShortBark(widget.bark);
     else if (currentActivity.isThree)
       cards.setCurrentMediumBark(widget.bark);
     else if (currentActivity.isFour) cards.setCurrentLongBark(widget.bark);
-
-    currentActivity.setNextSubStep();
+    Future.delayed(Duration(milliseconds: 500), currentActivity.setNextSubStep);
   }
 
   Widget _getAudio() {
@@ -214,33 +213,35 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
   Widget build(BuildContext context) {
     cards = Provider.of<KaraokeCards>(context, listen: false);
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
+    bool isSelected = cards.current.hasBark(widget.bark);
 
-    if (true)
-      return SizeTransition(
-        sizeFactor: widget.animation,
-        child: Row(
-          children: <Widget>[
-            // Playback button
-            _getAudio(),
-            // Select bark button
-            Expanded(
-              child: RawMaterialButton(
-                onPressed: selectBark,
-                child: FadeTransition(
-                  opacity: renameAnimationController,
-                  child: Column(
-                    children: <Widget>[
-                      Center(
-                          child: RichText(
+    return SizeTransition(
+      sizeFactor: widget.animation,
+      child: Row(
+        children: <Widget>[
+          // Playback button
+          _getAudio(),
+          // Select bark button
+          Expanded(
+            child: RawMaterialButton(
+              onPressed: selectBark,
+              fillColor: isSelected ? Theme.of(context).primaryColor : null,
+              child: FadeTransition(
+                opacity: renameAnimationController,
+                child: Column(
+                  children: <Widget>[
+                    Center(
+                      child: RichText(
                         text: TextSpan(
                           children: <TextSpan>[
                             // Title
-
                             TextSpan(
                               text: widget.bark.name,
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  color: Theme.of(context).primaryColor,
+                                  color: isSelected
+                                      ? Colors.white
+                                      : Theme.of(context).primaryColor,
                                   fontSize: 16),
                             ),
                             // Subtitle
@@ -251,37 +252,35 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
                             ),
                           ],
                         ),
-                      )
-
-                          // Subtitle
-                          )
-                    ],
-                  ),
+                      ),
+                    ),
+                  ],
                 ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(40.0),
-                  side: BorderSide(
-                      color: Theme.of(context).primaryColor, width: 3),
-                ),
-                elevation: 2.0,
-                // fillColor: Theme.of(context).primaryColor,
-                // padding:
-                //     const EdgeInsets.symmetric(vertical: 0, horizontal: 22.0),
               ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(40.0),
+                side:
+                    BorderSide(color: Theme.of(context).primaryColor, width: 3),
+              ),
+              elevation: 2.0,
+              // fillColor: Theme.of(context).primaryColor,
+              // padding:
+              //     const EdgeInsets.symmetric(vertical: 0, horizontal: 22.0),
             ),
-            // Menu button
-            if (!widget.bark.isStock)
-              IconButton(
-                onPressed: deleteBark,
-                icon: Icon(Icons.more_vert,
-                    color: Theme.of(context).primaryColor, size: 30),
-              ),
-            if (widget.bark.isStock)
-              Padding(
-                padding: EdgeInsets.only(left: 20),
-              )
-          ],
-        ),
-      );
+          ),
+          // Menu button
+          if (!widget.bark.isStock)
+            IconButton(
+              onPressed: deleteBark,
+              icon: Icon(Icons.more_vert,
+                  color: Theme.of(context).primaryColor, size: 30),
+            ),
+          if (widget.bark.isStock)
+            Padding(
+              padding: EdgeInsets.only(left: 20),
+            )
+        ],
+      ),
+    );
   }
 }
