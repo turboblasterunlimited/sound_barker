@@ -218,9 +218,11 @@ class Bark extends Asset {
   }
 
   Future<void> retrieve() async {
+    print("Retrieve Called");
     await download();
     this.amplitudesPath =
         await AmplitudeExtractor.createAmplitudeFile(filePath, filePathBase);
+    print("$name bark amplitudes: ${File(amplitudesPath).readAsBytesSync()}");
   }
 
   Future<void> rename(newName) async {

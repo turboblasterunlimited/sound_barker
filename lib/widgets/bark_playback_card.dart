@@ -65,6 +65,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
   }
 
   void startAll() async {
+    print("bark playback");
     setState(() => _isPlaying = true);
     imageController.mouthTrackSound(filePath: widget.bark.amplitudesPath);
     await widget.soundController.startPlayer(widget.bark.filePath, stopAll);
@@ -180,7 +181,6 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
           future: widget.bark.retrieve(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
-              print("it's done:");
               return _playbackButton();
             } else if (snapshot.hasError) {
               IconButton(

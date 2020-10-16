@@ -278,6 +278,8 @@ class _MainScreenState extends State<MainScreen> {
     frameToScreenWidth ??= screenWidth / 656;
     framePadding ??= frameToScreenWidth * 72;
 
+    textController.text = cards.currentName;
+
     bool everythingReady() {
       return imageController.isReady;
     }

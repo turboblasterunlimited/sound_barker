@@ -10,11 +10,9 @@ class AmplitudeExtractor {
     Uint8List bytes = File(filePath).readAsBytesSync();
     // 44100
     int sampleRate = bytes.sublist(24, 28).buffer.asInt32List()[0];
-    print("Sample rate: $sampleRate");
     List<int> waveSamples =
         bytes.sublist(headerOffset).buffer.asInt16List().toList();
     int samplesLength = waveSamples.length;
-    print("Wave samples length: $samplesLength");
     Map<String, dynamic> result = {
       "samplesLength": samplesLength,
       "waveSamples": waveSamples,
@@ -24,7 +22,7 @@ class AmplitudeExtractor {
   }
 
   static List extract(String filePath) {
-    List result = [];
+    print("calling extract");
     Map sampleData = getSampleData(filePath);
     int framerate = 60;
     // 735
@@ -34,22 +32,37 @@ class AmplitudeExtractor {
     List<int> tempSubList;
     double _amplitude;
     int i = 0;
+    print("checkpoint");
+    double biggestAmplitude = 0;
+    List<double> amplitudes =[];
+    List<double> normalizedAmplitudes = [];
     while ((i + sampleChunk - 1) < sampleData["samplesLength"]) {
       tempSubList = sampleData["waveSamples"].sublist(i, (i + sampleChunk - 1));
-      // amplitude from 0 to 1 (now 0 to .5 [divisor * 2])
       _amplitude = tempSubList.reduce((a, b) => a.abs() + b.abs()) / divisor;
-      // tempSubList.reduce((a, b) => a.abs() + b.abs()) / (divisor * 2);
-      result.add(_amplitude > 1 ? 1 : _amplitude);
+      biggestAmplitude =
+          _amplitude > biggestAmplitude ? _amplitude : biggestAmplitude;
+      amplitudes.add(_amplitude);
       i += (sampleChunk - 1);
     }
+    print("checkpoint 1");
+    // map all amplitudes from 0 - 1.
+    normalizedAmplitudes = amplitudes.map((amp) {
+      return amp / biggestAmplitude;
+    }).toList();
+
+    print("checkpoint 2");
     // Close the mouth
-    result.add(0);
-    return result;
+    normalizedAmplitudes.add(0);
+    print("Checkpoint 3");
+    print("amps result: $normalizedAmplitudes");
+    return normalizedAmplitudes;
   }
 
   static Future<String> createAmplitudeFile(filePath, [filePathBase]) async {
     filePathBase ??= filePath.substring(0, filePath.length - 4);
+    print("getting amplitudes");
     final amplitudes = await getAmplitudes(filePath, filePathBase);
+    print("amps from createAmplitudeFile: $amplitudes");
     final csvAmplitudes = const ListToCsvConverter().convert([amplitudes]);
     File file = File("$filePathBase.csv");
     file.writeAsStringSync(csvAmplitudes);
@@ -64,8 +77,9 @@ class AmplitudeExtractor {
       File("${filePathBase}.wav").deleteSync();
     print("filePathBase: $filePathBase");
     print("filePath: $filePath");
-    await FFMpeg.process
+    var result = await FFMpeg.process
         .execute("-hide_banner -loglevel panic -i $filePath $filePathBase.wav");
+    print("ffmpeg result: $result");
     final amplitudes = extract("$filePathBase.wav");
     File("$filePathBase.wav").deleteSync();
     return amplitudes;
