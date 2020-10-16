@@ -49,10 +49,7 @@ class _MainScreenState extends State<MainScreen> {
   double frameToScreenWidth;
   // Xs the frame padding in pixels
   double framePadding;
-  double _logoWidth;
-  double _nameWidth;
-  double _menuButtonWidth;
-
+  final textController = TextEditingController();
   List get _playbackFiles {
     if (_canPlayAudio) {
       print("_canPlayAudio");
@@ -163,7 +160,6 @@ class _MainScreenState extends State<MainScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Container(
-            width: _logoWidth,
             child: Image.asset("assets/logos/K9_logotype.png",
                 width: 80 - notificationPadding),
           ),
@@ -172,7 +168,7 @@ class _MainScreenState extends State<MainScreen> {
             child: Padding(
               padding: EdgeInsets.only(right: _nameRightPadding),
               child: TextFormField(
-                controller: TextEditingController(text: cards.currentName ?? "Name"),
+                controller: textController,
                 enabled: !cards.currentPictureIsStock,
                 style: TextStyle(color: Colors.grey[600], fontSize: 20),
                 textAlign: cards.currentPictureIsStock
@@ -185,6 +181,12 @@ class _MainScreenState extends State<MainScreen> {
                         ? null
                         : Icon(LineAwesomeIcons.edit),
                     border: InputBorder.none),
+                onTap: () {
+                  textController.selection = TextSelection(
+                    baseOffset: 0,
+                    extentOffset: textController.text.length,
+                  );
+                },
                 onFieldSubmitted: (val) {
                   cards.setCurrentName(val);
                   FocusScope.of(context).unfocus();

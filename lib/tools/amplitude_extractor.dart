@@ -10,6 +10,7 @@ class AmplitudeExtractor {
     Uint8List bytes = File(filePath).readAsBytesSync();
     // 44100
     int sampleRate = bytes.sublist(24, 28).buffer.asInt32List()[0];
+    print("Sample rate: $sampleRate");
     List<int> waveSamples =
         bytes.sublist(headerOffset).buffer.asInt16List().toList();
     int samplesLength = waveSamples.length;

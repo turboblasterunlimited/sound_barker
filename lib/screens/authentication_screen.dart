@@ -274,7 +274,6 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       await cardAudios.retrieveAll();
       await decorationImages.retrieveAll();
       await cards.retrieveAll(pictures, cardAudios, songs, decorationImages);
-      setState(() => downloadMessage = "Done.");
     }
   }
 

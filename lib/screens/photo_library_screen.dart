@@ -20,17 +20,21 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
   Pictures pictures;
   KaraokeCards cards;
 
-  List<Widget> _pictureGridTiles(List<Picture> pics) {
+  List<Widget> _pictureGridTiles(List<Picture> pics, [usersDisplayedPictures]) {
     List<Widget> widgets = [];
     pics.asMap().forEach((i, picture) {
-      widgets.add(PictureCard(picture, pictures));
+      widgets.add(PictureCard(picture, pictures, usersDisplayedPictures));
     });
     return widgets;
   }
 
   List<Widget> _usersPictureGridTiles() {
-    List<Widget> result = _pictureGridTiles(pictures.all);
+    List<Widget> result = [];
+    // each picture gets a reference to all the user's own displayed pictues, for handling delete animation: 'result'.
+    _pictureGridTiles(pictures.all, result)
+        .forEach((picCard) => result.add(picCard));
     result.insert(0, _addPictureButton());
+
     return result;
   }
 

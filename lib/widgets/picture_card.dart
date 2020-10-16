@@ -14,7 +14,9 @@ import '../screens/set_picture_coordinates_screen.dart';
 class PictureCard extends StatefulWidget {
   final Picture picture;
   final Pictures pictures;
-  PictureCard(this.picture, this.pictures, {Key key}) : super(key: key);
+  List<Widget> displayList;
+  PictureCard(this.picture, this.pictures, this.displayList, {Key key})
+      : super(key: key);
 
   @override
   _PictureCardState createState() => _PictureCardState();
@@ -53,23 +55,8 @@ class _PictureCardState extends State<PictureCard>
   void imageActions(String action) {
     if (action == "DELETE") {
       animationController.reverse();
+      widget.displayList.remove(this);
       widget.pictures.remove(widget.picture);
-    } else if (action == "SET FACE") {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              SetPictureCoordinatesScreen(widget.picture, editing: true),
-        ),
-      );
-    } else if (action == "RENAME") {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              SetPictureCoordinatesScreen(widget.picture, editing: true),
-        ),
-      );
     }
   }
 
@@ -146,14 +133,6 @@ class _PictureCardState extends State<PictureCard>
                         ),
                         itemBuilder: (BuildContext context) {
                           return [
-                            PopupMenuItem<String>(
-                              value: "RENAME",
-                              child: Text("Rename"),
-                            ),
-                            PopupMenuItem<String>(
-                              value: "SET FACE",
-                              child: Text("Set face"),
-                            ),
                             PopupMenuItem<String>(
                               value: "DELETE",
                               child: Text(
