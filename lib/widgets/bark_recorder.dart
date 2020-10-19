@@ -9,10 +9,8 @@ import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_sound/flutter_sound.dart';
 // import 'package:flutter_sound_lite/flutter_sound.dart';
-import'package:sounds/sounds.dart';
 
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
@@ -123,7 +121,7 @@ class BarkRecorderState extends State<BarkRecorder>
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
-        interfaceTitleNav(context, 'RECORD BARKS', backCallback: _backCallback),
+        InterfaceTitleNav('RECORD BARKS', backCallback: _backCallback),
         ButtonBar(
           alignment: MainAxisAlignment.center,
           children: <Widget>[

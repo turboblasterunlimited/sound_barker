@@ -192,8 +192,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        interfaceTitleNav(
-          context,
+        InterfaceTitleNav(
           "PICK $_currentBarkLength BARK",
           skipCallback: skipLogic(),
           backCallback: currentActivity.setPreviousSubStep,

@@ -145,9 +145,7 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
         ),
         child: Column(
           children: <Widget>[
-            interfaceTitleNav(
-              context,
-              "PHOTO LIBRARY",
+            InterfaceTitleNav("PHOTO LIBRARY",
               titleSize: 24,
               backCallback: _backCallback,
             ),

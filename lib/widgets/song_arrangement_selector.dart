@@ -4,7 +4,6 @@ import 'package:K9_Karaoke/providers/songs.dart';
 import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:flutter/material.dart';
-import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/spinner_state.dart';
@@ -40,7 +39,7 @@ class SongArrangementSelector extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        interfaceTitleNav(context, "CHOOSE A STYLE",
+        InterfaceTitleNav("CHOOSE A STYLE",
             titleSize: 20, backCallback: currentActivity.setPreviousSubStep),
         SizedBox(
           height: MediaQuery.of(context).size.height / 3,

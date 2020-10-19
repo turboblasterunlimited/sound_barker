@@ -4,7 +4,6 @@ import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/screens/set_picture_coordinates_screen.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:flutter/material.dart';
-import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 
 int hexOfRGB(int r, int g, int b) {
@@ -116,7 +115,7 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
     print("Building mouth tone slider");
     return Column(
       children: <Widget>[
-        interfaceTitleNav(context, "MOUTH TONE", backCallback: backCallback),
+        InterfaceTitleNav("MOUTH TONE", backCallback: backCallback),
         Container(
           padding: const EdgeInsets.only(top: 20.0),
           // height: 100,

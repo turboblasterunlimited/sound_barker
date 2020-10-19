@@ -65,11 +65,11 @@ class _SetPictureCoordinatesScreenState
   KaraokeCard card;
   CurrentActivity currentActivity;
   bool _isFirstBuild = true;
-  final _textFormFocus = FocusNode();
-  final _textController = TextEditingController();
 
   String _getInstructionalText() {
-    return cards.current.picture.isNamed ? "ALIGN FACE MARKERS" : "NAME YOUR PHOTO";
+    return widget.newPicture.isNamed
+        ? "ALIGN FACE MARKERS"
+        : "NAME YOUR PHOTO";
   }
 
   @override
@@ -197,16 +197,20 @@ class _SetPictureCoordinatesScreenState
     }
   }
 
-    void handleNameChange(name) {
+  bool get _isEditing {
+    return widget.editing || (widget.isNamed && widget.coordinatesSet);
+  }
+
+  void handleNameChange(name) {
     setState(() {
       widget.newPicture.name = name;
       widget.isNamed = true;
       _instructionalText = _getInstructionalText();
+      print("Handling name change");
     });
     FocusScope.of(context).unfocus();
     SystemChrome.restoreSystemUIOverlays();
   }
-
 
   Function _backCallback() {
     if (!widget.editing) widget.newPicture.delete();
@@ -237,18 +241,16 @@ class _SetPictureCoordinatesScreenState
     var notificationPadding = MediaQuery.of(context).padding.top;
 
     SystemChrome.restoreSystemUIOverlays();
+      print("is Editing1: $_isEditing");
+
 
     if (_isFirstBuild) {
-      _textController.text = widget.newPicture.name;
-      _textFormFocus.addListener(() {
-        if (_textFormFocus.hasFocus)
-          _textController.selection = TextSelection(
-            baseOffset: 0,
-            extentOffset: _textController.text.length,
-          );
-      });
+      _instructionalText = _getInstructionalText();
       _getImageData();
     }
+
+      print("is Editing2: $_isEditing");
+
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -419,8 +421,7 @@ class _SetPictureCoordinatesScreenState
             Padding(
               padding: EdgeInsets.only(top: 6),
             ),
-            interfaceTitleNav(
-              context,
+            InterfaceTitleNav(
               _instructionalText,
               backCallback: _backCallback,
             ),
@@ -448,9 +449,7 @@ class _SetPictureCoordinatesScreenState
                   ),
                   elevation: 2.0,
                   fillColor:
-                      widget.editing || (widget.isNamed & widget.coordinatesSet)
-                          ? Theme.of(context).errorColor
-                          : Colors.grey,
+                      _isEditing ? Theme.of(context).errorColor : Colors.grey,
                   padding:
                       const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
                 ),
@@ -469,9 +468,7 @@ class _SetPictureCoordinatesScreenState
                   ),
                   elevation: 2.0,
                   fillColor:
-                      widget.editing || (widget.isNamed & widget.coordinatesSet)
-                          ? Theme.of(context).primaryColor
-                          : Colors.grey,
+                      _isEditing ? Theme.of(context).primaryColor : Colors.grey,
                   padding:
                       const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
                 ),

@@ -268,6 +268,7 @@ class RestAPI {
       print("Edit Image Name on server response body: ${response?.data}");
       _handleAssetError(response, e);
     }
+    print("Update image response data: ${response.data}");
     return response?.data;
   }
 

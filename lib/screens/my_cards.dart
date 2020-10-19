@@ -110,8 +110,7 @@ class _MyCardsScreenState extends State<MyCardsScreen> {
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.all(10.0),
-              child: interfaceTitleNav(
-                context,
+              child: InterfaceTitleNav(
                 "My Cards",
                 titleSize: 24,
                 backCallback: () =>

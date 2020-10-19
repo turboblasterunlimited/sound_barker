@@ -397,7 +397,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
       height: 170,
       child: Column(
         children: [
-          interfaceTitleNav(context, "ALL DONE!", backCallback: _backCallback),
+          InterfaceTitleNav("ALL DONE!", backCallback: _backCallback),
           Container(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -5,11 +5,9 @@ import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/screens/set_picture_coordinates_screen.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:K9_Karaoke/tools/cropper.dart';
-import 'package:K9_Karaoke/widgets/picture_card.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
-import 'package:provider/provider.dart';
 
 class CameraOrUploadScreen extends StatelessWidget {
   static const routeName = 'camera_or_upload_screen';

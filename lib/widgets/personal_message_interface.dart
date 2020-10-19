@@ -217,8 +217,7 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
 
     return Column(
       children: <Widget>[
-        interfaceTitleNav(context,
-            cards.current.hasSong ? "PRE-SONG MESSAGE" : "CARD MESSAGE",
+        InterfaceTitleNav(cards.current.hasSong ? "PRE-SONG MESSAGE" : "CARD MESSAGE",
             backCallback: backCallback, skipCallback: skipCallback),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
