@@ -10,6 +10,7 @@ import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/widgets/card_creation_interface.dart';
 import 'package:K9_Karaoke/widgets/card_decorator_canvas.dart';
 import 'package:K9_Karaoke/widgets/card_progress_bar.dart';
+import 'package:K9_Karaoke/widgets/photo_name_input.dart';
 import 'package:K9_Karaoke/widgets/spinner_half_screen_widget.dart';
 import 'package:K9_Karaoke/widgets/spinner_widget.dart';
 import 'package:flutter/material.dart';
@@ -164,38 +165,7 @@ class _MainScreenState extends State<MainScreen> {
                 width: 80 - notificationPadding),
           ),
           // if (!showFrame)
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(right: _nameRightPadding),
-              child: TextFormField(
-                controller: textController,
-                enabled: !cards.currentPictureIsStock,
-                style: TextStyle(color: Colors.grey[600], fontSize: 20),
-                textAlign: cards.currentPictureIsStock
-                    ? TextAlign.center
-                    : TextAlign.right,
-                decoration: InputDecoration(
-                    // hintText: cards.currentName ?? "Name",
-                    counterText: "",
-                    suffixIcon: cards.currentPictureIsStock
-                        ? null
-                        : Icon(LineAwesomeIcons.edit),
-                    border: InputBorder.none),
-                onTap: () {
-                  textController.selection = TextSelection(
-                    baseOffset: 0,
-                    extentOffset: textController.text.length,
-                  );
-                },
-                onFieldSubmitted: (val) {
-                  cards.setCurrentName(val);
-                  FocusScope.of(context).unfocus();
-                  SystemChrome.restoreSystemUIOverlays();
-                },
-              ),
-            ),
-            // This rename field works differently than on the coordinates setting page.
-          ),
+          PhotoNameInput(cards.current.picture, cards.setCurrentName),
           IconButton(
             icon: Icon(
               CustomIcons.hambooger,

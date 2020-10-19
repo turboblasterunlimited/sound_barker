@@ -199,8 +199,8 @@ class Bark extends Asset {
   void inferFilePath() {
     // if its a raw bark, filePath will be set to rawBark.aac
     if (filePath != null) return;
-    String fileName = fileId + '.aac';
-    this.filePath = myAppStoragePath + '/' + fileName;
+    this.filePath = "$myAppStoragePath/$fileId.aac";
+    this.amplitudesPath = "$myAppStoragePath/$fileId.csv";
   }
 
   String get getName {
@@ -218,11 +218,10 @@ class Bark extends Asset {
   }
 
   Future<void> retrieve() async {
-    print("Retrieve Called");
     await download();
-    this.amplitudesPath =
-        await AmplitudeExtractor.createAmplitudeFile(filePath, filePathBase);
-    print("$name bark amplitudes: ${File(amplitudesPath).readAsBytesSync()}");
+    if (!File(amplitudesPath).existsSync()) {
+      await AmplitudeExtractor.createAmplitudeFile(filePath, filePathBase);
+    }
   }
 
   Future<void> rename(newName) async {

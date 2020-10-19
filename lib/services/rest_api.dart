@@ -252,6 +252,25 @@ class RestAPI {
     return response?.data;
   }
 
+  static Future<void> updateImageName(Picture image) async {
+    Map body = {
+      'name': image.name,
+    };
+    print("Image update body: $body");
+    final url = 'http://165.227.178.14/image/${image.fileId}';
+    var response;
+    try {
+      response = await HttpController.dio.patch(
+        url,
+        data: body,
+      );
+    } catch (e) {
+      print("Edit Image Name on server response body: ${response?.data}");
+      _handleAssetError(response, e);
+    }
+    return response?.data;
+  }
+
   static Future<void> updateImage(Picture image) async {
     Map body = {
       'name': image.name,

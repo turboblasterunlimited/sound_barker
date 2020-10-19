@@ -131,6 +131,10 @@ class Picture extends Asset {
     inferFilePath();
   }
 
+  bool get isNamed {
+    return name != "Name";
+  }
+
   void inferFilePath() {
     String fileName = fileId + '.jpg';
     this.filePath = myAppStoragePath + '/' + fileName;
@@ -142,7 +146,7 @@ class Picture extends Asset {
 
   void setName(String newName) {
     this.name = newName;
-    RestAPI.updateImage(this);
+    RestAPI.updateImageName(this);
     notifyListeners();
   }
 

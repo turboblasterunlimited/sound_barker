@@ -6,9 +6,9 @@ import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/widgets/card_progress_bar.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
+import 'package:K9_Karaoke/widgets/photo_name_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
 import 'dart:math';
@@ -58,15 +58,18 @@ class _SetPictureCoordinatesScreenState
   bool grabbing = false;
   Map<String, List<double>> grabPoint = {};
   String _instructionalText = "";
+
   Pictures pictures;
   ImageController imageController;
   KaraokeCards cards;
   KaraokeCard card;
   CurrentActivity currentActivity;
   bool _isFirstBuild = true;
+  final _textFormFocus = FocusNode();
+  final _textController = TextEditingController();
 
   String _getInstructionalText() {
-    return widget.isNamed ? "ALIGN FACE MARKERS" : "NAME YOUR PHOTO";
+    return cards.current.picture.isNamed ? "ALIGN FACE MARKERS" : "NAME YOUR PHOTO";
   }
 
   @override
@@ -74,12 +77,6 @@ class _SetPictureCoordinatesScreenState
     print("init state set picture coordinates screen");
     super.initState();
   }
-
-  // @override
-  // void didChangeDependencies() {
-  //   print("did change dep set picture coordinates screen");
-
-  // }
 
   _puppetXtoCanvasX(x) {
     double offset = x * middle * 2;
@@ -200,7 +197,7 @@ class _SetPictureCoordinatesScreenState
     }
   }
 
-  void handleNameChange(name) {
+    void handleNameChange(name) {
     setState(() {
       widget.newPicture.name = name;
       widget.isNamed = true;
@@ -210,6 +207,7 @@ class _SetPictureCoordinatesScreenState
     SystemChrome.restoreSystemUIOverlays();
   }
 
+
   Function _backCallback() {
     if (!widget.editing) widget.newPicture.delete();
     Navigator.popAndPushNamed(context, PhotoLibraryScreen.routeName);
@@ -217,7 +215,6 @@ class _SetPictureCoordinatesScreenState
 
   _getImageData() {
     _isFirstBuild = false;
-    _instructionalText = _getInstructionalText();
     canvasLength ??= MediaQuery.of(context).size.width;
     middle ??= canvasLength / 2;
     imageSizeDifference = magImageSize - canvasLength;
@@ -227,11 +224,6 @@ class _SetPictureCoordinatesScreenState
     imageData = IMG.decodeImage(bytes);
     imageDataBytes =
         IMG.encodePng(IMG.copyResize(imageData, width: magImageSize));
-  }
-
-  double get _nameRightPadding {
-    int nameLength = widget.newPicture.name.length ?? 0;
-    return 45.0 - (nameLength * 3);
   }
 
   @override
@@ -246,7 +238,17 @@ class _SetPictureCoordinatesScreenState
 
     SystemChrome.restoreSystemUIOverlays();
 
-    if (_isFirstBuild) _getImageData();
+    if (_isFirstBuild) {
+      _textController.text = widget.newPicture.name;
+      _textFormFocus.addListener(() {
+        if (_textFormFocus.hasFocus)
+          _textController.selection = TextSelection(
+            baseOffset: 0,
+            extentOffset: _textController.text.length,
+          );
+      });
+      _getImageData();
+    }
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -269,29 +271,7 @@ class _SetPictureCoordinatesScreenState
               child: Image.asset("assets/logos/K9_logotype.png",
                   width: 80 - notificationPadding),
             ),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(right: _nameRightPadding),
-                child: TextFormField(
-                  autofocus: widget.isNamed ? false : true,
-                  controller:
-                      TextEditingController(text: widget.newPicture.name),
-                  enabled: !cards.currentPictureIsStock,
-                  style: TextStyle(color: Colors.grey[600], fontSize: 20),
-                  textAlign: cards.currentPictureIsStock
-                      ? TextAlign.center
-                      : TextAlign.right,
-                  decoration: InputDecoration(
-                      // hintText: cards.currentName ?? "Name",
-                      counterText: "",
-                      suffixIcon: cards.currentPictureIsStock
-                          ? null
-                          : Icon(LineAwesomeIcons.edit),
-                      border: InputBorder.none),
-                  onFieldSubmitted: (val) => handleNameChange(val),
-                ),
-              ),
-            ),
+            PhotoNameInput(widget.newPicture, handleNameChange),
             IconButton(
               icon: Icon(
                 CustomIcons.hambooger,
