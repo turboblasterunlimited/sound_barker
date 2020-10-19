@@ -17,7 +17,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 
@@ -145,7 +144,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   double get _nameRightPadding {
-    int nameLength = cards.currentName.length ?? 0;
+    int nameLength = cards.currentName?.length ?? 0;
     return 45.0 - (nameLength * 3);
   }
 
