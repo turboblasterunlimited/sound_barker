@@ -6,6 +6,7 @@ import '../services/http_controller.dart';
 import '../providers/songs.dart';
 import '../providers/barks.dart';
 import '../providers/pictures.dart';
+import 'package:K9_Karaoke/globals.dart';
 
 Map<String, dynamic> noInternetResponse = {
   "error": "You must be connected to the internet",
@@ -33,7 +34,7 @@ class RestAPI {
     var response;
     try {
       response = await HttpController.dio.post(
-        'http://165.227.178.14/create-account',
+        'http://$serverIP/create-account',
         data: data,
       );
     } catch (e) {
@@ -47,7 +48,7 @@ class RestAPI {
     var response;
     try {
       response = await HttpController.dio.post(
-        'http://165.227.178.14/manual-login',
+        'http://$serverIP/manual-login',
         data: data,
       );
       print("Manual sign in response: $response");
@@ -64,7 +65,7 @@ class RestAPI {
     var response;
     try {
       response =
-          await HttpController.dio.post("http://165.227.178.14/delete-account");
+          await HttpController.dio.post("http://$serverIP/delete-account");
     } catch (e) {
       return _handleAccountError(response, e);
     }
@@ -75,7 +76,7 @@ class RestAPI {
     print("logging out...");
     var response;
     try {
-      response = await HttpController.dio.get("http://165.227.178.14/logout");
+      response = await HttpController.dio.get("http://$serverIP/logout");
     } catch (e) {
       return _handleAccountError(response, e);
     }
@@ -83,7 +84,7 @@ class RestAPI {
   }
 
   static Future<void> deleteDecorationImage(imageId) async {
-    final imageUrl = 'http://165.227.178.14/decoration_image/$imageId';
+    final imageUrl = 'http://$serverIP/decoration_image/$imageId';
 
     var response;
     try {
@@ -97,7 +98,7 @@ class RestAPI {
   }
 
   static Future<void> deleteCardAudio(String audioId) async {
-    final imageUrl = 'http://165.227.178.14/card_audio/$audioId';
+    final imageUrl = 'http://$serverIP/card_audio/$audioId';
 
     var response;
     try {
@@ -113,7 +114,7 @@ class RestAPI {
   static Future<void> updateCardPicture(card) async {
     var response;
     final cardBody = {"image_id": card.picture.fileId};
-    final cardUrl = 'http://165.227.178.14/greeting_card/${card.uuid}';
+    final cardUrl = 'http://$serverIP/greeting_card/${card.uuid}';
     print("update card request body: $cardBody");
     try {
       response = await HttpController.dio.patch(
@@ -134,7 +135,7 @@ class RestAPI {
       'bucket_fp': decorationImage.bucketFp,
       'has_frame_dimension': decorationImage.hasFrameDimension ? 1 : 0,
     };
-    final imageUrl = 'http://165.227.178.14/decoration_image';
+    final imageUrl = 'http://$serverIP/decoration_image';
 
     var response;
     try {
@@ -154,7 +155,7 @@ class RestAPI {
       'uuid': audioOrSong.fileId,
       'bucket_fp': audioOrSong.bucketFp
     };
-    final audioUrl = 'http://165.227.178.14/card_audio';
+    final audioUrl = 'http://$serverIP/card_audio';
     var response;
     try {
       response = await HttpController.dio.post(
@@ -176,7 +177,7 @@ class RestAPI {
       'animation_json':
           '{"mouth_positions": ${card.audio.amplitudes.toString()}}',
     };
-    final cardUrl = 'http://165.227.178.14/greeting_card/${card.uuid}';
+    final cardUrl = 'http://$serverIP/greeting_card/${card.uuid}';
     print("update card request body: $cardBody");
     try {
       response = await HttpController.dio.patch(
@@ -201,7 +202,7 @@ class RestAPI {
       'animation_json':
           '{"mouth_positions": ${card.audio.amplitudes.toString()}}',
     };
-    final cardUrl = 'http://165.227.178.14/greeting_card';
+    final cardUrl = 'http://$serverIP/greeting_card';
     print("card request body: $cardBody");
     try {
       response = await HttpController.dio.post(
@@ -220,7 +221,7 @@ class RestAPI {
     /// "Song" on the server side means "creatable song"
     Map body = {'uuids': cropIds, 'song_id': songId.toString()};
     print("create song on server req body: $body");
-    final url = 'http://165.227.178.14/to_sequence';
+    final url = 'http://$serverIP/to_sequence';
     var response;
     try {
       response = await HttpController.dio.post(
@@ -238,7 +239,7 @@ class RestAPI {
   static Future<void> renameSong(Song song, String newName) async {
     Map body = {'name': newName};
     print(body);
-    final url = 'http://165.227.178.14/sequence/${song.fileId}';
+    final url = 'http://$serverIP/sequence/${song.fileId}';
     var response;
     try {
       response = await HttpController.dio.patch(
@@ -257,7 +258,7 @@ class RestAPI {
       'name': image.name,
     };
     print("Image update body: $body");
-    final url = 'http://165.227.178.14/image/${image.fileId}';
+    final url = 'http://$serverIP/image/${image.fileId}';
     var response;
     try {
       response = await HttpController.dio.patch(
@@ -279,7 +280,7 @@ class RestAPI {
       'mouth_color': image.mouthColor.toString(),
     };
     print("Image update body: $body");
-    final url = 'http://165.227.178.14/image/${image.fileId}';
+    final url = 'http://$serverIP/image/${image.fileId}';
     var response;
     try {
       response = await HttpController.dio.patch(
@@ -302,7 +303,7 @@ class RestAPI {
       'bucket_fp': image.fileUrl,
     };
     print("Image upload body: $body");
-    final url = 'http://165.227.178.14/image';
+    final url = 'http://$serverIP/image';
     var response;
     try {
       response = await HttpController.dio.post(
@@ -318,7 +319,7 @@ class RestAPI {
 
   static void renameBark(Bark bark, newName) async {
     Map body = {'name': newName};
-    final url = 'http://165.227.178.14/crop/${bark.fileId}';
+    final url = 'http://$serverIP/crop/${bark.fileId}';
     var response;
     try {
       response = await HttpController.dio.patch(
@@ -333,7 +334,7 @@ class RestAPI {
   }
 
   static Future<List> retrieveAllDecorationImages() async {
-    final url = 'http://165.227.178.14/all/decoration_image';
+    final url = 'http://$serverIP/all/decoration_image';
     var response;
     try {
       response = await HttpController.dio.get(url);
@@ -345,7 +346,7 @@ class RestAPI {
   }
 
   static Future<List> retrieveAllCardAudio() async {
-    final url = 'http://165.227.178.14/all/card_audio';
+    final url = 'http://$serverIP/all/card_audio';
     var response;
     try {
       response = await HttpController.dio.get(url);
@@ -357,7 +358,7 @@ class RestAPI {
   }
 
   static Future<List> retrieveAllSongs() async {
-    final url = 'http://165.227.178.14/all/sequence';
+    final url = 'http://$serverIP/all/sequence';
     var response;
     try {
       response = await HttpController.dio.get(url);
@@ -369,7 +370,7 @@ class RestAPI {
   }
 
   static Future<List> retrieveAllCards() async {
-    final url = 'http://165.227.178.14/all/greeting_card';
+    final url = 'http://$serverIP/all/greeting_card';
     var response;
     try {
       response = await HttpController.dio.get(url);
@@ -382,7 +383,7 @@ class RestAPI {
   }
 
   static Future<List> retrieveAllImages() async {
-    final url = 'http://165.227.178.14/all/image';
+    final url = 'http://$serverIP/all/image';
     print("retrieveAllImages req url: $url");
     var response;
     try {
@@ -395,7 +396,7 @@ class RestAPI {
   }
 
   static Future<List> retrieveAllCreatableSongs() async {
-    final url = 'http://165.227.178.14/all/song';
+    final url = 'http://$serverIP/all/song';
     print("retrieveAllCreatableSongs req url: $url");
     var response;
     try {
@@ -408,7 +409,7 @@ class RestAPI {
   }
 
   static Future<List<dynamic>> retrieveAllBarks() async {
-    final url = 'http://165.227.178.14/all/crop';
+    final url = 'http://$serverIP/all/crop';
     print("retrieveAllBarks req url: $url");
     var response;
     try {
@@ -421,7 +422,7 @@ class RestAPI {
   }
 
   static void deleteImage(Picture image) async {
-    final url = 'http://165.227.178.14/image/${image.fileId}';
+    final url = 'http://$serverIP/image/${image.fileId}';
     print("deleteImage req url: $url");
     var response;
     try {
@@ -433,7 +434,7 @@ class RestAPI {
   }
 
   static Future<void> deleteCard(KaraokeCard card) async {
-    final url = 'http://165.227.178.14/greeting_card/${card.uuid}';
+    final url = 'http://$serverIP/greeting_card/${card.uuid}';
     print("delete Card req url: $url");
     var response;
     try {
@@ -445,7 +446,7 @@ class RestAPI {
   }
 
   static void deleteSong(Song song) async {
-    final url = 'http://165.227.178.14/sequence/${song.fileId}';
+    final url = 'http://$serverIP/sequence/${song.fileId}';
     print("deleteSong req url: $url");
     var response;
     try {
@@ -457,7 +458,7 @@ class RestAPI {
   }
 
   static deleteBark(Bark bark) async {
-    final url = 'http://165.227.178.14/crop/${bark.fileId}';
+    final url = 'http://$serverIP/crop/${bark.fileId}';
     print("deleteBark req url: $url");
     var response;
     try {
@@ -474,7 +475,7 @@ class RestAPI {
       'image_id': imageId,
     };
     print("splitRawBark req body $body");
-    final url = 'http://165.227.178.14/to_crops';
+    final url = 'http://$serverIP/to_crops';
     var response;
     try {
       response = await HttpController.dio.post(

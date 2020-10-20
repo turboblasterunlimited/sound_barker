@@ -24,6 +24,7 @@ import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:K9_Karaoke/services/http_controller.dart';
 import 'package:provider/provider.dart';
 import '../services/authenticate_user.dart';
+import 'package:K9_Karaoke/globals.dart';
 
 class AuthenticationScreen extends StatefulWidget {
   static const routeName = '/';
@@ -109,7 +110,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   Future<Map> checkIfSignedIn() async {
     try {
       return (await HttpController.dio
-              .get('http://165.227.178.14/is-logged-in'))
+              .get('http://$serverIP/is-logged-in'))
           ?.data;
     } catch (e) {
       showError(
@@ -149,7 +150,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     Map tokenData = {"facebook_token": token};
     try {
       var response = await HttpController.dio.post(
-        'http://165.227.178.14/facebook-token',
+        'http://$serverIP/facebook-token',
         data: tokenData,
       );
       return response;
@@ -206,7 +207,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       token =
           await authenticate(issuer, clientId, ['email', 'openid', 'profile']);
       response = await HttpController.dio.post(
-        'http://165.227.178.14/openid-token/${platform}',
+        'http://$serverIP/openid-token/${platform}',
         data: token,
       );
       _handleServerResponse(response?.data);

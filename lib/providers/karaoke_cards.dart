@@ -248,7 +248,7 @@ class KaraokeCard with ChangeNotifier {
       await FFMpeg.process.execute('-i ${tempFile.path} ${audio.filePath}');
       if (tempFile.existsSync()) tempFile.deleteSync();
       // concat and return amplitudes
-      List songAmplitudes =
+      List<double> songAmplitudes =
           await AmplitudeExtractor.fileToList(song.amplitudesPath);
       audio.amplitudes = message.amps + songAmplitudes;
     } else {

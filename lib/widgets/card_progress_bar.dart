@@ -21,6 +21,8 @@ class CardProgressBar extends StatelessWidget {
   Widget build(BuildContext context) {
     card = Provider.of<KaraokeCards>(context, listen: false).current;
     currentActivity = Provider.of<CurrentActivity>(context);
+    final screenWidth = MediaQuery.of(context).size.width;
+    final buttonWidth = screenWidth / 5;
 
     Widget progressButton(
         {String stepText,
@@ -31,6 +33,7 @@ class CardProgressBar extends StatelessWidget {
       return Opacity(
         opacity: canNavigate ? 1 : .3,
         child: RawMaterialButton(
+          constraints: BoxConstraints(minWidth: buttonWidth, minHeight: 30.0),
           onPressed: canNavigate ? navigateHere : null,
           child: Text(stepText,
               style: TextStyle(

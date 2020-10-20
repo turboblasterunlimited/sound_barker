@@ -426,7 +426,7 @@ class _SetPictureCoordinatesScreenState
               backCallback: _backCallback,
             ),
             Padding(
-              padding: EdgeInsets.all(20),
+              padding: EdgeInsets.all(5),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

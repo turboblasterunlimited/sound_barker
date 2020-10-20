@@ -1,3 +1,4 @@
+import 'package:K9_Karaoke/globals.dart';
 import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/widgets/custom_dialog.dart';
@@ -133,7 +134,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     setDialogState(() {
       _loadingMessage = null;
       shareLink =
-          "https://www.thedogbarksthesong.ml/card/$uuid?recipient_name=$_getCleanedRecipientName";
+          "https://www.$serverURL/card/$uuid?recipient_name=$_getCleanedRecipientName";
     });
     return name;
   }

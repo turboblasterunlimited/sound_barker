@@ -1,3 +1,4 @@
+import 'package:K9_Karaoke/globals.dart';
 import 'package:flutter/material.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -41,7 +42,7 @@ class _SingingImageState extends State<SingingImage>
             print("WEB VIEW \"FINISHED\"");
             imageController.mountController(webviewController);
           },
-          initialUrl: "https://thedogbarksthesong.ml/puppet/app_puppet.html",
+          initialUrl: "https://$serverURL/puppet/app_puppet.html",
           javascriptMode: JavascriptMode.unrestricted,
           javascriptChannels: Set.from(
             [

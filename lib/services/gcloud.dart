@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:K9_Karaoke/globals.dart';
 import 'package:dio/dio.dart';
 import 'package:path/path.dart';
 import '../services/http_controller.dart';
@@ -10,7 +11,7 @@ class Gcloud {
       "filepath": "$directory/$fileName",
       "content_type": contentType,
     };
-    final url = 'http://165.227.178.14/signed-upload-url';
+    final url = 'http://$serverIP/signed-upload-url';
 
     print("upload bucket link body: $body");
     var response;

@@ -83,13 +83,14 @@ class AmplitudeExtractor {
     return amplitudes;
   }
 
-  static Future<List> fileToList(String filePath) async {
+  static Future<List<double>> fileToList(String filePath) async {
     final input = File(filePath).openRead();
     List<List> amplitudes = await input
         .transform(utf8.decoder)
         .transform(CsvToListConverter(shouldParseNumbers: true))
         .toList();
     // print("Amplitudes: $amplitudes");
-    return amplitudes[0];
+    List<double> result = amplitudes[0].cast<double>();
+    return result;
   }
 }
