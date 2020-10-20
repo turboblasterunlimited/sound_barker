@@ -32,8 +32,7 @@ class _PhotoNameInputState extends State<PhotoNameInput> {
     SystemChrome.restoreSystemUIOverlays();
   }
 
-  @override
-  Widget build(BuildContext context) {
+  void _setTextControllerAndFocus() {
     _textController.text = widget.picture.name;
     _textFormFocus.addListener(() {
       if (_textFormFocus.hasFocus)
@@ -42,7 +41,11 @@ class _PhotoNameInputState extends State<PhotoNameInput> {
           extentOffset: _textController.text.length,
         );
     });
+  }
 
+  @override
+  Widget build(BuildContext context) {
+    _setTextControllerAndFocus();
     cards = Provider.of<KaraokeCards>(context, listen: false);
 
     return Expanded(

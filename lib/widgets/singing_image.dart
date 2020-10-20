@@ -54,7 +54,7 @@ class _SingingImageState extends State<SingingImage>
                       "[puppet.js postMessage] finished init") {
                     imageController.makeInit();
                     print("Made ready");
-                    if (imageController.picture != null) {
+                    if (imageController?.picture != null) {
                       print(
                           "Creat dog from within singing image. picturename: ${imageController.picture.name}");
                       await imageController.createDog(imageController.picture);

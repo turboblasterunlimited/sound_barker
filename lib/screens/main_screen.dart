@@ -164,7 +164,8 @@ class _MainScreenState extends State<MainScreen> {
                 width: 80 - notificationPadding),
           ),
           // if (!showFrame)
-          PhotoNameInput(cards.current.picture, cards.setCurrentName),
+          if (cards.current != null)
+            PhotoNameInput(cards.current.picture, cards.setCurrentName),
           IconButton(
             icon: Icon(
               CustomIcons.hambooger,

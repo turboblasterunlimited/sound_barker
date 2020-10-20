@@ -72,7 +72,7 @@ class KaraokeCards with ChangeNotifier {
   }
 
   String get currentName {
-    return current.picture?.name ?? "";
+    return current?.picture?.name ?? "";
   }
 
   void setCurrentSongFormula(CreatableSong creatableSong) {
