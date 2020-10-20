@@ -146,7 +146,7 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
         child: Column(
           children: <Widget>[
             InterfaceTitleNav(
-              "Choose Photo",
+              "CHOOSE PHOTO",
               titleSize: 22,
               backCallback: _backCallback,
             ),

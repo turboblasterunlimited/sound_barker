@@ -39,7 +39,7 @@ class SongArrangementSelector extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        InterfaceTitleNav("CHOOSE A STYLE",
+        InterfaceTitleNav("CHOOSE STYLE",
             titleSize: 20, backCallback: currentActivity.setPreviousSubStep),
         SizedBox(
           height: MediaQuery.of(context).size.height / 3,

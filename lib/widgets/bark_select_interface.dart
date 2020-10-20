@@ -193,7 +193,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         InterfaceTitleNav(
-          "CHOOSE $_currentBarkLength BARK",
+          "PICK $_currentBarkLength BARK",
           skipCallback: skipLogic(),
           backCallback: currentActivity.setPreviousSubStep,
         ),
