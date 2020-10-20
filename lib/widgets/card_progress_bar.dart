@@ -66,7 +66,7 @@ class CardProgressBar extends StatelessWidget {
                 SetPictureCoordinatesScreen(card.picture, editing: true),
           ),
         );
-      currentActivity.setCardCreationStep(CardCreationSteps.snap);
+      if (!card.picture.isStock) currentActivity.setCardCreationStep(CardCreationSteps.snap);
     }
 
     void navigateToSong() {
