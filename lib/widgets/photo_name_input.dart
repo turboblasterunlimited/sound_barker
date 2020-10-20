@@ -20,6 +20,7 @@ class _PhotoNameInputState extends State<PhotoNameInput> {
   KaraokeCards cards;
   final _textFormFocus = FocusNode();
   final _textController = TextEditingController();
+  bool _firstBuild = true;
 
   double get _nameRightPadding {
     int nameLength = widget.picture.name.length ?? 0;
@@ -27,25 +28,13 @@ class _PhotoNameInputState extends State<PhotoNameInput> {
   }
 
   void handleNameChange(name) {
-    widget.updateNameCallback(name);
+    if (name != "") widget.updateNameCallback(name);
     FocusScope.of(context).unfocus();
     SystemChrome.restoreSystemUIOverlays();
   }
 
-  void _setTextControllerAndFocus() {
-    _textController.text = widget.picture.name;
-    _textFormFocus.addListener(() {
-      if (_textFormFocus.hasFocus)
-        _textController.selection = TextSelection(
-          baseOffset: 0,
-          extentOffset: _textController.text.length,
-        );
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    _setTextControllerAndFocus();
     cards = Provider.of<KaraokeCards>(context, listen: false);
 
     return Expanded(
@@ -54,12 +43,14 @@ class _PhotoNameInputState extends State<PhotoNameInput> {
         child: TextFormField(
           focusNode: _textFormFocus,
           autofocus: widget.picture.isNamed ? false : true,
-          controller: _textController,
+          // controller: _textController,
+
           enabled: !widget.picture.isStock,
           style: TextStyle(color: Colors.grey[600], fontSize: 20),
           textAlign:
               cards.currentPictureIsStock ? TextAlign.center : TextAlign.right,
           decoration: InputDecoration(
+              hintText: widget.picture.name,
               counterText: "",
               suffixIcon:
                   widget.picture.isStock ? null : Icon(LineAwesomeIcons.edit),

@@ -113,8 +113,8 @@ class Picture extends Asset {
   }) {
     this.coordinates = coordinates ??
         {
-          "leftEye": [-0.2, 0.2],
-          "rightEye": [0.2, 0.2],
+          "leftEye": [-0.15, 0.2],
+          "rightEye": [0.15, 0.2],
           "mouth": [0.0, 0.0],
           "mouthLeft": [-0.1, 0.0],
           "mouthRight": [0.1, 0.0],

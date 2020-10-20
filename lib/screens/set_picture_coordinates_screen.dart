@@ -68,7 +68,7 @@ class _SetPictureCoordinatesScreenState
 
   String _getInstructionalText() {
     return widget.newPicture.isNamed
-        ? "ALIGN FACE MARKERS"
+        ? "SET FACE"
         : "NAME YOUR PHOTO";
   }
 

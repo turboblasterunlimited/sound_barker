@@ -26,6 +26,7 @@ class _InterfaceTitleNavState extends State<InterfaceTitleNav> {
             child: Padding(
               padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Icon(LineAwesomeIcons.angle_left),
                   Text('Back'),
