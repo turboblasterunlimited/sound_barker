@@ -57,7 +57,6 @@ class CardProgressBar extends StatelessWidget {
     }
 
     void navigateToSnap() {
-      currentActivity.setCardCreationStep(CardCreationSteps.snap);
       if (card.picture.isStock)
         Navigator.of(context).pushNamed(PhotoLibraryScreen.routeName);
       else
@@ -67,6 +66,7 @@ class CardProgressBar extends StatelessWidget {
                 SetPictureCoordinatesScreen(card.picture, editing: true),
           ),
         );
+      currentActivity.setCardCreationStep(CardCreationSteps.snap);
     }
 
     void navigateToSong() {

@@ -50,16 +50,16 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
   }
 
   void _backCallback() {
+    if (card.picture.isStock)
+      Navigator.of(context).pushNamed(PhotoLibraryScreen.routeName);
+    else
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) =>
+              SetPictureCoordinatesScreen(card.picture, editing: true),
+        ),
+      );
     currentActivity.setCardCreationStep(CardCreationSteps.snap);
-      if (card.picture.isStock)
-        Navigator.of(context).pushNamed(PhotoLibraryScreen.routeName);
-      else
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) =>
-                SetPictureCoordinatesScreen(card.picture, editing: true),
-          ),
-        );
   }
 
   Widget build(BuildContext context) {
@@ -72,7 +72,8 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        InterfaceTitleNav("PICK A SONG", skipCallback: _skipCallback, backCallback: _backCallback),
+        InterfaceTitleNav("PICK A SONG",
+            skipCallback: _skipCallback, backCallback: _backCallback),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
