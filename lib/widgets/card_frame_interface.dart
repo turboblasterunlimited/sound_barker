@@ -24,6 +24,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   SoundController soundController;
   String selectedFrameCategory = "Birthday";
   List<Widget> currentFrameCategories;
+  final _carouselController = CarouselController();
 
   @override
   void dispose() {
@@ -51,7 +52,8 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   }
 
   String rootPath = "assets/card_borders/";
-
+  
+  // Text string and Map Keys must match.
   List<Widget> getFrameCategories() {
     return [
       Text('Birthday', style: TextStyle(fontSize: 15)),
@@ -59,7 +61,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       Text('Jewish', style: TextStyle(fontSize: 15)),
       Text('New Years', style: TextStyle(fontSize: 15)),
       Text('USA Holidays', style: TextStyle(fontSize: 15)),
-      Text('Other Holidays', style: TextStyle(fontSize: 15)),
+      Text('Holidays', style: TextStyle(fontSize: 15)),
       Text('Sports', style: TextStyle(fontSize: 15)),
       Text('Themes', style: TextStyle(fontSize: 15)),
       Text('Designs', style: TextStyle(fontSize: 15)),
@@ -108,7 +110,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       'liberty-flag-4th1.png',
       'flag-4th2.png'
     ],
-    "Other Holidays": [
+    "Holidays": [
       'thanksgiving.png',
       'halloween.png',
       'easter.png',
@@ -122,7 +124,6 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       'football.png',
       'hockey.png',
       'soccer.png',
-
     ],
     "Themes": [
       '50s.png',
@@ -296,21 +297,44 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   }
 
   Widget categoryList() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 5.0),
-      child: CarouselSlider(
-        items: currentFrameCategories,
-        options: CarouselOptions(
-          enlargeCenterPage: true,
-          onPageChanged: (index, CarouselPageChangedReason reason) {
-            _handleCategoryChange(index);
-          },
-          scrollPhysics: FixedExtentScrollPhysics(),
-          initialPage: 0,
-          height: 30,
-          viewportFraction: 0.4,
+    return Stack(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 5.0),
+          child: CarouselSlider(
+            carouselController: _carouselController,
+            items: currentFrameCategories,
+            options: CarouselOptions(
+              enlargeCenterPage: true,
+              onPageChanged: (index, CarouselPageChangedReason reason) {
+                _handleCategoryChange(index);
+              },
+              scrollPhysics: FixedExtentScrollPhysics(),
+              initialPage: 0,
+              height: 30,
+              viewportFraction: 0.4,
+            ),
+          ),
         ),
-      ),
+        Positioned(
+          left: 0,
+          child: GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: _carouselController.previousPage,
+            onPanStart: (_) => _carouselController.previousPage(),
+            child: Container(width: 65, height: 25),
+          ),
+        ),
+        Positioned(
+          right: 0,
+          child: GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: _carouselController.nextPage,
+            onPanStart: (_) => _carouselController.nextPage(),
+            child: Container(width: 65, height: 25),
+          ),
+        ),
+      ],
     );
   }
 
@@ -407,7 +431,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
 
     return Column(
       children: <Widget>[
-        InterfaceTitleNav("CHOOSE ART",
+        InterfaceTitleNav("CHOOSE FRAME",
             backCallback: backCallback, skipCallback: skipCallback),
         // Divider(
         //   color: Theme.of(context).primaryColor,
