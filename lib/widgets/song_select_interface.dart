@@ -1,15 +1,16 @@
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/screens/creatable_song_select_screen.dart';
+import 'package:K9_Karaoke/screens/photo_library_screen.dart';
+import 'package:K9_Karaoke/screens/set_picture_coordinates_screen.dart';
+import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:flutter/material.dart';
-import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/sound_controller.dart';
 import 'package:K9_Karaoke/widgets/song_playback_card.dart';
 import '../providers/songs.dart';
 import '../providers/spinner_state.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class SongSelectInterface extends StatefulWidget {
   @override
@@ -22,6 +23,8 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
   var tween;
   final _listKey = GlobalKey<AnimatedListState>();
   Songs songs;
+  KaraokeCard card;
+  CurrentActivity currentActivity;
 
   @override
   void initState() {
@@ -40,105 +43,96 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
     super.dispose();
   }
 
+  void _skipCallback() {
+    card.noSongNoFormula();
+    currentActivity.setCardCreationStep(
+        CardCreationSteps.speak, CardCreationSubSteps.seven);
+  }
+
+  void _backCallback() {
+    currentActivity.setCardCreationStep(CardCreationSteps.snap);
+      if (card.picture.isStock)
+        Navigator.of(context).pushNamed(PhotoLibraryScreen.routeName);
+      else
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) =>
+                SetPictureCoordinatesScreen(card.picture, editing: true),
+          ),
+        );
+  }
+
   Widget build(BuildContext context) {
     songs = Provider.of<Songs>(context);
     final soundController = Provider.of<SoundController>(context);
     final spinnerState = Provider.of<SpinnerState>(context, listen: true);
-    final card = Provider.of<KaraokeCards>(context, listen: false).current;
-    final currentActivity =
-        Provider.of<CurrentActivity>(context, listen: false);
+    card = Provider.of<KaraokeCards>(context, listen: false).current;
+    currentActivity = Provider.of<CurrentActivity>(context, listen: false);
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        Stack(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
+        InterfaceTitleNav("PICK A SONG", skipCallback: _skipCallback, backCallback: _backCallback),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            RawMaterialButton(
+              onPressed: () {},
+              child: Text(
+                "My Songs",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    fontSize: 15),
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(40.0),
+                side:
+                    BorderSide(color: Theme.of(context).primaryColor, width: 3),
+              ),
+              elevation: 2.0,
+              fillColor: Theme.of(context).primaryColor,
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 18),
+            ),
+            Padding(padding: EdgeInsets.only(left: 16)),
+            Stack(
+              overflow: Overflow.visible,
+              children: [
                 RawMaterialButton(
-                  onPressed: () {},
-                  child: Text(
-                    "My Songs",
-                    style: TextStyle(
+                  onPressed: spinnerState.isLoading
+                      ? null
+                      : () {
+                          Navigator.pushNamed(
+                              context, CreatableSongSelectScreen.routeName);
+                        },
+                  child: Text("New Song",
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontSize: 15),
-                  ),
+                        color: Theme.of(context).primaryColor,
+                        fontSize: 15,
+                      )),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(40.0),
                     side: BorderSide(
                         color: Theme.of(context).primaryColor, width: 3),
                   ),
                   elevation: 2.0,
-                  fillColor: Theme.of(context).primaryColor,
                   padding:
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 18),
                 ),
-                Padding(padding: EdgeInsets.only(left: 16)),
-                Stack(
-                  overflow: Overflow.visible,
-                  children: [
-                    RawMaterialButton(
-                      onPressed: spinnerState.isLoading
-                          ? null
-                          : () {
-                              Navigator.pushNamed(
-                                  context, CreatableSongSelectScreen.routeName);
-                            },
-                      child: Text("New Song",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).primaryColor,
-                            fontSize: 15,
-                          )),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(40.0),
-                        side: BorderSide(
-                            color: Theme.of(context).primaryColor, width: 3),
-                      ),
-                      elevation: 2.0,
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8, horizontal: 18),
-                    ),
-                    if (songs.all.isEmpty)
-                      AnimatedBuilder(
-                          animation: animationController,
-                          builder: (BuildContext context, Widget child) {
-                            return Positioned(
-                              bottom: tween.value,
-                              left: 0,
-                              right: 0,
-                              child: Icon(Icons.arrow_upward,
-                                  size: 50,
-                                  color: Theme.of(context).primaryColor),
-                            );
-                          }),
-                  ],
-                ),
+                if (songs.all.isEmpty)
+                  AnimatedBuilder(
+                      animation: animationController,
+                      builder: (BuildContext context, Widget child) {
+                        return Positioned(
+                          bottom: tween.value,
+                          left: 0,
+                          right: 0,
+                          child: Icon(Icons.arrow_upward,
+                              size: 50, color: Theme.of(context).primaryColor),
+                        );
+                      }),
               ],
-            ),
-            Positioned(
-              right: 0,
-              bottom: 0,
-              top: 0,
-              child: GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onTap: () {
-                  card.noSongNoFormula();
-                  currentActivity.setCardCreationStep(
-                      CardCreationSteps.speak, CardCreationSubSteps.seven);
-                },
-                child: Row(
-                  children: <Widget>[
-                    Text('Skip', style: TextStyle(color: Colors.grey)),
-                    Icon(
-                      LineAwesomeIcons.angle_right,
-                      color: Colors.grey,
-                    ),
-                  ],
-                ),
-              ),
             ),
           ],
         ),
