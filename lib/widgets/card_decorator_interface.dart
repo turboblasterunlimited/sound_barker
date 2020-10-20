@@ -123,6 +123,10 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
 
   double iconButtonSize = 35;
 
+  String get _sizeSliderLabel {
+    return decorationController.isTyping ? "Font Size" : "Line Size";
+  }
+
   @override
   Widget build(BuildContext context) {
     soundController ??= Provider.of<SoundController>(context);
@@ -203,31 +207,44 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                     ),
                   ),
                   // Text/Drawing Size slider
-                  SizedBox(
-                    width: 105,
-                    child: SliderTheme(
-                      data: SliderTheme.of(context).copyWith(
-                        thumbColor: Colors.blue[700],
-                        trackHeight: 20,
-                        trackShape: TriangularSliderTrackShape(
-                            Theme.of(context).primaryColor),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        _sizeSliderLabel,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Theme.of(context).primaryColor,
+                        ),
                       ),
-                      child: Slider(
-                        value: decorationController.size,
-                        min: 8,
-                        max: 40,
-                        divisions: 32,
-                        label: decorationController.size.round().toString(),
-                        onChanged: (double sliderVal) {
-                          decorationController.setSize(sliderVal);
-                        },
+                      SizedBox(
+                        width: 100,
+                        child: SliderTheme(
+                          data: SliderTheme.of(context).copyWith(
+                            thumbColor: Colors.blue[700],
+                            trackHeight: 20,
+                            trackShape: TriangularSliderTrackShape(
+                              Theme.of(context).primaryColor,
+                            ),
+                          ),
+                          child: Slider(
+                            value: decorationController.size,
+                            min: 8,
+                            max: 40,
+                            divisions: 32,
+                            label: decorationController.size.round().toString(),
+                            onChanged: (double sliderVal) {
+                              decorationController.setSize(sliderVal);
+                            },
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
 
                   // Undo button
                   Padding(
-                    padding: const EdgeInsets.only(right: 10.0, bottom: 5.0),
+                    padding: const EdgeInsets.only(bottom: 5.0),
                     child: IconButton(
                       color: Theme.of(context).primaryColor,
                       onPressed: _handleUndo,

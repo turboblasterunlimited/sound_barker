@@ -202,10 +202,13 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
           children: <Widget>[
             // Spacer(),
             Expanded(
+              flex: 5,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   RawMaterialButton(
+                    // constraints:
+                    //         const BoxConstraints(minWidth: 70, minHeight: 33),
                     onPressed: () =>
                         setState(() => currentBarks = BarkTypes.myBarks),
                     child: Text(
@@ -233,6 +236,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
               ),
             ),
             Expanded(
+              flex: 6,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -288,7 +292,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
                     children: [
                       RawMaterialButton(
                         constraints:
-                            const BoxConstraints(minWidth: 33, minHeight: 33),
+                            const BoxConstraints(minWidth: 25, minHeight: 25),
                         onPressed: () =>
                             setState(() => currentBarks = BarkTypes.fx),
                         child: Text(

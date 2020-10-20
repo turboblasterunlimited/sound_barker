@@ -50,6 +50,8 @@ class SongArrangementSelector extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 RawMaterialButton(
+                  constraints:
+                      const BoxConstraints(minWidth: 70.0, minHeight: 36.0),
                   onPressed: () =>
                       _createSong(songFormula.arrangement["harmonized"]),
                   child: Text(
@@ -69,8 +71,10 @@ class SongArrangementSelector extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(
                       vertical: 13, horizontal: 22.0),
                 ),
-                Padding(padding: EdgeInsets.all(10)),
+                Padding(padding: EdgeInsets.all(5)),
                 RawMaterialButton(
+                  constraints:
+                      const BoxConstraints(minWidth: 60.0, minHeight: 36.0),
                   onPressed: () =>
                       _createSong(songFormula.arrangement["pitched"]),
                   child: Text(

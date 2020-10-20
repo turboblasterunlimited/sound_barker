@@ -58,8 +58,7 @@ class BarkRecorderState extends State<BarkRecorder>
 
   void startRecorder() async {
     // Directory tempDir = await getTemporaryDirectory();
-    this.filePath =
-        '$myAppStoragePath/tempRaw.aac';
+    this.filePath = '$myAppStoragePath/tempRaw.aac';
     PermissionStatus status = await Permission.microphone.request();
 
     // if (status != PermissionStatus.granted) {
@@ -110,6 +109,14 @@ class BarkRecorderState extends State<BarkRecorder>
     currentActivity.setCardCreationStep(CardCreationSteps.song);
   }
 
+  void _skipCallback() {
+    currentActivity.setCardCreationSubStep(CardCreationSubSteps.two);
+  }
+
+  bool _systemBusy() {
+    return spinnerState.isLoading || soundController.player.isPlaying;
+  }
+
   @override
   Widget build(BuildContext context) {
     cards = Provider.of<KaraokeCards>(context);
@@ -121,7 +128,8 @@ class BarkRecorderState extends State<BarkRecorder>
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
-        InterfaceTitleNav('RECORD BARKS', backCallback: _backCallback),
+        InterfaceTitleNav('CAPTURE BARKS',
+            backCallback: _backCallback, skipCallback: _skipCallback),
         ButtonBar(
           alignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -157,8 +165,8 @@ class BarkRecorderState extends State<BarkRecorder>
                   Padding(padding: EdgeInsets.only(top: 16)),
                   Text(
                       _isRecording
-                          ? "RECORDING...  \nTAP TO STOP"
-                          : "START RECORDING",
+                          ? "RECORDING...\nTAP TO STOP"
+                          : "RECORD AUDIO",
                       style: TextStyle(
                           fontSize: 16, color: Theme.of(context).errorColor))
                 ],
@@ -166,19 +174,27 @@ class BarkRecorderState extends State<BarkRecorder>
             ),
             SizedBox(
               height: 130,
-              width: 150,
+              width: 140,
               child: Column(
                 children: <Widget>[
-                  IconButton(
-                    icon: Icon(Icons.arrow_forward),
-                    iconSize: 70,
-                    onPressed: () {
-                      // NAV TO SELECT BARKS
-                      currentActivity
-                          .setCardCreationSubStep(CardCreationSubSteps.two);
-                    },
+                  RawMaterialButton(
+                    constraints:
+                        const BoxConstraints(minWidth: 70.0, minHeight: 36.0),
+                    onPressed: _systemBusy() ? null : null,
+                    child: Icon(
+                      Icons.movie,
+                      size: 30,
+                      color: Colors.white,
+                    ),
+                    shape: CircleBorder(),
+                    elevation: 2.0,
+                    fillColor: Theme.of(context).primaryColor,
+                    padding: const EdgeInsets.all(20.0),
                   ),
-                  Text("SKIP", style: TextStyle(fontSize: 16))
+                  Padding(padding: EdgeInsets.only(top: 16)),
+                  Text("UPLOAD VIDEO",
+                      style: TextStyle(
+                          fontSize: 16, color: Theme.of(context).primaryColor))
                 ],
               ),
             ),
