@@ -20,10 +20,12 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
   Pictures pictures;
   KaraokeCards cards;
 
-  List<Widget> _pictureGridTiles(List<Picture> pics, [usersDisplayedPictures]) {
+  List<Widget> _pictureGridTiles(List<Picture> pics,
+      [usersDisplayedPictures, stateSetter]) {
     List<Widget> widgets = [];
-    pics.asMap().forEach((i, picture) {
-      widgets.add(PictureCard(picture, pictures, usersDisplayedPictures));
+    pics.forEach((picture) {
+      widgets.add(
+          PictureCard(picture, pictures, usersDisplayedPictures, stateSetter));
     });
     return widgets;
   }
@@ -31,10 +33,9 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
   List<Widget> _usersPictureGridTiles() {
     List<Widget> result = [];
     // each picture gets a reference to all the user's own displayed pictues, for handling delete animation: 'result'.
-    _pictureGridTiles(pictures.all, result)
+    _pictureGridTiles(pictures.all, result, () => setState(() => {}))
         .forEach((picCard) => result.add(picCard));
     result.insert(0, _addPictureButton());
-
     return result;
   }
 
@@ -147,7 +148,7 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
           children: <Widget>[
             InterfaceTitleNav(
               "CHOOSE PHOTO",
-              titleSize: 22,
+              titleSize: 20,
               backCallback: _backCallback,
             ),
             Expanded(
@@ -155,6 +156,7 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
                 slivers: <Widget>[
                   SliverList(delegate: _dogGridDivider("Your Dogs")),
                   SliverGrid.count(
+                    // key: _listKey,
                     children: _usersPictureGridTiles(),
                     crossAxisCount: 3,
                     crossAxisSpacing: 3,

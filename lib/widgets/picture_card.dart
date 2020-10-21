@@ -1,6 +1,5 @@
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
-import 'package:K9_Karaoke/widgets/spinner_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
@@ -9,13 +8,15 @@ import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'dart:io';
 
 import '../providers/pictures.dart';
-import '../screens/set_picture_coordinates_screen.dart';
 
 class PictureCard extends StatefulWidget {
   final Picture picture;
   final Pictures pictures;
   List<Widget> displayList;
-  PictureCard(this.picture, this.pictures, this.displayList, {Key key})
+  Function setParentState;
+
+  PictureCard(this.picture, this.pictures, this.displayList, this.setParentState,
+      {Key key})
       : super(key: key);
 
   @override
@@ -34,15 +35,15 @@ class _PictureCardState extends State<PictureCard>
     super.initState();
     imageController = Provider.of<ImageController>(context, listen: false);
 
-    animationController =
-        AnimationController(vsync: this, duration: const Duration(seconds: 1));
+    // animationController =
+    //     AnimationController(vsync: this, duration: const Duration(seconds: 1));
 
-    // If was just created, animate in. Otherwise, don't.
-    if (widget.picture.creationAnimation) {
-      animationController.forward();
-    } else {
-      animationController.forward(from: 1.0);
-    }
+    // // If was just created, animate in. Otherwise, don't.
+    // if (widget.picture.creationAnimation) {
+    //   animationController.forward();
+    // } else {
+    //   animationController.forward(from: 1.0);
+    // }
   }
 
   @override
@@ -52,11 +53,13 @@ class _PictureCardState extends State<PictureCard>
     super.dispose();
   }
 
-  void imageActions(String action) {
+  void imageActions(String action) async {
     if (action == "DELETE") {
-      animationController.reverse();
+      // animationController.reverse();
       widget.displayList.remove(this);
-      widget.pictures.remove(widget.picture);
+      await widget.pictures.remove(widget.picture);
+      widget.setParentState();
+      // Future.delayed(Duration(seconds: 1), widget.setParentState);
     }
   }
 
@@ -98,7 +101,7 @@ class _PictureCardState extends State<PictureCard>
     }
   }
 
-  Widget pictureCard(animation) {
+  Widget pictureCard() {
     return Container(
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
@@ -159,19 +162,20 @@ class _PictureCardState extends State<PictureCard>
     cards = Provider.of<KaraokeCards>(context, listen: false);
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
 
-    Animation animation = Tween(begin: 0.0, end: 1.0).animate(
-        CurvedAnimation(parent: animationController, curve: Curves.ease));
+    // Animation animation = Tween(begin: 0.0, end: 1.0).animate(
+    //     CurvedAnimation(parent: animationController, curve: Curves.ease));
 
-    return AnimatedBuilder(
-      key: widget.key,
-      animation: animation,
-      child: pictureCard(animation),
-      builder: (context, child) {
-        return Transform.scale(
-          scale: animation.value,
-          child: child,
-        );
-      },
-    );
+    return pictureCard();
+    // return AnimatedBuilder(
+    //   key: widget.key,
+    //   animation: animation,
+    //   child: pictureCard(animation),
+    //   builder: (context, child) {
+    //     return Transform.scale(
+    //       scale: animation.value,
+    //       child: child,
+    //     );
+    //   },
+    // );
   }
 }

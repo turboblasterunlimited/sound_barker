@@ -31,12 +31,12 @@ class Pictures with ChangeNotifier {
     notifyListeners();
   }
 
-  dynamic remove(picture) {
+  Future<void> remove(picture) async{
     try {
-      RestAPI.deleteImage(picture);
+      await RestAPI.deleteImage(picture);
     } catch (e) {
       print(e);
-      return;
+      return Future.delayed(Duration(seconds: 0));
     }
     all.remove(picture);
     picture.delete();

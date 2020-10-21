@@ -421,7 +421,7 @@ class RestAPI {
     return response?.data;
   }
 
-  static void deleteImage(Picture image) async {
+  static Future<void> deleteImage(Picture image) async {
     final url = 'http://$serverIP/image/${image.fileId}';
     print("deleteImage req url: $url");
     var response;
