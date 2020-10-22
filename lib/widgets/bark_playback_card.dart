@@ -67,6 +67,9 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
   void startAll() async {
     print("bark playback");
     setState(() => _isPlaying = true);
+
+    // Try readying the amplitudes first before tracking.
+    print("bark id: ${widget.bark.fileId}");
     imageController.mouthTrackSound(filePath: widget.bark.amplitudesPath);
     await widget.soundController.startPlayer(widget.bark.filePath, stopAll);
   }
