@@ -23,7 +23,6 @@ import 'package:sentry/sentry.dart';
 import 'package:K9_Karaoke/providers/active_wave_streamer.dart';
 import 'package:K9_Karaoke/services/http_controller.dart';
 import './screens/main_screen.dart';
-import 'screens/creatable_song_select_screen.dart';
 
 import './providers/pictures.dart';
 import './providers/barks.dart';
@@ -142,8 +141,6 @@ class MyApp extends StatelessWidget {
           routes: {
             AccountScreen.routeName: (ctx) => AccountScreen(),
             MainScreen.routeName: (ctx) => MainScreen(),
-            CreatableSongSelectScreen.routeName: (ctx) =>
-                CreatableSongSelectScreen(),
             MenuScreen.routeName: (ctx) => MenuScreen(),
             PhotoLibraryScreen.routeName: (ctx) => PhotoLibraryScreen(),
             CameraOrUploadScreen.routeName: (ctx) => CameraOrUploadScreen(),

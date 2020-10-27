@@ -1,10 +1,8 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/spinner_state.dart';
-import 'package:K9_Karaoke/screens/creatable_song_select_screen.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:flutter/material.dart';
@@ -107,7 +105,6 @@ class BarkRecorderState extends State<BarkRecorder>
   }
 
   void _backCallback() {
-    // Navigator.of(context).pushNamed(CreatableSongSelectScreen.routeName);
     currentActivity.setCardCreationStep(CardCreationSteps.song);
   }
 

@@ -2,6 +2,7 @@ import 'package:K9_Karaoke/providers/creatable_songs.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../widgets/error_dialog.dart';
 import '../providers/sound_controller.dart';
@@ -21,6 +22,7 @@ class CreatableSongCard extends StatefulWidget {
 
 class _CreatableSongCardState extends State<CreatableSongCard> {
   bool isPlaying = false;
+  KaraokeCards cards;
 
   @override
   void dispose() {
@@ -40,7 +42,8 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
       await widget.soundController.startPlayer(
           "https://storage.googleapis.com/song_barker_sequences/" +
               widget.creatableSong.backingTrackUrl,
-          stopPlayerCallBack(), true);
+          stopPlayerCallBack(),
+          true);
       Future.delayed(Duration(milliseconds: 50), () {
         setState(() => isPlaying = true);
       });
@@ -53,8 +56,10 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
     print("formula selected");
     widget.cards.setCurrentSong(null);
     widget.cards.setCurrentSongFormula(widget.creatableSong);
-    widget.currentActivity.setCardCreationStep(CardCreationSteps.speak);
-    widget.currentActivity.setCardCreationSubStep(CardCreationSubSteps.one);
+    Future.delayed(
+      Duration(milliseconds: 500),
+      () => widget.currentActivity.setCardCreationStep(CardCreationSteps.speak),
+    );
   }
 
   void _handlePlayStopButton() {
@@ -68,6 +73,9 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
 
   @override
   Widget build(BuildContext context) {
+    cards = Provider.of<KaraokeCards>(context, listen: false);
+    bool isSelected = cards.current.songFormula == widget.creatableSong;
+
     return Row(
       children: <Widget>[
         // Playback button
@@ -87,11 +95,16 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
               children: <Widget>[
                 // Title
                 Center(
-                  child: Text(widget.creatableSong.fullName,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 16)),
+                  child: Text(
+                    widget.creatableSong.fullName,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: isSelected
+                          ? Colors.white
+                          : Theme.of(context).primaryColor,
+                      fontSize: 16,
+                    ),
+                  ),
                 ),
                 // Subtitle
                 // Center(
@@ -111,7 +124,7 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
               side: BorderSide(color: Theme.of(context).primaryColor, width: 3),
             ),
             elevation: 2.0,
-            // fillColor: Theme.of(context).primaryColor,
+            fillColor: isSelected ? Theme.of(context).primaryColor : null,
             // padding:
             //     const EdgeInsets.symmetric(vertical: 0, horizontal: 22.0),
           ),
