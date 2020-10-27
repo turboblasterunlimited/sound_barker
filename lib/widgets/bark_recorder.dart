@@ -107,7 +107,7 @@ class BarkRecorderState extends State<BarkRecorder>
   }
 
   void _backCallback() {
-    Navigator.of(context).pushNamed(CreatableSongSelectScreen.routeName);
+    // Navigator.of(context).pushNamed(CreatableSongSelectScreen.routeName);
     currentActivity.setCardCreationStep(CardCreationSteps.song);
   }
 

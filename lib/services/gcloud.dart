@@ -77,7 +77,7 @@ class Gcloud {
         print("Downloading!!! $filePath");
     try {
       Response response = await HttpController.dio.get(
-        "https://storage.googleapis.com/song_barker_sequences/$bucketFp",
+        "https://storage.googleapis.com/$bucketName/$bucketFp",
         //Received data with List<int>
         options: Options(
             responseType: ResponseType.bytes,
