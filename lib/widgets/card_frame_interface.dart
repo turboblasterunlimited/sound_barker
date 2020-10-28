@@ -27,6 +27,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   List<Widget> currentFrameCategories;
   final _carouselController = CarouselController();
   final _scrollController = ScrollController();
+  double _listItemWidth;
 
   @override
   void dispose() {
@@ -163,45 +164,48 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   };
 
   Widget frameSelectable(fileName) {
-    return GestureDetector(
-      onTap: () {
-        setState(() => selectedFrame = fileName);
-        cards.setFrame(rootPath + fileName);
-        cards.current.setShouldDeleteOldDecortionImage();
-        SystemChrome.setEnabledSystemUIOverlays([]);
-      },
-      child: Container(
-        decoration: selectedFrame == fileName
-            ? BoxDecoration(
-                border: Border.all(
-                  color: Colors.blue,
-                  width: 3,
+      return GestureDetector(
+        onTap: () {
+          setState(() => selectedFrame = fileName);
+          cards.setFrame(rootPath + fileName);
+          cards.current.setShouldDeleteOldDecortionImage();
+          SystemChrome.setEnabledSystemUIOverlays([]);
+        },
+        child: Container(
+          decoration: selectedFrame == fileName
+              ? BoxDecoration(
+                  border: Border.all(
+                    color: Colors.blue,
+                    width: 3,
+                  ),
+                )
+              : BoxDecoration(),
+          child: SizedBox(
+            child: Stack(
+              alignment: AlignmentDirectional.center,
+              children: [
+                LayoutBuilder(
+                  builder: (_, constraints) {
+                    // if (_listItemWidth == null)
+                      _listItemWidth ??= constraints.biggest.width;
+                    return Padding(
+                      padding: EdgeInsets.only(
+                        top: constraints.biggest.height * 72 / 778,
+                        bottom: constraints.biggest.height * 194 / 778,
+                      ),
+                      child: Image.file(
+                        File(cards.current.picture.filePath),
+                      ),
+                    );
+                  },
                 ),
-              )
-            : BoxDecoration(),
-        child: SizedBox(
-          child: Stack(
-            alignment: AlignmentDirectional.center,
-            children: [
-              LayoutBuilder(
-                builder: (_, constraints) {
-                  return Padding(
-                    padding: EdgeInsets.only(
-                      top: constraints.biggest.height * 72 / 778,
-                      bottom: constraints.biggest.height * 194 / 778,
-                    ),
-                    child: Image.file(
-                      File(cards.current.picture.filePath),
-                    ),
-                  );
-                },
-              ),
-              Image.asset(rootPath + fileName),
-            ],
+                Image.asset(rootPath + fileName),
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    
   }
 
   Widget noFrame() {
@@ -319,7 +323,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       selectedFrameCategory = label;
     });
     if (!fromScrolling)
-      _scrollController.jumpTo(_categoryIndextoFrameIndex(index) * 101.0);
+      _scrollController.jumpTo(_categoryIndextoFrameIndex(index) * (_listItemWidth + 5));
   }
 
   Widget categoryList() {
@@ -415,7 +419,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
             //   child:
             CustomScrollView(
           scrollDirection: Axis.horizontal,
-          // controller: _scrollController,
+          controller: _scrollController,
           slivers: <Widget>[
             SliverGrid(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
