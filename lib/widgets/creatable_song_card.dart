@@ -93,7 +93,6 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
             onPressed: _selectSongFormula,
             child: Column(
               children: <Widget>[
-                // Title
                 Center(
                   child: Text(
                     widget.creatableSong.fullName,
@@ -106,27 +105,14 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
                     ),
                   ),
                 ),
-                // Subtitle
-                // Center(
-                //   child: Text(
-                //     widget.creatableSong["name"],
-                //     style: TextStyle(
-                //         fontWeight: FontWeight.w200,
-                //         color: Colors.grey,
-                //         fontSize: 11),
-                //   ),
-                // ),
               ],
             ),
-
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(40.0),
               side: BorderSide(color: Theme.of(context).primaryColor, width: 3),
             ),
             elevation: 2.0,
             fillColor: isSelected ? Theme.of(context).primaryColor : null,
-            // padding:
-            //     const EdgeInsets.symmetric(vertical: 0, horizontal: 22.0),
           ),
         ),
       ],

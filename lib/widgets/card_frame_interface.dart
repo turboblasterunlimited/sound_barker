@@ -20,11 +20,13 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   KaraokeCards cards;
   CurrentActivity currentActivity;
   String selectedFrame;
+  int _currentFrameCategoryIndex = 0;
   ImageController imageController;
   SoundController soundController;
   String selectedFrameCategory = "Birthday";
   List<Widget> currentFrameCategories;
   final _carouselController = CarouselController();
+  final _scrollController = ScrollController();
 
   @override
   void dispose() {
@@ -54,6 +56,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   String rootPath = "assets/card_borders/";
 
   // Text string and Map Keys must match.
+  // needs to be a method so widgets wont be mutated.
   List<Widget> getFrameCategories() {
     return [
       Text('Birthday', style: TextStyle(fontSize: 15)),
@@ -181,7 +184,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
             alignment: AlignmentDirectional.center,
             children: [
               LayoutBuilder(
-                builder: (context, constraints) {
+                builder: (_, constraints) {
                   return Padding(
                     padding: EdgeInsets.only(
                       top: constraints.biggest.height * 72 / 778,
@@ -297,11 +300,12 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     }
   }
 
-  void _handleCategoryChange(index) {
+  void _handleCategoryChange(index, [fromScrolling = false]) {
     var categories = getFrameCategories();
     var selectedWidget = categories[index] as Text;
     String label = selectedWidget.data;
     setState(() {
+      _currentFrameCategoryIndex = index;
       _resetSizes(categories);
       currentFrameCategories[index] = Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -314,6 +318,8 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       );
       selectedFrameCategory = label;
     });
+    if (!fromScrolling)
+      _scrollController.jumpTo(_categoryIndextoFrameIndex(index) * 101.0);
   }
 
   Widget categoryList() {
@@ -358,46 +364,97 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     );
   }
 
+  List<String> get _allFrames {
+    return frameFileNames.values.expand((element) => element).toList();
+  }
+
+  int get _framesCount {
+    return _allFrames.length;
+  }
+
+  List<int> get _frameCategoryCounts {
+    return frameFileNames.values.map((cat) => cat.length).toList();
+  }
+
+  List<String> get _frameCategories {
+    return frameFileNames.keys.toList();
+  }
+
+  int get _numberOfFrameCategories {
+    return _frameCategories.length;
+  }
+
+  int _frameIndexToCategoryIndex(int frameIndex) {
+    int frameCount = 0;
+    for (int i = 0; i < _numberOfFrameCategories; i++) {
+      if (frameCount >= frameIndex) return i;
+      frameCount += _frameCategoryCounts[i];
+    }
+  }
+
+  int _categoryIndextoFrameIndex(int categoryIndex) {
+    int frameCount = 0;
+    for (int i = 0; i < _numberOfFrameCategories; i++) {
+      if (i == categoryIndex) return frameCount;
+      frameCount += _frameCategoryCounts[i];
+    }
+  }
+
   Widget frameList() {
     // first item should be no frame, and second is decoration image if exists.
     var iOffset = cards.current.decorationImage == null ? 1 : 2;
     return Center(
       child: Container(
         height: 140,
-        child: NotificationListener<ScrollUpdateNotification>(
-          onNotification: (notification) {
-            print("Scroll pixels: ${notification.metrics.pixels}");
-            return null;
-          },
-          child: CustomScrollView(
-            scrollDirection: Axis.horizontal,
-            slivers: <Widget>[
-              SliverGrid(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 1,
-                  crossAxisSpacing: 5,
-                  mainAxisSpacing: 5,
-                  childAspectRatio: 778 / 656,
-                ),
-                delegate: SliverChildBuilderDelegate(
-                  (BuildContext context, int i) {
-                    if (i == 0)
-                      return noFrame();
-                    else if (i == 1 && cards.current.decorationImage != null)
-                      return decorationImage();
-                    else
-                      return frameSelectable(frameFileNames.values
-                          .expand((element) => element)
-                          .toList()[i - iOffset]);
-                  },
-                  childCount: frameFileNames.values
-                          .expand((element) => element)
-                          .length +
-                      iOffset,
-                ),
+        child:
+            // NotificationListener<ScrollUpdateNotification>(
+            //   onNotification: (notification) {
+            //     // print("Scroll pixels: ${notification.metrics.pixels}");
+            //     return null;
+            //   },
+            //   child:
+            CustomScrollView(
+          scrollDirection: Axis.horizontal,
+          // controller: _scrollController,
+          slivers: <Widget>[
+            SliverGrid(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 1,
+                crossAxisSpacing: 5,
+                mainAxisSpacing: 5,
+                childAspectRatio: 778 / 656,
               ),
-            ],
-          ),
+              delegate: SliverChildBuilderDelegate(
+                (BuildContext _, int scrollIndex) {
+                  // print("frames count: $_framesCount");
+                  // print("frame cat count: $_frameCategoryCounts");
+                  // if scrolled beyond total frame count (TODO: account for negative indices)
+
+                  int frameIndex = scrollIndex % _framesCount;
+                  int frameCategoryIndex =
+                      _frameIndexToCategoryIndex(frameIndex);
+                  // if (frameCategoryIndex != _currentFrameCategoryIndex)
+                  //   _handleCategoryChange(frameCategoryIndex, true);
+                  print("scroll index: $scrollIndex");
+                  print("frame index: $frameIndex");
+                  print("frame: ${_allFrames[frameIndex]}");
+                  return frameSelectable(_allFrames[frameIndex]);
+
+                  // if (i == 0)
+                  //   return noFrame();
+                  // else if (i == 1 && cards.current.decorationImage != null)
+                  //   return decorationImage();
+                  // else
+                  //   return frameSelectable(_allFrames[i - iOffset]);
+                },
+                // childCount: frameFileNames.values
+                //         .expand((element) => element)
+                //         .length +
+                //     iOffset,
+              ),
+            ),
+          ],
+          // ),
         ),
       ),
     );
