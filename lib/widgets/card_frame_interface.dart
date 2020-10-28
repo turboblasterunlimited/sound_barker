@@ -52,7 +52,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   }
 
   String rootPath = "assets/card_borders/";
-  
+
   // Text string and Map Keys must match.
   List<Widget> getFrameCategories() {
     return [
@@ -65,6 +65,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       Text('Sports', style: TextStyle(fontSize: 15)),
       Text('Themes', style: TextStyle(fontSize: 15)),
       Text('Designs', style: TextStyle(fontSize: 15)),
+      Text('Simple', style: TextStyle(fontSize: 15)),
     ];
   }
 
@@ -141,6 +142,14 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       'abstract4.png',
       'abstract-rainbow.png',
       'abstract-psychedelic.png',
+      'color-white.png',
+      'color-black.png',
+      'color-magenta.png',
+      'color-teal.png',
+      'color-red.png',
+      'color-blue.png',
+    ],
+    "Simple": [
       'color-white.png',
       'color-black.png',
       'color-magenta.png',
@@ -264,6 +273,17 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
               Image.file(
                 File(cards.current.decorationImage.filePath),
               ),
+              Positioned(
+                bottom: 5,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: Container(
+                    color: Colors.white,
+                    child: Text("Current Artwork"),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -344,35 +364,80 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     return Center(
       child: Container(
         height: 140,
-        child: CustomScrollView(
-          scrollDirection: Axis.horizontal,
-          slivers: <Widget>[
-            SliverGrid(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 1,
-                crossAxisSpacing: 5,
-                mainAxisSpacing: 5,
-                childAspectRatio: 778 / 656,
+        child: NotificationListener<ScrollUpdateNotification>(
+          onNotification: (notification) {
+            print("Scroll pixels: ${notification.metrics.pixels}");
+            return null;
+          },
+          child: CustomScrollView(
+            scrollDirection: Axis.horizontal,
+            slivers: <Widget>[
+              SliverGrid(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 1,
+                  crossAxisSpacing: 5,
+                  mainAxisSpacing: 5,
+                  childAspectRatio: 778 / 656,
+                ),
+                delegate: SliverChildBuilderDelegate(
+                  (BuildContext context, int i) {
+                    if (i == 0)
+                      return noFrame();
+                    else if (i == 1 && cards.current.decorationImage != null)
+                      return decorationImage();
+                    else
+                      return frameSelectable(frameFileNames.values
+                          .expand((element) => element)
+                          .toList()[i - iOffset]);
+                  },
+                  childCount: frameFileNames.values
+                          .expand((element) => element)
+                          .length +
+                      iOffset,
+                ),
               ),
-              delegate: SliverChildBuilderDelegate(
-                (BuildContext context, int i) {
-                  if (i == 0)
-                    return noFrame();
-                  else if (i == 1 && cards.current.decorationImage != null)
-                    return decorationImage();
-                  else
-                    return frameSelectable(
-                        frameFileNames[selectedFrameCategory][i - iOffset]);
-                },
-                childCount:
-                    frameFileNames[selectedFrameCategory].length + iOffset,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
+
+  // Widget frameList() {
+  //   // first item should be no frame, and second is decoration image if exists.
+  //   var iOffset = cards.current.decorationImage == null ? 1 : 2;
+  //   return Center(
+  //     child: Container(
+  //       height: 140,
+  //       child: CustomScrollView(
+  //         scrollDirection: Axis.horizontal,
+  //         slivers: <Widget>[
+  //           SliverGrid(
+  //             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+  //               crossAxisCount: 1,
+  //               crossAxisSpacing: 5,
+  //               mainAxisSpacing: 5,
+  //               childAspectRatio: 778 / 656,
+  //             ),
+  //             delegate: SliverChildBuilderDelegate(
+  //               (BuildContext context, int i) {
+  //                 if (i == 0)
+  //                   return noFrame();
+  //                 else if (i == 1 && cards.current.decorationImage != null)
+  //                   return decorationImage();
+  //                 else
+  //                   return frameSelectable(
+  //                       frameFileNames[selectedFrameCategory][i - iOffset]);
+  //               },
+  //               childCount:
+  //                   frameFileNames[selectedFrameCategory].length + iOffset,
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   bool get _keepingCardDecorationImage {
     return cards.current.decorationImage != null &&

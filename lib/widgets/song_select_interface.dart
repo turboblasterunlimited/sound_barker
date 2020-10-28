@@ -167,7 +167,7 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
                       child: Padding(
                         padding: const EdgeInsets.only(top: 50.0),
                         child: Text(
-                          "You have no songs.\nTap 'New Song'.",
+                          "You have no songs.\nCreate a New Song.",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 20,
