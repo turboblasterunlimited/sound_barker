@@ -164,48 +164,47 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   };
 
   Widget frameSelectable(fileName) {
-      return GestureDetector(
-        onTap: () {
-          setState(() => selectedFrame = fileName);
-          cards.setFrame(rootPath + fileName);
-          cards.current.setShouldDeleteOldDecortionImage();
-          SystemChrome.setEnabledSystemUIOverlays([]);
-        },
-        child: Container(
-          decoration: selectedFrame == fileName
-              ? BoxDecoration(
-                  border: Border.all(
-                    color: Colors.blue,
-                    width: 3,
-                  ),
-                )
-              : BoxDecoration(),
-          child: SizedBox(
-            child: Stack(
-              alignment: AlignmentDirectional.center,
-              children: [
-                LayoutBuilder(
-                  builder: (_, constraints) {
-                    // if (_listItemWidth == null)
-                      _listItemWidth ??= constraints.biggest.width;
-                    return Padding(
-                      padding: EdgeInsets.only(
-                        top: constraints.biggest.height * 72 / 778,
-                        bottom: constraints.biggest.height * 194 / 778,
-                      ),
-                      child: Image.file(
-                        File(cards.current.picture.filePath),
-                      ),
-                    );
-                  },
+    return GestureDetector(
+      onTap: () {
+        setState(() => selectedFrame = fileName);
+        cards.setFrame(rootPath + fileName);
+        cards.current.setShouldDeleteOldDecortionImage();
+        SystemChrome.setEnabledSystemUIOverlays([]);
+      },
+      child: Container(
+        decoration: selectedFrame == fileName
+            ? BoxDecoration(
+                border: Border.all(
+                  color: Colors.blue,
+                  width: 3,
                 ),
-                Image.asset(rootPath + fileName),
-              ],
-            ),
+              )
+            : BoxDecoration(),
+        child: SizedBox(
+          child: Stack(
+            alignment: AlignmentDirectional.center,
+            children: [
+              LayoutBuilder(
+                builder: (_, constraints) {
+                  // if (_listItemWidth == null)
+                  _listItemWidth ??= constraints.biggest.width;
+                  return Padding(
+                    padding: EdgeInsets.only(
+                      top: constraints.biggest.height * 72 / 778,
+                      bottom: constraints.biggest.height * 194 / 778,
+                    ),
+                    child: Image.file(
+                      File(cards.current.picture.filePath),
+                    ),
+                  );
+                },
+              ),
+              Image.asset(rootPath + fileName),
+            ],
           ),
         ),
-      );
-    
+      ),
+    );
   }
 
   Widget noFrame() {
@@ -304,26 +303,42 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     }
   }
 
-  void _handleCategoryChange(index, [fromScrolling = false]) {
+  Future<void> _handleCategoryChange(frameCategoryIndex,
+      {int frameIndex}) async {
+    print("checkpoint");
     var categories = getFrameCategories();
-    var selectedWidget = categories[index] as Text;
-    String label = selectedWidget.data;
-    setState(() {
-      _currentFrameCategoryIndex = index;
-      _resetSizes(categories);
-      currentFrameCategories[index] = Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            label,
-            style: TextStyle(fontSize: 20, color: Colors.blue),
-          ),
-        ],
-      );
-      selectedFrameCategory = label;
-    });
-    if (!fromScrolling)
-      _scrollController.jumpTo(_categoryIndextoFrameIndex(index) * (_listItemWidth + 5));
+    var selectedCategoryWidget = categories[frameCategoryIndex] as Text;
+    String label = selectedCategoryWidget.data;
+    await Future.delayed(
+      Duration(milliseconds: 100),
+      () => setState(
+        () {
+          _currentFrameCategoryIndex = frameCategoryIndex;
+          print(
+              "WITHIN METHOD -- frameCategoryIndex: $frameCategoryIndex, _currentFrameCategoryIndex $_currentFrameCategoryIndex");
+          _resetSizes(categories);
+          currentFrameCategories[frameCategoryIndex] = Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                label,
+                style: TextStyle(fontSize: 20, color: Colors.blue),
+              ),
+            ],
+          );
+          // selectedFrameCategory = label;
+        },
+      ),
+    );
+    // category is selected (vs frame scrolling)
+    if (frameIndex != null)
+      _scrollController.jumpTo(frameIndex * (_listItemWidth + 5));
+  }
+
+  void _handleCarouselSlider(index) async {
+    int frameIndex = _categoryIndexToFrameIndex(index);
+    // print("frame index selected: $frameIndex");
+    await _handleCategoryChange(index, frameIndex: frameIndex);
   }
 
   Widget categoryList() {
@@ -336,8 +351,11 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
             items: currentFrameCategories,
             options: CarouselOptions(
               enlargeCenterPage: true,
-              onPageChanged: (index, CarouselPageChangedReason reason) {
-                _handleCategoryChange(index);
+              onPageChanged: (index, CarouselPageChangedReason reason) async {
+                print("reason for carousel change: ${reason.toString()}");
+                if (reason != CarouselPageChangedReason.controller) {
+                  _handleCarouselSlider(index);
+                }
               },
               scrollPhysics: FixedExtentScrollPhysics(),
               initialPage: 0,
@@ -390,18 +408,34 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
 
   int _frameIndexToCategoryIndex(int frameIndex) {
     int frameCount = 0;
-    for (int i = 0; i < _numberOfFrameCategories; i++) {
-      if (frameCount >= frameIndex) return i;
-      frameCount += _frameCategoryCounts[i];
+    for (int categoryIndex = 0;
+        categoryIndex < _numberOfFrameCategories;
+        categoryIndex++) {
+      frameCount += _frameCategoryCounts[categoryIndex];
+      if (frameCount >= frameIndex) return categoryIndex;
     }
   }
 
-  int _categoryIndextoFrameIndex(int categoryIndex) {
+  int _categoryIndexToFrameIndex(int selectedCategoryIndex) {
     int frameCount = 0;
-    for (int i = 0; i < _numberOfFrameCategories; i++) {
-      if (i == categoryIndex) return frameCount;
-      frameCount += _frameCategoryCounts[i];
+    for (int categoryIndex = 0;
+        categoryIndex < _numberOfFrameCategories;
+        categoryIndex++) {
+      if (categoryIndex == selectedCategoryIndex) return frameCount;
+      frameCount += _frameCategoryCounts[categoryIndex];
     }
+  }
+
+  int _pixelsToFrameIndex(double pixels) {
+    // rendered item width + list padding
+    var itemWidth = _listItemWidth + 5;
+    return (pixels / itemWidth).round();
+  }
+
+  void _handleCarouselDirection(bool moveForward) {
+    moveForward
+        ? _carouselController.nextPage()
+        : _carouselController.previousPage();
   }
 
   Widget frameList() {
@@ -410,55 +444,56 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     return Center(
       child: Container(
         height: 140,
-        child:
-            // NotificationListener<ScrollUpdateNotification>(
-            //   onNotification: (notification) {
-            //     // print("Scroll pixels: ${notification.metrics.pixels}");
-            //     return null;
-            //   },
-            //   child:
-            CustomScrollView(
-          scrollDirection: Axis.horizontal,
-          controller: _scrollController,
-          slivers: <Widget>[
-            SliverGrid(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 1,
-                crossAxisSpacing: 5,
-                mainAxisSpacing: 5,
-                childAspectRatio: 778 / 656,
-              ),
-              delegate: SliverChildBuilderDelegate(
-                (BuildContext _, int scrollIndex) {
-                  // print("frames count: $_framesCount");
-                  // print("frame cat count: $_frameCategoryCounts");
-                  // if scrolled beyond total frame count (TODO: account for negative indices)
+        child: NotificationListener<ScrollUpdateNotification>(
+          onNotification: (notification) {
+            var pixels = notification.metrics.pixels;
+            var frameIndex = _pixelsToFrameIndex(pixels);
+            int frameCategoryIndex = _frameIndexToCategoryIndex(frameIndex);
+            if (frameCategoryIndex != _currentFrameCategoryIndex) {
+              bool moveForward =
+                  frameCategoryIndex > _currentFrameCategoryIndex;
+              _handleCarouselDirection(moveForward);
+              print(
+                  "FROM scroll Notifier -- frameCategoryIndex: $frameCategoryIndex, _currentFrameCategoryIndex $_currentFrameCategoryIndex");
+              // _handleCategoryChange(frameCategoryIndex);
+            }
+            // print("frame index: $frameIndex");
+            // print("category index: $frameCategoryIndex");
+            // print("frame: ${_allFrames[frameIndex]}");
+            return null;
+          },
+          child: CustomScrollView(
+            scrollDirection: Axis.horizontal,
+            controller: _scrollController,
+            slivers: <Widget>[
+              SliverGrid(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 1,
+                  crossAxisSpacing: 5,
+                  mainAxisSpacing: 5,
+                  childAspectRatio: 778 / 656,
+                ),
+                delegate: SliverChildBuilderDelegate(
+                  (BuildContext _, int scrollIndex) {
+                    int frameIndex = scrollIndex % _framesCount;
 
-                  int frameIndex = scrollIndex % _framesCount;
-                  int frameCategoryIndex =
-                      _frameIndexToCategoryIndex(frameIndex);
-                  // if (frameCategoryIndex != _currentFrameCategoryIndex)
-                  //   _handleCategoryChange(frameCategoryIndex, true);
-                  print("scroll index: $scrollIndex");
-                  print("frame index: $frameIndex");
-                  print("frame: ${_allFrames[frameIndex]}");
-                  return frameSelectable(_allFrames[frameIndex]);
+                    return frameSelectable(_allFrames[frameIndex]);
 
-                  // if (i == 0)
-                  //   return noFrame();
-                  // else if (i == 1 && cards.current.decorationImage != null)
-                  //   return decorationImage();
-                  // else
-                  //   return frameSelectable(_allFrames[i - iOffset]);
-                },
-                // childCount: frameFileNames.values
-                //         .expand((element) => element)
-                //         .length +
-                //     iOffset,
+                    // if (i == 0)
+                    //   return noFrame();
+                    // else if (i == 1 && cards.current.decorationImage != null)
+                    //   return decorationImage();
+                    // else
+                    //   return frameSelectable(_allFrames[i - iOffset]);
+                  },
+                  // childCount: frameFileNames.values
+                  //         .expand((element) => element)
+                  //         .length +
+                  //     iOffset,
+                ),
               ),
-            ),
-          ],
-          // ),
+            ],
+          ),
         ),
       ),
     );
