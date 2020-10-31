@@ -347,9 +347,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
           child: CarouselSlider(
             carouselController: _carouselController,
             items: currentFrameCategories,
-
             options: CarouselOptions(
-
               enlargeCenterPage: true,
               onPageChanged: (index, CarouselPageChangedReason reason) {
                 print("reason for carousel change: ${reason.toString()}");
@@ -371,10 +369,10 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
           child: GestureDetector(
             behavior: HitTestBehavior.translucent,
             onTap: () {
-              _carouselController.previousPage();
+              _carouselController.previousPage(reasonIsController: false);
               // _handleCategoryChange(_currentFrameCategoryIndex - 1);
             },
-            onPanStart: (_) => _carouselController.previousPage(),
+            onPanStart: (_) => _carouselController.previousPage(reasonIsController: false),
             child: Container(width: 65, height: 25),
           ),
         ),
@@ -383,10 +381,10 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
           child: GestureDetector(
             behavior: HitTestBehavior.translucent,
             onTap: () {
-              _carouselController.nextPage();
+              _carouselController.nextPage(reasonIsController: false);
               // _handleCategoryChange(_currentFrameCategoryIndex + 1);
             },
-            onPanStart: (_) => _carouselController.nextPage(),
+            onPanStart: (_) => _carouselController.nextPage(reasonIsController: false),
             child: Container(width: 65, height: 25),
           ),
         ),
@@ -460,14 +458,12 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
             print("frame index: $frameIndex");
             print("current category index: $_currentFrameCategoryIndex");
             print("new category index: $frameCategoryIndex");
-            if (frameCategoryIndex != _currentFrameCategoryIndex) {
-              bool moveForward =
-                  frameCategoryIndex > _currentFrameCategoryIndex;
-              if (!userManipulatingCategory) {
-                _handleCarouselDirection(moveForward);
-                _handleCategoryChange(frameCategoryIndex);
-              }
+            if (frameCategoryIndex != _currentFrameCategoryIndex &&
+                !userManipulatingCategory) {
+              _carouselController.animateToPage(frameCategoryIndex);
+              _handleCategoryChange(frameCategoryIndex);
             }
+
             // print("frame index: $frameIndex");
             // print("category index: $frameCategoryIndex");
             // print("frame: ${_allFrames[frameIndex]}");

@@ -50,7 +50,10 @@ dependencies:
   image:
   share: ^0.6.4+3
   flutter_keyboard_visibility: ^3.2.2
-  carousel_slider: ^2.2.1
+  # carousel_slider: ^2.2.1
+  carousel_slider:
+    git:
+      url: https://github.com/handofthecode/flutter_carousel_slider.git
   sentry: ^3.0.1
 
 dev_dependencies:
