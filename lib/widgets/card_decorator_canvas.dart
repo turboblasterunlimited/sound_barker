@@ -172,7 +172,7 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
         _handleEndDrawing();
         _handleEndDragTyping();
       },
-      onTapDown: (details) {
+      onTapUp: (details) {
         print("Tapping canvas");
         _handleAddNewDrawing(details);
         _handleCreateOrSelectTyping(details);
