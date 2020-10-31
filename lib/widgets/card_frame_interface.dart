@@ -303,13 +303,12 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     }
   }
 
-  Future<void> _handleCategoryChange(frameCategoryIndex,
-      {int frameIndex}) async {
+  void _handleCategoryChange(frameCategoryIndex, {int frameIndex}) {
     print("checkpoint");
     var categories = getFrameCategories();
     var selectedCategoryWidget = categories[frameCategoryIndex] as Text;
     String label = selectedCategoryWidget.data;
-    await Future.delayed(
+    Future.delayed(
       Duration(milliseconds: 100),
       () => setState(
         () {
@@ -334,18 +333,10 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       _scrollController.jumpTo(frameIndex * (_listItemWidth + 5));
   }
 
-  void _handleCarouselSlider(index) async {
+  void _handleCarouselSlider(index) {
     int frameIndex = _categoryIndexToFrameIndex(index);
     // print("frame index selected: $frameIndex");
     _handleCategoryChange(index, frameIndex: frameIndex);
-  }
-
-  Future<void> userIsManipulatingCategory() async {
-    setState(() => userManipulatingCategory = true);
-    Future.delayed(
-      Duration(milliseconds: 200),
-      () => setState(() => userManipulatingCategory = false),
-    );
   }
 
   Widget categoryList() {
@@ -356,13 +347,16 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
           child: CarouselSlider(
             carouselController: _carouselController,
             items: currentFrameCategories,
+
             options: CarouselOptions(
+
               enlargeCenterPage: true,
-              onPageChanged: (index, CarouselPageChangedReason reason) async {
+              onPageChanged: (index, CarouselPageChangedReason reason) {
                 print("reason for carousel change: ${reason.toString()}");
                 if (reason == CarouselPageChangedReason.manual) {
+                  setState(() => userManipulatingCategory = true);
                   _handleCarouselSlider(index);
-                  userIsManipulatingCategory();
+                  setState(() => userManipulatingCategory = false);
                 }
               },
               scrollPhysics: FixedExtentScrollPhysics(),
@@ -378,7 +372,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
             behavior: HitTestBehavior.translucent,
             onTap: () {
               _carouselController.previousPage();
-              _handleCategoryChange(_currentFrameCategoryIndex - 1);
+              // _handleCategoryChange(_currentFrameCategoryIndex - 1);
             },
             onPanStart: (_) => _carouselController.previousPage(),
             child: Container(width: 65, height: 25),
@@ -390,7 +384,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
             behavior: HitTestBehavior.translucent,
             onTap: () {
               _carouselController.nextPage();
-              _handleCategoryChange(_currentFrameCategoryIndex + 1);
+              // _handleCategoryChange(_currentFrameCategoryIndex + 1);
             },
             onPanStart: (_) => _carouselController.nextPage(),
             child: Container(width: 65, height: 25),
@@ -426,7 +420,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
         categoryIndex < _numberOfFrameCategories;
         categoryIndex++) {
       frameCount += _frameCategoryCounts[categoryIndex];
-      if (frameCount >= frameIndex) return categoryIndex;
+      if (frameCount > frameIndex) return categoryIndex;
     }
   }
 
@@ -463,6 +457,9 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
             var pixels = notification.metrics.pixels;
             var frameIndex = _pixelsToFrameIndex(pixels);
             int frameCategoryIndex = _frameIndexToCategoryIndex(frameIndex);
+            print("frame index: $frameIndex");
+            print("current category index: $_currentFrameCategoryIndex");
+            print("new category index: $frameCategoryIndex");
             if (frameCategoryIndex != _currentFrameCategoryIndex) {
               bool moveForward =
                   frameCategoryIndex > _currentFrameCategoryIndex;
