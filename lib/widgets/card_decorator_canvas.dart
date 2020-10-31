@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as UI;
+import 'dart:ui';
 import 'package:K9_Karaoke/classes/drawing.dart';
 import 'package:K9_Karaoke/classes/typing.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
@@ -35,23 +36,23 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
           // print("in karaoke card: ${decorationController.decoration.drawings}");
           // print("Just drawings: $drawings");
           drawings.last.offsets.add(
-            [_getOffset(details)],
+            _getOffset(details),
           );
         },
       );
   }
 
   void _handleEndDrawing() {
-    if (decorationController.isDrawing)
-      setState(
-        () => drawings.last.offsets.last.add(drawings.last.offsets.last.last),
-      );
+    // if (decorationController.isDrawing)
+    // setState(
+    //   () => drawings.last.offsets.last.add(drawings.last.offsets.last.last),
+    // );
   }
 
   void _handleUpdateDrawing(details) {
     if (decorationController.isDrawing)
       setState(() {
-        drawings.last.offsets.last.add(
+        drawings.last.offsets.add(
           _getOffset(details),
         );
       });
@@ -295,14 +296,18 @@ class CardPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..style = PaintingStyle.fill
-      ..strokeWidth = 4.0;
+      ..isAntiAlias = true
+      ..strokeCap = StrokeCap.round;
 
     for (var drawing in drawings) {
       paint.color = drawing.color;
       paint.strokeWidth = drawing.size / 2;
-      for (var mark in drawing.offsets) {
-        for (var i = 0; i < mark.length; i++) {
-          canvas.drawCircle(mark[i], drawing.size / 4, paint);
+      for (int i = 0; i < drawing.offsets.length; i++) {
+        var mark = drawing.offsets;
+        if (i == mark.length - 1) {
+          canvas.drawPoints(PointMode.points, [mark[i]], paint);
+        } else {
+          canvas.drawLine(mark[i], mark[i + 1], paint);
         }
       }
     }

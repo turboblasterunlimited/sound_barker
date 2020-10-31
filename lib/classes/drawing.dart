@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Drawing {
-  List<List<Offset>> offsets = [];
+  List<Offset> offsets = [];
   Color color;
   double size;
   Drawing(this.color, this.size);
