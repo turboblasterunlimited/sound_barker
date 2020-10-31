@@ -23,11 +23,11 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   int _currentFrameCategoryIndex = 0;
   ImageController imageController;
   SoundController soundController;
-  String selectedFrameCategory = "Birthday";
   List<Widget> currentFrameCategories;
   final _carouselController = CarouselController();
   final _scrollController = ScrollController();
   double _listItemWidth;
+  bool userManipulatingCategory = false;
 
   @override
   void dispose() {
@@ -326,7 +326,6 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
               ),
             ],
           );
-          // selectedFrameCategory = label;
         },
       ),
     );
@@ -338,7 +337,15 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   void _handleCarouselSlider(index) async {
     int frameIndex = _categoryIndexToFrameIndex(index);
     // print("frame index selected: $frameIndex");
-    await _handleCategoryChange(index, frameIndex: frameIndex);
+    _handleCategoryChange(index, frameIndex: frameIndex);
+  }
+
+  Future<void> userIsManipulatingCategory() async {
+    setState(() => userManipulatingCategory = true);
+    Future.delayed(
+      Duration(milliseconds: 200),
+      () => setState(() => userManipulatingCategory = false),
+    );
   }
 
   Widget categoryList() {
@@ -353,8 +360,9 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
               enlargeCenterPage: true,
               onPageChanged: (index, CarouselPageChangedReason reason) async {
                 print("reason for carousel change: ${reason.toString()}");
-                if (reason != CarouselPageChangedReason.controller) {
+                if (reason == CarouselPageChangedReason.manual) {
                   _handleCarouselSlider(index);
+                  userIsManipulatingCategory();
                 }
               },
               scrollPhysics: FixedExtentScrollPhysics(),
@@ -368,7 +376,10 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
           left: 0,
           child: GestureDetector(
             behavior: HitTestBehavior.translucent,
-            onTap: _carouselController.previousPage,
+            onTap: () {
+              _carouselController.previousPage();
+              _handleCategoryChange(_currentFrameCategoryIndex - 1);
+            },
             onPanStart: (_) => _carouselController.previousPage(),
             child: Container(width: 65, height: 25),
           ),
@@ -377,7 +388,10 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
           right: 0,
           child: GestureDetector(
             behavior: HitTestBehavior.translucent,
-            onTap: _carouselController.nextPage,
+            onTap: () {
+              _carouselController.nextPage();
+              _handleCategoryChange(_currentFrameCategoryIndex + 1);
+            },
             onPanStart: (_) => _carouselController.nextPage(),
             child: Container(width: 65, height: 25),
           ),
@@ -452,10 +466,10 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
             if (frameCategoryIndex != _currentFrameCategoryIndex) {
               bool moveForward =
                   frameCategoryIndex > _currentFrameCategoryIndex;
-              _handleCarouselDirection(moveForward);
-              print(
-                  "FROM scroll Notifier -- frameCategoryIndex: $frameCategoryIndex, _currentFrameCategoryIndex $_currentFrameCategoryIndex");
-              // _handleCategoryChange(frameCategoryIndex);
+              if (!userManipulatingCategory) {
+                _handleCarouselDirection(moveForward);
+                _handleCategoryChange(frameCategoryIndex);
+              }
             }
             // print("frame index: $frameIndex");
             // print("category index: $frameCategoryIndex");
