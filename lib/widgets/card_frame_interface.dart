@@ -372,7 +372,8 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
               _carouselController.previousPage(reasonIsController: false);
               // _handleCategoryChange(_currentFrameCategoryIndex - 1);
             },
-            onPanStart: (_) => _carouselController.previousPage(reasonIsController: false),
+            onPanStart: (_) =>
+                _carouselController.previousPage(reasonIsController: false),
             child: Container(width: 65, height: 25),
           ),
         ),
@@ -384,7 +385,8 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
               _carouselController.nextPage(reasonIsController: false);
               // _handleCategoryChange(_currentFrameCategoryIndex + 1);
             },
-            onPanStart: (_) => _carouselController.nextPage(reasonIsController: false),
+            onPanStart: (_) =>
+                _carouselController.nextPage(reasonIsController: false),
             child: Container(width: 65, height: 25),
           ),
         ),
@@ -435,13 +437,27 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   int _pixelsToFrameIndex(double pixels) {
     // rendered item width + list padding
     var itemWidth = _listItemWidth + 5;
-    return (pixels / itemWidth).round();
+    return (pixels / itemWidth % _framesCount).round();
   }
 
   void _handleCarouselDirection(bool moveForward) {
     moveForward
         ? _carouselController.nextPage()
         : _carouselController.previousPage();
+  }
+
+  // prevents animating through all categories between first and last categories on the carousel
+  void animateToPage(frameCategoryIndex) {
+    // transitioning from last category to first category
+    if (_currentFrameCategoryIndex == _numberOfFrameCategories - 1 &&
+        frameCategoryIndex == 0)
+      _carouselController.nextPage();
+    // transitioning from first category to last category
+    else if (_currentFrameCategoryIndex == 0 &&
+        frameCategoryIndex == _numberOfFrameCategories - 1)
+      _carouselController.previousPage();
+    else
+      _carouselController.animateToPage(frameCategoryIndex);
   }
 
   Widget frameList() {
@@ -460,7 +476,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
             print("new category index: $frameCategoryIndex");
             if (frameCategoryIndex != _currentFrameCategoryIndex &&
                 !userManipulatingCategory) {
-              _carouselController.animateToPage(frameCategoryIndex);
+              animateToPage(frameCategoryIndex);
               _handleCategoryChange(frameCategoryIndex);
             }
 
@@ -483,7 +499,6 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
                 delegate: SliverChildBuilderDelegate(
                   (BuildContext _, int scrollIndex) {
                     int frameIndex = scrollIndex % _framesCount;
-
                     return frameSelectable(_allFrames[frameIndex]);
 
                     // if (i == 0)
