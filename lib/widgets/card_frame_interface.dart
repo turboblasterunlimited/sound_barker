@@ -75,6 +75,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
 
   Map<String, List<String>> frameFileNames = {
     "Birthday": [
+      'no-frame',
       'birthday-bone.png',
       'birthday-4.png',
       'birthday-1.png',
@@ -164,6 +165,8 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   };
 
   Widget frameSelectable(fileName) {
+    if (fileName == "no-frame") return noFrame();
+    if (fileName == "existing-art") return decorationImage();
     return GestureDetector(
       onTap: () {
         setState(() => selectedFrame = fileName);
@@ -313,8 +316,6 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       () => setState(
         () {
           _currentFrameCategoryIndex = frameCategoryIndex;
-          print(
-              "WITHIN METHOD -- frameCategoryIndex: $frameCategoryIndex, _currentFrameCategoryIndex $_currentFrameCategoryIndex");
           _resetSizes(categories);
           currentFrameCategories[frameCategoryIndex] = Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -479,10 +480,6 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
               animateToPage(frameCategoryIndex);
               _handleCategoryChange(frameCategoryIndex);
             }
-
-            // print("frame index: $frameIndex");
-            // print("category index: $frameCategoryIndex");
-            // print("frame: ${_allFrames[frameIndex]}");
             return null;
           },
           child: CustomScrollView(
@@ -500,18 +497,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
                   (BuildContext _, int scrollIndex) {
                     int frameIndex = scrollIndex % _framesCount;
                     return frameSelectable(_allFrames[frameIndex]);
-
-                    // if (i == 0)
-                    //   return noFrame();
-                    // else if (i == 1 && cards.current.decorationImage != null)
-                    //   return decorationImage();
-                    // else
-                    //   return frameSelectable(_allFrames[i - iOffset]);
                   },
-                  // childCount: frameFileNames.values
-                  //         .expand((element) => element)
-                  //         .length +
-                  //     iOffset,
                 ),
               ),
             ],
@@ -521,51 +507,10 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     );
   }
 
-  // Widget frameList() {
-  //   // first item should be no frame, and second is decoration image if exists.
-  //   var iOffset = cards.current.decorationImage == null ? 1 : 2;
-  //   return Center(
-  //     child: Container(
-  //       height: 140,
-  //       child: CustomScrollView(
-  //         scrollDirection: Axis.horizontal,
-  //         slivers: <Widget>[
-  //           SliverGrid(
-  //             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-  //               crossAxisCount: 1,
-  //               crossAxisSpacing: 5,
-  //               mainAxisSpacing: 5,
-  //               childAspectRatio: 778 / 656,
-  //             ),
-  //             delegate: SliverChildBuilderDelegate(
-  //               (BuildContext context, int i) {
-  //                 if (i == 0)
-  //                   return noFrame();
-  //                 else if (i == 1 && cards.current.decorationImage != null)
-  //                   return decorationImage();
-  //                 else
-  //                   return frameSelectable(
-  //                       frameFileNames[selectedFrameCategory][i - iOffset]);
-  //               },
-  //               childCount:
-  //                   frameFileNames[selectedFrameCategory].length + iOffset,
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
-
   bool get _keepingCardDecorationImage {
     return cards.current.decorationImage != null &&
         !cards.current.shouldDeleteOldDecoration;
   }
-
-  // bool get _noFrameNoDecorationImage {
-  //   return cards.current.decorationImage == null &&
-  //       cards.current.framePath == null;
-  // }
 
   Widget submitButton() {
     return Center(
@@ -600,6 +545,11 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       selectedFrame = PATH.basename(cards.current.framePath);
   }
 
+  void _insertIfExistingArtFrame() {
+    if (cards.current.decorationImage != null)
+      frameFileNames["Birthday"].insert(1, "existing-art");
+  }
+
   @override
   Widget build(context) {
     cards = Provider.of<KaraokeCards>(context, listen: false);
@@ -609,6 +559,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     if (currentFrameCategories == null) {
       currentFrameCategories = getFrameCategories();
       _handleCategoryChange(0);
+      _insertIfExistingArtFrame();
     }
     _setFrameSelection();
 
