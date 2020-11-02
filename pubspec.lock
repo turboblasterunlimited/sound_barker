@@ -122,6 +122,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.3"
+  custom_paddle_slider_value_indicator_shape:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "09f9ac2a67fcb73c529bebfa758dd233ac16560e"
+      url: "https://github.com/handofthecode/custom_paddle_slider_value_indicator_shape.git"
+    source: git
+    version: "0.0.1"
   device_info:
     dependency: transitive
     description:

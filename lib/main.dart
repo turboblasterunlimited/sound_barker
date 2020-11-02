@@ -12,6 +12,7 @@ import 'package:K9_Karaoke/screens/camera_or_upload_screen.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/screens/my_cards.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
+import 'package:custom_paddle_slider_value_indicator_shape/custom_paddle_slider_value_indicator_shape.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -31,8 +32,9 @@ import './providers/image_controller.dart';
 import './providers/sound_controller.dart';
 import './providers/spinner_state.dart';
 
-final sentry =
-    SentryClient(dsn: "https://31ded6d00ce54b96b36f5606649333a1@o460285.ingest.sentry.io/5460225");
+final sentry = SentryClient(
+    dsn:
+        "https://31ded6d00ce54b96b36f5606649333a1@o460285.ingest.sentry.io/5460225");
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -125,6 +127,12 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'K-9 Karaoke',
           theme: ThemeData(
+            sliderTheme: SliderThemeData(
+              valueIndicatorShape: CustomPaddleSliderValueIndicatorShape(
+                sizeMultiplier: 2,
+                textScaleMultiplier: 2,
+              ),
+            ),
             primarySwatch: MaterialColor(0xff234498, color),
             accentColor: MaterialColor(0xff605a5a, color),
             highlightColor: MaterialColor(0xff44bba4, color),

@@ -55,6 +55,9 @@ dependencies:
     git:
       url: https://github.com/handofthecode/flutter_carousel_slider.git
   sentry: ^3.0.1
+  custom_paddle_slider_value_indicator_shape:
+    git:
+      url: https://github.com/handofthecode/custom_paddle_slider_value_indicator_shape.git
 
 dev_dependencies:
   flutter_test:
