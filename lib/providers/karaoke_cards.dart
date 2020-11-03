@@ -125,7 +125,11 @@ class KaraokeCards with ChangeNotifier {
     notifyListeners();
   }
 
-  void setFrame(newFramePath) {
+  void setFrame(newFramePath, [bool hasFrame = false]) {
+    if (hasFrame)
+      current.framelessIsSelected = false;
+    else
+      current.framelessIsSelected = newFramePath == null ? true : false;
     current.setShouldDeleteOldDecortionImage();
     current.framePath = newFramePath;
     notifyListeners();
@@ -159,14 +163,15 @@ class KaraokeCard with ChangeNotifier {
   CardDecoration decoration = CardDecoration();
   bool shouldDeleteOldDecoration = false;
   CardAudio oldCardAudio;
+  bool framelessIsSelected = false;
 
   KaraokeCard(
       {this.uuid, this.picture, this.audio, this.song, this.decorationImage}) {
     this.audio ??= CardAudio();
   }
 
-   bool hasBark(bark) {
-     return bark == shortBark || bark == mediumBark || bark == longBark;
+  bool hasBark(bark) {
+    return bark == shortBark || bark == mediumBark || bark == longBark;
   }
 
   void removeFiles() {
@@ -189,6 +194,7 @@ class KaraokeCard with ChangeNotifier {
   }
 
   bool get hasFrameDimension {
+    if (framelessIsSelected) return false;
     return hasFrame ||
         (decorationImage != null && decorationImage.hasFrameDimension);
   }

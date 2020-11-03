@@ -259,7 +259,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     return GestureDetector(
       onTap: () {
         setState(() => selectedFrame = "decorationImage");
-        cards.setFrame(null);
+        cards.setFrame(null, cards.current.decorationImage.hasFrameDimension);
         cards.current.shouldDeleteOldDecoration = false;
         SystemChrome.setEnabledSystemUIOverlays([]);
       },
