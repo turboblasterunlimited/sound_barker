@@ -137,7 +137,7 @@ class _MainScreenState extends State<MainScreen> {
     print("start all");
     setState(() => _isPlaying = true);
     // Only songs have a .csv amplitude file, barks, messages and card/combined audio have a List of amplitudes in memory.
-    soundController.startPlayer(_playbackFiles[0], stopAll);
+    soundController.startPlayer(_playbackFiles[0], stopCallback: stopAll);
     !_canPlayAudio && _canPlaySong
         ? imageController.mouthTrackSound(filePath: _playbackFiles[1])
         : imageController.mouthTrackSound(amplitudes: _playbackFiles[1]);

@@ -4,6 +4,7 @@ import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/spinner_state.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
+import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_sound/flutter_sound.dart';
@@ -38,6 +39,7 @@ class BarkRecorderState extends State<BarkRecorder>
 
   @override
   void dispose() {
+    _recordingTimer?.cancel();
     _animationController.dispose();
     super.dispose();
   }
@@ -55,41 +57,39 @@ class BarkRecorderState extends State<BarkRecorder>
     super.initState();
   }
 
+  void _recordSound() {
+    soundController.record(this.filePath);
+    _recordingTimer = Timer(Duration(seconds: 10), () {
+      soundController.startPlayer("assets/sounds/bell.aac", asset: true);
+      stopRecorder();
+    });
+    this.setState(() {
+      this._isRecording = true;
+    });
+  }
+
   void startRecorder() async {
     // Directory tempDir = await getTemporaryDirectory();
     this.filePath = '$myAppStoragePath/tempRaw.aac';
+
     PermissionStatus status = await Permission.microphone.request();
-
-    // if (status != PermissionStatus.granted) {
-    //   throw RecordingPermissionException("Microphone permission not granted");
-    // }
-
-    try {
-      print("rawbark filepath: ${this.filePath}");
-      await soundController.record(this.filePath);
-      _recordingTimer = Timer(Duration(seconds: 10), stopRecorder);
-
-      this.setState(() {
-        this._isRecording = true;
-      });
-    } catch (err) {
-      setState(() {
-        this._isRecording = false;
-      });
+    if (!status.isGranted) {
+      showError(context, "Microphone permission not granted");
+      return;
     }
+
+    await soundController.startPlayer("assets/sounds/ding.aac",
+        asset: true, stopCallback: _recordSound);
   }
 
   void stopRecorder() async {
     _recordingTimer.cancel();
+
     setState(() {
       this._isRecording = false;
     });
-    try {
-      await soundController.stopRecording();
-    } catch (err) {
-      print('stopRecorder error: $err');
-    }
-    print("check filepath: $filePath");
+
+    await soundController.stopRecording();
     await barks.setTempRawBark(Bark(filePath: filePath));
   }
 

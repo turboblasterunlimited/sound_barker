@@ -83,23 +83,25 @@ class SoundController with ChangeNotifier {
 
   SoundController();
 
-  Future<void> startPlayer(String path, [Function callback, bool url]) async {
+  Future<void> startPlayer(String path,
+      {Function stopCallback, bool url = false, bool asset = false}) async {
     if (player.isPlaying) {
-      print("Pressing play while player is playing");
       lastCallback();
       await stopPlayer();
     }
 
     // is annoyingly only triggered when audio playback completes, hence 'lastCallback' implementation
     player.onStopped = ({wasUser: true}) {
-      callback();
+      stopCallback();
     };
 
-    lastCallback = callback;
+    lastCallback = stopCallback;
+    Track track;
+    if (url) track = Track.fromURL(path);
+    else if (asset) track = Track.fromAsset(path);
+    else track = Track.fromFile(path);
 
-    url == null
-        ? await player.play(Track.fromFile(path))
-        : player.play(Track.fromURL(path));
+    await player.play(track);
   }
 
   Future<void> stopPlayer() async {

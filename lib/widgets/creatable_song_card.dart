@@ -42,8 +42,8 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
       await widget.soundController.startPlayer(
           "https://storage.googleapis.com/song_barker_sequences/" +
               widget.creatableSong.backingTrackUrl,
-          stopPlayerCallBack(),
-          true);
+          stopCallback: stopPlayerCallBack(),
+          url: true);
       Future.delayed(Duration(milliseconds: 50), () {
         setState(() => isPlaying = true);
       });

@@ -9,13 +9,11 @@ import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/tools/amplitude_extractor.dart';
 import 'package:K9_Karaoke/tools/ffmpeg.dart';
 import 'dart:async';
-import 'dart:io';
 
 import '../providers/sound_controller.dart';
 import '../tools/amplitude_extractor.dart';
@@ -46,6 +44,7 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
   AnimationController _animationController;
   Animation _animation;
   ImageController imageController;
+  Timer _recordingTimer;
 
   Map<String, String> effects = {
     'None': "",
@@ -65,6 +64,7 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
 
   @override
   void dispose() {
+    _recordingTimer?.cancel();
     _animationController.dispose();
     super.dispose();
   }
@@ -82,49 +82,46 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
     super.initState();
   }
 
+  void _recordSound() {
+    soundController.record(message.filePath);
+    _recordingTimer = Timer(Duration(seconds: 25), () {
+      stopRecorder();
+      soundController.startPlayer("assets/sounds/bell.aac", asset: true);
+    });
+    this.setState(() {
+      this._isRecording = true;
+      this._hasShifted = false;
+      this.messageSpeed = 100;
+      this.messagePitch = 100;
+    });
+  }
+
   void startRecorder() async {
     PermissionStatus status = await Permission.microphone.request();
-    if (status != PermissionStatus.granted) {
+    if (!status.isGranted) {
       showError(context, "Accept microphone permisions to record");
       return;
     }
 
     message.deleteEverything();
     print("message filepath: ${message.filePath}");
-
-    try {
-      await soundController.record(message.filePath);
-
-      this.setState(() {
-        this._isRecording = true;
-        this._hasShifted = false;
-        this.messageSpeed = 100;
-        this.messagePitch = 100;
-      });
-    } catch (err) {
-      print("recording error");
-      print(err);
-      print(err.message);
-      setState(() {
-        this._isRecording = false;
-      });
-    }
+    await soundController.startPlayer("assets/sounds/ding.aac",
+        asset: true, stopCallback: _recordSound);
   }
 
   void stopRecorder() async {
+    _recordingTimer.cancel();
+
     setState(() {
       this._isRecording = false;
     });
 
-    try {
-      await soundController.stopRecording();
-      if (_recorderSubscription != null) {
-        _recorderSubscription.cancel();
-        _recorderSubscription = null;
-      }
-    } catch (err) {
-      print('stopRecorder error: $err');
+    await soundController.stopRecording();
+    if (_recorderSubscription != null) {
+      _recorderSubscription.cancel();
+      _recorderSubscription = null;
     }
+
     message.amplitudes =
         await AmplitudeExtractor.getAmplitudes(message.filePath);
     cards.messageIsReady();
@@ -217,8 +214,10 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
 
     return Column(
       children: <Widget>[
-        InterfaceTitleNav(cards.current.hasSong ? "PRE-SONG MESSAGE" : "CARD MESSAGE",
-            backCallback: backCallback, skipCallback: skipCallback),
+        InterfaceTitleNav(
+            cards.current.hasSong ? "PRE-SONG MESSAGE" : "CARD MESSAGE",
+            backCallback: backCallback,
+            skipCallback: skipCallback),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.start,
