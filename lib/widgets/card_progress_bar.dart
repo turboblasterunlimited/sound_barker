@@ -1,3 +1,4 @@
+import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
@@ -25,7 +26,7 @@ class CardProgressBar extends StatelessWidget {
     final buttonWidth = screenWidth / 5;
 
     Widget progressButton(
-        {String stepText,
+        {IconData stepIcon,
         bool stepIsCompleted,
         bool isCurrentStep,
         Function navigateHere,
@@ -35,12 +36,11 @@ class CardProgressBar extends StatelessWidget {
         child: RawMaterialButton(
           constraints: BoxConstraints(minWidth: buttonWidth, minHeight: 30.0),
           onPressed: canNavigate ? navigateHere : null,
-          child: Text(stepText,
-              style: TextStyle(
-                  color: stepIsCompleted
-                      ? Colors.white
-                      : Theme.of(context).primaryColor,
-                  fontWeight: FontWeight.bold)),
+          child: Icon(
+            stepIcon,
+            color:
+                stepIsCompleted ? Colors.white : Theme.of(context).primaryColor,
+          ),
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30.0),
               side: isCurrentStep
@@ -66,7 +66,8 @@ class CardProgressBar extends StatelessWidget {
                 SetPictureCoordinatesScreen(card.picture, editing: true),
           ),
         );
-      if (!card.picture.isStock) currentActivity.setCardCreationStep(CardCreationSteps.snap);
+      if (!card.picture.isStock)
+        currentActivity.setCardCreationStep(CardCreationSteps.snap);
     }
 
     void navigateToSong() {
@@ -98,27 +99,27 @@ class CardProgressBar extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
         progressButton(
-            stepText: "SNAP",
+            stepIcon: CustomIcons.snap_quick,
             stepIsCompleted: card.hasPicture,
             isCurrentStep: currentActivity.isSnap,
             navigateHere: navigateToSnap,
             canNavigate: true),
         progressButton(
-            stepText: "SONG",
+            stepIcon: CustomIcons.song_quick,
             stepIsCompleted: card.hasSong || card.hasSongFormula,
             isCurrentStep: currentActivity.isSong,
             navigateHere: navigateToSong,
             canNavigate: card.hasPicture),
         // Can click only if creating a new song
         progressButton(
-            stepText: "SPEAK",
+            stepIcon: CustomIcons.speak_quick,
             stepIsCompleted: card.hasMessage,
             isCurrentStep: currentActivity.isSpeak,
             navigateHere: navigateToSpeak,
             // canNavigate: card.hasSongFormula || card.hasSong),
             canNavigate: card.hasPicture),
         progressButton(
-            stepText: "STYLE",
+            stepIcon: CustomIcons.style_quick,
             stepIsCompleted: _hasDecoration,
             isCurrentStep: currentActivity.isStyle,
             navigateHere: navigateToStyle,
