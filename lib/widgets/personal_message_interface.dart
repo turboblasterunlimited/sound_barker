@@ -33,9 +33,9 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
   bool _hasShifted = false;
   bool _isProcessingAudio = false;
 
-  // 0 to 200
-  double messageSpeed = 100;
-  double messagePitch = 100;
+  // .5 to 2
+  double speedChange = 1;
+  double pitchChange = 1;
 
   CurrentActivity currentActivity;
   SpinnerState spinnerState;
@@ -91,8 +91,8 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
     this.setState(() {
       this._isRecording = true;
       this._hasShifted = false;
-      this.messageSpeed = 100;
-      this.messagePitch = 100;
+      this.speedChange = 1;
+      this.pitchChange = 1;
     });
   }
 
@@ -143,15 +143,9 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
 
   Future<void> generateAlteredAudioFiles() async {
     message.deleteAlteredFiles();
-    double pitchChange = (messagePitch / 100);
-    double speedChange = (messageSpeed / 100);
-
-    if (pitchChange < .5) pitchChange = .5;
-    if (speedChange < .5) speedChange = .5;
 
     await FFMpeg.process.execute(
         '-i ${message.filePath} -filter_complex "asetrate=44100*$pitchChange,aresample=44100,atempo=$speedChange${effects[selectedEffect]}" -vn ${message.alteredFilePath}');
-    print("site of error");
     message.alteredAmplitudes =
         await AmplitudeExtractor.getAmplitudes(message.alteredFilePath);
     setState(() => _isProcessingAudio = false);
@@ -188,8 +182,8 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
 
   void _resetSliders() {
     setState(() {
-      messageSpeed = 100;
-      messagePitch = 100;
+      speedChange = 1;
+      pitchChange = 1;
       effectSliderVal = 0.0;
     });
     message.deleteAlteredFiles();
@@ -308,9 +302,11 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold)),
                     Slider(
-                      value: messagePitch,
-                      min: 0,
-                      max: 200,
+                      label: "${pitchChange.toStringAsFixed(1)} X",
+                      value: pitchChange,
+                      divisions: 15,
+                      min: 0.5,
+                      max: 2,
                       activeColor: Colors.blue,
                       inactiveColor: Colors.grey,
                       onChanged:
@@ -320,13 +316,13 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
                                   soundController.stopPlayer();
                                   imageController.stopAnimation();
                                   setState(() {
-                                    messagePitch = value;
+                                    pitchChange = value;
                                     _hasShifted = true;
                                   });
                                 },
                       onChangeEnd: (value) async {
                         setState(() {
-                          messagePitch = value;
+                          pitchChange = value;
                           _isProcessingAudio = true;
                         });
                         generateAlteredAudioFiles();
@@ -342,9 +338,11 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold)),
                     Slider(
-                      value: messageSpeed,
-                      min: 0,
-                      max: 200,
+                      label: "${speedChange.toStringAsFixed(1)} X",
+                      value: speedChange,
+                      divisions: 15,
+                      min: 0.5,
+                      max: 2,
                       activeColor: Colors.blue,
                       inactiveColor: Colors.grey,
                       onChanged:
@@ -354,13 +352,13 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
                                   soundController.stopPlayer();
                                   imageController.stopAnimation();
                                   setState(() {
-                                    messageSpeed = value;
+                                    speedChange = value;
                                     _hasShifted = true;
                                   });
                                 },
                       onChangeEnd: (value) {
                         setState(() {
-                          messageSpeed = value;
+                          speedChange = value;
                           _isProcessingAudio = true;
                         });
                         generateAlteredAudioFiles();
