@@ -210,6 +210,30 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     );
   }
 
+  Widget _frameLabel(text) {
+    return Positioned(
+      bottom: 5,
+      left: 0,
+      right: 0,
+      child: Center(
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 3),
+          decoration: BoxDecoration(
+            border: Border.all(color: Theme.of(context).primaryColor),
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Text(
+            text,
+            style: TextStyle( fontSize: 16,
+              color: Theme.of(context).primaryColor,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget noFrame() {
     return GestureDetector(
       onTap: () {
@@ -219,7 +243,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
         cards.current.setShouldDeleteOldDecortionImage();
       },
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 5),
+        // margin: EdgeInsets.symmetric(horizontal: 5),
         decoration: selectedFrame == ""
             ? BoxDecoration(
                 border: Border.all(
@@ -229,10 +253,13 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
               )
             : BoxDecoration(),
         child: SizedBox(
-          child: Column(
+          child: Stack(
+            alignment: AlignmentDirectional.center,
             children: [
-              Expanded(child: Image.file(File(cards.current.picture.filePath))),
-              Center(child: Text("No Frame")),
+              Image.file(
+                File(cards.current.picture.filePath),
+              ),
+              _frameLabel("No Frame"),
             ],
           ),
         ),
@@ -241,7 +268,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   }
 
   Widget decorationImageSelectable(image) {
-    return cards.current.hasFrameDimension
+    return cards.current.decorationImage.hasFrameDimension
         ? LayoutBuilder(
             builder: (context, constraints) {
               return Padding(
@@ -258,13 +285,13 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   Widget decorationImage() {
     return GestureDetector(
       onTap: () {
-        setState(() => selectedFrame = "decorationImage");
+        setState(() => selectedFrame = "existing-art");
         cards.setFrame(null, cards.current.decorationImage.hasFrameDimension);
         cards.current.shouldDeleteOldDecoration = false;
         SystemChrome.setEnabledSystemUIOverlays([]);
       },
       child: Container(
-        decoration: selectedFrame == "decorationImage"
+        decoration: selectedFrame == "existing-art"
             ? BoxDecoration(
                 border: Border.all(
                   color: Colors.blue,
@@ -282,17 +309,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
               Image.file(
                 File(cards.current.decorationImage.filePath),
               ),
-              Positioned(
-                bottom: 5,
-                left: 0,
-                right: 0,
-                child: Center(
-                  child: Container(
-                    color: Colors.white,
-                    child: Text("Current Artwork"),
-                  ),
-                ),
-              ),
+              _frameLabel("Current Art")
             ],
           ),
         ),
@@ -540,7 +557,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
 
   void _setFrameSelection() {
     if (cards.current.isUsingDecorationImage)
-      selectedFrame = "decorationImage";
+      selectedFrame = "existing-art";
     else if (cards.current.framePath != null)
       selectedFrame = PATH.basename(cards.current.framePath);
   }
