@@ -23,35 +23,43 @@ class CardProgressBar extends StatelessWidget {
     card = Provider.of<KaraokeCards>(context, listen: false).current;
     currentActivity = Provider.of<CurrentActivity>(context);
     final screenWidth = MediaQuery.of(context).size.width;
-    final buttonWidth = screenWidth / 5;
+    final buttonWidth = screenWidth / 4.5;
+
+    // OUTLINE LOGIC
+    // isCurrentStep ? BorderSide(color: Colors.blue, width: 5)
+    //                   : BorderSide(
+    //                       color: Theme.of(context).primaryColor, width: 5);
 
     Widget progressButton(
         {IconData stepIcon,
+        CustomClipper buttonClip,
         bool stepIsCompleted,
         bool isCurrentStep,
         Function navigateHere,
         bool canNavigate}) {
-      return Opacity(
-        opacity: canNavigate ? 1 : .3,
-        child: RawMaterialButton(
-          constraints: BoxConstraints(minWidth: buttonWidth, minHeight: 30.0),
-          onPressed: canNavigate ? navigateHere : null,
-          child: Icon(
-            stepIcon,
-            color:
-                stepIsCompleted ? Colors.white : Theme.of(context).primaryColor,
+      return Transform.scale(
+        scale: 1.2,
+        child: ClipPath(
+          clipper: buttonClip,
+          child: Opacity(
+            opacity: canNavigate ? 1 : .3,
+            child: GestureDetector(
+              onTap: canNavigate ? navigateHere : null,
+              child: Container(
+                color: stepIsCompleted
+                    ? Theme.of(context).primaryColor
+                    : Colors.transparent,
+                width: buttonWidth,
+                height: 30.0,
+                child: Icon(
+                  stepIcon,
+                  color: stepIsCompleted
+                      ? Colors.white
+                      : Theme.of(context).primaryColor,
+                ),
+              ),
+            ),
           ),
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30.0),
-              side: isCurrentStep
-                  ? BorderSide(color: Colors.blue, width: 5)
-                  : BorderSide(
-                      color: Theme.of(context).primaryColor, width: 5)),
-          elevation: stepIsCompleted ? 5.0 : 0,
-          fillColor: stepIsCompleted
-              ? Theme.of(context).primaryColor
-              : Colors.transparent,
-          // padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 2),
         ),
       );
     }
@@ -96,16 +104,18 @@ class CardProgressBar extends StatelessWidget {
     }
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         progressButton(
             stepIcon: CustomIcons.snap_quick,
+            buttonClip: FirstButtonClipper(),
             stepIsCompleted: card.hasPicture,
             isCurrentStep: currentActivity.isSnap,
             navigateHere: navigateToSnap,
             canNavigate: true),
         progressButton(
             stepIcon: CustomIcons.song_quick,
+            buttonClip: MiddleButtonClipper(),
             stepIsCompleted: card.hasSong || card.hasSongFormula,
             isCurrentStep: currentActivity.isSong,
             navigateHere: navigateToSong,
@@ -113,6 +123,7 @@ class CardProgressBar extends StatelessWidget {
         // Can click only if creating a new song
         progressButton(
             stepIcon: CustomIcons.speak_quick,
+            buttonClip: MiddleButtonClipper(),
             stepIsCompleted: card.hasMessage,
             isCurrentStep: currentActivity.isSpeak,
             navigateHere: navigateToSpeak,
@@ -120,6 +131,7 @@ class CardProgressBar extends StatelessWidget {
             canNavigate: card.hasPicture),
         progressButton(
             stepIcon: CustomIcons.style_quick,
+            buttonClip: LastButtonClipper(),
             stepIsCompleted: _hasDecoration,
             isCurrentStep: currentActivity.isStyle,
             navigateHere: navigateToStyle,
@@ -127,4 +139,63 @@ class CardProgressBar extends StatelessWidget {
       ],
     );
   }
+}
+
+class FirstButtonClipper extends CustomClipper<Path> {
+  @override
+  getClip(Size size) {
+    var path = Path();
+    double factor = size.height / 2;
+    path.lineTo(0, size.height - factor);
+    path.quadraticBezierTo(0, size.height, factor, size.height);
+    path.lineTo(size.width - factor, size.height);
+    path.lineTo(size.width, 0);
+    path.lineTo(factor, 0);
+    path.quadraticBezierTo(0, 0, 0, factor);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper oldClipper) => false;
+}
+
+class MiddleButtonClipper extends CustomClipper<Path> {
+  @override
+  getClip(Size size) {
+    var path = Path();
+    double factor = size.height / 2;
+    path.lineTo(factor, 0);
+    path.lineTo(0, size.height);
+    path.lineTo(size.width - factor, size.height);
+    path.lineTo(size.width, 0);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper oldClipper) => false;
+}
+
+class LastButtonClipper extends CustomClipper<Path> {
+  @override
+  getClip(Size size) {
+    var path = Path();
+    double factor = size.height / 2;
+    path.lineTo(factor, 0);
+    path.lineTo(0, size.height);
+    path.lineTo(size.width - factor, size.height);
+    path.quadraticBezierTo(
+        size.width, size.height, size.width, size.height - factor);
+    // path.lineTo(size.width, 0);
+    path.quadraticBezierTo(size.width, 0, size.width - factor, 0);
+    path.lineTo(size.width, 0);
+    path.lineTo(0, 0);
+
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper oldClipper) => false;
 }
