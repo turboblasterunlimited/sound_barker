@@ -25,6 +25,8 @@ class CardProgressBar extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final buttonWidth = screenWidth / 4.5;
 
+    final primaryColor = Theme.of(context).primaryColor;
+
     // OUTLINE LOGIC
     // isCurrentStep ? BorderSide(color: Colors.blue, width: 5)
     //                   : BorderSide(
@@ -33,29 +35,36 @@ class CardProgressBar extends StatelessWidget {
     Widget progressButton(
         {IconData stepIcon,
         CustomClipper buttonClip,
+        CustomPainter outlinePainter,
         bool stepIsCompleted,
         bool isCurrentStep,
         Function navigateHere,
         bool canNavigate}) {
-      return Transform.scale(
-        scale: 1.2,
-        child: ClipPath(
-          clipper: buttonClip,
-          child: Opacity(
-            opacity: canNavigate ? 1 : .3,
+      return Padding(
+        padding: const EdgeInsets.only(top: 5.0),
+        child: Transform.scale(
+          scale: 1.2,
+          child: ClipPath(
+            clipper: buttonClip,
             child: GestureDetector(
               onTap: canNavigate ? navigateHere : null,
-              child: Container(
-                color: stepIsCompleted
-                    ? Theme.of(context).primaryColor
-                    : Colors.transparent,
-                width: buttonWidth,
-                height: 30.0,
-                child: Icon(
-                  stepIcon,
+              child: Opacity(
+                opacity: canNavigate ? 1 : .3,
+                child: Container(
                   color: stepIsCompleted
-                      ? Colors.white
-                      : Theme.of(context).primaryColor,
+                      ? Theme.of(context).primaryColor
+                      : Colors.transparent,
+                  width: buttonWidth,
+                  height: 30.0,
+                  child: CustomPaint(
+                    painter: outlinePainter,
+                    child: Icon(
+                      stepIcon,
+                      color: stepIsCompleted
+                          ? Colors.white
+                          : Theme.of(context).primaryColor,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -109,6 +118,8 @@ class CardProgressBar extends StatelessWidget {
         progressButton(
             stepIcon: CustomIcons.snap_quick,
             buttonClip: FirstButtonClipper(),
+            outlinePainter: FirstOutlinePainter(
+                currentActivity.isSnap ? Colors.blue : primaryColor),
             stepIsCompleted: card.hasPicture,
             isCurrentStep: currentActivity.isSnap,
             navigateHere: navigateToSnap,
@@ -116,6 +127,8 @@ class CardProgressBar extends StatelessWidget {
         progressButton(
             stepIcon: CustomIcons.song_quick,
             buttonClip: MiddleButtonClipper(),
+            outlinePainter: MiddleOutlinePainter(
+                currentActivity.isSong ? Colors.blue : primaryColor),
             stepIsCompleted: card.hasSong || card.hasSongFormula,
             isCurrentStep: currentActivity.isSong,
             navigateHere: navigateToSong,
@@ -124,6 +137,8 @@ class CardProgressBar extends StatelessWidget {
         progressButton(
             stepIcon: CustomIcons.speak_quick,
             buttonClip: MiddleButtonClipper(),
+            outlinePainter: MiddleOutlinePainter(
+                currentActivity.isSpeak ? Colors.blue : primaryColor),
             stepIsCompleted: card.hasMessage,
             isCurrentStep: currentActivity.isSpeak,
             navigateHere: navigateToSpeak,
@@ -132,6 +147,8 @@ class CardProgressBar extends StatelessWidget {
         progressButton(
             stepIcon: CustomIcons.style_quick,
             buttonClip: LastButtonClipper(),
+            outlinePainter: LastOutlinePainter(
+                currentActivity.isStyle ? Colors.blue : primaryColor),
             stepIsCompleted: _hasDecoration,
             isCurrentStep: currentActivity.isStyle,
             navigateHere: navigateToStyle,
@@ -141,18 +158,101 @@ class CardProgressBar extends StatelessWidget {
   }
 }
 
+void firstButtonPath(Size size, Path path) {
+  double factor = size.height / 2;
+  path.lineTo(0, size.height - factor);
+  path.quadraticBezierTo(0, size.height, factor, size.height);
+  path.lineTo(size.width - factor, size.height);
+  path.lineTo(size.width, 0);
+  path.lineTo(factor, 0);
+  path.quadraticBezierTo(0, 0, 0, factor);
+  path.close();
+}
+
+void middleButtonPath(Size size, Path path) {
+  double factor = size.height / 2;
+  path.lineTo(factor, 0);
+  path.lineTo(0, size.height);
+  path.lineTo(size.width - factor, size.height);
+  path.lineTo(size.width, 0);
+  path.close();
+}
+
+void lastButtonPath(Size size, Path path) {
+  double factor = size.height / 2;
+  path.lineTo(factor, 0);
+  path.lineTo(0, size.height);
+  path.lineTo(size.width - factor, size.height);
+  path.quadraticBezierTo(
+      size.width, size.height, size.width, size.height - factor);
+  path.quadraticBezierTo(size.width, 0, size.width - factor, 0);
+  path.lineTo(size.width, 0);
+  path.lineTo(0, 0);
+  path.close();
+}
+
+class FirstOutlinePainter extends CustomPainter {
+  Color color;
+  FirstOutlinePainter(this.color);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 5.0
+      ..color = color;
+    Path path = Path();
+    firstButtonPath(size, path);
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => true;
+}
+
+class MiddleOutlinePainter extends CustomPainter {
+  Color color;
+  MiddleOutlinePainter(this.color);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 5.0
+      ..color = color;
+    Path path = Path();
+    middleButtonPath(size, path);
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => true;
+}
+
+class LastOutlinePainter extends CustomPainter {
+  Color color;
+  LastOutlinePainter(this.color);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 5.0
+      ..color = color;
+    Path path = Path();
+    lastButtonPath(size, path);
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => true;
+}
+
 class FirstButtonClipper extends CustomClipper<Path> {
   @override
   getClip(Size size) {
-    var path = Path();
-    double factor = size.height / 2;
-    path.lineTo(0, size.height - factor);
-    path.quadraticBezierTo(0, size.height, factor, size.height);
-    path.lineTo(size.width - factor, size.height);
-    path.lineTo(size.width, 0);
-    path.lineTo(factor, 0);
-    path.quadraticBezierTo(0, 0, 0, factor);
-    path.close();
+    final path = Path();
+    firstButtonPath(size, path);
     return path;
   }
 
@@ -164,12 +264,7 @@ class MiddleButtonClipper extends CustomClipper<Path> {
   @override
   getClip(Size size) {
     var path = Path();
-    double factor = size.height / 2;
-    path.lineTo(factor, 0);
-    path.lineTo(0, size.height);
-    path.lineTo(size.width - factor, size.height);
-    path.lineTo(size.width, 0);
-    path.close();
+    middleButtonPath(size, path);
     return path;
   }
 
@@ -181,18 +276,7 @@ class LastButtonClipper extends CustomClipper<Path> {
   @override
   getClip(Size size) {
     var path = Path();
-    double factor = size.height / 2;
-    path.lineTo(factor, 0);
-    path.lineTo(0, size.height);
-    path.lineTo(size.width - factor, size.height);
-    path.quadraticBezierTo(
-        size.width, size.height, size.width, size.height - factor);
-    // path.lineTo(size.width, 0);
-    path.quadraticBezierTo(size.width, 0, size.width - factor, 0);
-    path.lineTo(size.width, 0);
-    path.lineTo(0, 0);
-
-    path.close();
+    lastButtonPath(size, path);
     return path;
   }
 
