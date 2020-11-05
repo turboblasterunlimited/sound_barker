@@ -68,7 +68,8 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
   void startAll() async {
     setState(() => _isPlaying = true);
     imageController.mouthTrackSound(filePath: widget.song.amplitudesPath);
-    await widget.soundController.startPlayer(widget.song.filePath, stopCallback: stopAll);
+    await widget.soundController
+        .startPlayer(widget.song.filePath, stopCallback: stopAll);
     print("song playback file path: ${widget.song.filePath}");
   }
 
@@ -232,22 +233,18 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
               onPressed: selectSong,
               child: FadeTransition(
                 opacity: renameAnimationController,
-                child: Column(
-                  children: <Widget>[
-                    // Title
-                    Center(
-                      child: Text(widget.song.songFamily,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).primaryColor,
-                              fontSize: 16)),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                  child: Center(
+                    child: Text(
+                      widget.song.songFamily,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 16),
                     ),
-                    // Subtitle
-                    // Center(
-                    //     child: Text(widget.song.getName,
-                    //         style:
-                    //             TextStyle(color: Colors.white, fontSize: 16)))
-                  ],
+                  ),
                 ),
               ),
               shape: RoundedRectangleBorder(

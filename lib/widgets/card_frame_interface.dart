@@ -243,7 +243,6 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
         cards.current.setShouldDeleteOldDecortionImage();
       },
       child: Container(
-        // margin: EdgeInsets.symmetric(horizontal: 5),
         decoration: selectedFrame == ""
             ? BoxDecoration(
                 border: Border.all(

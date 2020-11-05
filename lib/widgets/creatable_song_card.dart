@@ -95,7 +95,7 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
               children: <Widget>[
                 Center(
                   child: Text(
-                    widget.creatableSong.fullName,
+                    widget.creatableSong.fullName, overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: isSelected

@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/spinner_state.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
+import 'package:K9_Karaoke/tools/ffmpeg.dart';
 import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +13,7 @@ import 'package:flutter/material.dart';
 // import 'package:flutter_sound_lite/flutter_sound.dart';
 
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
@@ -69,9 +72,6 @@ class BarkRecorderState extends State<BarkRecorder>
   }
 
   void startRecorder() async {
-    // Directory tempDir = await getTemporaryDirectory();
-    this.filePath = '$myAppStoragePath/tempRaw.aac';
-
     PermissionStatus status = await Permission.microphone.request();
     if (!status.isGranted) {
       showError(context, "Microphone permission not granted");
@@ -116,6 +116,16 @@ class BarkRecorderState extends State<BarkRecorder>
     return spinnerState.isLoading || soundController.player.isPlaying;
   }
 
+  void _handleUploadVideoButton() async {
+    if (File(filePath).existsSync()) File(filePath).deleteSync();
+    final pickedFile =
+        await ImagePicker().getVideo(source: ImageSource.gallery);
+    if (pickedFile == null) return;
+    await FFMpeg.process.execute(
+        '-i ${pickedFile.path} -c:a copy -ss 00:00:00 -t 10 -ac 1 -vn $filePath');
+    await barks.setTempRawBark(Bark(filePath: filePath));
+  }
+
   @override
   Widget build(BuildContext context) {
     cards = Provider.of<KaraokeCards>(context);
@@ -123,6 +133,7 @@ class BarkRecorderState extends State<BarkRecorder>
     barks = Provider.of<Barks>(context, listen: false);
     spinnerState = Provider.of<SpinnerState>(context);
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
+    filePath = '$myAppStoragePath/tempRaw.aac';
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -179,7 +190,7 @@ class BarkRecorderState extends State<BarkRecorder>
                   RawMaterialButton(
                     constraints:
                         const BoxConstraints(minWidth: 70.0, minHeight: 36.0),
-                    onPressed: _systemBusy() ? null : null,
+                    onPressed: _systemBusy() ? null : _handleUploadVideoButton,
                     child: Icon(
                       Icons.movie,
                       size: 30,
