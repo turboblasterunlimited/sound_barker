@@ -109,8 +109,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
 
   Future<Map> checkIfSignedIn() async {
     try {
-      return (await HttpController.dio
-              .get('http://$serverIP/is-logged-in'))
+      return (await HttpController.dio.get('http://$serverIP/is-logged-in'))
           ?.data;
     } catch (e) {
       showError(
@@ -337,6 +336,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                 child: Padding(
                   padding: const EdgeInsets.only(top: 180.0),
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.only(
@@ -392,10 +392,10 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                             child: FlatButton(
                               padding: EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 20),
-                              child: Text("Sign In",
+                              child: Text("Sign Up",
                                   style: TextStyle(fontSize: 20)),
                               color: Theme.of(context).primaryColor,
-                              onPressed: _handleSignInButton,
+                              onPressed: _handleManualSignUp,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(22.0),
                               ),
@@ -406,10 +406,10 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                             child: FlatButton(
                               padding: EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 20),
-                              child: Text("Sign Up",
+                              child: Text("Sign In",
                                   style: TextStyle(fontSize: 20)),
                               color: Theme.of(context).primaryColor,
-                              onPressed: _handleManualSignUp,
+                              onPressed: _handleSignInButton,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(22.0),
                               ),
@@ -419,7 +419,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                       ),
                       Container(
                         width: 200,
-                        padding: EdgeInsets.symmetric(vertical: 20),
+                        padding: EdgeInsets.only(top: 10, bottom: 15),
                         child: Divider(
                           color: Colors.black,
                           thickness: 2,
@@ -432,7 +432,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(20.0),
+                        padding: const EdgeInsets.only(top: 15.0),
                         child: FacebookSignInButton(
                           onPressed: _handleFacebookAuthentication,
                         ),
