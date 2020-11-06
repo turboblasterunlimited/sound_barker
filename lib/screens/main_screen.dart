@@ -307,7 +307,9 @@ class _MainScreenState extends State<MainScreen> {
                             if (showFrame)
                               AspectRatio(
                                 aspectRatio: 656 / 778,
-                                child: Image.asset(cards.current.framePath),
+                                child: FittedBox(
+                                    child:
+                                        Image.asset(cards.current.framePath)),
                               ),
                             if (_showDecorationImage)
                               AspectRatio(

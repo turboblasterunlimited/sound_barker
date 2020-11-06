@@ -23,7 +23,24 @@ class CardProgressBar extends StatelessWidget {
     card = Provider.of<KaraokeCards>(context, listen: false).current;
     currentActivity = Provider.of<CurrentActivity>(context);
     final screenWidth = MediaQuery.of(context).size.width;
-    final buttonWidth = screenWidth / 4.5;
+    double buttonWidth = screenWidth / 4.5;
+    buttonWidth = buttonWidth > 150 ? 150 : buttonWidth;
+
+    print("screen width: $screenWidth");
+    print("button width: $buttonWidth");
+
+    // tablet
+    // screen width: 800.0
+    // button width: 177.77777777777777
+
+    // iphone 7
+    // screen width: 320.0
+    // button width: 71.11111111111111
+
+
+    // galaxy s8
+    // screen width: 360.0
+    // button width: 80.0
 
     final primaryColor = Theme.of(context).primaryColor;
 
@@ -124,6 +141,9 @@ class CardProgressBar extends StatelessWidget {
             isCurrentStep: currentActivity.isSnap,
             navigateHere: navigateToSnap,
             canNavigate: true),
+        Padding(
+          padding: EdgeInsets.only(left: screenWidth < 450 ? 0 : screenWidth / 50),
+        ),
         progressButton(
             stepIcon: CustomIcons.song_quick,
             buttonClip: MiddleButtonClipper(),
@@ -133,6 +153,10 @@ class CardProgressBar extends StatelessWidget {
             isCurrentStep: currentActivity.isSong,
             navigateHere: navigateToSong,
             canNavigate: card.hasPicture),
+        Padding(
+          padding: EdgeInsets.only(left: screenWidth < 450 ? 0 : screenWidth / 50),
+        ),
+
         // Can click only if creating a new song
         progressButton(
             stepIcon: CustomIcons.speak_quick,
@@ -144,6 +168,10 @@ class CardProgressBar extends StatelessWidget {
             navigateHere: navigateToSpeak,
             // canNavigate: card.hasSongFormula || card.hasSong),
             canNavigate: card.hasPicture),
+        Padding(
+          padding: EdgeInsets.only(left: screenWidth < 450 ? 0 : screenWidth / 50),
+        ),
+
         progressButton(
             stepIcon: CustomIcons.style_quick,
             buttonClip: LastButtonClipper(),

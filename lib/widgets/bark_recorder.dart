@@ -122,7 +122,7 @@ class BarkRecorderState extends State<BarkRecorder>
         await ImagePicker().getVideo(source: ImageSource.gallery);
     if (pickedFile == null) return;
     await FFMpeg.process.execute(
-        '-i ${pickedFile.path} -c:a copy -ss 00:00:00 -t 10 -ac 1 -vn $filePath');
+        '-i ${pickedFile.path} -c:a copy -ss 00:00:00 -t 15 -ac 1 -vn $filePath');
     await barks.setTempRawBark(Bark(filePath: filePath));
   }
 
