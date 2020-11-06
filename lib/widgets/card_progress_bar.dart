@@ -26,8 +26,8 @@ class CardProgressBar extends StatelessWidget {
     double buttonWidth = screenWidth / 4.5;
     buttonWidth = buttonWidth > 150 ? 150 : buttonWidth;
 
-    print("screen width: $screenWidth");
-    print("button width: $buttonWidth");
+    // print("screen width: $screenWidth");
+    // print("button width: $buttonWidth");
 
     // tablet
     // screen width: 800.0
@@ -37,17 +37,11 @@ class CardProgressBar extends StatelessWidget {
     // screen width: 320.0
     // button width: 71.11111111111111
 
-
     // galaxy s8
     // screen width: 360.0
     // button width: 80.0
 
     final primaryColor = Theme.of(context).primaryColor;
-
-    // OUTLINE LOGIC
-    // isCurrentStep ? BorderSide(color: Colors.blue, width: 5)
-    //                   : BorderSide(
-    //                       color: Theme.of(context).primaryColor, width: 5);
 
     Widget progressButton(
         {IconData stepIcon,

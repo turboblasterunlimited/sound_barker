@@ -308,8 +308,8 @@ class _MainScreenState extends State<MainScreen> {
                               AspectRatio(
                                 aspectRatio: 656 / 778,
                                 child: FittedBox(
-                                    child:
-                                        Image.asset(cards.current.framePath)),
+                                  child: Image.asset(cards.current.framePath),
+                                ),
                               ),
                             if (_showDecorationImage)
                               AspectRatio(
@@ -362,7 +362,10 @@ class _MainScreenState extends State<MainScreen> {
 
                   if (cards.current != null) CardProgressBar(),
                   if (!spinnerState.isLoading && cards.current != null)
-                    CardCreationInterface(),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10.0),
+                      child: CardCreationInterface(),
+                    ),
                   // Half screen spinner
                   if (spinnerState.isLoading) SpinnerHalfScreenWidget(),
                 ],

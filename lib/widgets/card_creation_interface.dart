@@ -42,25 +42,19 @@ class CardCreationInterface extends StatelessWidget {
       else if (currentActivity.isThree) return ShareCardInterface();
     }
 
-    return Column(
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(top: 10.0),
-        ),
-        if (currentActivity.isSnap && card.hasPicture)
-          MouthToneSlider()
-        else if (currentActivity.isSong)
-          SongSelectInterface()
-        else if (currentActivity.isSpeak)
-          _handleSpeakWidget()
-        else if (currentActivity.isStyle)
-          _handleStyleWidget(),
-
-        // Visibility(
-        //   visible: currentActivity.isStyle,
-        //   child: CardDecoratorInterface(),
-        // ),
-      ],
+    return AnimatedSwitcher(
+      duration: const Duration(seconds: 1),
+      transitionBuilder: (Widget child, Animation<double> animation) =>
+          SizeTransition(child: child, sizeFactor: animation),
+      child: (currentActivity.isSnap && card.hasPicture)
+          ? MouthToneSlider()
+          : (currentActivity.isSong)
+              ? SongSelectInterface()
+              : (currentActivity.isSpeak)
+                  ? _handleSpeakWidget()
+                  : (currentActivity.isStyle)
+                      ? _handleStyleWidget()
+                      : Center(),
     );
   }
 }

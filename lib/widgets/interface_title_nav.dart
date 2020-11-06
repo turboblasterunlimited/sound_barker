@@ -17,6 +17,9 @@ class InterfaceTitleNav extends StatefulWidget {
 class _InterfaceTitleNavState extends State<InterfaceTitleNav> {
   @override
   Widget build(BuildContext context) {
+    double screenSize = MediaQuery.of(context).size.width;
+    widget.titleSize = screenSize > 400 ? 25 : widget.titleSize;
+    
     return Stack(
       children: <Widget>[
         if (widget.backCallback != null)
