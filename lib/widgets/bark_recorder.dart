@@ -134,135 +134,138 @@ class BarkRecorderState extends State<BarkRecorder>
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
     filePath = '$myAppStoragePath/tempRaw.aac';
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: <Widget>[
-        InterfaceTitleNav('CAPTURE BARKS',
-            backCallback: _backCallback, skipCallback: _skipCallback),
-        _loading
-            ? SpinnerHalfScreenWidget("Processing Barks...")
-            : Column(
-                children: [
-                  ButtonBar(
-                    alignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      SizedBox(
-                        height: 130,
-                        width: 150,
-                        child: Column(
-                          children: <Widget>[
-                            RawMaterialButton(
-                              onPressed:
-                                  _loading || soundController.player.isPlaying
-                                      ? null
-                                      : onStartRecorderPressed,
-                              child: _loading
-                                  ? SpinKitWave(
-                                      color: Colors.white,
-                                      size: 20,
-                                    )
-                                  : Icon(
-                                      _isRecording
-                                          ? Icons.stop
-                                          : Icons.fiber_manual_record,
-                                      size: 30,
-                                      color: Colors.white,
-                                    ),
-                              shape: _isRecording
-                                  ? RoundedRectangleBorder()
-                                  : CircleBorder(),
-                              elevation: 2.0,
-                              fillColor: Theme.of(context).errorColor,
-                              padding: const EdgeInsets.all(20.0),
-                            ),
-                            Padding(padding: EdgeInsets.only(top: 16)),
-                            Text(
-                                _isRecording
-                                    ? "RECORDING...\nTAP TO STOP"
-                                    : "RECORD AUDIO",
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    color: Theme.of(context).errorColor))
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: 130,
-                        width: 140,
-                        child: Column(
-                          children: <Widget>[
-                            RawMaterialButton(
-                              constraints: const BoxConstraints(
-                                  minWidth: 70.0, minHeight: 36.0),
-                              onPressed: _systemBusy()
-                                  ? null
-                                  : _handleUploadVideoButton,
-                              child: Icon(
-                                Icons.movie,
-                                size: 30,
-                                color: Colors.white,
+    return SizedBox(
+      height: 300,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          InterfaceTitleNav('CAPTURE BARKS',
+              backCallback: _backCallback, skipCallback: _skipCallback),
+          _loading
+              ? SpinnerHalfScreenWidget("Processing Barks...")
+              : Column(
+                  children: [
+                    ButtonBar(
+                      alignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(
+                          height: 130,
+                          width: 150,
+                          child: Column(
+                            children: <Widget>[
+                              RawMaterialButton(
+                                onPressed:
+                                    _loading || soundController.player.isPlaying
+                                        ? null
+                                        : onStartRecorderPressed,
+                                child: _loading
+                                    ? SpinKitWave(
+                                        color: Colors.white,
+                                        size: 20,
+                                      )
+                                    : Icon(
+                                        _isRecording
+                                            ? Icons.stop
+                                            : Icons.fiber_manual_record,
+                                        size: 30,
+                                        color: Colors.white,
+                                      ),
+                                shape: _isRecording
+                                    ? RoundedRectangleBorder()
+                                    : CircleBorder(),
+                                elevation: 2.0,
+                                fillColor: Theme.of(context).errorColor,
+                                padding: const EdgeInsets.all(20.0),
                               ),
-                              shape: CircleBorder(),
-                              elevation: 2.0,
-                              fillColor: Theme.of(context).primaryColor,
-                              padding: const EdgeInsets.all(20.0),
-                            ),
-                            Padding(padding: EdgeInsets.only(top: 16)),
-                            Text("UPLOAD VIDEO",
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    color: Theme.of(context).primaryColor))
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  // ADD BARKS BUTTON
-
-                  Visibility(
-                    visible: barks.tempRawBark != null && !_isRecording,
-                    maintainState: true,
-                    maintainAnimation: true,
-                    maintainSize: true,
-                    child: GestureDetector(
-                      onTap: () async {
-                        setState(() => _loading = true);
-                        await barks.uploadRawBarkAndRetrieveCroppedBarks(
-                            cards.current.picture.fileId);
-                        setState(() => _loading = false);
-                        currentActivity
-                            .setCardCreationSubStep(CardCreationSubSteps.two);
-                      },
-                      child: Transform.rotate(
-                        angle: _animation.value * 0.1,
-                        child: Container(
-                          padding: EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            shape: BoxShape.rectangle,
-                            color: Theme.of(context).primaryColor,
-                            // boxShadow: [
-                            //   BoxShadow(
-                            //       color: Colors.green,
-                            //       blurRadius: _animation.value,
-                            //       spreadRadius: _animation.value)
-                            // ]
+                              Padding(padding: EdgeInsets.only(top: 16)),
+                              Text(
+                                  _isRecording
+                                      ? "RECORDING...\nTAP TO STOP"
+                                      : "RECORD AUDIO",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: Theme.of(context).errorColor))
+                            ],
                           ),
-                          child: Text(
-                            "ADD BARKS\nAND CONTINUE",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.white),
+                        ),
+                        SizedBox(
+                          height: 130,
+                          width: 140,
+                          child: Column(
+                            children: <Widget>[
+                              RawMaterialButton(
+                                constraints: const BoxConstraints(
+                                    minWidth: 70.0, minHeight: 36.0),
+                                onPressed: _systemBusy()
+                                    ? null
+                                    : _handleUploadVideoButton,
+                                child: Icon(
+                                  Icons.movie,
+                                  size: 30,
+                                  color: Colors.white,
+                                ),
+                                shape: CircleBorder(),
+                                elevation: 2.0,
+                                fillColor: Theme.of(context).primaryColor,
+                                padding: const EdgeInsets.all(20.0),
+                              ),
+                              Padding(padding: EdgeInsets.only(top: 16)),
+                              Text("UPLOAD VIDEO",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: Theme.of(context).primaryColor))
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    // ADD BARKS BUTTON
+
+                    Visibility(
+                      visible: barks.tempRawBark != null && !_isRecording,
+                      maintainState: true,
+                      maintainAnimation: true,
+                      maintainSize: true,
+                      child: GestureDetector(
+                        onTap: () async {
+                          setState(() => _loading = true);
+                          await barks.uploadRawBarkAndRetrieveCroppedBarks(
+                              cards.current.picture.fileId);
+                          setState(() => _loading = false);
+                          currentActivity
+                              .setCardCreationSubStep(CardCreationSubSteps.two);
+                        },
+                        child: Transform.rotate(
+                          angle: _animation.value * 0.1,
+                          child: Container(
+                            padding: EdgeInsets.all(15),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              shape: BoxShape.rectangle,
+                              color: Theme.of(context).primaryColor,
+                              // boxShadow: [
+                              //   BoxShadow(
+                              //       color: Colors.green,
+                              //       blurRadius: _animation.value,
+                              //       spreadRadius: _animation.value)
+                              // ]
+                            ),
+                            child: Text(
+                              "ADD BARKS\nAND CONTINUE",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: Colors.white),
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-        Padding(
-          padding: EdgeInsets.all(5),
-        )
-      ],
+                  ],
+                ),
+          Padding(
+            padding: EdgeInsets.all(5),
+          )
+        ],
+      ),
     );
   }
 }

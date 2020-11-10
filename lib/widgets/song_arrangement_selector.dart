@@ -15,7 +15,6 @@ class SongArrangementSelector extends StatefulWidget {
 }
 
 class _SongArrangementSelector extends State<SongArrangementSelector> {
-  BuildContext ctx;
   KaraokeCards cards;
   var songFormula;
   Songs songs;
@@ -28,7 +27,7 @@ class _SongArrangementSelector extends State<SongArrangementSelector> {
         await RestAPI.createSong(cards.current.barkIds, songFormulaId);
     if (songData["error"] != null) {
       setState(() => _isLoading = false);
-      showError(ctx, songData["error"]);
+      showError(context, songData["error"]);
       return null;
     }
     Song song = Song();
@@ -48,73 +47,76 @@ class _SongArrangementSelector extends State<SongArrangementSelector> {
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
     songs = Provider.of<Songs>(context, listen: false);
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        InterfaceTitleNav("CHOOSE STYLE",
-            titleSize: 20, backCallback: currentActivity.setPreviousSubStep),
-        _isLoading
-            ? SpinnerHalfScreenWidget("Creating Song...")
-            : SizedBox(
-                height: MediaQuery.of(context).size.height / 3,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      RawMaterialButton(
-                        constraints: const BoxConstraints(
-                            minWidth: 70.0, minHeight: 36.0),
-                        onPressed: () =>
-                            _createSong(songFormula.arrangement["harmonized"]),
-                        child: Text(
-                          "Make my dog\nsound realistic",
-                          style: TextStyle(
+    return SizedBox(
+      height: 300,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          InterfaceTitleNav("CHOOSE STYLE",
+              titleSize: 20, backCallback: currentActivity.setPreviousSubStep),
+          _isLoading
+              ? SpinnerHalfScreenWidget("Creating Song...")
+              : SizedBox(
+                  height: MediaQuery.of(context).size.height / 3,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        RawMaterialButton(
+                          constraints: const BoxConstraints(
+                              minWidth: 70.0, minHeight: 36.0),
+                          onPressed: () =>
+                              _createSong(songFormula.arrangement["harmonized"]),
+                          child: Text(
+                            "Make my dog\nsound realistic",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).primaryColor,
+                                fontSize: 16),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                            side: BorderSide(
+                                color: Theme.of(context).primaryColor, width: 3),
+                          ),
+                          elevation: 2.0,
+                          fillColor: null,
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 13, horizontal: 22.0),
+                        ),
+                        Padding(padding: EdgeInsets.all(5)),
+                        RawMaterialButton(
+                          constraints: const BoxConstraints(
+                              minWidth: 60.0, minHeight: 36.0),
+                          onPressed: () =>
+                              _createSong(songFormula.arrangement["pitched"]),
+                          child: Text(
+                            "Make my dog\nhit all the notes",
+                            style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Theme.of(context).primaryColor,
-                              fontSize: 16),
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                          side: BorderSide(
-                              color: Theme.of(context).primaryColor, width: 3),
-                        ),
-                        elevation: 2.0,
-                        fillColor: null,
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 13, horizontal: 22.0),
-                      ),
-                      Padding(padding: EdgeInsets.all(5)),
-                      RawMaterialButton(
-                        constraints: const BoxConstraints(
-                            minWidth: 60.0, minHeight: 36.0),
-                        onPressed: () =>
-                            _createSong(songFormula.arrangement["pitched"]),
-                        child: Text(
-                          "Make my dog\nhit all the notes",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).primaryColor,
-                            fontSize: 16,
+                              fontSize: 16,
+                            ),
                           ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                            side: BorderSide(
+                                color: Theme.of(context).primaryColor, width: 3),
+                          ),
+                          elevation: 2.0,
+                          fillColor: null,
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 13, horizontal: 22.0),
                         ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                          side: BorderSide(
-                              color: Theme.of(context).primaryColor, width: 3),
-                        ),
-                        elevation: 2.0,
-                        fillColor: null,
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 13, horizontal: 22.0),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -5,7 +5,6 @@ class SpinnerHalfScreenWidget extends StatefulWidget {
   String message;
 
   SpinnerHalfScreenWidget(this.message);
-
   @override
   _SpinnerHalfScreenWidget createState() => _SpinnerHalfScreenWidget();
 }
@@ -13,8 +12,8 @@ class SpinnerHalfScreenWidget extends StatefulWidget {
 class _SpinnerHalfScreenWidget extends State<SpinnerHalfScreenWidget> {
   Widget build(BuildContext context) {
 
-    // Must be child of COLUMN or ROW widget
-    return SizedBox(
+    // Must be child of COLUMN or ROW widget and parent of COLUMN or ROW must have fixed height.
+    return Expanded(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -37,7 +36,6 @@ class _SpinnerHalfScreenWidget extends State<SpinnerHalfScreenWidget> {
               ),
             ),
           ),
-          
         ],
       ),
     );
