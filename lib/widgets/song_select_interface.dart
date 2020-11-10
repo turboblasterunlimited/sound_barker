@@ -11,7 +11,6 @@ import 'package:provider/provider.dart';
 import '../providers/sound_controller.dart';
 import 'package:K9_Karaoke/widgets/song_playback_card.dart';
 import '../providers/songs.dart';
-import '../providers/spinner_state.dart';
 
 class SongSelectInterface extends StatefulWidget {
   @override
@@ -82,7 +81,6 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
   Widget build(BuildContext context) {
     songs = Provider.of<Songs>(context);
     final soundController = Provider.of<SoundController>(context);
-    final spinnerState = Provider.of<SpinnerState>(context, listen: true);
     cards = Provider.of<KaraokeCards>(context, listen: false);
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
     creatableSongs = Provider.of<CreatableSongs>(context, listen: false);

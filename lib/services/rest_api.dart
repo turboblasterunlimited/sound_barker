@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:K9_Karaoke/providers/card_decoration_image.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
+import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import '../services/http_controller.dart';
 import '../providers/songs.dart';
 import '../providers/barks.dart';
@@ -229,7 +230,7 @@ class RestAPI {
         data: body,
       );
     } catch (e) {
-      print("Split RAw bark error message: ${e.message}");
+      print("create Song on server error message: ${e.message}");
       _handleAssetError(response, e);
     }
     print("create Song on server response body: ${response?.data}");

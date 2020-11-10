@@ -30,7 +30,6 @@ import './providers/barks.dart';
 import './providers/songs.dart';
 import './providers/image_controller.dart';
 import './providers/sound_controller.dart';
-import './providers/spinner_state.dart';
 
 final sentry = SentryClient(
     dsn:
@@ -97,9 +96,6 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider.value(
           value: ActiveWaveStreamer(),
-        ),
-        ChangeNotifierProvider.value(
-          value: SpinnerState(),
         ),
         ChangeNotifierProvider.value(
           value: KaraokeCardDecorationController(),

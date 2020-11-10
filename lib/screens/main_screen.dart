@@ -4,14 +4,12 @@ import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/sound_controller.dart';
-import 'package:K9_Karaoke/providers/spinner_state.dart';
 import 'package:K9_Karaoke/providers/the_user.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/widgets/card_creation_interface.dart';
 import 'package:K9_Karaoke/widgets/card_decorator_canvas.dart';
 import 'package:K9_Karaoke/widgets/card_progress_bar.dart';
 import 'package:K9_Karaoke/widgets/photo_name_input.dart';
-import 'package:K9_Karaoke/widgets/spinner_half_screen_widget.dart';
 import 'package:K9_Karaoke/widgets/spinner_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -39,7 +37,6 @@ class _MainScreenState extends State<MainScreen> {
   Songs songs;
   Pictures pictures;
   ImageController imageController;
-  SpinnerState spinnerState;
   CurrentActivity currentActivity;
   KaraokeCards cards;
   SoundController soundController;
@@ -110,7 +107,6 @@ class _MainScreenState extends State<MainScreen> {
     pictures = Provider.of<Pictures>(context, listen: true);
     imageController = Provider.of<ImageController>(context);
     soundController = Provider.of<SoundController>(context);
-    spinnerState = Provider.of<SpinnerState>(context);
     currentActivity = Provider.of<CurrentActivity>(context);
     cards = Provider.of<KaraokeCards>(context);
   }
@@ -361,13 +357,11 @@ class _MainScreenState extends State<MainScreen> {
                   ),
 
                   if (cards.current != null) CardProgressBar(),
-                  if (!spinnerState.isLoading && cards.current != null)
+                  if (cards.current != null)
                     Padding(
                       padding: const EdgeInsets.only(top: 10.0),
                       child: CardCreationInterface(),
                     ),
-                  // Half screen spinner
-                  if (spinnerState.isLoading) SpinnerHalfScreenWidget(),
                 ],
               ),
             ),

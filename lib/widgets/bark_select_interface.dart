@@ -75,6 +75,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
 
   updateDisplayedBarks({bool stock = false, bool fx = false}) {
     List newBarks = getBarksOfCurrentLength(stock: stock, fx: fx);
+    if (newBarks == null) return;
     List toRemove = [];
     // remove barks
     displayedBarks.asMap().forEach((i, bark) {

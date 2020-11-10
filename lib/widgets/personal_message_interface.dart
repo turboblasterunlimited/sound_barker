@@ -2,7 +2,6 @@ import 'package:K9_Karaoke/classes/card_message.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
-import 'package:K9_Karaoke/providers/spinner_state.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
@@ -38,7 +37,6 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
   double pitchChange = 1;
 
   CurrentActivity currentActivity;
-  SpinnerState spinnerState;
   KaraokeCards cards;
   CardMessage message;
   AnimationController _animationController;
@@ -61,6 +59,8 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
   String get selectedEffect {
     return effects.keys.toList()[effectSliderVal.round()];
   }
+
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -190,9 +190,9 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
   }
 
   void _handleCombineAndContinue() async {
-    spinnerState.startLoading();
+    setState(() => _isLoading = true);
     await cards.current.combineMessageAndSong();
-    spinnerState.stopLoading();
+    setState(() => _isLoading = false);
     currentActivity.setCardCreationStep(CardCreationSteps.style);
   }
 
@@ -201,7 +201,6 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
     imageController = Provider.of<ImageController>(context, listen: false);
     soundController = Provider.of<SoundController>(context);
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
-    spinnerState = Provider.of<SpinnerState>(context, listen: false);
     cards = Provider.of<KaraokeCards>(context, listen: false);
     message = cards.current.message;
     _createFilePaths();
@@ -224,11 +223,11 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
                 child: Column(
                   children: <Widget>[
                     RawMaterialButton(
-                      onPressed: spinnerState.isLoading ||
+                      onPressed: _isLoading ||
                               soundController.player.isPlaying
                           ? null
                           : onStartRecorderPressed,
-                      child: spinnerState.isLoading
+                      child: _isLoading
                           ? SpinKitWave(
                               color: Colors.white,
                               size: 20,
