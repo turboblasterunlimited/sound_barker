@@ -14,7 +14,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class InterfaceSwitcher extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     KaraokeCard card = Provider.of<KaraokeCards>(context).current;
@@ -41,23 +40,14 @@ class InterfaceSwitcher extends StatelessWidget {
       else if (currentActivity.isThree) return ShareCardInterface();
     }
 
-    // return AnimatedSwitcher(
-    //   duration: const Duration(seconds: 1),
-    //   switchInCurve: Curves.linear,
-    //   switchOutCurve: Curves.linear,
-    //   transitionBuilder: (Widget child, Animation<double> animation) =>
-    //       SizeTransition(child: child, sizeFactor: animation),
-      // child: 
-      return (currentActivity.isSnap && card.hasPicture)
-          ? 
-        MouthToneSlider()
-          : (currentActivity.isSong)
-              ? SongSelectInterface()
-              : (currentActivity.isSpeak)
-                  ? _handleSpeakWidget()
-                  : (currentActivity.isStyle)
-                      ? _handleStyleWidget()
-                      : Center();
-    // );
+    return (currentActivity.isSnap && card.hasPicture)
+        ? MouthToneSlider()
+        : (currentActivity.isSong)
+            ? SongSelectInterface()
+            : (currentActivity.isSpeak)
+                ? _handleSpeakWidget()
+                : (currentActivity.isStyle)
+                    ? _handleStyleWidget()
+                    : Center();
   }
 }

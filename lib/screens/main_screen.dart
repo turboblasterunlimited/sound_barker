@@ -30,7 +30,7 @@ class MainScreen extends StatefulWidget {
   _MainScreenState createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   TheUser user;
   Barks barks;
   Songs songs;
@@ -359,7 +359,10 @@ class _MainScreenState extends State<MainScreen> {
                   if (cards.current != null)
                     Padding(
                       padding: const EdgeInsets.only(top: 10.0),
-                      child: InterfaceSwitcher(),
+                      child: AnimatedSize(
+                          duration: Duration(milliseconds: 400),
+                          vsync: this,
+                          child: InterfaceSwitcher()),
                     ),
                 ],
               ),

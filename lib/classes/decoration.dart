@@ -5,10 +5,7 @@ class CardDecoration {
   List<Drawing> drawings = [];
   List<Typing> typings = [];
 
-  CardDecoration() {
-    print("typings: $typings");
-    print("drawings: $drawings");
-  }
+  CardDecoration();
 
   bool get isEmpty {
     return drawings.isEmpty && typings.isEmpty;

@@ -84,7 +84,10 @@ class SoundController with ChangeNotifier {
   SoundController();
 
   Future<void> startPlayer(String path,
-      {Function stopCallback, bool url = false, bool asset = false}) async {
+      {Function stopCallback,
+      Function startAnimationCallback,
+      bool url = false,
+      bool asset = false}) async {
     if (player.isPlaying) {
       lastCallback();
       await stopPlayer();
@@ -97,11 +100,13 @@ class SoundController with ChangeNotifier {
 
     lastCallback = stopCallback;
     Track track;
-    if (url) track = Track.fromURL(path);
-    else if (asset) track = Track.fromAsset(path);
-    else track = Track.fromFile(path);
-
-    await player.play(track);
+    if (url)
+      track = Track.fromURL(path);
+    else if (asset)
+      track = Track.fromAsset(path);
+    else
+      track = Track.fromFile(path);
+    player.play(track);
   }
 
   Future<void> stopPlayer() async {
