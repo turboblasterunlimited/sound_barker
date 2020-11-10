@@ -24,8 +24,9 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
       [usersDisplayedPictures, stateSetter]) {
     List<Widget> widgets = [];
     pics.forEach((picture) {
-      widgets.add(
-          PictureCard(picture, pictures, usersDisplayedPictures, stateSetter));
+      widgets.add(PictureCard(
+          picture, pictures, usersDisplayedPictures, stateSetter,
+          key: UniqueKey()));
     });
     return widgets;
   }

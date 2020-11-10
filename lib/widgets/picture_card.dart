@@ -9,13 +9,24 @@ import 'dart:io';
 
 import '../providers/pictures.dart';
 
+// class PictureCard extends StatefulWidget {
+//   final Picture picture;
+//   Function removeCallback;
+
+//   PictureCard(this.picture, this.removeCallback, {Key key}) : super(key: key);
+
+//   @override
+//   _PictureCardState createState() => _PictureCardState();
+// }
+
 class PictureCard extends StatefulWidget {
   final Picture picture;
   final Pictures pictures;
   List<Widget> displayList;
   Function setParentState;
 
-  PictureCard(this.picture, this.pictures, this.displayList, this.setParentState,
+  PictureCard(
+      this.picture, this.pictures, this.displayList, this.setParentState,
       {Key key})
       : super(key: key);
 
@@ -29,21 +40,18 @@ class _PictureCardState extends State<PictureCard>
   AnimationController animationController;
   KaraokeCards cards;
   CurrentActivity currentActivity;
+  Animation<double> animateScale;
 
   @override
   void initState() {
     super.initState();
     imageController = Provider.of<ImageController>(context, listen: false);
-
-    // animationController =
-    //     AnimationController(vsync: this, duration: const Duration(seconds: 1));
-
-    // // If was just created, animate in. Otherwise, don't.
-    // if (widget.picture.creationAnimation) {
-    //   animationController.forward();
-    // } else {
-    //   animationController.forward(from: 1.0);
-    // }
+    animationController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 500));
+    animateScale = Tween<double>(begin: 1, end: 0).animate(animationController);
+    animationController.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
@@ -55,11 +63,10 @@ class _PictureCardState extends State<PictureCard>
 
   void imageActions(String action) async {
     if (action == "DELETE") {
-      // animationController.reverse();
+      await animationController.forward();
       widget.displayList.remove(this);
       await widget.pictures.remove(widget.picture);
       widget.setParentState();
-      // Future.delayed(Duration(seconds: 1), widget.setParentState);
     }
   }
 
@@ -83,89 +90,95 @@ class _PictureCardState extends State<PictureCard>
       return _imageWidget();
     } else {
       return FutureBuilder(
-          future: widget.picture.download(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              print("it's done:");
-              return _imageWidget();
-            } else if (snapshot.hasError) {
-              FittedBox(
-                child: Icon(
-                  LineAwesomeIcons.exclamation_circle,
-                  color: Theme.of(context).errorColor,
-                ),
-              );
-            } else
-              return SpinKitWave(color: Theme.of(context).primaryColor);
-          });
+        future: widget.picture.download(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            print("it's done:");
+            return _imageWidget();
+          } else if (snapshot.hasError) {
+            FittedBox(
+              child: Icon(
+                LineAwesomeIcons.exclamation_circle,
+                color: Theme.of(context).errorColor,
+              ),
+            );
+          } else
+            return SpinKitWave(color: Theme.of(context).primaryColor);
+        },
+      );
     }
   }
 
-  Widget pictureCard() {
-    return Container(
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: GridTile(
-          child: Stack(
-            children: <Widget>[
-              GestureDetector(
-                onTap: handleTap,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: _getImage(),
-                ),
-              ),
-              Visibility(
-                visible: !widget.picture.isStock,
-                child: Positioned(
-                  right: -25,
-                  top: -5,
-                  child: Stack(
-                    children: <Widget>[
-                      PopupMenuButton(
-                        onSelected: imageActions,
-                        child: RawMaterialButton(
-                          child: Icon(
-                            Icons.more_vert,
-                            color: Colors.black38,
-                            size: 20,
-                          ),
-                          shape: CircleBorder(),
-                          elevation: 2.0,
-                          fillColor: Colors.white,
-                        ),
-                        itemBuilder: (BuildContext context) {
-                          return [
-                            PopupMenuItem<String>(
-                              value: "DELETE",
-                              child: Text(
-                                "Delete",
-                                style: TextStyle(color: Colors.redAccent),
-                              ),
-                            ),
-                          ];
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  Widget pictureCard() {}
 
   @override
   Widget build(BuildContext context) {
     cards = Provider.of<KaraokeCards>(context, listen: false);
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
 
+    print("animateScale: ${animateScale.value}");
+    return Transform.scale(
+      scale: animateScale.value,
+      child: Container(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: GridTile(
+            child: Stack(
+              children: <Widget>[
+                GestureDetector(
+                  onTap: handleTap,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: _getImage(),
+                  ),
+                ),
+                Visibility(
+                  visible: !widget.picture.isStock,
+                  child: Positioned(
+                    right: -25,
+                    top: -5,
+                    child: Stack(
+                      children: <Widget>[
+                        PopupMenuButton(
+                          onSelected: imageActions,
+                          child: RawMaterialButton(
+                            child: Icon(
+                              Icons.more_vert,
+                              color: Colors.black38,
+                              size: 20,
+                            ),
+                            shape: CircleBorder(),
+                            elevation: 2.0,
+                            fillColor: Colors.white,
+                          ),
+                          itemBuilder: (BuildContext context) {
+                            return [
+                              PopupMenuItem<String>(
+                                value: "DELETE",
+                                child: Text(
+                                  "Delete",
+                                  style: TextStyle(color: Colors.redAccent),
+                                ),
+                              ),
+                            ];
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
     // Animation animation = Tween(begin: 0.0, end: 1.0).animate(
     //     CurvedAnimation(parent: animationController, curve: Curves.ease));
 
-    return pictureCard();
+    // return pictureCard();
+
     // return AnimatedBuilder(
     //   key: widget.key,
     //   animation: animation,
