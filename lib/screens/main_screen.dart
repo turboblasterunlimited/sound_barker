@@ -1,12 +1,11 @@
 import 'dart:io';
-
 import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/sound_controller.dart';
 import 'package:K9_Karaoke/providers/the_user.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
-import 'package:K9_Karaoke/widgets/card_creation_interface.dart';
+import 'package:K9_Karaoke/widgets/interface_switcher.dart';
 import 'package:K9_Karaoke/widgets/card_decorator_canvas.dart';
 import 'package:K9_Karaoke/widgets/card_progress_bar.dart';
 import 'package:K9_Karaoke/widgets/photo_name_input.dart';
@@ -360,7 +359,7 @@ class _MainScreenState extends State<MainScreen> {
                   if (cards.current != null)
                     Padding(
                       padding: const EdgeInsets.only(top: 10.0),
-                      child: CardCreationInterface(),
+                      child: InterfaceSwitcher(),
                     ),
                 ],
               ),

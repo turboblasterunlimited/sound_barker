@@ -13,13 +13,12 @@ import 'package:K9_Karaoke/widgets/song_select_interface.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CardCreationInterface extends StatelessWidget {
-  KaraokeCard card;
-  CurrentActivity currentActivity;
+class InterfaceSwitcher extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
-    card = Provider.of<KaraokeCards>(context).current;
-    currentActivity = Provider.of<CurrentActivity>(context);
+    KaraokeCard card = Provider.of<KaraokeCards>(context).current;
+    CurrentActivity currentActivity = Provider.of<CurrentActivity>(context);
 
     Widget _handleSpeakWidget() {
       if (currentActivity.isOne)
@@ -42,19 +41,23 @@ class CardCreationInterface extends StatelessWidget {
       else if (currentActivity.isThree) return ShareCardInterface();
     }
 
-    return AnimatedSwitcher(
-      duration: const Duration(seconds: 1),
-      transitionBuilder: (Widget child, Animation<double> animation) =>
-          SizeTransition(child: child, sizeFactor: animation),
-      child: (currentActivity.isSnap && card.hasPicture)
-          ? MouthToneSlider()
+    // return AnimatedSwitcher(
+    //   duration: const Duration(seconds: 1),
+    //   switchInCurve: Curves.linear,
+    //   switchOutCurve: Curves.linear,
+    //   transitionBuilder: (Widget child, Animation<double> animation) =>
+    //       SizeTransition(child: child, sizeFactor: animation),
+      // child: 
+      return (currentActivity.isSnap && card.hasPicture)
+          ? 
+        MouthToneSlider()
           : (currentActivity.isSong)
               ? SongSelectInterface()
               : (currentActivity.isSpeak)
                   ? _handleSpeakWidget()
                   : (currentActivity.isStyle)
                       ? _handleStyleWidget()
-                      : Center(),
-    );
+                      : Center();
+    // );
   }
 }

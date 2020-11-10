@@ -49,7 +49,7 @@ class _PictureCardState extends State<PictureCard>
   @override
   void dispose() {
     widget.picture.creationAnimation = false;
-    animationController.dispose();
+    animationController?.dispose();
     super.dispose();
   }
 
