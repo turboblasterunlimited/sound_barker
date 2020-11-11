@@ -11,6 +11,7 @@ import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:K9_Karaoke/widgets/spinner_half_screen_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_ffmpeg/stream_information.dart';
 // import 'package:flutter_sound/flutter_sound.dart';
 // import 'package:flutter_sound_lite/flutter_sound.dart';
 
@@ -156,7 +157,7 @@ class BarkRecorderState extends State<BarkRecorder>
         await ImagePicker().getVideo(source: ImageSource.gallery);
     if (pickedFile == null) return;
     await FFMpeg.process.execute(
-        '-i ${pickedFile.path} -c:a copy -ss 00:00:00 -t 15 -ac 1 -vn $filePath');
+        '-i ${pickedFile.path} -ss 00:00:00 -t 15 -vn -ar 44100 -ac 1 $filePath');
     await barks.setTempRawBark(Bark(filePath: filePath));
   }
 
