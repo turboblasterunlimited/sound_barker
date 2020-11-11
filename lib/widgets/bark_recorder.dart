@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:K9_Karaoke/tools/ffmpeg.dart';
+import 'package:K9_Karaoke/widgets/custom_dialog.dart';
 import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:K9_Karaoke/widgets/spinner_half_screen_widget.dart';
@@ -117,6 +119,38 @@ class BarkRecorderState extends State<BarkRecorder>
   }
 
   void _handleUploadVideoButton() async {
+    return showDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return CustomDialog(
+            header: "Upload Video",
+            bodyText:
+                "We'll take the first 15 seconds of sounds and convert them into separate barks.",
+            primaryFunction: (BuildContext modalContext) {
+              Navigator.of(modalContext).pop();
+              _handleUploadVideo();
+            },
+            secondaryFunction: (BuildContext modalContext) async {
+              Navigator.of(modalContext).pop();
+            },
+            iconPrimary: Icon(
+              Icons.movie,
+              size: 42,
+              color: Colors.grey[300],
+            ),
+            iconSecondary: Icon(
+              CustomIcons.modal_paws_topleft,
+              size: 42,
+              color: Colors.grey[300],
+            ),
+            isYesNo: false,
+            primaryButtonText: "Pick Video",
+            secondaryButtonText: "Back",
+          );
+        });
+  }
+
+  void _handleUploadVideo() async {
     if (File(filePath).existsSync()) File(filePath).deleteSync();
     final pickedFile =
         await ImagePicker().getVideo(source: ImageSource.gallery);

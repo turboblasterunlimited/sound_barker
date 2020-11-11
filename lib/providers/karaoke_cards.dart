@@ -250,7 +250,7 @@ class KaraokeCard with ChangeNotifier {
       File tempFile = File("$myAppStoragePath/tempFile.wav");
       // concat and save card audio file
       await FFMpeg.process.execute(
-          '-i "concat:${message.path}|${song.filePath}" -c copy ${tempFile.path}');
+          '-i "concat:${message.path}|${song.filePath}" -ac 1 ${tempFile.path}');
       await FFMpeg.process.execute('-i ${tempFile.path} ${audio.filePath}');
       if (tempFile.existsSync()) tempFile.deleteSync();
       // concat and return amplitudes

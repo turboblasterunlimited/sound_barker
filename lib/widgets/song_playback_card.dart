@@ -80,8 +80,16 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
         header: 'Delete Song?',
         bodyText: 'Are you sure you want to delete ${widget.song.getName}?',
         isYesNo: true,
-        iconPrimary: Icon(CustomIcons.modal_trashcan),
-        iconSecondary: Icon(CustomIcons.modal_paws_topleft),
+        iconPrimary: Icon(
+          CustomIcons.modal_trashcan,
+          size: 42,
+          color: Colors.grey[300],
+        ),
+        iconSecondary: Icon(
+          CustomIcons.modal_paws_topleft,
+          size: 42,
+          color: Colors.grey[300],
+        ),
         secondaryButtonText: 'Yes',
         primaryButtonText: 'No',
         secondaryFunction: (con) {

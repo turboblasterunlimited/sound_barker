@@ -72,12 +72,14 @@ class _CustomDialogState extends State<CustomDialog> {
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: 30.0, right: 30.0),
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: widget.bodyText,
-                      border: InputBorder.none,
+                  child: Flexible(
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: widget.bodyText,
+                        border: InputBorder.none,
+                      ),
+                      maxLines: 6,
                     ),
-                    maxLines: 6,
                   ),
                 ),
               ],
