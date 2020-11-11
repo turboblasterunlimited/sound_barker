@@ -77,7 +77,7 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
     await showDialog<Null>(
       context: context,
       builder: (ctx) => CustomDialog(
-        header: 'Are you sure?',
+        header: 'Delete Song?',
         bodyText: 'Are you sure you want to delete ${widget.song.getName}?',
         isYesNo: true,
         iconPrimary: Icon(CustomIcons.modal_trashcan),

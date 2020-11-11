@@ -1,5 +1,7 @@
+import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
+import 'package:K9_Karaoke/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
@@ -71,7 +73,8 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
     // Try readying the amplitudes first before tracking.
     print("bark id: ${widget.bark.fileId}");
     imageController.mouthTrackSound(filePath: widget.bark.amplitudesPath);
-    await widget.soundController.startPlayer(widget.bark.filePath, stopCallback: stopAll);
+    await widget.soundController
+        .startPlayer(widget.bark.filePath, stopCallback: stopAll);
   }
 
   void playBark() async {
@@ -85,22 +88,24 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
   void deleteBark() async {
     await showDialog<Null>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('Are you sure?'),
-        content: Text('Are you sure you want to delete ${widget.bark.name}?'),
-        actions: <Widget>[
-          FlatButton(
-              child: Text("No, Don't delete it."),
-              onPressed: () {
-                Navigator.of(ctx).pop();
-              }),
-          FlatButton(
-              child: Text('Yes. Delete it.'),
-              onPressed: () {
-                widget.deleteCallback(widget.bark, widget.index);
-                Navigator.of(ctx).pop();
-              })
-        ],
+      builder: (ctx) => CustomDialog(
+        header: "Delete Bark?",
+        bodyText: 'Are you sure you want to delete ${widget.bark.name}?',
+        primaryFunction: (BuildContext modalContext) async {
+          widget.deleteCallback(widget.bark, widget.index);
+          Navigator.of(ctx).pop();
+        },
+        iconPrimary: Icon(
+          CustomIcons.modal_trashcan,
+          size: 42,
+          color: Colors.grey[300],
+        ),
+        iconSecondary: Icon(
+          CustomIcons.modal_paws_topleft,
+          size: 42,
+          color: Colors.grey[300],
+        ),
+        isYesNo: true,
       ),
     );
   }

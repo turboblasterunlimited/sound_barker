@@ -357,7 +357,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
         context: context,
         builder: (ctx) {
           return CustomDialog(
-            header: "Are you Sure?",
+            header: "Delete Card?",
             bodyText:
                 "You will no longer be able to edit or share this card from the app.",
             primaryFunction: (BuildContext modalContext) async {

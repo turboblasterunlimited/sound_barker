@@ -169,7 +169,7 @@ class Song extends Asset {
     String tempMelodyFilePath = filePathBase + "temp.aac";
     print("MERGING...");
     await FFMpeg.process.execute(
-        "-i $backingTrackPath -i ${this.filePath} -filter_complex amix=inputs=2:duration=longest $tempMelodyFilePath");
+        "-i $backingTrackPath -i ${this.filePath} -filter_complex amix=inputs=2:duration=longest -ac 1 $tempMelodyFilePath");
     File(tempMelodyFilePath).renameSync(this.filePath);
     File(backingTrackPath).deleteSync();
   }
