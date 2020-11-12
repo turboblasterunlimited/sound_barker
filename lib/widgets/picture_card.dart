@@ -97,9 +97,11 @@ class _PictureCardState extends State<PictureCard>
             return _imageWidget();
           } else if (snapshot.hasError) {
             FittedBox(
+              fit: BoxFit.cover,
               child: Icon(
                 LineAwesomeIcons.exclamation_circle,
                 color: Theme.of(context).errorColor,
+                size: 50,
               ),
             );
           } else

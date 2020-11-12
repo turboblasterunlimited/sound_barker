@@ -7,6 +7,7 @@ import 'package:K9_Karaoke/screens/my_cards.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 
@@ -53,7 +54,7 @@ class _MenuState extends State<MenuScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Image.asset("assets/logos/K9_logotype.png", width: 100),
+            SvgPicture.asset("assets/logos/K9_logotype.svg", width: 100),
           ],
         ),
 
@@ -107,7 +108,7 @@ class _MenuState extends State<MenuScreen> {
                 onTap: handleMyCards,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text("My Cards",
+                  child: Text("Karaoke Cards",
                       style: TextStyle(
                           fontSize: 40, color: Theme.of(context).primaryColor)),
                 ),

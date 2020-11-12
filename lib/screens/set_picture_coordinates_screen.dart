@@ -287,23 +287,6 @@ class _SetPictureCoordinatesScreenState
             ),
           ],
         ),
-        // actions: <Widget>[
-        //   Padding(
-        //     padding: const EdgeInsets.only(top: 5),
-        //     child: RawMaterialButton(
-        //       child: Icon(
-        //         Icons.menu,
-        //         color: Colors.black,
-        //         size: 30,
-        //       ),
-        //       shape: CircleBorder(),
-        //       elevation: 2.0,
-        //       onPressed: () {
-        //         Navigator.of(context).pushNamed(MenuScreen.routeName);
-        //       },
-        //     ),
-        //   ),
-        // ],
       ),
       body: Container(
         // appbar offset

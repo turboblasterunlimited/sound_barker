@@ -5,6 +5,7 @@ import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/widgets/card_card.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 import 'package:K9_Karaoke/screens/menu_screen.dart';
@@ -75,7 +76,7 @@ class _MyCardsScreenState extends State<MyCardsScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Image.asset("assets/logos/K9_logotype.png", width: 100),
+            SvgPicture.asset("assets/logos/K9_logotype.svg", width: 100),
             // Your widgets here
           ],
         ),

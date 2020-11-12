@@ -8,6 +8,7 @@ import 'package:K9_Karaoke/screens/authentication_screen.dart';
 import 'package:K9_Karaoke/widgets/custom_dialog.dart';
 import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 
@@ -137,7 +138,7 @@ class _AccountState extends State<AccountScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Image.asset("assets/logos/K9_logotype.png", width: 100),
+            SvgPicture.asset("assets/logos/K9_logotype.svg", width: 100)
           ],
         ),
         actions: <Widget>[

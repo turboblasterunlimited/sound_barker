@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:openid_client/openid_client_io.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
@@ -228,6 +229,9 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     if (!response["success"])
       showError(c, response["error"]);
     else {
+      print("Server response: $response");
+      // need unique server responses to handle "user already has account, so they're now signed in" & "verify email address".
+      // {success: true, payload: {email: 321@grr.la}}
       _showVerifyEmail();
     }
   }
@@ -305,21 +309,21 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       key: _scaffoldKey,
       resizeToAvoidBottomPadding: false,
       extendBodyBehindAppBar: true,
-      appBar: signingIn
-          ? null
-          : AppBar(
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              automaticallyImplyLeading: false, // Don't show the leading button
-              toolbarHeight: 80,
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Image.asset("assets/logos/K9_logotype.png", width: 100),
-                ],
-              ),
-            ),
+      // appBar: signingIn
+      //     ? null
+      //     : AppBar(
+      //         backgroundColor: Colors.transparent,
+      //         elevation: 0,
+      //         automaticallyImplyLeading: false, // Don't show the leading button
+      //         toolbarHeight: 80,
+      //         // title: Row(
+      //         //   mainAxisAlignment: MainAxisAlignment.start,
+      //         //   crossAxisAlignment: CrossAxisAlignment.center,
+      //         //   children: <Widget>[
+      //         //     SvgPicture.asset("assets/logos/K9_logotype.svg", width: 100)
+      //         //   ],
+      //         // ),
+      //       ),
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
@@ -331,6 +335,18 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
           c = con;
           return Stack(
             children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Positioned(
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  child: SvgPicture.asset(
+                    "assets/logos/K9_logotype.svg",
+                    // width: 100,
+                  ),
+                ),
+              ),
               Visibility(
                 visible: !signingIn,
                 child: Padding(

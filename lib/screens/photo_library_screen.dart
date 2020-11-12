@@ -1,6 +1,7 @@
 import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 import 'package:K9_Karaoke/providers/pictures.dart';
@@ -114,7 +115,7 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Image.asset("assets/logos/K9_logotype.png", width: 100),
+            SvgPicture.asset("assets/logos/K9_logotype.svg", width: 100),
             // Your widgets here
           ],
         ),

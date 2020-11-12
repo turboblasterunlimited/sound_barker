@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 
@@ -155,7 +156,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Container(
-            child: Image.asset("assets/logos/K9_logotype.png",
+            child: SvgPicture.asset("assets/logos/K9_logotype.svg",
                 width: 80 - notificationPadding),
           ),
           // if (!showFrame)

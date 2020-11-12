@@ -19,12 +19,12 @@ class _InterfaceTitleNavState extends State<InterfaceTitleNav> {
   Widget build(BuildContext context) {
     double screenSize = MediaQuery.of(context).size.width;
     widget.titleSize = screenSize > 400 ? 25 : widget.titleSize;
-
+    
     return Stack(
       children: <Widget>[
         if (widget.backCallback != null)
-          InkWell(
-            // behavior: HitTestBehavior.translucent,
+          GestureDetector(
+            behavior: HitTestBehavior.translucent,
             onTap: widget.backCallback,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),

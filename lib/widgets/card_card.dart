@@ -1,6 +1,9 @@
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
+import 'package:K9_Karaoke/providers/pictures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'dart:io';
@@ -47,7 +50,8 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
   }
 
   Widget _decorationImageSelectable(image) {
-    return (widget.card.decorationImage != null && widget.card.decorationImage.hasFrameDimension)
+    return (widget.card.decorationImage != null &&
+            widget.card.decorationImage.hasFrameDimension)
         ? Positioned.fill(
             child: LayoutBuilder(
               builder: (context, constraints) {
@@ -65,6 +69,39 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
         : Positioned.fill(child: image);
   }
 
+  Widget get _imageWidget {
+    return Image.file(
+      File(widget.card.picture.filePath),
+    );
+  }
+
+  Widget _getImage() {
+    Picture picture = widget.card.picture;
+    if (picture.hasFile) {
+      return _imageWidget;
+    } else {
+      return FutureBuilder(
+        future: picture.download(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            print("it's done:");
+            return _imageWidget;
+          } else if (snapshot.hasError) {
+            FittedBox(
+              fit: BoxFit.cover,
+              child: Icon(
+                LineAwesomeIcons.exclamation_circle,
+                color: Theme.of(context).errorColor,
+                size: 50,
+              ),
+            );
+          } else
+            return SpinKitWave(color: Theme.of(context).primaryColor);
+        },
+      );
+    }
+  }
+
   Widget decorationImage() {
     return GridTile(
       child: GestureDetector(
@@ -76,11 +113,12 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
               alignment: Alignment.center,
               children: [
                 _decorationImageSelectable(
-                  Image.file(File(widget.card.picture.filePath)),
+                  _getImage(),
                 ),
-                if (widget.card.decorationImage != null) Image.file(
-                  File(widget.card.decorationImage.filePath),
-                ),
+                if (widget.card.decorationImage != null)
+                  Image.file(
+                    File(widget.card.decorationImage.filePath),
+                  ),
               ],
             ),
           ),

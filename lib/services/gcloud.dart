@@ -90,7 +90,7 @@ class Gcloud {
       raf.writeFromSync(response.data);
       await raf.close();
     } catch (e) {
-      print(e);
+      print("Photo download error: $e");
     }
     return filePath;
   }
