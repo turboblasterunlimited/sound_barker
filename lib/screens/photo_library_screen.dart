@@ -148,6 +148,9 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
         ),
         child: Column(
           children: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(top: 40),
+            ),
             InterfaceTitleNav(
               "CHOOSE PHOTO",
               titleSize: 20,
