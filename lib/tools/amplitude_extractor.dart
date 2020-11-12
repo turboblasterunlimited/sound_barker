@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:io';
@@ -6,6 +8,12 @@ import 'package:K9_Karaoke/tools/ffmpeg.dart';
 import 'package:path_provider/path_provider.dart';
 
 class AmplitudeExtractor {
+  // static final queue = Queue();
+  // static final streamController = StreamController<String>();
+  // static processStreamer() {
+  //   queue.
+  // }
+
   static void _printWavFileHeader(bytes) {
     var subChunk1Size = bytes.sublist(16, 22).buffer.asInt32List().toList();
     print("subChunk1Size: $subChunk1Size");
@@ -70,6 +78,13 @@ class AmplitudeExtractor {
     return normalizedAmplitudes;
   }
 
+  // static Future<String> queueAmplitudeFile(filePath, [filePathBase]) {
+  //   queue.add([filePath, filePathBase]);
+  //   Stream()
+  // }
+
+
+
   static Future<String> createAmplitudeFile(filePath, [filePathBase]) async {
     filePathBase ??= filePath.substring(0, filePath.length - 4);
     final amplitudes = await getAmplitudes(filePath, filePathBase);
@@ -84,7 +99,7 @@ class AmplitudeExtractor {
     if (File("${filePathBase}.wav").existsSync())
       File("${filePathBase}.wav").deleteSync();
     await FFMpeg.process
-        .execute("-hide_banner -loglevel panic -i $filePath $filePathBase.wav");
+        .execute("-hide_banner -loglevel panic -i $filePath -ac 1 $filePathBase.wav");
 
     // ONLY ANDROID:
     // _createAccessibleWavFile(filePathBase);
