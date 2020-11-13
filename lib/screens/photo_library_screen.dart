@@ -109,13 +109,21 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        automaticallyImplyLeading: false, // Don't show the leading button
+        // Don't show the leading button
+        automaticallyImplyLeading: false,
+        titleSpacing: 0,
         toolbarHeight: 80,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            SvgPicture.asset("assets/logos/K9_logotype.svg", width: 100),
+            Container(
+              padding: EdgeInsets.only(left: 10),
+              child: SvgPicture.asset(
+                "assets/logos/K9_logotype.svg",
+                width: 100,
+              ),
+            ),
             // Your widgets here
           ],
         ),

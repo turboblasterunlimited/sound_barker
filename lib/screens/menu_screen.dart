@@ -50,11 +50,18 @@ class _MenuState extends State<MenuScreen> {
         elevation: 0,
         automaticallyImplyLeading: false, // Don't show the leading button
         toolbarHeight: 80,
+        titleSpacing: 0,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            SvgPicture.asset("assets/logos/K9_logotype.svg", width: 100),
+            Container(
+              padding: EdgeInsets.only(left: 10),
+              child: SvgPicture.asset(
+                "assets/logos/K9_logotype.svg",
+                width: 100,
+              ),
+            ),
           ],
         ),
 

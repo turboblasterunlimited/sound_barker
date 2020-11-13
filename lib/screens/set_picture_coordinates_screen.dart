@@ -9,6 +9,7 @@ import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:K9_Karaoke/widgets/photo_name_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
 import 'dart:math';
@@ -67,9 +68,7 @@ class _SetPictureCoordinatesScreenState
   bool _isFirstBuild = true;
 
   String _getInstructionalText() {
-    return widget.newPicture.isNamed
-        ? "SET FACE"
-        : "NAME PHOTO";
+    return widget.newPicture.isNamed ? "SET FACE" : "NAME PHOTO";
   }
 
   @override
@@ -241,37 +240,34 @@ class _SetPictureCoordinatesScreenState
     var notificationPadding = MediaQuery.of(context).padding.top;
 
     SystemChrome.restoreSystemUIOverlays();
-      print("is Editing1: $_isEditing");
-
-
+    print("is Editing1: $_isEditing");
     if (_isFirstBuild) {
       _instructionalText = _getInstructionalText();
       _getImageData();
     }
-
-      print("is Editing2: $_isEditing");
-
-
+    print("is Editing2: $_isEditing");
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-        iconTheme:
-            IconThemeData(color: Theme.of(context).primaryColor, size: 30),
+        iconTheme: IconThemeData(
+          color: Theme.of(context).primaryColor,
+          size: 30,
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
-        automaticallyImplyLeading: false, // Don't show the leading button
-        // titleSpacing: 3.0,
+        automaticallyImplyLeading: false,
+        titleSpacing: 0,
         toolbarHeight: 80,
-
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Container(
-              child: Image.asset("assets/logos/K9_logotype.png",
-                  width: 80 - notificationPadding),
+              padding: EdgeInsets.only(left: 10),
+              child: SvgPicture.asset("assets/logos/K9_logotype.svg",
+                  width: 100 - notificationPadding),
             ),
             PhotoNameInput(widget.newPicture, handleNameChange),
             IconButton(

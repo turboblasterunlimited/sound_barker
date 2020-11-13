@@ -30,7 +30,6 @@ class _SpinnerWidgetState extends State<SpinnerWidget> {
               top: 0,
               child: SvgPicture.asset(
                 "assets/logos/K9_logotype.svg",
-                // width: 100,
               ),
             ),
           ),
@@ -38,14 +37,9 @@ class _SpinnerWidgetState extends State<SpinnerWidget> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              // Padding(
-              //     child:
-              //         Image.asset("assets/logos/K9_logotype.png", width: 200),
-              //     padding: EdgeInsets.all(20)),
               Padding(
                 padding: const EdgeInsets.only(top: 100.0),
                 child: SpinKitWave(
-                  // color: Theme.of(context).primaryColor,
                   color: Colors.blue,
                   size: 100,
                 ),

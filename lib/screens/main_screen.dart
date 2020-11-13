@@ -151,13 +151,15 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
       elevation: 0,
       automaticallyImplyLeading: false, // Don't show the leading button
       toolbarHeight: 80 - notificationPadding,
+      titleSpacing: 0,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Container(
+            padding: EdgeInsets.only(left: 10),
             child: SvgPicture.asset("assets/logos/K9_logotype.svg",
-                width: 80 - notificationPadding),
+                width: 100 - notificationPadding),
           ),
           // if (!showFrame)
           if (cards.current != null)
