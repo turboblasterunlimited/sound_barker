@@ -252,6 +252,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
 
   @override
   void initState() {
+    SystemChrome.setEnabledSystemUIOverlays([]);
     super.initState();
     passwordFocusNode = FocusNode();
   }
@@ -304,11 +305,16 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
 
   @override
   Widget build(BuildContext ctx) {
-    print("building auth screen...");
+    double height = MediaQuery.of(context).size.height;
+    print("Height: $height");
+    double iconPadding = height > 1000 ? 100 : height / 15;
+    double iconPaddingTop = height > 1000 ? 130 : 0;
     return Scaffold(
       key: _scaffoldKey,
       resizeToAvoidBottomPadding: false,
       extendBodyBehindAppBar: true,
+      appBar: null,
+
       // appBar: signingIn
       //     ? null
       //     : AppBar(
@@ -334,16 +340,24 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         child: Builder(builder: (con) {
           c = con;
           return Stack(
+            alignment: Alignment.topCenter,
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Positioned(
-                  left: 0,
-                  right: 0,
-                  top: 0,
-                  child: SvgPicture.asset(
-                    "assets/logos/K9_logotype.svg",
-                    // width: 100,
+              SafeArea(
+                top: false,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: iconPadding,
+                    right: iconPadding,
+                    top: iconPaddingTop,
+                  ),
+                  child: Positioned(
+                    left: 0,
+                    right: 0,
+                    top: 0,
+                    child: SvgPicture.asset(
+                      "assets/logos/K9_logotype.svg",
+                      // width: 100,
+                    ),
                   ),
                 ),
               ),
@@ -354,48 +368,54 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            left: 30, right: 30, bottom: 15),
-                        child: TextField(
-                          onChanged: (emailValue) {
-                            setState(() {
-                              email = emailValue;
-                            });
-                          },
-                          onSubmitted: (_) {
-                            passwordFocusNode.requestFocus();
-                          },
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            border: OutlineInputBorder(),
-                            labelText: 'Email',
+                      ConstrainedBox(
+                        constraints: BoxConstraints(maxWidth: 400),
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              left: 30, right: 30, bottom: 15),
+                          child: TextField(
+                            onChanged: (emailValue) {
+                              setState(() {
+                                email = emailValue;
+                              });
+                            },
+                            onSubmitted: (_) {
+                              passwordFocusNode.requestFocus();
+                            },
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.white,
+                              border: OutlineInputBorder(),
+                              labelText: 'Email',
+                            ),
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                        child: TextField(
-                          obscureText: obscurePassword,
-                          focusNode: passwordFocusNode,
-                          onChanged: (passwordValue) {
-                            setState(() => password = passwordValue);
-                          },
-                          onSubmitted: (_) {
-                            FocusScope.of(context).unfocus();
-                          },
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            border: OutlineInputBorder(),
-                            labelText: 'Password',
-                            suffixIcon: GestureDetector(
-                              onTap: () => setState(
-                                  () => obscurePassword = !obscurePassword),
-                              child: Icon(obscurePassword
-                                  ? LineAwesomeIcons.eye_slash
-                                  : LineAwesomeIcons.eye),
+                      ConstrainedBox(
+                        constraints: BoxConstraints(maxWidth: 400),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                          child: TextField(
+                            obscureText: obscurePassword,
+                            focusNode: passwordFocusNode,
+                            onChanged: (passwordValue) {
+                              setState(() => password = passwordValue);
+                            },
+                            onSubmitted: (_) {
+                              FocusScope.of(context).unfocus();
+                            },
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.white,
+                              border: OutlineInputBorder(),
+                              labelText: 'Password',
+                              suffixIcon: GestureDetector(
+                                onTap: () => setState(
+                                    () => obscurePassword = !obscurePassword),
+                                child: Icon(obscurePassword
+                                    ? LineAwesomeIcons.eye_slash
+                                    : LineAwesomeIcons.eye),
+                              ),
                             ),
                           ),
                         ),

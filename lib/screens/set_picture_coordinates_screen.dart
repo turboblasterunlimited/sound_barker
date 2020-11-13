@@ -69,7 +69,7 @@ class _SetPictureCoordinatesScreenState
   String _getInstructionalText() {
     return widget.newPicture.isNamed
         ? "SET FACE"
-        : "NAME YOUR PHOTO";
+        : "NAME PHOTO";
   }
 
   @override
@@ -402,10 +402,11 @@ class _SetPictureCoordinatesScreenState
             ),
             CardProgressBar(),
             Padding(
-              padding: EdgeInsets.only(top: 6),
+              padding: EdgeInsets.only(top: 15),
             ),
             InterfaceTitleNav(
               _instructionalText,
+              titleSize: 22,
               backCallback: _backCallback,
             ),
             Padding(

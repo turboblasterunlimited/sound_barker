@@ -149,12 +149,12 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
         child: Column(
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.only(top: 40),
-            ),
-            InterfaceTitleNav(
-              "CHOOSE PHOTO",
-              titleSize: 20,
-              backCallback: _backCallback,
+              padding: EdgeInsets.only(top: 20),
+              child: InterfaceTitleNav(
+                "CHOOSE PHOTO",
+                titleSize: 20,
+                backCallback: _backCallback,
+              ),
             ),
             Expanded(
               child: CustomScrollView(
