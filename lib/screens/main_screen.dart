@@ -5,6 +5,7 @@ import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/sound_controller.dart';
 import 'package:K9_Karaoke/providers/the_user.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
+import 'package:K9_Karaoke/widgets/custom_appbar.dart';
 import 'package:K9_Karaoke/widgets/interface_switcher.dart';
 import 'package:K9_Karaoke/widgets/card_decorator_canvas.dart';
 import 'package:K9_Karaoke/widgets/card_progress_bar.dart';
@@ -144,42 +145,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     return 45.0 - (nameLength * 3);
   }
 
-  Widget mainAppBar() {
-    var notificationPadding = MediaQuery.of(context).padding.top;
-    return AppBar(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      automaticallyImplyLeading: false, // Don't show the leading button
-      toolbarHeight: 80 - notificationPadding,
-      titleSpacing: 0,
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.only(left: 10),
-            child: SvgPicture.asset("assets/logos/K9_logotype.svg",
-                width: 100 - notificationPadding),
-          ),
-          // if (!showFrame)
-          if (cards.current != null)
-            PhotoNameInput(cards.current.picture, cards.setCurrentName),
-          IconButton(
-            icon: Icon(
-              CustomIcons.hambooger,
-              color: Colors.black,
-              size: 30,
-            ),
-            onPressed: () {
-              SystemChrome.setEnabledSystemUIOverlays([]);
-              Navigator.of(context).pushNamed(MenuScreen.routeName);
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
   bool get _canPlayRawBark {
     return currentActivity.isSpeak &&
         currentActivity.isOne &&
@@ -255,7 +220,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomInset: false,
-      appBar: everythingReady() ? mainAppBar() : null,
+      appBar: everythingReady() ? customAppBar(context) : null,
       // Background image
       body: Container(
         height: MediaQuery.of(context).size.height,

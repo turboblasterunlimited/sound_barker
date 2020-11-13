@@ -5,6 +5,7 @@ import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/screens/set_picture_coordinates_screen.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:K9_Karaoke/tools/cropper.dart';
+import 'package:K9_Karaoke/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
@@ -44,37 +45,7 @@ class CameraOrUploadScreen extends StatelessWidget {
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomPadding: false,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        automaticallyImplyLeading: false, // Don't show the leading button
-        toolbarHeight: 80,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            SvgPicture.asset("assets/logos/K9_logotype.svg", width: 100),
-            // Your widgets here
-          ],
-        ),
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(top: 5),
-            child: RawMaterialButton(
-              child: Icon(
-                Icons.menu,
-                color: Colors.black,
-                size: 30,
-              ),
-              shape: CircleBorder(),
-              elevation: 2.0,
-              onPressed: () {
-                Navigator.of(context).popAndPushNamed(MenuScreen.routeName);
-              },
-            ),
-          ),
-        ],
-      ),
+      appBar: customAppBar(context, noName: true),
       body: Container(
         // appbar offset
         padding: EdgeInsets.only(top: 80),

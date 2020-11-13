@@ -1,5 +1,6 @@
 import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
+import 'package:K9_Karaoke/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -106,45 +107,7 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomPadding: false,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        // Don't show the leading button
-        automaticallyImplyLeading: false,
-        titleSpacing: 0,
-        toolbarHeight: 80,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(left: 10),
-              child: SvgPicture.asset(
-                "assets/logos/K9_logotype.svg",
-                width: 100,
-              ),
-            ),
-            // Your widgets here
-          ],
-        ),
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(top: 5),
-            child: RawMaterialButton(
-              child: Icon(
-                CustomIcons.hambooger,
-                color: Colors.black,
-                size: 30,
-              ),
-              shape: CircleBorder(),
-              elevation: 2.0,
-              onPressed: () {
-                Navigator.of(context).pushNamed(MenuScreen.routeName);
-              },
-            ),
-          ),
-        ],
-      ),
+      appBar: customAppBar(context, noName: true),
       body: Container(
         // appbar offset
         padding: EdgeInsets.only(top: 80),

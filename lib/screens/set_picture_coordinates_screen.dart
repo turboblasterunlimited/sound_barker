@@ -5,6 +5,7 @@ import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/widgets/card_progress_bar.dart';
+import 'package:K9_Karaoke/widgets/custom_appbar.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:K9_Karaoke/widgets/photo_name_input.dart';
 import 'package:flutter/material.dart';
@@ -237,7 +238,6 @@ class _SetPictureCoordinatesScreenState
     card = Provider.of<KaraokeCards>(context, listen: false).current;
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
     cards = Provider.of<KaraokeCards>(context, listen: false);
-    var notificationPadding = MediaQuery.of(context).padding.top;
 
     SystemChrome.restoreSystemUIOverlays();
     print("is Editing1: $_isEditing");
@@ -249,40 +249,9 @@ class _SetPictureCoordinatesScreenState
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomPadding: false,
-      appBar: AppBar(
-        iconTheme: IconThemeData(
-          color: Theme.of(context).primaryColor,
-          size: 30,
-        ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        titleSpacing: 0,
-        toolbarHeight: 80,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(left: 10),
-              child: SvgPicture.asset("assets/logos/K9_logotype.svg",
-                  width: 100 - notificationPadding),
-            ),
-            PhotoNameInput(widget.newPicture, handleNameChange),
-            IconButton(
-              icon: Icon(
-                CustomIcons.hambooger,
-                color: Colors.black,
-                size: 30,
-              ),
-              onPressed: () {
-                SystemChrome.setEnabledSystemUIOverlays([]);
-                Navigator.of(context).pushNamed(MenuScreen.routeName);
-              },
-            ),
-          ],
-        ),
+      appBar: customAppBar(
+        context,
+        nameInput: PhotoNameInput(widget.newPicture, handleNameChange),
       ),
       body: Container(
         // appbar offset

@@ -314,22 +314,6 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       resizeToAvoidBottomPadding: false,
       extendBodyBehindAppBar: true,
       appBar: null,
-
-      // appBar: signingIn
-      //     ? null
-      //     : AppBar(
-      //         backgroundColor: Colors.transparent,
-      //         elevation: 0,
-      //         automaticallyImplyLeading: false, // Don't show the leading button
-      //         toolbarHeight: 80,
-      //         // title: Row(
-      //         //   mainAxisAlignment: MainAxisAlignment.start,
-      //         //   crossAxisAlignment: CrossAxisAlignment.center,
-      //         //   children: <Widget>[
-      //         //     SvgPicture.asset("assets/logos/K9_logotype.svg", width: 100)
-      //         //   ],
-      //         // ),
-      //       ),
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(

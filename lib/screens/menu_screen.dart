@@ -5,6 +5,7 @@ import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/screens/account_screen.dart';
 import 'package:K9_Karaoke/screens/my_cards.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
+import 'package:K9_Karaoke/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -45,50 +46,7 @@ class _MenuState extends State<MenuScreen> {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        automaticallyImplyLeading: false, // Don't show the leading button
-        toolbarHeight: 80,
-        titleSpacing: 0,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(left: 10),
-              child: SvgPicture.asset(
-                "assets/logos/K9_logotype.svg",
-                width: 100,
-              ),
-            ),
-          ],
-        ),
-
-        // Can only close if activity already selected
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(right: 5),
-            child: IconButton(
-              icon: Visibility(
-                visible: currentActivity.isCreateCard,
-                child: Icon(
-                  CustomIcons.hambooger_close,
-                  color: Colors.black,
-                  size: 35,
-                ),
-              ),
-              // fillColor: Theme.of(context).accentColor,
-              onPressed: currentActivity.isCreateCard
-                  ? () {
-                      SystemChrome.setEnabledSystemUIOverlays([]);
-                      Navigator.of(context).pop();
-                    }
-                  : null,
-            ),
-          ),
-        ],
-      ),
+      appBar: customAppBar(context, isMenu: true),
       body: Container(
         padding: EdgeInsets.only(top: 60),
         decoration: BoxDecoration(

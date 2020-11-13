@@ -5,6 +5,7 @@ import 'package:K9_Karaoke/providers/pictures.dart';
 import 'package:K9_Karaoke/providers/songs.dart';
 import 'package:K9_Karaoke/providers/the_user.dart';
 import 'package:K9_Karaoke/screens/authentication_screen.dart';
+import 'package:K9_Karaoke/widgets/custom_appbar.dart';
 import 'package:K9_Karaoke/widgets/custom_dialog.dart';
 import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import 'package:flutter/material.dart';
@@ -128,33 +129,7 @@ class _AccountState extends State<AccountScreen> {
       key: _scaffoldKey,
       resizeToAvoidBottomPadding: false,
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        automaticallyImplyLeading: false, // Don't show the leading button
-        toolbarHeight: 80,
-
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            SvgPicture.asset("assets/logos/K9_logotype.svg", width: 100)
-          ],
-        ),
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(right: 5),
-            child: IconButton(
-              icon: Icon(
-                CustomIcons.hambooger_close,
-                color: Colors.black,
-                size: 35,
-              ),
-              onPressed: Navigator.of(context).pop,
-            ),
-          ),
-        ],
-      ),
+      appBar: customAppBar(context, isMenu: true),
       body: Container(
         padding: EdgeInsets.only(top: 60),
         decoration: BoxDecoration(
