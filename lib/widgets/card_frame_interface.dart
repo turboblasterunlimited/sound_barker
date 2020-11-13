@@ -225,7 +225,8 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
           ),
           child: Text(
             text,
-            style: TextStyle( fontSize: 16,
+            style: TextStyle(
+              fontSize: 16,
               color: Theme.of(context).primaryColor,
             ),
           ),
@@ -427,14 +428,14 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     return frameFileNames.keys.toList();
   }
 
-  int get _numberOfFrameCategories {
+  int get _categoriesCount {
     return _frameCategories.length;
   }
 
   int _frameIndexToCategoryIndex(int frameIndex) {
     int frameCount = 0;
     for (int categoryIndex = 0;
-        categoryIndex < _numberOfFrameCategories;
+        categoryIndex < _categoriesCount;
         categoryIndex++) {
       frameCount += _frameCategoryCounts[categoryIndex];
       if (frameCount > frameIndex) return categoryIndex;
@@ -444,7 +445,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   int _categoryIndexToFrameIndex(int selectedCategoryIndex) {
     int frameCount = 0;
     for (int categoryIndex = 0;
-        categoryIndex < _numberOfFrameCategories;
+        categoryIndex < _categoriesCount;
         categoryIndex++) {
       if (categoryIndex == selectedCategoryIndex) return frameCount;
       frameCount += _frameCategoryCounts[categoryIndex];
@@ -465,13 +466,14 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
 
   // prevents animating through all categories between first and last categories on the carousel
   void animateToPage(frameCategoryIndex) {
+    if (frameCategoryIndex == null) return;
     // transitioning from last category to first category
-    if (_currentFrameCategoryIndex == _numberOfFrameCategories - 1 &&
+    if (_currentFrameCategoryIndex == _categoriesCount - 1 &&
         frameCategoryIndex == 0)
       _carouselController.nextPage();
     // transitioning from first category to last category
     else if (_currentFrameCategoryIndex == 0 &&
-        frameCategoryIndex == _numberOfFrameCategories - 1)
+        frameCategoryIndex == _categoriesCount - 1)
       _carouselController.previousPage();
     else
       _carouselController.animateToPage(frameCategoryIndex);
