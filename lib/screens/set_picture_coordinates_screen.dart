@@ -262,6 +262,35 @@ class _SetPictureCoordinatesScreenState
     return grabPoint.keys.first;
   }
 
+  Offset _getOffset(String pointName) {
+    final xY = getCoordinatesForCanvas()[pointName];
+    return Offset(xY[0], xY[1]);
+  }
+
+  double _getDistance(Offset one, Offset two) {
+    return (one - two).distance;
+  }
+
+  bool _firstIsClosest(String pointName1, String pointName2, List comparandXY) {
+    Offset first = _getOffset(pointName1);
+    Offset second = _getOffset(pointName2);
+    Offset comparand = Offset(comparandXY[0], comparandXY[1]);
+    return _getDistance(first, comparand) < _getDistance(second, comparand);
+  }
+
+  String _getClosestPoint(touchedXY) {
+    String closestPoint;
+    getCoordinatesForCanvas().forEach((pointName, existingXY) {
+      if (!_inProximity(existingXY, touchedXY))
+        return;
+      else if (closestPoint == null)
+        closestPoint = pointName;
+      else if (_firstIsClosest(pointName, closestPoint, touchedXY))
+        closestPoint = pointName;
+    });
+    return closestPoint;
+  }
+
   @override
   Widget build(BuildContext context) {
     print("building set picture coordinates screen");
@@ -303,21 +332,20 @@ class _SetPictureCoordinatesScreenState
                   details.localPosition.dx,
                   details.localPosition.dy
                 ];
-                getCoordinatesForCanvas().forEach((pointName, existingXY) {
-                  if (!_inProximity(existingXY, touchedXY)) return;
-                  setState(() {
-                    touchedXY = touchedXY;
-                    grabbing = true;
-                    grabPoint[pointName] = existingXY;
-                    widget.coordinatesSet = true;
-                    print("IN PROXIMITY!!");
-                    if (pointName == "mouth")
-                      mouthStartingPosition = existingXY;
-                    mouthLeftStartingPosition =
-                        List.from(canvasCoordinates["mouthLeft"]);
-                    mouthRightStartingPosition =
-                        List.from(canvasCoordinates["mouthRight"]);
-                  });
+                String pointName = _getClosestPoint(touchedXY);
+                if (pointName == null) return;
+                setState(() {
+                  touchedXY = touchedXY;
+                  grabbing = true;
+                  grabPoint[pointName] = canvasCoordinates[pointName];
+                  widget.coordinatesSet = true;
+                  print("IN PROXIMITY!!");
+                  if (pointName == "mouth")
+                    mouthStartingPosition = grabPoint[pointName];
+                  mouthLeftStartingPosition =
+                      List.from(canvasCoordinates["mouthLeft"]);
+                  mouthRightStartingPosition =
+                      List.from(canvasCoordinates["mouthRight"]);
                 });
               },
               onPanUpdate: (details) {
