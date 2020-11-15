@@ -1,9 +1,7 @@
 import 'dart:typed_data';
 import 'package:K9_Karaoke/globals.dart';
-import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
-import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/widgets/card_progress_bar.dart';
 import 'package:K9_Karaoke/widgets/custom_appbar.dart';
@@ -11,7 +9,6 @@ import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:K9_Karaoke/widgets/photo_name_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
 import 'dart:math';
@@ -246,13 +243,23 @@ class _SetPictureCoordinatesScreenState
         IMG.encodePng(IMG.copyResize(imageData, width: magImageSize));
   }
 
-  void mouthSidesTooClose(pointName) {
-    if (pointName == "mouthRight" &&
-        _tooClose(canvasCoordinates["mouth"], touchedXY))
-      canvasCoordinates[pointName] = mouthRightStartingPosition;
-    else if (pointName == "mouthLeft" &&
-        _tooClose(canvasCoordinates["mouth"], touchedXY))
-      canvasCoordinates[pointName] = mouthLeftStartingPosition;
+  void correctMouthSide(mouthSide) {
+    if (mouthSide == "mouthLeft")
+      canvasCoordinates[mouthSide] = mouthLeftStartingPosition;
+    else if (mouthSide == "mouthRight")
+      canvasCoordinates[mouthSide] = mouthRightStartingPosition;
+  }
+
+  bool mouthSidesTooClose(pointName) {
+    return ((pointName == "mouthRight" &&
+            _tooClose(canvasCoordinates["mouth"], touchedXY)) ||
+        (pointName == "mouthLeft" &&
+            _tooClose(canvasCoordinates["mouth"], touchedXY)));
+  }
+
+  String get grabPointName {
+    if (grabPoint.isEmpty) return "";
+    return grabPoint.keys.first;
   }
 
   @override
@@ -315,23 +322,21 @@ class _SetPictureCoordinatesScreenState
               },
               onPanUpdate: (details) {
                 if (!grabbing) return;
-                String pointName = grabPoint.keys.first;
-
                 setState(() {
                   touchedXY = [
                     details.localPosition.dx,
                     details.localPosition.dy
                   ];
                   // Coordinate points are modified here
-                  canvasCoordinates[pointName] = touchedXY;
+                  canvasCoordinates[grabPointName] = touchedXY;
                   // Move mouthLeft and mouthRight with mouth
-                  if (pointName == "mouth") moveMouthLeftRight();
+                  if (grabPointName == "mouth") moveMouthLeftRight();
                 });
               },
               onPanEnd: (details) async {
                 if (!grabbing) return;
                 String pointName = grabPoint.keys.first;
-                mouthSidesTooClose(pointName);
+                if (mouthSidesTooClose(pointName)) correctMouthSide(pointName);
                 switchEyes();
                 setState(() {
                   grabbing = false;
@@ -378,7 +383,10 @@ class _SetPictureCoordinatesScreenState
                           ),
                           CustomPaint(
                             painter: MagnifyingTargetPainter(
-                                touchedXY, grabPoint.keys),
+                              touchedXY,
+                              grabPoint.keys,
+                              mouthSidesTooClose(grabPointName),
+                            ),
                             child: Container(),
                           ),
                         ],
@@ -486,18 +494,6 @@ class MagnifiedImage extends CustomClipper<Rect> {
   bool shouldReclip(oldClipper) => true;
 }
 
-Map<String, String> displayNames = {
-  "rightEye": "Right Eye",
-  "leftEye": "Left Eye",
-  "mouth": "Mouth",
-  "mouthRight": "Right Mouth",
-  "mouthLeft": "Left Mouth",
-  "headBottom": "Chin",
-  "headRight": "Head Right",
-  "headLeft": "Head Left",
-  "headTop": "Head Top",
-};
-
 // // must be separate for stacking purposes
 // class PointLabelsPainter extends CustomPainter {
 //   final coordinates;
@@ -539,14 +535,16 @@ Map<String, String> displayNames = {
 class MagnifyingTargetPainter extends CustomPainter {
   final touchedXY;
   final grabPoint;
+  final bool tooCloseWarning;
 
   MagnifyingTargetPainter(
     this.touchedXY,
     this.grabPoint,
+    this.tooCloseWarning,
   );
 
-  Offset adjustOffset(Offset offset, Size tpSize) {
-    return Offset(offset.dx - (tpSize.width / 2), offset.dy - 40);
+  Offset adjustOffset(Offset offset, Size tpSize, {yOffset = 0}) {
+    return Offset(offset.dx - (tpSize.width / 2), offset.dy - 40 + yOffset);
   }
 
   @override
@@ -584,6 +582,23 @@ class MagnifyingTargetPainter extends CustomPainter {
           textDirection: TextDirection.ltr);
       tp.layout();
       tp.paint(canvas, adjustOffset(offset, tp.size));
+
+      if (tooCloseWarning) {
+        final tooCloseTp = TextPainter(
+            text: TextSpan(
+              text: "TOO CLOSE\n TO MOUTH\nCENTER",
+              style: TextStyle(
+                  fontFamily: 'lato',
+                  fontSize: 20,
+                  color: Colors.redAccent[400],
+                  fontWeight: FontWeight.bold),
+            ),
+            textAlign: TextAlign.center,
+            textDirection: TextDirection.ltr);
+        tooCloseTp.layout();
+        tooCloseTp.paint(
+            canvas, adjustOffset(offset, tooCloseTp.size, yOffset: 25));
+      }
     }
 
     if (grabPoint.isEmpty) return;

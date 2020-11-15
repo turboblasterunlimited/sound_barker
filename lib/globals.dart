@@ -20,3 +20,15 @@ const Map defaultFaceCoordinates = {
   "headBottom": [0.0, -0.4],
   "headLeft": [-0.3, 0.0],
 };
+
+Map<String, String> displayNames = {
+  "rightEye": "Right Eye",
+  "leftEye": "Left Eye",
+  "mouth": "Mouth Center",
+  "mouthRight": "Right Mouth",
+  "mouthLeft": "Left Mouth",
+  "headBottom": "Chin",
+  "headRight": "Head Right",
+  "headLeft": "Head Left",
+  "headTop": "Head Top",
+};
