@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:K9_Karaoke/globals.dart';
 import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
@@ -101,6 +102,15 @@ class _SetPictureCoordinatesScreenState
     });
   }
 
+  void resetCanvasCoordinates() {
+    defaultFaceCoordinates.forEach((key, xy) {
+      canvasCoordinates[key] = [
+        _puppetXtoCanvasX(xy[0]),
+        _puppetYtoCanvasY(xy[1])
+      ];
+    });
+  }
+
   Map<String, List<double>> getCoordinatesForCanvas() {
     if (canvasCoordinates.length != 0) return canvasCoordinates;
     setCanvasCoordinatesFromPicture();
@@ -135,6 +145,12 @@ class _SetPictureCoordinatesScreenState
   bool _inProximity(existingXY, touchedXY) {
     if ((existingXY[0] - touchedXY[0]).abs() < 20.0 &&
         (existingXY[1] - touchedXY[1]).abs() < 20.0) return true;
+    return false;
+  }
+
+  bool _tooClose(existingXY, touchedXY) {
+    if ((existingXY[0] - touchedXY[0]).abs() < 10.0 &&
+        (existingXY[1] - touchedXY[1]).abs() < 10.0) return true;
     return false;
   }
 
@@ -230,6 +246,15 @@ class _SetPictureCoordinatesScreenState
         IMG.encodePng(IMG.copyResize(imageData, width: magImageSize));
   }
 
+  void mouthSidesTooClose(pointName) {
+    if (pointName == "mouthRight" &&
+        _tooClose(canvasCoordinates["mouth"], touchedXY))
+      canvasCoordinates[pointName] = mouthRightStartingPosition;
+    else if (pointName == "mouthLeft" &&
+        _tooClose(canvasCoordinates["mouth"], touchedXY))
+      canvasCoordinates[pointName] = mouthLeftStartingPosition;
+  }
+
   @override
   Widget build(BuildContext context) {
     print("building set picture coordinates screen");
@@ -305,6 +330,8 @@ class _SetPictureCoordinatesScreenState
               },
               onPanEnd: (details) async {
                 if (!grabbing) return;
+                String pointName = grabPoint.keys.first;
+                mouthSidesTooClose(pointName);
                 switchEyes();
                 setState(() {
                   grabbing = false;
@@ -382,7 +409,7 @@ class _SetPictureCoordinatesScreenState
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 RawMaterialButton(
-                  onPressed: setCanvasCoordinatesFromPicture,
+                  onPressed: resetCanvasCoordinates,
                   child: Padding(
                     padding: EdgeInsets.symmetric(vertical: 8),
                     child: Text(

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:K9_Karaoke/globals.dart';
 import 'package:K9_Karaoke/providers/asset.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +32,7 @@ class Pictures with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> remove(picture) async{
+  Future<void> remove(picture) async {
     try {
       await RestAPI.deleteImage(picture);
     } catch (e) {
@@ -111,18 +112,7 @@ class Picture extends Asset {
     this.created,
     this.isStock,
   }) {
-    this.coordinates = coordinates ??
-        {
-          "leftEye": [-0.15, 0.2],
-          "rightEye": [0.15, 0.2],
-          "mouth": [0.0, 0.0],
-          "mouthLeft": [-0.1, 0.0],
-          "mouthRight": [0.1, 0.0],
-          "headTop": [0.0, 0.4],
-          "headRight": [0.3, 0.0],
-          "headBottom": [0.0, -0.4],
-          "headLeft": [-0.3, 0.0],
-        };
+    this.coordinates = coordinates ?? defaultFaceCoordinates;
     this.mouthColor = mouthColor ?? [0.0, 0.0, 0.0];
     this.name = name ?? "Name";
     this.fileId = fileId ??= Uuid().v4();
