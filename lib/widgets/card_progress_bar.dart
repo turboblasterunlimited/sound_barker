@@ -136,7 +136,7 @@ class CardProgressBar extends StatelessWidget {
             navigateHere: navigateToSnap,
             canNavigate: true),
         Padding(
-          padding: EdgeInsets.only(left: screenWidth < 450 ? 0 : screenWidth / 50),
+          padding: EdgeInsets.only(left: buttonWidth / (2000 / buttonWidth)),
         ),
         progressButton(
             stepIcon: CustomIcons.song_quick,
@@ -148,7 +148,7 @@ class CardProgressBar extends StatelessWidget {
             navigateHere: navigateToSong,
             canNavigate: card.hasPicture),
         Padding(
-          padding: EdgeInsets.only(left: screenWidth < 450 ? 0 : screenWidth / 50),
+          padding: EdgeInsets.only(left: buttonWidth / (2000 / buttonWidth)),
         ),
 
         // Can click only if creating a new song
@@ -163,7 +163,7 @@ class CardProgressBar extends StatelessWidget {
             // canNavigate: card.hasSongFormula || card.hasSong),
             canNavigate: card.hasPicture),
         Padding(
-          padding: EdgeInsets.only(left: screenWidth < 450 ? 0 : screenWidth / 50),
+          padding: EdgeInsets.only(left: buttonWidth / (2000 / buttonWidth)),
         ),
 
         progressButton(

@@ -9,7 +9,7 @@ const String bucketName = 'song_barker_sequences';
 // const String bucketName = 'k9karaoke-prod';
 
 // ALL
-const Map defaultFaceCoordinates = {
+const Map<String, dynamic> defaultFaceCoordinates = {
   "leftEye": [-0.15, 0.2],
   "rightEye": [0.15, 0.2],
   "mouth": [0.0, 0.0],

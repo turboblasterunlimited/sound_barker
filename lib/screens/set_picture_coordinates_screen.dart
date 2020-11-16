@@ -216,7 +216,7 @@ class _SetPictureCoordinatesScreenState
 
   void handleNameChange(name) {
     setState(() {
-      widget.newPicture.name = name;
+      widget.newPicture.setName(name);
       widget.isNamed = true;
       _instructionalText = _getInstructionalText();
       print("Handling name change");

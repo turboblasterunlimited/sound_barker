@@ -112,7 +112,7 @@ class Picture extends Asset {
     this.created,
     this.isStock,
   }) {
-    this.coordinates = coordinates ?? defaultFaceCoordinates;
+    this.coordinates = coordinates ?? Map.of(defaultFaceCoordinates);
     this.mouthColor = mouthColor ?? [0.0, 0.0, 0.0];
     this.name = name ?? "Name";
     this.fileId = fileId ??= Uuid().v4();

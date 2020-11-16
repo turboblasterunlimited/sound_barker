@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/sound_controller.dart';
@@ -9,13 +8,11 @@ import 'package:K9_Karaoke/widgets/custom_appbar.dart';
 import 'package:K9_Karaoke/widgets/interface_switcher.dart';
 import 'package:K9_Karaoke/widgets/card_decorator_canvas.dart';
 import 'package:K9_Karaoke/widgets/card_progress_bar.dart';
-import 'package:K9_Karaoke/widgets/photo_name_input.dart';
 import 'package:K9_Karaoke/widgets/spinner_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 

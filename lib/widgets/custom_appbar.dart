@@ -13,6 +13,10 @@ Widget customAppBar(BuildContext context,
   final cards = Provider.of<KaraokeCards>(context);
   final currentActivity = Provider.of<CurrentActivity>(context);
   var notificationPadding = MediaQuery.of(context).padding.top;
+  var screenWidth = MediaQuery.of(context).size.width;
+  var logoWidth = (screenWidth / 4.5) - notificationPadding;
+  logoWidth = logoWidth > 100 ? 100 : logoWidth;
+
 
   Widget _getMiddleSpace() {
     if (nameInput != null)
@@ -30,18 +34,19 @@ Widget customAppBar(BuildContext context,
     toolbarHeight: 80 - notificationPadding,
     titleSpacing: 0,
     title: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         Container(
           padding: EdgeInsets.only(left: 10),
           child: SvgPicture.asset("assets/logos/K9_logotype.svg",
-              width: 100 - notificationPadding),
+              width: logoWidth),
         ),
-        // if (!showFrame)
+        // Spacer(flex: 1,),
         _getMiddleSpace(),
+        // Spacer(flex: 1,),
         Padding(
-          padding: const EdgeInsets.only(right: 5.0),
+          padding: const EdgeInsets.only(right: 10.0),
           child: isMenu
               ? IconButton(
                   icon: Visibility(
