@@ -34,9 +34,16 @@ class _PhotoNameInputState extends State<PhotoNameInput> {
     return newWidth > maxTextWidth ? maxTextWidth : newWidth;
   }
 
+  // void _selectText() {
+  //   _textController.selection = TextSelection(
+  //     baseOffset: 0,
+  //     extentOffset: _textController.text.length,
+  //   );
+  // }
+
   @override
   Widget build(BuildContext context) {
-    cards = Provider.of<KaraokeCards>(context, listen: false);
+    cards = Provider.of<KaraokeCards>(context);
     maxTextWidth = MediaQuery.of(context).size.width / 2;
     _textController.text = widget.picture.name;
 
@@ -49,6 +56,7 @@ class _PhotoNameInputState extends State<PhotoNameInput> {
             child: TextFormField(
               // onChanged: (text) => _updateContainerSize(text),
               controller: _textController,
+              // onTap: () {},
               maxLength: 20,
               focusNode: _textFormFocus,
               autofocus: widget.picture.isNamed ? false : true,
