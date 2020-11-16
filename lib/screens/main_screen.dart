@@ -154,7 +154,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
             cards.current.onlySong()) ||
         (currentActivity.isSpeak &&
             currentActivity.isSix &&
-            cards.current.hasSong);
+            cards.current.hasASong);
   }
 
   bool get _canPlayMessage {

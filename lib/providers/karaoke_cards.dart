@@ -225,7 +225,7 @@ class KaraokeCard with ChangeNotifier {
   }
 
   bool onlySong() {
-    return !hasMessage && hasSong;
+    return !hasMessage && hasASong;
   }
 
   bool onlyMessage() {
@@ -243,7 +243,7 @@ class KaraokeCard with ChangeNotifier {
     audio.filePath = "$myAppStoragePath/${audio.fileId}.aac";
 
     // Combine with song
-    if (hasSong) {
+    if (hasASong) {
       File tempFile = File("$myAppStoragePath/tempFile.wav");
       // concat and save card audio file
       await FFMpeg.process.execute(
@@ -299,9 +299,15 @@ class KaraokeCard with ChangeNotifier {
     return shortBark != null;
   }
 
-  bool get hasSong {
+  bool get hasASong {
     return song != null;
   }
+
+  bool hasSong(songToCheck) {
+    return song == songToCheck;
+  }
+
+
 
   bool get hasMessage {
     return message.exists;
@@ -311,7 +317,7 @@ class KaraokeCard with ChangeNotifier {
     return audio.exists;
   }
 
-  bool get hasSongFormula {
+  bool get hasASongFormula {
     return songFormula != null;
   }
 

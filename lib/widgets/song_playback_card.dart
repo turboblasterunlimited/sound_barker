@@ -174,11 +174,16 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
     );
   }
 
-  void selectSong() {
+  void selectSong() async {
     cards.setCurrentSongFormula(null);
     cards.setCurrentSong(widget.song);
-    currentActivity.setCardCreationStep(CardCreationSteps.speak);
-    currentActivity.setCardCreationSubStep(CardCreationSubSteps.seven);
+    Future.delayed(
+      Duration(milliseconds: 500),
+      () {
+        currentActivity.setCardCreationStep(CardCreationSteps.speak);
+         currentActivity.setCardCreationSubStep(CardCreationSubSteps.seven);
+      },
+    );
   }
 
   Widget _getAudio() {
@@ -228,6 +233,7 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
   Widget build(BuildContext context) {
     cards = Provider.of<KaraokeCards>(context, listen: false);
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
+    bool isSelected = cards.current.hasSong(widget.song);
 
     return SizeTransition(
       sizeFactor: widget.animation,
@@ -238,6 +244,8 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
           // Select song button
           Expanded(
             child: RawMaterialButton(
+              fillColor: isSelected ? Theme.of(context).primaryColor : null,
+
               onPressed: selectSong,
               child: FadeTransition(
                 opacity: renameAnimationController,
@@ -248,9 +256,12 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
                       widget.song.songFamily,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 16),
+                        fontWeight: FontWeight.bold,
+                        color: isSelected
+                            ? Colors.white
+                            : Theme.of(context).primaryColor,
+                        fontSize: 16,
+                      ),
                     ),
                   ),
                 ),

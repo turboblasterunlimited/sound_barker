@@ -105,10 +105,10 @@ class CardProgressBar extends StatelessWidget {
     }
 
     void navigateToSpeak() {
-      if (card.hasSong) {
+      if (card.hasASong) {
         currentActivity.setCardCreationStep(
             CardCreationSteps.speak, CardCreationSubSteps.seven);
-      } else if (card.hasSongFormula)
+      } else if (card.hasASongFormula)
         currentActivity.setCardCreationStep(CardCreationSteps.speak);
       else
         currentActivity.setCardCreationStep(
@@ -143,7 +143,7 @@ class CardProgressBar extends StatelessWidget {
             buttonClip: MiddleButtonClipper(),
             outlinePainter: MiddleOutlinePainter(
                 currentActivity.isSong ? Colors.blue : primaryColor),
-            stepIsCompleted: card.hasSong || card.hasSongFormula,
+            stepIsCompleted: card.hasASong || card.hasASongFormula,
             isCurrentStep: currentActivity.isSong,
             navigateHere: navigateToSong,
             canNavigate: card.hasPicture),
@@ -160,7 +160,7 @@ class CardProgressBar extends StatelessWidget {
             stepIsCompleted: card.hasMessage,
             isCurrentStep: currentActivity.isSpeak,
             navigateHere: navigateToSpeak,
-            // canNavigate: card.hasSongFormula || card.hasSong),
+            // canNavigate: card.hasASongFormula || card.hasASong),
             canNavigate: card.hasPicture),
         Padding(
           padding: EdgeInsets.only(left: buttonWidth / (2000 / buttonWidth)),

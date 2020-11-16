@@ -154,7 +154,7 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
   }
 
   void backCallback() {
-    if (cards.current.hasSongFormula)
+    if (cards.current.hasASongFormula)
       currentActivity.setPreviousSubStep();
     else
       currentActivity.setCardCreationStep(CardCreationSteps.song);
@@ -163,8 +163,8 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
   void skipCallback() async {
     // first time creation: audio and oldCardAudio are null. If new song is selected: audio is set to oldCardAudio
     // if (cards.current.oldCardAudio == cards.current.audio &&
-    //     cards.current.hasSong) {
-    if (cards.current.hasSong) {
+    //     cards.current.hasASong) {
+    if (cards.current.hasASong) {
       await cards.current.songToAudio();
       return currentActivity.setCardCreationStep(CardCreationSteps.style);
       // already created audio but going back through and just clicking skip without having changed the song
@@ -208,7 +208,7 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
     return Column(
       children: <Widget>[
         InterfaceTitleNav(
-            cards.current.hasSong ? "PRE-SONG MESSAGE" : "CARD MESSAGE",
+            cards.current.hasASong ? "PRE-SONG MESSAGE" : "CARD MESSAGE",
             backCallback: backCallback,
             skipCallback: skipCallback),
         Row(

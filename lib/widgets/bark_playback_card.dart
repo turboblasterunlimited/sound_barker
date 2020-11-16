@@ -246,11 +246,12 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
                             TextSpan(
                               text: widget.bark.name,
                               style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: isSelected
-                                      ? Colors.white
-                                      : Theme.of(context).primaryColor,
-                                  fontSize: 16),
+                                fontWeight: FontWeight.bold,
+                                color: isSelected
+                                    ? Colors.white
+                                    : Theme.of(context).primaryColor,
+                                fontSize: 16,
+                              ),
                             ),
                             // Subtitle
                             TextSpan(
