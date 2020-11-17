@@ -44,7 +44,8 @@ class CardProgressBar extends StatelessWidget {
     final primaryColor = Theme.of(context).primaryColor;
 
     Widget progressButton(
-        {IconData stepIcon,
+        {double offSetX,
+        IconData stepIcon,
         CustomClipper buttonClip,
         CustomPainter outlinePainter,
         bool stepIsCompleted,
@@ -53,8 +54,8 @@ class CardProgressBar extends StatelessWidget {
         bool canNavigate}) {
       return Padding(
         padding: const EdgeInsets.only(top: 5.0),
-        child: Transform.scale(
-          scale: 1.2,
+        child: Transform.translate(
+          offset: Offset(offSetX, 0),
           child: ClipPath(
             clipper: buttonClip,
             child: GestureDetector(
@@ -127,6 +128,7 @@ class CardProgressBar extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         progressButton(
+            offSetX: 13.333,
             stepIcon: CustomIcons.snap_quick,
             buttonClip: FirstButtonClipper(),
             outlinePainter: FirstOutlinePainter(
@@ -135,10 +137,9 @@ class CardProgressBar extends StatelessWidget {
             isCurrentStep: currentActivity.isSnap,
             navigateHere: navigateToSnap,
             canNavigate: true),
-        Padding(
-          padding: EdgeInsets.only(left: buttonWidth / (2000 / buttonWidth)),
-        ),
+
         progressButton(
+            offSetX: 5,
             stepIcon: CustomIcons.song_quick,
             buttonClip: MiddleButtonClipper(),
             outlinePainter: MiddleOutlinePainter(
@@ -147,12 +148,10 @@ class CardProgressBar extends StatelessWidget {
             isCurrentStep: currentActivity.isSong,
             navigateHere: navigateToSong,
             canNavigate: card.hasPicture),
-        Padding(
-          padding: EdgeInsets.only(left: buttonWidth / (2000 / buttonWidth)),
-        ),
 
         // Can click only if creating a new song
         progressButton(
+            offSetX: -5,
             stepIcon: CustomIcons.speak_quick,
             buttonClip: MiddleButtonClipper(),
             outlinePainter: MiddleOutlinePainter(
@@ -162,11 +161,9 @@ class CardProgressBar extends StatelessWidget {
             navigateHere: navigateToSpeak,
             // canNavigate: card.hasASongFormula || card.hasASong),
             canNavigate: card.hasPicture),
-        Padding(
-          padding: EdgeInsets.only(left: buttonWidth / (2000 / buttonWidth)),
-        ),
 
         progressButton(
+            offSetX: -13.333,
             stepIcon: CustomIcons.style_quick,
             buttonClip: LastButtonClipper(),
             outlinePainter: LastOutlinePainter(
