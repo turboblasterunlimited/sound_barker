@@ -106,7 +106,7 @@ class SoundController with ChangeNotifier {
       track = Track.fromAsset(path);
     else
       track = Track.fromFile(path);
-    player.play(track);
+    await player.play(track);
   }
 
   Future<void> stopPlayer() async {

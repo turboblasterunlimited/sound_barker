@@ -67,9 +67,9 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
 
   void startAll() async {
     setState(() => _isPlaying = true);
-    imageController.mouthTrackSound(filePath: widget.song.amplitudesPath);
     await widget.soundController
         .startPlayer(widget.song.filePath, stopCallback: stopAll);
+    imageController.mouthTrackSound(filePath: widget.song.amplitudesPath);
     print("song playback file path: ${widget.song.filePath}");
   }
 
@@ -181,7 +181,7 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
       Duration(milliseconds: 500),
       () {
         currentActivity.setCardCreationStep(CardCreationSteps.speak);
-         currentActivity.setCardCreationSubStep(CardCreationSubSteps.seven);
+        currentActivity.setCardCreationSubStep(CardCreationSubSteps.seven);
       },
     );
   }
