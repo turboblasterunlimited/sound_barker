@@ -228,10 +228,13 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     Navigator.of(loadingContext).pop();
     if (!response["success"])
       showError(c, response["error"]);
-    else {
+    else if (response["account_already_exists"] == true) {
+      _handleSignedIn(response["payload"]["email"]);
+    } else {
       print("Server response: $response");
       // need unique server responses to handle "user already has account, so they're now signed in" & "verify email address".
       // {success: true, payload: {email: 321@grr.la}}
+
       _showVerifyEmail();
     }
   }
