@@ -92,12 +92,17 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     return recipientName.replaceAll(RegExp(r'[\s+]'), '%20');
   }
 
-  void _handleShare(uuid, setDialogState) {
+  void _handleShare(uuid, setDialogState) async {
     String name = _getShareLink(uuid, setDialogState);
-    Share.share(
+    await Share.share(
         "$name has a message for you.\n\n$shareLink\n\nCreated with K-9 Karaoke.",
         subject: "$name has a message for you.");
     SystemChrome.restoreSystemUIOverlays();
+    final snackBar = SnackBar(
+      content: Text('Done Sharing!'),
+    );
+    Navigator.of(context).pop();
+    Scaffold.of(context).showSnackBar(snackBar);
   }
 
   Future<void> _handleAudio() async {
@@ -164,6 +169,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   }
 
 // Based on customDialog, but code is decoupled.
+
   _shareDialog() async {
     await showDialog<Null>(
         context: context,

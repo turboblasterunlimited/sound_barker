@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class CustomDialog extends StatefulWidget {
   String header;
   String bodyText;
+  String body;
   String primaryButtonText;
   Function primaryFunction;
   String secondaryButtonText;
@@ -14,6 +15,7 @@ class CustomDialog extends StatefulWidget {
   CustomDialog({
     this.header,
     this.bodyText,
+    this.body,
     this.primaryButtonText = "YES",
     this.primaryFunction,
     this.secondaryButtonText = "NO",
@@ -70,16 +72,18 @@ class _CustomDialogState extends State<CustomDialog> {
                   left: 20,
                   child: widget.iconSecondary,
                 ),
-                Padding(
-                  padding: EdgeInsets.only(left: 30.0, right: 30.0),
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: widget.bodyText,
-                      border: InputBorder.none,
-                    ),
-                    maxLines: 6,
-                  ),
-                ),
+                widget.body != null
+                    ? widget.body
+                    : Padding(
+                        padding: EdgeInsets.only(left: 30.0, right: 30.0),
+                        child: TextField(
+                          decoration: InputDecoration(
+                            hintText: widget.bodyText,
+                            border: InputBorder.none,
+                          ),
+                          maxLines: 6,
+                        ),
+                      ),
               ],
             ),
             Row(
