@@ -52,6 +52,7 @@ class Pictures with ChangeNotifier {
   Future<Picture> retrieveAll() async {
     List tempPics = [];
     List response = await RestAPI.retrieveAllImages();
+    print("pictures: $response");
     response.forEach((serverImage) async {
       if (serverImage["hidden"] == 1) return;
       if (serverImage["uuid"] == null) return;

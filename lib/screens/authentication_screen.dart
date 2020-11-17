@@ -54,6 +54,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   bool everythingDownloaded = true;
   String downloadMessage = "Initializing...";
   BuildContext c;
+  bool firstBuild = true;
 
   void _showLoadingModal(Function getLoadingContext) async {
     await showDialog<Null>(
@@ -267,22 +268,21 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   }
 
   Future<void> downloadEverything() async {
-    if (mounted) {
-      setState(() {
-        everythingDownloaded = false;
-        signingIn = false;
-        downloadMessage = "Getting your stuff...";
-      });
-      await pictures.retrieveAll();
-      // need creatableSongData to get songIds
-      await creatableSongs.retrieveFromServer();
-      await barks.retrieveAll();
-      songs.setCreatableSongs(creatableSongs.all);
-      await songs.retrieveAll();
-      await cardAudios.retrieveAll();
-      await decorationImages.retrieveAll();
-      await cards.retrieveAll(pictures, cardAudios, songs, decorationImages);
-    }
+    if (!mounted) return;
+    setState(() {
+      everythingDownloaded = false;
+      signingIn = false;
+      downloadMessage = "Getting your stuff...";
+    });
+    await pictures.retrieveAll();
+    // need creatableSongData to get songIds
+    await creatableSongs.retrieveFromServer();
+    await barks.retrieveAll();
+    songs.setCreatableSongs(creatableSongs.all);
+    await songs.retrieveAll();
+    await cardAudios.retrieveAll();
+    await decorationImages.retrieveAll();
+    await cards.retrieveAll(pictures, cardAudios, songs, decorationImages);
   }
 
   @override
@@ -298,11 +298,16 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         Provider.of<CardDecorationImages>(context, listen: false);
     cards = Provider.of<KaraokeCards>(context, listen: false);
 
-    var responseData = await checkIfSignedIn();
-    if (responseData["logged_in"] != null && responseData["logged_in"]) {
-      _handleSignedIn(responseData["user_id"]);
-    } else {
-      setState(() => signingIn = false);
+    if (firstBuild) {
+      setState(() => firstBuild = false);
+      var responseData = await checkIfSignedIn();
+      if (responseData["logged_in"] != null && responseData["logged_in"]) {
+        _handleSignedIn(responseData["user_id"]);
+      } else {
+        setState(() {
+          signingIn = false;
+        });
+      }
     }
   }
 
