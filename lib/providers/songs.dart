@@ -18,6 +18,7 @@ class Songs with ChangeNotifier {
 
   void removeAll() {
     all = [];
+    creatableSongs = [];
   }
 
   void setCreatableSongs(List<CreatableSong> creatables) {
