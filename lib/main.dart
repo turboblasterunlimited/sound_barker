@@ -9,9 +9,11 @@ import 'package:K9_Karaoke/providers/the_user.dart';
 import 'package:K9_Karaoke/screens/account_screen.dart';
 import 'package:K9_Karaoke/screens/authentication_screen.dart';
 import 'package:K9_Karaoke/screens/camera_or_upload_screen.dart';
+import 'package:K9_Karaoke/screens/check_authentication_screen.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/screens/my_cards.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
+import 'package:K9_Karaoke/screens/retrieve_data_screen.dart';
 import 'package:custom_paddle_slider_value_indicator_shape/custom_paddle_slider_value_indicator_shape.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -141,7 +143,7 @@ class MyApp extends StatelessWidget {
               buttonColor: Colors.amber[200],
             ),
           ),
-          home: AuthenticationScreen(),
+          home: CheckAuthenticationScreen(),
           routes: {
             AccountScreen.routeName: (ctx) => AccountScreen(),
             MainScreen.routeName: (ctx) => MainScreen(),
@@ -149,6 +151,8 @@ class MyApp extends StatelessWidget {
             PhotoLibraryScreen.routeName: (ctx) => PhotoLibraryScreen(),
             CameraOrUploadScreen.routeName: (ctx) => CameraOrUploadScreen(),
             MyCardsScreen.routeName: (ctx) => MyCardsScreen(),
+            RetrieveDataScreen.routeName: (ctx) => RetrieveDataScreen(),
+            AuthenticationScreen.routeName: (ctx) => AuthenticationScreen(),
           }),
     );
   }

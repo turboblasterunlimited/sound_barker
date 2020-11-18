@@ -1,18 +1,10 @@
 import 'dart:io' show Platform;
 import 'package:K9_Karaoke/icons/custom_icons.dart';
-import 'package:K9_Karaoke/providers/card_audio.dart';
-import 'package:K9_Karaoke/providers/card_decoration_image.dart';
-import 'package:K9_Karaoke/providers/barks.dart';
-import 'package:K9_Karaoke/providers/creatable_songs.dart';
-import 'package:K9_Karaoke/providers/karaoke_cards.dart';
-import 'package:K9_Karaoke/providers/pictures.dart';
-import 'package:K9_Karaoke/providers/songs.dart';
 import 'package:K9_Karaoke/providers/the_user.dart';
-import 'package:K9_Karaoke/screens/main_screen.dart';
+import 'package:K9_Karaoke/screens/retrieve_data_screen.dart';
 import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:K9_Karaoke/widgets/custom_dialog.dart';
 import 'package:K9_Karaoke/widgets/error_dialog.dart';
-import 'package:K9_Karaoke/widgets/spinner_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
@@ -28,7 +20,7 @@ import '../services/authenticate_user.dart';
 import 'package:K9_Karaoke/globals.dart';
 
 class AuthenticationScreen extends StatefulWidget {
-  static const routeName = '/';
+  static const routeName = 'authentication-screen';
 
   @override
   _AuthenticationScreenState createState() => _AuthenticationScreenState();
@@ -36,25 +28,13 @@ class AuthenticationScreen extends StatefulWidget {
 
 class _AuthenticationScreenState extends State<AuthenticationScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  bool signingIn = true;
+  bool signingIn = false;
   FocusNode passwordFocusNode;
   String email = "";
   String password = "";
   bool obscurePassword = true;
-
   TheUser user;
-  Barks barks;
-  Songs songs;
-  Pictures pictures;
-  CreatableSongs creatableSongs;
-  CardAudios cardAudios;
-  CardDecorationImages decorationImages;
-  KaraokeCards cards;
-
-  bool everythingDownloaded = true;
-  String downloadMessage = "Initializing...";
   BuildContext c;
-  bool firstBuild = true;
 
   void _showLoadingModal(Function getLoadingContext) async {
     await showDialog<Null>(
@@ -109,23 +89,9 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         });
   }
 
-  Future<Map> checkIfSignedIn() async {
-    try {
-      return (await HttpController.dio.get('http://$serverIP/is-logged-in'))
-          ?.data;
-    } catch (e) {
-      showError(
-        c,
-      );
-      return {};
-    }
-  }
-
   void _handleSignedIn(email) async {
-    print("handlesignedin");
     user.signIn(email);
-    await downloadEverything();
-    Navigator.of(context).popAndPushNamed(MainScreen.routeName);
+    Navigator.of(context).popAndPushNamed(RetrieveDataScreen.routeName);
   }
 
   String get platform {
@@ -233,9 +199,6 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       _handleSignedIn(response["payload"]["email"]);
     } else {
       print("Server response: $response");
-      // need unique server responses to handle "user already has account, so they're now signed in" & "verify email address".
-      // {success: true, payload: {email: 321@grr.la}}
-
       _showVerifyEmail();
     }
   }
@@ -267,52 +230,9 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     super.dispose();
   }
 
-  Future<void> downloadEverything() async {
-    if (!mounted) return;
-    setState(() {
-      everythingDownloaded = false;
-      signingIn = false;
-      downloadMessage = "Getting your stuff...";
-    });
-    await pictures.retrieveAll();
-    // need creatableSongData to get songIds
-    await creatableSongs.retrieveFromServer();
-    await barks.retrieveAll();
-    songs.setCreatableSongs(creatableSongs.all);
-    await songs.retrieveAll();
-    await cardAudios.retrieveAll();
-    await decorationImages.retrieveAll();
-    await cards.retrieveAll(pictures, cardAudios, songs, decorationImages);
-  }
-
-  @override
-  void didChangeDependencies() async {
-    super.didChangeDependencies();
-    user = Provider.of<TheUser>(context, listen: false);
-    barks = Provider.of<Barks>(context, listen: false);
-    songs = Provider.of<Songs>(context, listen: false);
-    pictures = Provider.of<Pictures>(context, listen: false);
-    creatableSongs = Provider.of<CreatableSongs>(context, listen: false);
-    cardAudios = Provider.of<CardAudios>(context, listen: false);
-    decorationImages =
-        Provider.of<CardDecorationImages>(context, listen: false);
-    cards = Provider.of<KaraokeCards>(context, listen: false);
-
-    if (firstBuild) {
-      setState(() => firstBuild = false);
-      var responseData = await checkIfSignedIn();
-      if (responseData["logged_in"] != null && responseData["logged_in"]) {
-        _handleSignedIn(responseData["user_id"]);
-      } else {
-        setState(() {
-          signingIn = false;
-        });
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext ctx) {
+    user = Provider.of<TheUser>(context);
     double height = MediaQuery.of(context).size.height;
     print("Height: $height");
     double iconPadding = height > 1000 ? 100 : height / 15;
@@ -469,11 +389,10 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                   ),
                 ),
               ),
-              Visibility(
-                visible: signingIn || !everythingDownloaded,
-                child: SpinnerWidget(
-                    signingIn ? "Signing in..." : downloadMessage),
-              ),
+              // Visibility(
+              //   visible: signingIn,
+              //   child: SpinnerWidget("Signing in..."),
+              // ),
             ],
           );
         }),

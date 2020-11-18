@@ -49,7 +49,7 @@ class Pictures with ChangeNotifier {
     stockPictures.forEach((picture) => picture.delete());
   }
 
-  Future<Picture> retrieveAll() async {
+  Future retrieveAll() async {
     List tempPics = [];
     List response = await RestAPI.retrieveAllImages();
     print("pictures: $response");
