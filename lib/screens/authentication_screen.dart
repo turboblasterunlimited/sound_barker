@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io' show Platform;
 import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/the_user.dart';
@@ -6,6 +5,7 @@ import 'package:K9_Karaoke/screens/retrieve_data_screen.dart';
 import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:K9_Karaoke/widgets/custom_dialog.dart';
 import 'package:K9_Karaoke/widgets/error_dialog.dart';
+import 'package:K9_Karaoke/widgets/user_agreement.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
@@ -17,7 +17,6 @@ import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 
 import 'package:K9_Karaoke/services/http_controller.dart';
 import 'package:provider/provider.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 import '../services/authenticate_user.dart';
 import 'package:K9_Karaoke/globals.dart';
 
@@ -37,8 +36,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   bool obscurePassword = true;
   TheUser user;
   BuildContext c;
-  WebViewController _webViewController;
   bool _showAgreement = false;
+  Function signUpCallback;
 
   void _showLoadingModal(Function getLoadingContext) async {
     await showDialog<Null>(
@@ -166,7 +165,6 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   }
 
   void _handleGoogleAuthentication() async {
-    return _showUserAgreement();
     // setState(() => signingIn = true);
     var token;
     var response;
@@ -220,37 +218,6 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       showError(c, response["error"]);
     } else
       _handleServerResponse(response);
-  }
-
-  _loadHtmlFromAssets() async {
-    String fileText =
-        await rootBundle.loadString('assets/user_agreement_v1.html');
-    print("file test: $fileText");
-    _webViewController.loadUrl(Uri.dataFromString(fileText,
-            mimeType: 'text/html', encoding: Encoding.getByName('utf-8'))
-        .toString());
-  }
-
-  void _showUserAgreement() async {
-    return showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (BuildContext ctx) {
-          return SimpleDialog(
-            title: Text("Terms & Conditions"),
-            children: [
-              Text("Test"),
-              WebView(
-                initialUrl: 'about:blank',
-                onWebViewCreated: (WebViewController webViewController) {
-                  setState(() => _webViewController = webViewController);
-                  print("test");
-                  _loadHtmlFromAssets();
-                },
-              ),
-            ],
-          );
-        });
   }
 
   @override
@@ -310,127 +277,144 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                   ),
                 ),
               ),
-              if _showAgreement ? Padding(
-                padding: const EdgeInsets.only(top: 180.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: 400),
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            left: 30, right: 30, bottom: 15),
-                        child: TextField(
-                          onChanged: (emailValue) {
-                            setState(() {
-                              email = emailValue;
-                            });
-                          },
-                          onSubmitted: (_) {
-                            passwordFocusNode.requestFocus();
-                          },
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            border: OutlineInputBorder(),
-                            labelText: 'Email',
-                          ),
-                        ),
-                      ),
-                    ),
-                    ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: 400),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                        child: TextField(
-                          obscureText: obscurePassword,
-                          focusNode: passwordFocusNode,
-                          onChanged: (passwordValue) {
-                            setState(() => password = passwordValue);
-                          },
-                          onSubmitted: (_) {
-                            FocusScope.of(context).unfocus();
-                          },
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            border: OutlineInputBorder(),
-                            labelText: 'Password',
-                            suffixIcon: GestureDetector(
-                              onTap: () => setState(
-                                  () => obscurePassword = !obscurePassword),
-                              child: Icon(obscurePassword
-                                  ? LineAwesomeIcons.eye_slash
-                                  : LineAwesomeIcons.eye),
+              !_showAgreement
+                  ? Padding(
+                      padding: const EdgeInsets.only(top: 180.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          ConstrainedBox(
+                            constraints: BoxConstraints(maxWidth: 400),
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 30, right: 30, bottom: 15),
+                              child: TextField(
+                                onChanged: (emailValue) {
+                                  setState(() {
+                                    email = emailValue;
+                                  });
+                                },
+                                onSubmitted: (_) {
+                                  passwordFocusNode.requestFocus();
+                                },
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  border: OutlineInputBorder(),
+                                  labelText: 'Email',
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                    ),
-                    ButtonBar(
-                      alignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: FlatButton(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 20),
-                            child:
-                                Text("Sign Up", style: TextStyle(fontSize: 20)),
-                            color: Theme.of(context).primaryColor,
-                            onPressed: _handleManualSignUp,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(22.0),
+                          ConstrainedBox(
+                            constraints: BoxConstraints(maxWidth: 400),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 30.0),
+                              child: TextField(
+                                obscureText: obscurePassword,
+                                focusNode: passwordFocusNode,
+                                onChanged: (passwordValue) {
+                                  setState(() => password = passwordValue);
+                                },
+                                onSubmitted: (_) {
+                                  FocusScope.of(context).unfocus();
+                                },
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  border: OutlineInputBorder(),
+                                  labelText: 'Password',
+                                  suffixIcon: GestureDetector(
+                                    onTap: () => setState(() =>
+                                        obscurePassword = !obscurePassword),
+                                    child: Icon(obscurePassword
+                                        ? LineAwesomeIcons.eye_slash
+                                        : LineAwesomeIcons.eye),
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: FlatButton(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 20),
-                            child:
-                                Text("Sign In", style: TextStyle(fontSize: 20)),
-                            color: Theme.of(context).primaryColor,
-                            onPressed: _handleSignInButton,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(22.0),
+                          ButtonBar(
+                            alignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: FlatButton(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 20),
+                                  child: Text("Sign Up",
+                                      style: TextStyle(fontSize: 20)),
+                                  color: Theme.of(context).primaryColor,
+                                  onPressed: () {
+                                    setState(() {
+                                      signUpCallback = _handleManualSignUp;
+                                      _showAgreement = true;
+                                    });
+                                  },
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(22.0),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: FlatButton(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 20),
+                                  child: Text("Sign In",
+                                      style: TextStyle(fontSize: 20)),
+                                  color: Theme.of(context).primaryColor,
+                                  onPressed: () {
+                                    setState(() {
+                                      signUpCallback =
+                                          () => _handleSignedIn(email);
+                                      _showAgreement = true;
+                                    });
+                                  },
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(22.0),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Container(
+                            width: 200,
+                            padding: EdgeInsets.only(top: 10, bottom: 15),
+                            child: Divider(
+                              color: Colors.black,
+                              thickness: 2,
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    Container(
-                      width: 200,
-                      padding: EdgeInsets.only(top: 10, bottom: 15),
-                      child: Divider(
-                        color: Colors.black,
-                        thickness: 2,
+                          Center(
+                            child: GoogleSignInButton(
+                              text: "Continue with Google",
+                              onPressed: () {
+                                setState(() {
+                                  signUpCallback = _handleGoogleAuthentication;
+                                  _showAgreement = true;
+                                });
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 15.0),
+                            child: FacebookSignInButton(
+                              onPressed: () {
+                                setState(() {
+                                  signUpCallback =
+                                      _handleFacebookAuthentication;
+                                  _showAgreement = true;
+                                });
+                              },
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    Center(
-                      child: GoogleSignInButton(
-                        text: "Continue with Google",
-                        onPressed: _handleGoogleAuthentication,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 15.0),
-                      child: FacebookSignInButton(
-                        onPressed: _handleFacebookAuthentication,
-                      ),
-                    ),
-                  ],
-                ),
-              ) : 
-              WebView(
-            initialUrl: 'about:blank',
-            onWebViewCreated: (WebViewController webViewController) {
-              setState(() => _webViewController = webViewController);
-              print("test");
-              _loadHtmlFromAssets();
-            },
-          ),
+                    )
+                  : UserAgreement(signUpCallback),
             ],
           );
         }),
