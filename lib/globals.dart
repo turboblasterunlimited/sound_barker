@@ -1,5 +1,5 @@
 // DEV
-const String serverIP = '165.227.178.14';
+const String serverIP = 'k-9karaoke.com';
 const String serverURL = 'thedogbarksthesong.ml';
 const String bucketName = 'song_barker_sequences';
 

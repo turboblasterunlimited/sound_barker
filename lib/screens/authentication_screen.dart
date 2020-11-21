@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io' show Platform;
 import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/the_user.dart';
@@ -37,7 +38,16 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   TheUser user;
   BuildContext c;
   bool _showAgreement = false;
-  Function signUpCallback;
+  bool _agreementAccepted = false;
+  var agreementCompleter = Completer();
+
+  void acceptAgreement(bool isAccepted) {
+    setState(() {
+      _showAgreement = false;
+      _agreementAccepted = isAccepted;
+      agreementCompleter.complete();
+    });
+  }
 
   void _showLoadingModal(Function getLoadingContext) async {
     await showDialog<Null>(
@@ -68,7 +78,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
             primaryFunction: (BuildContext modalContext) async {
               var response = await _handleManualSignIn();
               if (!response["success"])
-                showError(modalContext, response["error"]);
+                showError(c, response["error"]);
               else {
                 Navigator.of(modalContext).pop();
                 _handleServerResponse(response);
@@ -120,7 +130,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     Map tokenData = {"facebook_token": token};
     try {
       var response = await HttpController.dio.post(
-        'http://$serverIP/facebook-token',
+        'https://$serverIP/facebook-token',
         data: tokenData,
       );
       return response;
@@ -177,7 +187,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       token =
           await authenticate(issuer, clientId, ['email', 'openid', 'profile']);
       response = await HttpController.dio.post(
-        'http://$serverIP/openid-token/${platform}',
+        'https://$serverIP/openid-token/${platform}',
         data: token,
       );
       _handleServerResponse(response?.data);
@@ -218,6 +228,20 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       showError(c, response["error"]);
     } else
       _handleServerResponse(response);
+  }
+
+  Function _handleSignUp(Function signUpFunction) {
+    return () async {
+      setState(() => _showAgreement = true);
+      await agreementCompleter.future;
+      if (_agreementAccepted)
+        signUpFunction();
+      else
+        setState(() {
+          _showAgreement = false;
+          agreementCompleter = Completer();
+        });
+    };
   }
 
   @override
@@ -347,12 +371,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                   child: Text("Sign Up",
                                       style: TextStyle(fontSize: 20)),
                                   color: Theme.of(context).primaryColor,
-                                  onPressed: () {
-                                    setState(() {
-                                      signUpCallback = _handleManualSignUp;
-                                      _showAgreement = true;
-                                    });
-                                  },
+                                  onPressed: _handleSignUp(_handleManualSignUp),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(22.0),
                                   ),
@@ -366,13 +385,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                   child: Text("Sign In",
                                       style: TextStyle(fontSize: 20)),
                                   color: Theme.of(context).primaryColor,
-                                  onPressed: () {
-                                    setState(() {
-                                      signUpCallback =
-                                          () => _handleSignedIn(email);
-                                      _showAgreement = true;
-                                    });
-                                  },
+                                  onPressed: _handleSignInButton,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(22.0),
                                   ),
@@ -391,30 +404,21 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                           Center(
                             child: GoogleSignInButton(
                               text: "Continue with Google",
-                              onPressed: () {
-                                setState(() {
-                                  signUpCallback = _handleGoogleAuthentication;
-                                  _showAgreement = true;
-                                });
-                              },
+                              onPressed:
+                                  _handleSignUp(_handleGoogleAuthentication),
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 15.0),
                             child: FacebookSignInButton(
-                              onPressed: () {
-                                setState(() {
-                                  signUpCallback =
-                                      _handleFacebookAuthentication;
-                                  _showAgreement = true;
-                                });
-                              },
+                              onPressed:
+                                  _handleSignUp(_handleFacebookAuthentication),
                             ),
                           ),
                         ],
                       ),
                     )
-                  : UserAgreement(signUpCallback),
+                  : UserAgreement(acceptAgreement),
             ],
           );
         }),

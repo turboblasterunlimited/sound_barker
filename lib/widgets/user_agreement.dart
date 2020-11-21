@@ -1,17 +1,16 @@
-import 'package:K9_Karaoke/screens/authentication_screen.dart';
 import 'package:flutter/material.dart';
 
 class UserAgreement extends StatelessWidget {
-  final Function signUpCallback;
+  final Function acceptCallback;
 
-  UserAgreement(this.signUpCallback);
+  UserAgreement(this.acceptCallback);
 
   void userAgrees() {
-    signUpCallback();
+    acceptCallback(true);
   }
 
-  void userDeclines(context) {
-    Navigator.of(context).popAndPushNamed(AuthenticationScreen.routeName);
+  void userDeclines() {
+    acceptCallback(false);
   }
 
   @override
@@ -239,7 +238,7 @@ class UserAgreement extends StatelessWidget {
                   padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                   child: Text("Decline", style: TextStyle(fontSize: 20)),
                   color: Theme.of(context).errorColor,
-                  onPressed: () => userDeclines(context),
+                  onPressed: userDeclines,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(22.0),
                   ),
