@@ -22,7 +22,12 @@ class UserAgreement extends StatelessWidget {
     final reg = TextStyle(color: Colors.black, fontWeight: FontWeight.w200);
 
     return Container(
-      color: Colors.white,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage("assets/backgrounds/menu_background.png"),
+          fit: BoxFit.cover,
+        ),
+      ),
       height: MediaQuery.of(context).size.height,
       child: Column(
         children: [

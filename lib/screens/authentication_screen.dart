@@ -220,7 +220,9 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
 
   Future<void> _handleSignInButton() async {
     FocusScope.of(context).unfocus();
-    if (invalidInput) return showError(c, "Please enter a valid email and password");;
+    if (invalidInput)
+      return showError(c, "Please enter a valid email and password");
+    ;
     var response = await _handleManualSignIn();
     print("Response check: $response");
     if (!response["success"]) {
@@ -235,12 +237,15 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
 
   Function _handleSignUp(Function signUpFunction, {bool manualSignUp = false}) {
     return () async {
-
       if (manualSignUp && invalidInput)
         return showError(c, "Please enter a valid email and password");
 
-      setState(() => _showAgreement = true);
-      await agreementCompleter.future;
+      // If agreement was not previously accepted
+      if (!_agreementAccepted) {
+        setState(() => _showAgreement = true);
+        await agreementCompleter.future;
+      }
+      // Then, after showing the agreement
       if (_agreementAccepted)
         signUpFunction();
       else
