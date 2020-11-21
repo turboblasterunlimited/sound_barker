@@ -199,8 +199,6 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   }
 
   Future _handleManualSignUp() async {
-    if (email.length < 6 || password.length == 0)
-      return showError(c, "Please enter a valid email and password");
     FocusScope.of(context).unfocus();
     BuildContext loadingContext;
     _showLoadingModal((ctx) => loadingContext = ctx);
@@ -222,6 +220,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
 
   Future<void> _handleSignInButton() async {
     FocusScope.of(context).unfocus();
+    if (invalidInput) return showError(c, "Please enter a valid email and password");;
     var response = await _handleManualSignIn();
     print("Response check: $response");
     if (!response["success"]) {
@@ -230,8 +229,16 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       _handleServerResponse(response);
   }
 
-  Function _handleSignUp(Function signUpFunction) {
+  bool get invalidInput {
+    return (email.length < 6 || password.length == 0);
+  }
+
+  Function _handleSignUp(Function signUpFunction, {bool manualSignUp = false}) {
     return () async {
+
+      if (manualSignUp && invalidInput)
+        return showError(c, "Please enter a valid email and password");
+
       setState(() => _showAgreement = true);
       await agreementCompleter.future;
       if (_agreementAccepted)
@@ -259,8 +266,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
 
   @override
   Widget build(BuildContext ctx) {
-    user = Provider.of<TheUser>(context);
-    double height = MediaQuery.of(context).size.height;
+    user = Provider.of<TheUser>(ctx);
+    double height = MediaQuery.of(ctx).size.height;
     print("Height: $height");
     double iconPadding = height > 1000 ? 100 : height / 15;
     double iconPaddingTop = height > 1000 ? 130 : 0;
@@ -277,7 +284,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
             fit: BoxFit.cover,
           ),
         ),
-        child: Builder(builder: (con) {
+        child: Builder(builder: (BuildContext con) {
           c = con;
           return Stack(
             alignment: Alignment.topCenter,
@@ -371,7 +378,10 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                   child: Text("Sign Up",
                                       style: TextStyle(fontSize: 20)),
                                   color: Theme.of(context).primaryColor,
-                                  onPressed: _handleSignUp(_handleManualSignUp),
+                                  onPressed: _handleSignUp(
+                                    _handleManualSignUp,
+                                    manualSignUp: true,
+                                  ),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(22.0),
                                   ),
