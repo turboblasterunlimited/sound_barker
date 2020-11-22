@@ -1,10 +1,12 @@
 import 'dart:io';
 
+import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/pictures.dart';
 import 'package:K9_Karaoke/screens/set_picture_coordinates_screen.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:K9_Karaoke/tools/cropper.dart';
 import 'package:K9_Karaoke/widgets/custom_appbar.dart';
+import 'package:K9_Karaoke/widgets/custom_dialog.dart';
 import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -29,7 +31,6 @@ class CameraOrUploadScreen extends StatelessWidget {
   Future<bool> _getPermission(source, context) async {
     PermissionStatus status;
     if (source == ImageSource.gallery) {
-      
       status = await Permission.photos.request();
       if (!status.isGranted) {
         showError(context, "Access to photos denied.");
@@ -58,6 +59,38 @@ class CameraOrUploadScreen extends StatelessWidget {
     File(newPicture.filePath).writeAsBytesSync(
         bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
     await _cropAndNavigate(newPicture, context);
+  }
+
+  _handleCameraButton(context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return CustomDialog(
+            header: "For best results...",
+            bodyText:
+                "Have your pet look straight at the camera.\n\nMouth should be visible and closed.",
+            primaryFunction: (BuildContext modalContext) {
+              Navigator.of(modalContext).pop();
+              getImage(ImageSource.camera, context);
+            },
+            secondaryFunction: (BuildContext modalContext) async {
+              Navigator.of(modalContext).pop();
+            },
+            iconPrimary: Icon(
+              Icons.camera_alt,
+              size: 42,
+              color: Colors.grey[300],
+            ),
+            iconSecondary: Icon(
+              CustomIcons.modal_paws_topleft,
+              size: 42,
+              color: Colors.grey[300],
+            ),
+            isYesNo: false,
+            primaryButtonText: "Take Picture",
+            secondaryButtonText: "Back",
+          );
+        });
   }
 
   Widget build(BuildContext ctx) {
@@ -105,8 +138,7 @@ class CameraOrUploadScreen extends StatelessWidget {
                             child:
                                 Text("Camera", style: TextStyle(fontSize: 20)),
                             // color: Theme.of(context).primaryColor,
-                            onPressed: () =>
-                                getImage(ImageSource.camera, context),
+                            onPressed: () => _handleCameraButton(context),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(22.0),
                               side: BorderSide(
