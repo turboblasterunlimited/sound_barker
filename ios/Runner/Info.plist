@@ -46,20 +46,12 @@
 	<true/>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>For greeting card audio playback</string>
-	<key>NSCalendarsUsageDescription</key>
-	<string>For sharing a card to your calendar</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Can I use the camera please?</string>
-	<key>NSContactsUsageDescription</key>
-	<string>Account creation and card sharing</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This sample uses the microphone to record your speech and convert it to text.</string>
-	<key>NSMotionUsageDescription</key>
-	<string>This app needs to be able to access your motion</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Save video in gallery</string>
-	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>For dictating card text or pet names</string>
+	<string>For using photo or video for card creation</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
