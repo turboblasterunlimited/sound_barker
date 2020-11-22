@@ -22,6 +22,7 @@ class _PhotoNameInputState extends State<PhotoNameInput> {
   final _textController = TextEditingController();
   double textWidth = 150;
   double maxTextWidth;
+  // bool _firstBuild = true;
 
   void handleNameChange(name) {
     if (name != "") widget.updateNameCallback(name);
@@ -29,8 +30,14 @@ class _PhotoNameInputState extends State<PhotoNameInput> {
     SystemChrome.restoreSystemUIOverlays();
   }
 
+  int get nameLength {
+    int inputLength = _textController.text.length;
+    int nameLength = widget.picture.name.length;
+    return inputLength > nameLength ? inputLength : nameLength;
+  }
+
   double _getTextInputWidth() {
-    double newWidth = _textController.text.length * 5.1 + 150;
+    double newWidth = nameLength * 5.1 + 150;
     return newWidth > maxTextWidth ? maxTextWidth : newWidth;
   }
 
@@ -41,11 +48,19 @@ class _PhotoNameInputState extends State<PhotoNameInput> {
   //   );
   // }
 
+  // void _handleFirstBuild() {
+  //   setState(() => _firstBuild = false );
+  //   _textFormFocus.addListener(() {
+  //     if (_textFormFocus.hasFocus) _selectText();
+  //   });
+  // }
+
   @override
   Widget build(BuildContext context) {
     cards = Provider.of<KaraokeCards>(context);
     maxTextWidth = MediaQuery.of(context).size.width / 2;
-    _textController.text = widget.picture.name;
+    // _textController.text = widget.picture.name;
+    // if (_firstBuild) _handleFirstBuild();
 
     return Expanded(
       child: Row(
@@ -66,7 +81,7 @@ class _PhotoNameInputState extends State<PhotoNameInput> {
                   ? TextAlign.center
                   : TextAlign.right,
               decoration: InputDecoration(
-                  // hintText: widget.picture.name,
+                  hintText: widget.picture.name,
                   counterText: "",
                   suffixIcon: widget.picture.isStock
                       ? null
