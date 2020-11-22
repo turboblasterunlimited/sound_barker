@@ -124,6 +124,13 @@ class Barks with ChangeNotifier {
     stockBarks.forEach((bark) => bark.deleteFiles());
   }
 
+  void deleteTempRawBark() {
+    if (File(tempRawBark.filePath).existsSync())
+      File(tempRawBark.filePath).deleteSync();
+    tempRawBark = null;
+    tempRawBarkAmplitudes = null;
+  }
+
   Future<List> uploadRawBarkAndRetrieveCroppedBarks(imageId) async {
     await Gcloud.uploadRawBark(tempRawBark.fileId, tempRawBark.filePath);
     List responseBody = await RestAPI.splitRawBark(tempRawBark.fileId, imageId);
@@ -133,6 +140,7 @@ class Barks with ChangeNotifier {
     for (var i = 0; i < length; i++) {
       addBark(newBarks[i]);
     }
+    deleteTempRawBark();
   }
 
   String _lengthAdjective(double seconds) {

@@ -11,7 +11,6 @@ import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:K9_Karaoke/widgets/spinner_half_screen_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_ffmpeg/stream_information.dart';
 // import 'package:flutter_sound/flutter_sound.dart';
 // import 'package:flutter_sound_lite/flutter_sound.dart';
 
@@ -64,6 +63,7 @@ class BarkRecorderState extends State<BarkRecorder>
   }
 
   void _recordSound() {
+    barks.deleteTempRawBark();
     soundController.record(this.filePath);
     _recordingTimer = Timer(Duration(seconds: 10), () {
       soundController.startPlayer("assets/sounds/bell.aac", asset: true);
@@ -152,10 +152,15 @@ class BarkRecorderState extends State<BarkRecorder>
   }
 
   void _handleUploadVideo() async {
-    if (File(filePath).existsSync()) File(filePath).deleteSync();
+    PermissionStatus status = await Permission.photos.request();
+    if (!status.isGranted) {
+      showError(context, "Gallary permission not granted");
+      return;
+    }
     final pickedFile =
         await ImagePicker().getVideo(source: ImageSource.gallery);
     if (pickedFile == null) return;
+    barks.deleteTempRawBark();
     await FFMpeg.process.execute(
         '-i ${pickedFile.path} -ss 00:00:00 -t 15 -vn -ar 44100 -ac 1 $filePath');
     await barks.setTempRawBark(Bark(filePath: filePath));
@@ -179,6 +184,7 @@ class BarkRecorderState extends State<BarkRecorder>
           _loading
               ? SpinnerHalfScreenWidget("Processing Barks...")
               : Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     ButtonBar(
                       alignment: MainAxisAlignment.center,
@@ -245,7 +251,8 @@ class BarkRecorderState extends State<BarkRecorder>
                                 padding: const EdgeInsets.all(20.0),
                               ),
                               Padding(padding: EdgeInsets.only(top: 16)),
-                              Text("UPLOAD VIDEO",
+                              Text("UPLOAD AUDIO\nFROM VIDEO",
+                                  textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontSize: 16,
                                       color: Theme.of(context).primaryColor))
@@ -255,13 +262,23 @@ class BarkRecorderState extends State<BarkRecorder>
                       ],
                     ),
                     // ADD BARKS BUTTON
+                    if (barks.tempRawBark == null)
+                      Center(
+                        child: Text(
+                          "Press 'skip' to use Stock Barks and FX",
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontStyle: FontStyle.italic,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    if (barks.tempRawBark != null && !_isRecording)
+                      // maintainState: true,
+                      // maintainAnimation: true,
+                      // maintainSize: true,
 
-                    Visibility(
-                      visible: barks.tempRawBark != null && !_isRecording,
-                      maintainState: true,
-                      maintainAnimation: true,
-                      maintainSize: true,
-                      child: GestureDetector(
+                      GestureDetector(
                         onTap: () async {
                           setState(() => _loading = true);
                           await barks.uploadRawBarkAndRetrieveCroppedBarks(
@@ -293,7 +310,6 @@ class BarkRecorderState extends State<BarkRecorder>
                           ),
                         ),
                       ),
-                    ),
                   ],
                 ),
           Padding(

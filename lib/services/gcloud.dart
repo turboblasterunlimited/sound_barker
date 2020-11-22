@@ -11,7 +11,7 @@ class Gcloud {
       "filepath": "$directory/$fileName",
       "content_type": contentType,
     };
-    final url = 'http://$serverIP/signed-upload-url';
+    final url = 'https://$serverIP/signed-upload-url';
 
     print("upload bucket link body: $body");
     var response;
@@ -74,9 +74,10 @@ class Gcloud {
 
   static Future<String> downloadFromBucket(
       String bucketFp, String filePath) async {
-        print("Downloading!!! $filePath");
+    print("Downloading!!! $filePath");
+    Response response;
     try {
-      Response response = await HttpController.dio.get(
+      response = await HttpController.dio.get(
         "https://storage.googleapis.com/$bucketName/$bucketFp",
         //Received data with List<int>
         options: Options(
@@ -90,7 +91,10 @@ class Gcloud {
       raf.writeFromSync(response.data);
       await raf.close();
     } catch (e) {
-      print("Photo download error: $e");
+      print("Google Cloud bucket download error: $e");
+      print("response: $response");
+      print("bucket name: $bucketName");
+      print("bucket fp: $bucketFp");
     }
     return filePath;
   }

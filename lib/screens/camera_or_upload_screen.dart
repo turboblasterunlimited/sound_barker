@@ -31,13 +31,13 @@ class CameraOrUploadScreen extends StatelessWidget {
     if (source == ImageSource.gallery) {
       
       status = await Permission.photos.request();
-      if (status.isDenied || status.isRestricted) {
+      if (!status.isGranted) {
         showError(context, "Access to photos denied.");
         return false;
       }
     } else if (source == ImageSource.camera) {
       status = await Permission.camera.request();
-      if (status.isDenied || status.isRestricted) {
+      if (!status.isGranted) {
         showError(context, "Access to camera denied.");
         return false;
       }

@@ -24,7 +24,7 @@ class _CheckAuthenticationScreenState extends State<CheckAuthenticationScreen> {
 
   Future<Map> checkIfSignedIn() async {
     try {
-      return (await HttpController.dio.get('http://$serverIP/is-logged-in'))
+      return (await HttpController.dio.get('https://$serverIP/is-logged-in'))
           ?.data;
     } catch (e) {
       showError(

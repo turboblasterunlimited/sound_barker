@@ -1,12 +1,12 @@
 // DEV
-const String serverIP = 'k-9karaoke.com';
-const String serverURL = 'thedogbarksthesong.ml';
-const String bucketName = 'song_barker_sequences';
+// const String serverIP = '165.227.178.14'; // This doesn't work
+// const String serverURL = 'thedogbarksthesong.ml';
+// const String bucketName = 'song_barker_sequences';
 
 // PROD
-// const String serverIP = '68.183.113.8';
-// const String serverURL = 'k-9karaoke.com';
-// const String bucketName = 'k9karaoke-prod';
+const String serverIP = 'k-9karaoke.com';
+const String serverURL = 'thedogbarksthesong.ml'; // this is going to change
+const String bucketName = 'k9karaoke-prod';
 
 // ALL
 const Map<String, dynamic> defaultFaceCoordinates = {
