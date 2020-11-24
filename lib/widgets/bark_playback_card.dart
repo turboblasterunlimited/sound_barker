@@ -1,6 +1,7 @@
 import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
+import 'package:K9_Karaoke/services/gcloud.dart';
 import 'package:K9_Karaoke/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -34,6 +35,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
   AnimationController renameAnimationController;
   ImageController imageController;
   bool _isPlaying = false;
+  bool _isLoading = false;
   final _controller = TextEditingController();
   String tempName;
   KaraokeCards cards;
@@ -66,22 +68,34 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
     }
   }
 
-  void startAll() async {
-    print("bark playback");
+  Future<void> play() async {
     setState(() => _isPlaying = true);
-
-    print("bark id: ${widget.bark.fileId}");
     await widget.soundController
         .startPlayer(widget.bark.filePath, stopCallback: stopAll);
     imageController.mouthTrackSound(filePath: widget.bark.amplitudesPath);
   }
 
-  void playBark() async {
-    try {
-      startAll();
-    } catch (e) {
-      showError(context, e.toString());
+  Future<void> download() async {
+    setState(() => _isLoading = true);
+    await widget.bark.reDownload();
+    setState(() => _isLoading = false);
+  }
+
+  void startAll() async {
+    if (widget.bark.hasFile) {
+      try {
+        play();
+      } catch (e) {
+        print("bark playback error: $e");
+        await download();
+        play();
+      }
+    } else {
+      await download();
+      play();
     }
+    print("bark playback");
+    print("bark id: ${widget.bark.fileId}");
   }
 
   void deleteBark() async {
@@ -180,40 +194,24 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
     Future.delayed(Duration(milliseconds: 500), currentActivity.setNextSubStep);
   }
 
-  Widget _getAudio() {
-    if (widget.bark.hasFile) {
-      return _playbackButton();
-    } else {
-      return FutureBuilder(
-          future: widget.bark.retrieve(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return _playbackButton();
-            } else if (snapshot.hasError) {
-              IconButton(
-                onPressed: null,
-                icon: Icon(
-                  LineAwesomeIcons.exclamation_circle,
-                  color: Theme.of(context).errorColor,
-                ),
-              );
-            } else
-              return IconButton(
-                  onPressed: null,
-                  icon: SpinKitWave(
-                      size: 10, color: Theme.of(context).primaryColor));
-          });
-    }
-  }
-
-  Widget _playbackButton() {
-    return IconButton(
-        color: Colors.blue,
-        onPressed: playBark,
-        icon: _isPlaying
-            ? Icon(Icons.stop, color: Theme.of(context).errorColor, size: 30)
-            : Icon(Icons.play_arrow,
-                color: Theme.of(context).primaryColor, size: 30));
+  Widget _getAudioButton() {
+    if (_isLoading)
+      return IconButton(
+        onPressed: null,
+        icon: SpinKitWave(size: 10, color: Theme.of(context).primaryColor),
+      );
+    if (_isPlaying)
+      return IconButton(
+          color: Colors.blue,
+          onPressed: stopAll,
+          icon:
+              Icon(Icons.stop, color: Theme.of(context).errorColor, size: 30));
+    else
+      return IconButton(
+          color: Colors.blue,
+          onPressed: startAll,
+          icon: Icon(Icons.play_arrow,
+              color: Theme.of(context).primaryColor, size: 30));
   }
 
   @override
@@ -227,7 +225,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
       child: Row(
         children: <Widget>[
           // Playback button
-          _getAudio(),
+          _getAudioButton(),
           // Select bark button
           Expanded(
             child: RawMaterialButton(

@@ -143,7 +143,8 @@ class Barks with ChangeNotifier {
     deleteTempRawBark();
   }
 
-  String _lengthAdjective(double seconds) {
+  String _lengthAdjective(seconds) {
+    print("Seconds: $seconds");
     if (seconds < 0.7)
       return "short";
     else if (seconds < 1.1)
@@ -217,12 +218,13 @@ class Bark extends Asset {
   }
 
   void deleteFiles() {
-    try {
-      File(filePath).deleteSync();
-      File(amplitudesPath).deleteSync();
-    } catch (e) {
-      print("Error: $e");
-    }
+    if (File(filePath).existsSync()) File(filePath).deleteSync();
+    if (File(amplitudesPath).existsSync()) File(amplitudesPath).deleteSync();
+  }
+
+  Future<void> reDownload() async {
+    deleteFiles();
+    await retrieve();
   }
 
   Future<void> retrieve() async {

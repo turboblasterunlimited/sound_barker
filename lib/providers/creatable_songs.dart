@@ -5,12 +5,16 @@ class CreatableSongs with ChangeNotifier {
   List<CreatableSong> all = [];
 
   static String getFullName(theName, theStyle) {
-    return "$theName ($theStyle)";
+    if (theStyle == "")
+      return theName;
+    else
+      return "$theName ($theStyle)";
   }
 
   CreatableSong dataMatchesSong(data) {
     return all.firstWhere(
-        (existing) => existing.fullName == getFullName(data["name"], data["style"]),
+        (existing) =>
+            existing.fullName == getFullName(data["name"], data["style"]),
         orElse: () => null);
   }
 
@@ -32,6 +36,7 @@ class CreatableSongs with ChangeNotifier {
 
   Future<void> retrieveFromServer() async {
     List data = await RestAPI.retrieveAllCreatableSongs();
+    // creatable songs have two arrangements which exist as separate songs on the server. They are combined on the frontend into one song with two versions.
     data.forEach((songData) {
       CreatableSong existing = dataMatchesSong(songData);
       if (existing == null) {
