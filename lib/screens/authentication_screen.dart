@@ -130,7 +130,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     Map tokenData = {"facebook_token": token};
     try {
       var response = await HttpController.dio.post(
-        'https://$serverIP/facebook-token',
+        'https://$serverURL/facebook-token',
         data: tokenData,
       );
       return response;
@@ -187,7 +187,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       token =
           await authenticate(issuer, clientId, ['email', 'openid', 'profile']);
       response = await HttpController.dio.post(
-        'https://$serverIP/openid-token/${platform}',
+        'https://$serverURL/openid-token/${platform}',
         data: token,
       );
       _handleServerResponse(response?.data);

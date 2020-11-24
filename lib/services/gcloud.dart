@@ -11,7 +11,7 @@ class Gcloud {
       "filepath": "$directory/$fileName",
       "content_type": contentType,
     };
-    final url = 'https://$serverIP/signed-upload-url';
+    final url = 'https://$serverURL/signed-upload-url';
 
     print("upload bucket link body: $body");
     var response;

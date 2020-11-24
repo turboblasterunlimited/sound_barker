@@ -105,7 +105,7 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
 
     message.deleteEverything();
     print("message filepath: ${message.filePath}");
-    await soundController.startPlayer("assets/sounds/ding.aac",
+    await soundController.startPlayer("assets/sounds/beeoop.aac",
         asset: true, stopCallback: _recordSound);
   }
 

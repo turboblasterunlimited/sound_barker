@@ -77,7 +77,7 @@ class CameraOrUploadScreen extends StatelessWidget {
               Navigator.of(modalContext).pop();
             },
             iconPrimary: Icon(
-              Icons.camera_alt,
+              Icons.camera_alt_outlined,
               size: 42,
               color: Colors.grey[300],
             ),

@@ -63,7 +63,8 @@ class BarkRecorderState extends State<BarkRecorder>
   }
 
   void _recordSound() {
-    barks.deleteTempRawBark();
+    // barks.deleteTempRawBark();
+    print("FilePath: $filePath");
     soundController.record(this.filePath);
     _recordingTimer = Timer(Duration(seconds: 10), () {
       soundController.startPlayer("assets/sounds/bell.aac", asset: true);
@@ -81,7 +82,7 @@ class BarkRecorderState extends State<BarkRecorder>
       return;
     }
 
-    await soundController.startPlayer("assets/sounds/ding.aac",
+    await soundController.startPlayer("assets/sounds/beeoop.aac",
         asset: true, stopCallback: _recordSound);
   }
 
