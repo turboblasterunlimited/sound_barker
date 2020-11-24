@@ -55,8 +55,8 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
 
   @override
   void dispose() {
-    renameAnimationController.dispose();
     stopAll();
+    renameAnimationController.dispose();
     super.dispose();
   }
 
@@ -208,10 +208,11 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
               Icon(Icons.stop, color: Theme.of(context).errorColor, size: 30));
     else
       return IconButton(
-          color: Colors.blue,
-          onPressed: startAll,
-          icon: Icon(Icons.play_arrow,
-              color: Theme.of(context).primaryColor, size: 30));
+        color: Colors.blue,
+        onPressed: startAll,
+        icon: Icon(Icons.play_arrow,
+            color: Theme.of(context).primaryColor, size: 30),
+      );
   }
 
   @override

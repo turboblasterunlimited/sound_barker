@@ -24,6 +24,7 @@ class CreatableSongs with ChangeNotifier {
       style: data["style"],
       arrangement: {data["arrangement"]: data["id"]},
       backingTrackUrl: "backing_tracks/${data["backing_track"]}/0.aac",
+      backingTrackOffset: data["backingtrack_offset"],
     );
     all.add(newSong);
   }
@@ -53,10 +54,15 @@ class CreatableSong {
   final String name;
   final String style;
   final String backingTrackUrl;
+  final int backingTrackOffset;
   final Map arrangement; // {"harmonized": "someId", "pitched": "someId"}
 
   CreatableSong(
-      {this.name, this.style, this.backingTrackUrl, this.arrangement});
+      {this.name,
+      this.style,
+      this.backingTrackUrl,
+      this.arrangement,
+      this.backingTrackOffset});
 
   List<int> get ids {
     return [arrangement["harmonized"], arrangement["pitched"]];
