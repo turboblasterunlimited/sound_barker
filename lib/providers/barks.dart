@@ -223,6 +223,7 @@ class Bark extends Asset {
   }
 
   Future<void> reDownload() async {
+    print("downloading $fileId");
     deleteFiles();
     await retrieve();
   }

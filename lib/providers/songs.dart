@@ -107,15 +107,6 @@ class Song extends Asset {
     return name;
   }
 
-  void deleteFiles() {
-    try {
-      File(filePath).deleteSync();
-      File(amplitudesPath).deleteSync();
-    } catch (e) {
-      print("Error: $e");
-    }
-  }
-
   Future<void> rename(newName) async {
     try {
       await RestAPI.renameSong(this, newName);
@@ -147,6 +138,18 @@ class Song extends Asset {
       await Gcloud.downloadFromBucket(backingTrackUrl, backingTrackPath);
       await _mergeTracks(backingTrackPath, filePathBase);
     }
+  }
+
+  void deleteFiles() {
+    if (!hasFile) return;
+    if (File(filePath).existsSync()) File(filePath).deleteSync();
+    if (File(amplitudesPath).existsSync()) File(amplitudesPath).deleteSync();
+  }
+
+  Future<void> reDownload() async {
+    print("downloading $fileId");
+    deleteFiles();
+    await downloadAndCombineSong();
   }
 
   bool _setIfFilesExist(filePathBase) {

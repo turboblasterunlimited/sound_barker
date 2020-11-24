@@ -32,6 +32,7 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
   ImageController imageController;
   AnimationController renameAnimationController;
   bool _isPlaying = false;
+  bool _isLoading = false;
   final _controller = TextEditingController();
   String tempName;
   CurrentActivity currentActivity;
@@ -63,14 +64,6 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
     if (_isPlaying) {
       setState(() => _isPlaying = false);
     }
-  }
-
-  void startAll() async {
-    setState(() => _isPlaying = true);
-    await widget.soundController
-        .startPlayer(widget.song.filePath, stopCallback: stopAll);
-    imageController.mouthTrackSound(filePath: widget.song.amplitudesPath);
-    print("song playback file path: ${widget.song.filePath}");
   }
 
   void deleteSong() async {
@@ -186,47 +179,55 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
     );
   }
 
-  Widget _getAudio() {
-    if (widget.song.hasFile) {
-      return _playbackButton();
-    } else {
-      return FutureBuilder(
-          future: widget.song.downloadAndCombineSong(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              print("it's done:");
-              return _playbackButton();
-            } else if (snapshot.hasError) {
-              IconButton(
-                onPressed: null,
-                icon: Icon(
-                  LineAwesomeIcons.exclamation_circle,
-                  color: Theme.of(context).errorColor,
-                ),
-              );
-            } else
-              return IconButton(
-                  onPressed: null,
-                  icon: SpinKitWave(
-                      size: 10, color: Theme.of(context).primaryColor));
-          });
-    }
+    Future<void> play() async {
+    setState(() => _isPlaying = true);
+    await widget.soundController
+        .startPlayer(widget.song.filePath, stopCallback: stopAll);
+    imageController.mouthTrackSound(filePath: widget.song.amplitudesPath);
   }
 
-  Widget _playbackButton() {
-    return IconButton(
-        color: Colors.blue,
-        onPressed: () {
-          if (_isPlaying) {
-            stopAll();
-          } else {
-            startAll();
-          }
-        },
-        icon: _isPlaying
-            ? Icon(Icons.stop, color: Theme.of(context).errorColor, size: 30)
-            : Icon(Icons.play_arrow,
-                color: Theme.of(context).primaryColor, size: 30));
+  Future<void> download() async {
+    setState(() => _isLoading = true);
+    await widget.song.reDownload();
+    setState(() => _isLoading = false);
+  }
+
+  void startAll() async {
+    if (widget.song.hasFile) {
+      try {
+        play();
+      } catch (e) {
+        showError(context, "playback error: $e");
+        print("song playback error: $e");
+        await download();
+        play();
+      }
+    } else {
+      await download();
+      play();
+    }
+    print("bark playback");
+    print("bark id: ${widget.song.fileId}");
+  }
+
+  Widget _getAudioButton() {
+    if (_isLoading)
+      return IconButton(
+        onPressed: null,
+        icon: SpinKitWave(size: 10, color: Theme.of(context).primaryColor),
+      );
+    if (_isPlaying)
+      return IconButton(
+          color: Colors.blue,
+          onPressed: stopAll,
+          icon:
+              Icon(Icons.stop, color: Theme.of(context).errorColor, size: 30));
+    else
+      return IconButton(
+          color: Colors.blue,
+          onPressed: startAll,
+          icon: Icon(Icons.play_arrow,
+              color: Theme.of(context).primaryColor, size: 30));
   }
 
   @override
@@ -240,7 +241,7 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
       child: Row(
         children: <Widget>[
           // Playback button
-          _getAudio(),
+          _getAudioButton(),
           // Select song button
           Expanded(
             child: RawMaterialButton(
