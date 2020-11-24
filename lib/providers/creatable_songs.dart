@@ -4,9 +4,13 @@ import 'package:flutter/material.dart';
 class CreatableSongs with ChangeNotifier {
   List<CreatableSong> all = [];
 
+  static String getFullName(theName, theStyle) {
+    return "$theName ($theStyle)";
+  }
+
   CreatableSong dataMatchesSong(data) {
     return all.firstWhere(
-        (existing) => existing.fullName == (data["name"] + " " + data["style"]),
+        (existing) => existing.fullName == getFullName(data["name"], data["style"]),
         orElse: () => null);
   }
 
@@ -54,6 +58,6 @@ class CreatableSong {
   }
 
   String get fullName {
-    return name + " " + style;
+    return CreatableSongs.getFullName(name, style);
   }
 }

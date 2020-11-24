@@ -117,8 +117,7 @@ class ImageController with ChangeNotifier {
         webViewController.evaluateJavascript("left_blink_quick()");
       if (rNum == 15)
         webViewController.evaluateJavascript("right_blink_quick()");
-      if (rNum == 17)
-        webViewController.evaluateJavascript("left_blink_slow()");
+      if (rNum == 17) webViewController.evaluateJavascript("left_blink_slow()");
       if (rNum == 21)
         webViewController.evaluateJavascript("right_blink_slow()");
       if (rNum > 21 && rNum % 2 != 0) {
@@ -134,13 +133,20 @@ class ImageController with ChangeNotifier {
     if (!isInit) {
       print("Not ready");
       return await Future.delayed(Duration(seconds: 1), () async {
-         await createDog(picture);
+        await createDog(picture);
       });
     }
     print("picture from within createDog: ${picture.name}");
     setPicture(picture);
-    await webViewController
-        .evaluateJavascript("create_puppet('${await _base64Image(picture)}')");
+    String base64ImageString = await _base64Image(picture);
+    try {
+      print("Trying to create dog.");
+      await webViewController
+          .evaluateJavascript("create_puppet('$base64ImageString')");
+      print("Create dog succeeded.");
+    } catch (e) {
+      print("Create dog failed :,(");
+    }
     // webViewController
     //     .evaluateJavascript("test('dog1.jpg')");
   }

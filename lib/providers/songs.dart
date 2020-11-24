@@ -6,11 +6,10 @@ import '../services/gcloud.dart';
 import 'dart:io';
 
 import '../tools/ffmpeg.dart';
-import '../tools/app_storage_path.dart';
 import '../services/rest_api.dart';
 import '../tools/amplitude_extractor.dart';
 
-final captureBackingFileName = RegExp(r'\/([0-9a-zA-Z_ ]*.[a-zA-Z]{3})$');
+// final captureBackingFileName = RegExp(r'\/([0-9a-zA-Z_ ]*.[a-zA-Z]{3})$');
 
 class Songs with ChangeNotifier {
   List<Song> all = [];
@@ -23,6 +22,7 @@ class Songs with ChangeNotifier {
 
   void setCreatableSongs(List<CreatableSong> creatables) {
     creatableSongs = creatables;
+    creatableSongs.sort((a, b) => a.fullName.compareTo(b.fullName));
   }
 
   Song findById(String id) {
