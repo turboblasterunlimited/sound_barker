@@ -2,6 +2,7 @@ import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_card_decoration_controller.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
+import 'package:K9_Karaoke/screens/about_screen.dart';
 import 'package:K9_Karaoke/screens/account_screen.dart';
 import 'package:K9_Karaoke/screens/my_cards.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
@@ -97,8 +98,10 @@ class _MenuState extends State<MenuScreen> {
               //           fontSize: 40, color: Theme.of(context).primaryColor)),
               // ),
               GestureDetector(
-                onTap: () =>
-                    Navigator.of(context).pushNamed(AboutScreen.routeName),
+                onTap: () {
+                  print("about tapped.");
+                  Navigator.of(context).pushNamed(AboutScreen.routeName);
+                },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text("About",

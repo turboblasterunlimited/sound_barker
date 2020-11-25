@@ -6,6 +6,7 @@ import 'package:K9_Karaoke/providers/creatable_songs.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/the_user.dart';
+import 'package:K9_Karaoke/screens/about_screen.dart';
 import 'package:K9_Karaoke/screens/account_screen.dart';
 import 'package:K9_Karaoke/screens/authentication_screen.dart';
 import 'package:K9_Karaoke/screens/camera_or_upload_screen.dart';
@@ -13,7 +14,9 @@ import 'package:K9_Karaoke/screens/check_authentication_screen.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/screens/my_cards.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
+import 'package:K9_Karaoke/screens/privacy_policy_screen.dart';
 import 'package:K9_Karaoke/screens/retrieve_data_screen.dart';
+import 'package:K9_Karaoke/screens/terms_of_use_screen.dart';
 import 'package:custom_paddle_slider_value_indicator_shape/custom_paddle_slider_value_indicator_shape.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -145,6 +148,9 @@ class MyApp extends StatelessWidget {
           ),
           home: CheckAuthenticationScreen(),
           routes: {
+            AboutScreen.routeName: (ctx) => AboutScreen(),
+            PrivacyPolicyScreen.routeName: (ctx) => PrivacyPolicyScreen(),
+            TermsOfUseScreen.routeName: (ctx) => TermsOfUseScreen(),
             AccountScreen.routeName: (ctx) => AccountScreen(),
             MainScreen.routeName: (ctx) => MainScreen(),
             MenuScreen.routeName: (ctx) => MenuScreen(),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class TermsAndConditions extends StatelessWidget {
+class TermsOfUse extends StatelessWidget {
 
   final bold =
       TextStyle(fontWeight: FontWeight.w800, color: Colors.black, fontSize: 13);

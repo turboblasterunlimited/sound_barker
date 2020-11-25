@@ -1,4 +1,4 @@
-import 'package:K9_Karaoke/widgets/terms_and_conditions.dart';
+import 'package:K9_Karaoke/widgets/terms_of_use.dart';
 import 'package:flutter/material.dart';
 
 class UserAgreement extends StatelessWidget {
@@ -30,7 +30,7 @@ class UserAgreement extends StatelessWidget {
       child: Column(
         children: [
           Center(child: Text("User Agreement", style: title)),
-          TermsAndConditions(),
+          TermsOfUse(),
           ButtonBar(
             alignment: MainAxisAlignment.center,
             children: <Widget>[
