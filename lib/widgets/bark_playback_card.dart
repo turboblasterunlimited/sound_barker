@@ -1,17 +1,14 @@
 import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
-import 'package:K9_Karaoke/services/gcloud.dart';
 import 'package:K9_Karaoke/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/sound_controller.dart';
 import '../providers/barks.dart';
 import '../providers/image_controller.dart';
-import './error_dialog.dart';
 
 class BarkPlaybackCard extends StatefulWidget {
   final int index;
@@ -96,6 +93,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
     }
     print("bark playback");
     print("bark id: ${widget.bark.fileId}");
+    print("bark id: ${widget.bark.filePath}");
   }
 
   void deleteBark() async {

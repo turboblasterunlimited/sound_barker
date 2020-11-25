@@ -189,6 +189,15 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                   children: <Widget>[
                     Stack(
                       children: [
+                        Positioned(
+                          right: 20,
+                          bottom: 5,
+                          child: Icon(
+                            CustomIcons.modal_share,
+                            size: 42,
+                            color: Colors.grey[300],
+                          ),
+                        ),
                         Padding(
                           padding: const EdgeInsets.all(20.0),
                           child: Center(
@@ -198,15 +207,6 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                                   color: Theme.of(context).primaryColor,
                                   fontSize: 20),
                             ),
-                          ),
-                        ),
-                        Positioned(
-                          right: 20,
-                          bottom: 5,
-                          child: Icon(
-                            CustomIcons.modal_share,
-                            size: 42,
-                            color: Colors.grey[300],
                           ),
                         ),
                       ],

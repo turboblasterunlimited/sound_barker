@@ -45,7 +45,9 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   // Xs the frame padding in pixels
   double framePadding;
   final textController = TextEditingController();
-  List get _playbackFiles {
+  List _playbackFiles;
+  
+  List _getPlaybackFiles() {
     if (_canPlayAudio) {
       print("_canPlayAudio");
       return [cards.current.audio.filePath, cards.current.audio.amplitudes];
@@ -137,11 +139,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
         : imageController.mouthTrackSound(amplitudes: _playbackFiles[1]);
   }
 
-  double get _nameRightPadding {
-    int nameLength = cards.currentName?.length ?? 0;
-    return 45.0 - (nameLength * 3);
-  }
-
   bool get _canPlayRawBark {
     return currentActivity.isSpeak &&
         currentActivity.isOne &&
@@ -207,8 +204,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     screenWidth ??= MediaQuery.of(context).size.width;
     frameToScreenWidth ??= screenWidth / 656;
     framePadding ??= frameToScreenWidth * 72;
-
     textController.text = cards.currentName;
+    _playbackFiles = _getPlaybackFiles();
 
     bool everythingReady() {
       return imageController.isReady;

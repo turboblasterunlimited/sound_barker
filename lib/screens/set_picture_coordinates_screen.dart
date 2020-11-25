@@ -301,12 +301,10 @@ class _SetPictureCoordinatesScreenState
     cards = Provider.of<KaraokeCards>(context, listen: false);
 
     SystemChrome.restoreSystemUIOverlays();
-    print("is Editing1: $_isEditing");
     if (_isFirstBuild) {
       _instructionalText = _getInstructionalText();
       _getImageData();
     }
-    print("is Editing2: $_isEditing");
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomPadding: false,

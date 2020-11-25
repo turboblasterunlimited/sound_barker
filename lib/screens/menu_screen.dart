@@ -98,6 +98,16 @@ class _MenuState extends State<MenuScreen> {
               // ),
               GestureDetector(
                 onTap: () =>
+                    Navigator.of(context).pushNamed(AboutScreen.routeName),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("About",
+                      style: TextStyle(
+                          fontSize: 40, color: Theme.of(context).primaryColor)),
+                ),
+              ),
+              GestureDetector(
+                onTap: () =>
                     Navigator.of(context).pushNamed(AccountScreen.routeName),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),

@@ -83,8 +83,6 @@ flutter:
     - assets/fonts/
     - assets/card_borders/
     - assets/sounds/
-    - assets/user_agreement_v1.html
-
 
 
   #  - images/a_dot_ham.jpeg
