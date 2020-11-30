@@ -28,9 +28,6 @@ class TermsOfUse extends StatelessWidget {
             child: ListView(
               shrinkWrap: true,
               children: [
-                Padding(
-                  padding: EdgeInsets.only(top: 20),
-                ),
                 Text("TURBO BLASTER UNLIMITED, LLC\n", style: bold),
                 Text("TERMS OF USE\n", style: bold),
                 Text("Effective: November 19, 2020\n", style: bold),
@@ -58,7 +55,7 @@ class TermsOfUse extends StatelessWidget {
                 Text(
                     "Use of our Services requires one or more compatible devices, Internet access (fees may apply), and certain software (fees may apply), and may require obtaining updates or upgrades from time to time. Because use of our Services, including access to our App and Website content and features, requires that you have access to certain hardware, software, and the Internet, your ability to access and use our Services and all aspects thereof may be affected by the performance of your devices and your access to the Internet. You acknowledge and agree that all system requirements to use our Services, which may change from time to time, are your sole responsibility.\n\n",
                     style: reg),
-                Text("User’s Responsibilities and Representations.\n\n",
+                Text("User’s Responsibilities and Representations.\n",
                     style: bold),
                 Text(
                   "By accessing or using our Services, you represent and agree that:\n\n",
@@ -152,6 +149,7 @@ class TermsOfUse extends StatelessWidget {
                 Text(
                     "You may be able to link from our Services to a third party’s website. You hereby acknowledge and agree that we have no responsibility or liability for or control of the information, content, practices, or policies of such third-party websites, and that when you visit such third-party websites you do so completely at your own risk. Links to third party websites, if any, are provided solely for your convenience, and we reserve the right to disable links from third-party sites to our Website at any time and without notice. It is up to you to take precautions to ensure that whatever website or device you select for your use is accurate and free of viruses, worms, trojan horses and other such items of a destructive nature. It is also your responsibility to understand whether and how such third-party sites collect and use personal information about you and what third-party policies control that information. Our links to third-party websites do not amount to an endorsement or sponsorship by us of such websites or the content, products, services, or advertising found there and must not be construed as such.\n\nFurther, you agree that if you include a link to our Website or Services, such link shall link to the full version of an HTML formatted page thereof. You are not permitted to link directly to any image hosted on our Services, such that an image on our Services is displayed on another website. You agree not to link from any other website to our Services in such a way that any page of our Services is “framed” by any third-party content or branding. We reserve all rights under the law to insist that any link to our Services be discontinued, that the link open in a new browser window, and/or to revoke your right to link to our Services from any other website or service at any time upon written notice to you.",
                     style: reg),
+                Text("\n\n"),
                 Text("Our Service Providers.\n", style: bold),
                 Text(
                     "We provide some of our content, features, services, and software through contractual arrangements we make with third-party service providers, such as cloud storage and media processing vendors, payment processors, and customer support managers (each a “Service Provider”). We may disclose personal information and non-personal information or aggregated information to our Service Providers or they may collect it from you directly. We and our Service Providers may need to use your personal information in order to perform tasks between our respective sites, or to deliver content, features, services, or software to you. For example, payment information is collected by one of our Service Providers, and, if you pay by credit card, they may release your credit card information to the card-issuing bank to confirm payment for products and services purchased through our Services. Although our treatment of your personal information is explained by our Privacy Policy, our Service Providers’ treatment of your personal information will be governed by their respective privacy policies.\n\n",

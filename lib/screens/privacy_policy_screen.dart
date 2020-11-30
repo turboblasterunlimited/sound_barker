@@ -247,6 +247,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                                   })
                           ]),
                         ),
+                        Text("\n\n"),
                         RichText(
                           text: TextSpan(children: [
                             TextSpan(text: "Aggregate Data. ", style: bold),
@@ -328,7 +329,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                             style: reg),
                         Text("Governing Law and Jurisdiction.\n", style: bold),
                         Text(
-                            "Our Policies are governed exclusively by the internal laws of the State of Washington, without regard to conflict of law principles. By accessing and using our Services, you hereby irrevocably consent and submit to the exclusive jurisdiction of the state and federal courts located in Seattle, Washington, to adjudicate any dispute or claim arising out of or relating to your access or use of our Services, including our Policies, and you consent and submit to the personal jurisdiction of such courts for the purpose of litigating any such matters. You further hereby waive, to the extent not prohibited by applicable law, and agree not to assert by way of motion, as a defense or otherwise, in any such dispute any claim that you are not subject personally to the jurisdiction of the above-named courts, that your property is exempt or immune from attachment or execution, that any such proceeding brought in the above-named courts is improper, or that such disputes or claims cannot be enforced in or by such courts.\n\n",
+                            "Our Policies are governed exclusively by the internal laws of the State of Washington, without regard to conflict of law principles. By accessing and using our Services, you hereby irrevocably consent and submit to the exclusive jurisdiction of the state and federal courts located in Seattle, Washington, to adjudicate any dispute or claim arising out of or relating to your access or use of our Services, including our Policies, and you consent and submit to the personal jurisdiction of such courts for the purpose of litigating any such matters. You further hereby waive, to the extent not prohibited by applicable law, and agree not to assert by way of motion, as a defense or otherwise, in any such dispute any claim that you are not subject personally to the jurisdiction of the above-named courts, that your property is exempt or immune from attachment or execution, that any such proceeding brought in the above-named courts is improper, or that such disputes or claims cannot be enforced in or by such courts.\n",
                             style: reg),
                         Text(
                             "You cannot opt out of receiving emails related to your transactions when using our Services, including support e-mails and any legally required communications.\n",
@@ -368,7 +369,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                             style: reg),
                         Text("How to Contact Us.\n", style: bold),
                         Text(
-                          "If you have questions about this Privacy Policy or wish to exercise your rights by making a request, please email us at support@turboblasterunlimited.comwith “Privacy Policy” in the subject line or mail us at the following address: 8240 14th Ave NE Seattle, WA 98115.\n",
+                          "If you have questions about this Privacy Policy or wish to exercise your rights by making a request, please email us at support@turboblasterunlimited.com with “Privacy Policy” in the subject line or mail us at the following address: 8240 14th Ave NE Seattle, WA 98115.\n",
                           style: reg,
                         ),
                       ],

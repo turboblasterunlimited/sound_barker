@@ -60,6 +60,10 @@ class _CheckAuthenticationScreenState extends State<CheckAuthenticationScreen> {
       setState(() => firstBuild = false);
       signedInOrGotoAuthScreen();
     }
-    return SpinnerWidget("Authorizing");
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      resizeToAvoidBottomInset: false,
+      body: SpinnerWidget("Authorizing"),
+    );
   }
 }

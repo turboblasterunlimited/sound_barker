@@ -83,7 +83,7 @@ class _MyCardsScreenState extends State<MyCardsScreen> {
             Padding(
               padding: EdgeInsets.only(top: 20, bottom: 10),
               child: InterfaceTitleNav(
-                "KARAOKE CARDS",
+                "YOUR CARDS",
                 titleSize: 22,
                 backCallback: () =>
                     Navigator.of(context).popAndPushNamed(MenuScreen.routeName),

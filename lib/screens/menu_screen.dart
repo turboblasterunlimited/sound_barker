@@ -65,46 +65,55 @@ class _MenuState extends State<MenuScreen> {
                 onTap: handleCreateNewCard,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text("New Card",
-                      style: TextStyle(
-                          fontSize: 40, color: Theme.of(context).primaryColor)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Icon(
+                          LineAwesomeIcons.plus_circle,
+                          size: 40,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+                      Text(
+                        "Karaoke Card",
+                        style: TextStyle(
+                            fontSize: 40,
+                            color: Theme.of(context).primaryColor),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: handleCreateNewCard,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                          padding: const EdgeInsets.only(bottom: 6.0),
+                          child: Icon(LineAwesomeIcons.plus_circle,
+                              size: 30, color: Theme.of(context).primaryColor)),
+                      Text(
+                        "Normal Card",
+                        style: TextStyle(
+                            fontSize: 30,
+                            color: Theme.of(context).primaryColor),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               GestureDetector(
                 onTap: handleMyCards,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text("Karaoke Cards",
-                      style: TextStyle(
-                          fontSize: 40, color: Theme.of(context).primaryColor)),
-                ),
-              ),
-              // Padding(
-              //   padding: const EdgeInsets.all(8.0),
-              //   child: Text("My Photos",
-              //       style: TextStyle(
-              //           fontSize: 40, color: Theme.of(context).primaryColor)),
-              // ),
-              // Padding(
-              //   padding: const EdgeInsets.all(8.0),
-              //   child: Text("My Songs",
-              //       style: TextStyle(
-              //           fontSize: 40, color: Theme.of(context).primaryColor)),
-              // ),
-              // Padding(
-              //   padding: const EdgeInsets.all(8.0),
-              //   child: Text("My Barks",
-              //       style: TextStyle(
-              //           fontSize: 40, color: Theme.of(context).primaryColor)),
-              // ),
-              GestureDetector(
-                onTap: () {
-                  print("about tapped.");
-                  Navigator.of(context).pushNamed(AboutScreen.routeName);
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text("About",
+                  child: Text("All Cards",
                       style: TextStyle(
                           fontSize: 40, color: Theme.of(context).primaryColor)),
                 ),
@@ -115,6 +124,17 @@ class _MenuState extends State<MenuScreen> {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text("Account",
+                      style: TextStyle(
+                          fontSize: 40, color: Theme.of(context).primaryColor)),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pushNamed(AboutScreen.routeName);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("About",
                       style: TextStyle(
                           fontSize: 40, color: Theme.of(context).primaryColor)),
                 ),

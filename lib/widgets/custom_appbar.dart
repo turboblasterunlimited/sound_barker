@@ -6,6 +6,7 @@ import 'package:K9_Karaoke/widgets/photo_name_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 
 Widget customAppBar(BuildContext context,
@@ -64,7 +65,7 @@ Widget customAppBar(BuildContext context,
               : isMainMenu || pageTitle != null
                   ? IconButton(
                       icon: Icon(
-                        CustomIcons.hambooger_close,
+                        isMainMenu ? CustomIcons.hambooger_close : LineAwesomeIcons.arrow_circle_left,
                         color: Colors.black,
                         size: 35,
                       ),
