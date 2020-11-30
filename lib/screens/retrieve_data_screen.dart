@@ -57,6 +57,9 @@ class _RetrieveDataScreenState extends State<RetrieveDataScreen> {
       setState(() => firstBuild = false);
       downloadDataAndNavigate();
     }
-    return SpinnerWidget("Getting your stuff!");
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      resizeToAvoidBottomInset: false,
+      body: SpinnerWidget("Getting your stuff!"));
   }
 }

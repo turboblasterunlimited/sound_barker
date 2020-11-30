@@ -19,8 +19,6 @@ enum CardCreationSubSteps {
 
 enum Activities {
   cardCreation,
-  songLibrary,
-  barkLibrary,
 }
 
 class CurrentActivity with ChangeNotifier {
@@ -106,16 +104,6 @@ class CurrentActivity with ChangeNotifier {
   void startCreateCard() {
     cardCreationStep = CardCreationSteps.snap;
     current = Activities.cardCreation;
-    notifyListeners();
-  }
-
-  void startSongLibrary() {
-    current = Activities.songLibrary;
-    notifyListeners();
-  }
-
-  void startBarkLibrary() {
-    current = Activities.barkLibrary;
     notifyListeners();
   }
 }

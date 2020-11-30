@@ -47,7 +47,7 @@ class _MenuState extends State<MenuScreen> {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       extendBodyBehindAppBar: true,
-      appBar: customAppBar(context, isMenu: true),
+      appBar: customAppBar(context, isMenu: true, isMainMenu: true),
       body: Container(
         padding: EdgeInsets.only(top: 60),
         decoration: BoxDecoration(

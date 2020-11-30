@@ -9,7 +9,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 Widget customAppBar(BuildContext context,
-    {bool noName = false, bool isMenu = false, Widget nameInput}) {
+    {bool noName = false,
+    bool isMenu = false,
+    bool isMainMenu = false,
+    Widget nameInput,
+    String pageTitle}) {
   final cards = Provider.of<KaraokeCards>(context);
   final currentActivity = Provider.of<CurrentActivity>(context);
   var notificationPadding = MediaQuery.of(context).padding.top;
@@ -17,10 +21,20 @@ Widget customAppBar(BuildContext context,
   var logoWidth = (screenWidth / 4.5) - notificationPadding;
   logoWidth = logoWidth > 100 ? 100 : logoWidth;
 
-
   Widget _getMiddleSpace() {
     if (nameInput != null)
       return nameInput;
+    else if (pageTitle != null)
+      return Expanded(
+        child: Row(
+          children: [
+            Spacer(),
+            Text(pageTitle,
+                style: TextStyle(fontSize: 18, color: Colors.black)),
+            Spacer(),
+          ],
+        ),
+      );
     else if (isMenu || noName || cards?.current == null)
       return Spacer();
     else
@@ -42,39 +56,34 @@ Widget customAppBar(BuildContext context,
           child: SvgPicture.asset("assets/logos/K9_logotype.svg",
               width: logoWidth),
         ),
-        // Spacer(flex: 1,),
         _getMiddleSpace(),
-        // Spacer(flex: 1,),
         Padding(
           padding: const EdgeInsets.only(right: 10.0),
-          child: isMenu
-              ? IconButton(
-                  icon: Visibility(
-                    visible: cards.current != null,
-                    child: Icon(
-                      CustomIcons.hambooger_close,
-                      color: Colors.black,
-                      size: 35,
+          child: isMainMenu && !currentActivity.isCreateCard
+              ? null
+              : isMainMenu || pageTitle != null
+                  ? IconButton(
+                      icon: Icon(
+                        CustomIcons.hambooger_close,
+                        color: Colors.black,
+                        size: 35,
+                      ),
+                      onPressed: () {
+                        SystemChrome.setEnabledSystemUIOverlays([]);
+                        Navigator.of(context).pop();
+                      },
+                    )
+                  : IconButton(
+                      icon: Icon(
+                        CustomIcons.hambooger,
+                        color: Colors.black,
+                        size: 30,
+                      ),
+                      onPressed: () {
+                        SystemChrome.setEnabledSystemUIOverlays([]);
+                        Navigator.of(context).pushNamed(MenuScreen.routeName);
+                      },
                     ),
-                  ),
-                  onPressed: currentActivity.isCreateCard
-                      ? () {
-                          SystemChrome.setEnabledSystemUIOverlays([]);
-                          Navigator.of(context).pop();
-                        }
-                      : null,
-                )
-              : IconButton(
-                  icon: Icon(
-                    CustomIcons.hambooger,
-                    color: Colors.black,
-                    size: 30,
-                  ),
-                  onPressed: () {
-                    SystemChrome.setEnabledSystemUIOverlays([]);
-                    Navigator.of(context).pushNamed(MenuScreen.routeName);
-                  },
-                ),
         ),
       ],
     ),

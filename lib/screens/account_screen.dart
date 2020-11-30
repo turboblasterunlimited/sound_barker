@@ -128,7 +128,7 @@ class _AccountState extends State<AccountScreen> {
       key: _scaffoldKey,
       resizeToAvoidBottomPadding: false,
       extendBodyBehindAppBar: true,
-      appBar: customAppBar(context, isMenu: true),
+      appBar: customAppBar(context, isMenu: true, pageTitle: "Account"),
       body: Container(
         padding: EdgeInsets.only(top: 60),
         decoration: BoxDecoration(
