@@ -77,7 +77,7 @@ class RestAPI {
     print("logging out...");
     var response;
     try {
-      response = await HttpController.dio.get("https://$serverURL/logout");
+      response = await HttpController.dioGet("https://$serverURL/logout");
     } catch (e) {
       return _handleAccountError(response, e);
     }
@@ -338,7 +338,7 @@ class RestAPI {
     final url = 'https://$serverURL/all/decoration_image';
     var response;
     try {
-      response = await HttpController.dio.get(url);
+      response = await HttpController.dioGet(url);
     } catch (e) {
       print("Get all decoration images response body: ${response?.data}");
       _handleAssetError(response, e);
@@ -350,7 +350,7 @@ class RestAPI {
     final url = 'https://$serverURL/all/card_audio';
     var response;
     try {
-      response = await HttpController.dio.get(url);
+      response = await HttpController.dioGet(url);
     } catch (e) {
       print("Get all card audio response body: ${response?.data}");
       _handleAssetError(response, e);
@@ -362,7 +362,7 @@ class RestAPI {
     final url = 'https://$serverURL/all/sequence';
     var response;
     try {
-      response = await HttpController.dio.get(url);
+      response = await HttpController.dioGet(url);
     } catch (e) {
       print("Get all Songs response body: ${response?.data}");
       _handleAssetError(response, e);
@@ -374,7 +374,7 @@ class RestAPI {
     final url = 'https://$serverURL/all/greeting_card';
     var response;
     try {
-      response = await HttpController.dio.get(url);
+      response = await HttpController.dioGet(url);
     } catch (e) {
       print(
           "Get all Cards response body: ${response?.data.map((card) => card["hidden"])}");
@@ -388,7 +388,7 @@ class RestAPI {
     print("retrieveAllImages req url: $url");
     var response;
     try {
-      response = await HttpController.dio.get(url);
+      response = await HttpController.dioGet(url);
     } catch (e) {
       print("retrieveAllImages error $e");
       print("Get all Images response body: ${response?.data}");
@@ -402,7 +402,7 @@ class RestAPI {
     print("retrieveAllCreatableSongs req url: $url");
     var response;
     try {
-      response = await HttpController.dio.get(url);
+      response = await HttpController.dioGet(url);
     } catch (e) {
       print("Get all Creatable Songs response body: ${response?.data}");
       _handleAssetError(response, e);
@@ -415,7 +415,7 @@ class RestAPI {
     print("retrieveAllBarks req url: $url");
     var response;
     try {
-      response = await HttpController.dio.get(url);
+      response = await HttpController.dioGet(url);
     } catch (e) {
       print("Get all Barks response body: ${response?.data}");
       _handleAssetError(response, e);

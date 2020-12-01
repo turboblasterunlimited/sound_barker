@@ -77,7 +77,7 @@ class Gcloud {
     print("Downloading!!! $filePath");
     Response response;
     try {
-      response = await HttpController.dio.get(
+      response = await HttpController.dioGet(
         "https://storage.googleapis.com/$bucketName/$bucketFp",
         //Received data with List<int>
         options: Options(

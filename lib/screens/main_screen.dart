@@ -8,7 +8,7 @@ import 'package:K9_Karaoke/widgets/custom_appbar.dart';
 import 'package:K9_Karaoke/widgets/interface_switcher.dart';
 import 'package:K9_Karaoke/widgets/card_decorator_canvas.dart';
 import 'package:K9_Karaoke/widgets/card_progress_bar.dart';
-import 'package:K9_Karaoke/widgets/spinner_widget.dart';
+import 'package:K9_Karaoke/widgets/loading_screen_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -331,7 +331,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
             ),
             // Full screen Spinner
             if (!everythingReady())
-              SpinnerWidget("Loading animation engine..."),
+              LoadingScreenWidget("Loading animation engine..."),
           ],
         ),
       ),

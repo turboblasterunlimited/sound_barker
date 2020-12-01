@@ -7,7 +7,7 @@ import 'package:K9_Karaoke/providers/pictures.dart';
 import 'package:K9_Karaoke/providers/songs.dart';
 import 'package:K9_Karaoke/screens/main_screen.dart';
 
-import 'package:K9_Karaoke/widgets/spinner_widget.dart';
+import 'package:K9_Karaoke/widgets/loading_screen_widget.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
@@ -60,6 +60,6 @@ class _RetrieveDataScreenState extends State<RetrieveDataScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomInset: false,
-      body: SpinnerWidget("Getting your stuff!"));
+      body: LoadingScreenWidget("Getting your stuff!"));
   }
 }

@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 
-class SpinnerWidget extends StatefulWidget {
-  String messageText;
-  SpinnerWidget([this.messageText]);
+class LoadingScreenWidget extends StatefulWidget {
+  final String messageText;
+  final widget;
+  LoadingScreenWidget(this.messageText, {this.widget});
 
   @override
-  _SpinnerWidgetState createState() => _SpinnerWidgetState();
+  _LoadingScreenWidgetState createState() => _LoadingScreenWidgetState();
 }
 
-class _SpinnerWidgetState extends State<SpinnerWidget> {
+class _LoadingScreenWidgetState extends State<LoadingScreenWidget> {
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height,
@@ -39,7 +40,7 @@ class _SpinnerWidgetState extends State<SpinnerWidget> {
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.only(top: 100.0),
-                child: SpinKitWave(
+                child: widget.widget != null ? widget.widget : SpinKitWave(
                   color: Colors.blue,
                   size: 100,
                 ),

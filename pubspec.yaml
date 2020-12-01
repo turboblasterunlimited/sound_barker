@@ -58,7 +58,9 @@ dependencies:
   sentry: ^3.0.1
   custom_paddle_slider_value_indicator_shape:
   flutter_svg: ^0.19.1
-      
+  airplane_mode_detection: ^1.0.0
+  connectivity: ^2.0.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
