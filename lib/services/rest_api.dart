@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:K9_Karaoke/providers/card_decoration_image.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
-import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import '../services/http_controller.dart';
 import '../providers/songs.dart';
 import '../providers/barks.dart';
@@ -25,16 +24,13 @@ class RestAPI {
 
   static _handleAssetError(response, e) {
     if (response == null) return noInternetResponse;
-    print(e.response.headers);
-    print(e.response.data);
-    print(e.response.request);
   }
 
   static Future<dynamic> userManualSignUp(email, password) async {
     Map data = {"email": email.toLowerCase(), "password": password};
     var response;
     try {
-      response = await HttpController.dio.post(
+      response = await HttpController.dioPost(
         'https://$serverURL/create-account',
         data: data,
       );
@@ -48,7 +44,7 @@ class RestAPI {
     Map data = {"email": email?.toLowerCase(), "password": password};
     var response;
     try {
-      response = await HttpController.dio.post(
+      response = await HttpController.dioPost(
         'https://$serverURL/manual-login',
         data: data,
       );
@@ -66,7 +62,7 @@ class RestAPI {
     var response;
     try {
       response =
-          await HttpController.dio.post("https://$serverURL/delete-account");
+          await HttpController.dioPost("https://$serverURL/delete-account");
     } catch (e) {
       return _handleAccountError(response, e);
     }
@@ -89,7 +85,7 @@ class RestAPI {
 
     var response;
     try {
-      response = await HttpController.dio.delete(
+      response = await HttpController.dioDelete(
         imageUrl,
       );
     } catch (e) {
@@ -103,7 +99,7 @@ class RestAPI {
 
     var response;
     try {
-      response = await HttpController.dio.delete(
+      response = await HttpController.dioDelete(
         imageUrl,
       );
     } catch (e) {
@@ -140,7 +136,7 @@ class RestAPI {
 
     var response;
     try {
-      response = await HttpController.dio.post(
+      response = await HttpController.dioPost(
         imageUrl,
         data: imageBody,
       );
@@ -159,7 +155,7 @@ class RestAPI {
     final audioUrl = 'https://$serverURL/card_audio';
     var response;
     try {
-      response = await HttpController.dio.post(
+      response = await HttpController.dioPost(
         audioUrl,
         data: audioBody,
       );
@@ -206,13 +202,13 @@ class RestAPI {
     final cardUrl = 'https://$serverURL/greeting_card';
     print("card request body: $cardBody");
     try {
-      response = await HttpController.dio.post(
+      response = await HttpController.dioPost(
         cardUrl,
         data: cardBody,
       );
     } catch (e) {
       print("create greeting card error: ${e.message}");
-      _handleAssetError(response, e);
+      return {"error": e};
     }
     print("create greeting card body: ${response?.data}");
     return response?.data;
@@ -225,13 +221,12 @@ class RestAPI {
     final url = 'https://$serverURL/to_sequence';
     var response;
     try {
-      response = await HttpController.dio.post(
+      response = await HttpController.dioPost(
         url,
         data: body,
       );
     } catch (e) {
-      print("create Song on server error message: ${e.message}");
-      _handleAssetError(response, e);
+      return {"error": e};
     }
     print("create Song on server response body: ${response?.data}");
     return response?.data;
@@ -307,7 +302,7 @@ class RestAPI {
     final url = 'https://$serverURL/image';
     var response;
     try {
-      response = await HttpController.dio.post(
+      response = await HttpController.dioPost(
         url,
         data: body,
       );
@@ -428,7 +423,7 @@ class RestAPI {
     print("deleteImage req url: $url");
     var response;
     try {
-      response = await HttpController.dio.delete(url);
+      response = await HttpController.dioDelete(url);
     } catch (e) {
       print("Delete picture response body: ${response?.data}");
       _handleAssetError(response, e);
@@ -440,7 +435,7 @@ class RestAPI {
     print("delete Card req url: $url");
     var response;
     try {
-      response = await HttpController.dio.delete(url);
+      response = await HttpController.dioDelete(url);
     } catch (e) {
       print("Delete card response body: ${response?.data}");
       _handleAssetError(response, e);
@@ -452,7 +447,7 @@ class RestAPI {
     print("deleteSong req url: $url");
     var response;
     try {
-      response = await HttpController.dio.delete(url);
+      response = await HttpController.dioDelete(url);
     } catch (e) {
       _handleAssetError(response, e);
     }
@@ -464,7 +459,7 @@ class RestAPI {
     print("deleteBark req url: $url");
     var response;
     try {
-      response = await HttpController.dio.delete(url);
+      response = await HttpController.dioDelete(url);
     } catch (e) {
       _handleAssetError(response, e);
     }
@@ -480,7 +475,7 @@ class RestAPI {
     final url = 'https://$serverURL/to_crops';
     var response;
     try {
-      response = await HttpController.dio.post(
+      response = await HttpController.dioPost(
         url,
         data: body,
       );

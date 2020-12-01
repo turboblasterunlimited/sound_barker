@@ -50,8 +50,9 @@ class _CheckAuthenticationScreenState extends State<CheckAuthenticationScreen> {
 
   void signedInOrGotoAuthScreen() async {
     Map response = await checkIfSignedIn();
+    print("response is....: $response");
     if (response["error"] != null) {
-      return _handleNoInternet(response["error"]);
+      _handleNoInternet(response["error"]);
     } else if (response["logged_in"] != null && response["logged_in"]) {
       _handleSignedIn(response["user_id"]);
     } else {

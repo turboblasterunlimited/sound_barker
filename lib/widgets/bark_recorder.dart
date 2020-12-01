@@ -167,6 +167,21 @@ class BarkRecorderState extends State<BarkRecorder>
     await barks.setTempRawBark(Bark(filePath: filePath));
   }
 
+  Future<void> _handleCropBarksAndContinue() async {
+    setState(() => _loading = true);
+    try {
+      await barks
+          .uploadRawBarkAndRetrieveCroppedBarks(cards.current.picture.fileId);
+    } catch (e) {
+      print(e);
+      showError(context, "Check internet connection and try again.");
+      setState(() => _loading = false);
+      return;
+    }
+    setState(() => _loading = false);
+    currentActivity.setCardCreationSubStep(CardCreationSubSteps.two);
+  }
+
   @override
   Widget build(BuildContext context) {
     cards = Provider.of<KaraokeCards>(context);
@@ -280,14 +295,7 @@ class BarkRecorderState extends State<BarkRecorder>
                       // maintainSize: true,
 
                       GestureDetector(
-                        onTap: () async {
-                          setState(() => _loading = true);
-                          await barks.uploadRawBarkAndRetrieveCroppedBarks(
-                              cards.current.picture.fileId);
-                          setState(() => _loading = false);
-                          currentActivity
-                              .setCardCreationSubStep(CardCreationSubSteps.two);
-                        },
+                        onTap: _handleCropBarksAndContinue,
                         child: Transform.rotate(
                           angle: _animation.value * 0.1,
                           child: Container(

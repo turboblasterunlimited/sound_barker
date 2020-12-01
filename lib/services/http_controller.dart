@@ -29,7 +29,7 @@ class HttpController {
     };
   }
 
-  static Future<Response> dioGet(String endpoint, {options}) async {
+  static Future<Response> _catchErrors(Function httpCall) async {
     // CHECK AIRPLANE MODE
     String airplaneMode = await AirplaneModeDetection.detectAirplaneMode();
     if (airplaneMode == "Flight Mode") throw ("Please turn off Airplane Mode.");
@@ -43,7 +43,7 @@ class HttpController {
     Response response;
 
     try {
-      response = await dio.get(endpoint, options: options);
+      response = await httpCall();
     } on DioError catch (e) {
       // HANDLE TIMEOUT
       print("TIMEOUT!!!!");
@@ -53,4 +53,16 @@ class HttpController {
     print("DIO SUCCESS: $response");
     return response;
   }
+
+  static Future<Response> dioGet(String endpoint, {options}) async {
+    return _catchErrors(() async => await dio.get(endpoint, options: options));
+  }
+  static Future<Response> dioPost(String endpoint, {data}) async {
+    return _catchErrors(() async => await dio.post(endpoint, data: data));
+  }
+  static Future<Response> dioDelete(String endpoint, {data}) async {
+    return _catchErrors(() async => await dio.delete(endpoint, data: data));
+  }
+
+
 }

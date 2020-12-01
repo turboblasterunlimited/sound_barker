@@ -218,12 +218,12 @@ class PrivacyPolicyScreen extends StatelessWidget {
                                 style: reg),
                             TextSpan(
                                 text:
-                                    "https://payments.google.com/payments/apis-secure/u/0/get_legal_document?ldo=0&ldt=privacynotice&ldl=en",
+                                    "https://www.apple.com/legal/privacy/en-ww/",
                                 style: link,
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
                                     launch(
-                                        'https://payments.google.com/payments/apis-secure/u/0/get_legal_document?ldo=0&ldt=privacynotice&ldl=en');
+                                        'https://www.apple.com/legal/privacy/en-ww/');
                                   })
                           ]),
                         ),

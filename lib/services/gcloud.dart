@@ -16,7 +16,7 @@ class Gcloud {
     print("upload bucket link body: $body");
     var response;
     try {
-      response = await HttpController.dio.post(
+      response = await HttpController.dioPost(
         url,
         data: body,
       );
