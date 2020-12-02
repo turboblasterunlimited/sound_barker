@@ -14,8 +14,8 @@ class HttpController {
   HttpController() {
     BaseOptions options = BaseOptions(
       contentType: Headers.jsonContentType,
-      connectTimeout: 6000,
-      receiveTimeout: 6000,
+      connectTimeout: 12000,
+      receiveTimeout: 12000,
     );
     dio = Dio(options);
     cookieJar = PersistCookieJar(dir: myAppStoragePath + "/.cookies/");
@@ -57,12 +57,17 @@ class HttpController {
   static Future<Response> dioGet(String endpoint, {options}) async {
     return _catchErrors(() async => await dio.get(endpoint, options: options));
   }
-  static Future<Response> dioPost(String endpoint, {data}) async {
-    return _catchErrors(() async => await dio.post(endpoint, data: data));
+
+  static Future<Response> dioPost(String endpoint, {data, options}) async {
+    return _catchErrors(
+        () async => await dio.post(endpoint, data: data, options: options));
   }
+
   static Future<Response> dioDelete(String endpoint, {data}) async {
     return _catchErrors(() async => await dio.delete(endpoint, data: data));
   }
 
-
+  static Future<Response> dioPut(String endpoint, {data, options}) async {
+    return _catchErrors(() async => await dio.put(endpoint, data: data, options: options));
+  }
 }

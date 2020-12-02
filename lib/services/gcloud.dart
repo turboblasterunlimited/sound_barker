@@ -12,7 +12,6 @@ class Gcloud {
       "content_type": contentType,
     };
     final url = 'https://$serverURL/signed-upload-url';
-
     print("upload bucket link body: $body");
     var response;
     try {
@@ -47,10 +46,11 @@ class Gcloud {
       String uploadUrl =
           await _uploadBucketLink(fileName, directory, contentType);
       File file = File(clientFilePath ?? filePath);
-      response = await HttpController.dio.put(
+      response = await HttpController.dioPut(
         uploadUrl,
         data: Stream.fromIterable(file.readAsBytesSync().map((e) => [e])),
         options: Options(
+          sendTimeout: 30000,
           headers: {
             HttpHeaders.contentTypeHeader: contentType,
           },
@@ -58,7 +58,7 @@ class Gcloud {
       );
     } catch (e) {
       print("Upload Error: $e");
-      throw(e);
+      throw (e);
     }
     print("upload response: $response");
     final bucketFp = "$directory/$fileName";
@@ -74,9 +74,10 @@ class Gcloud {
         "https://storage.googleapis.com/$bucketName/$bucketFp",
         //Received data with List<int>
         options: Options(
-            responseType: ResponseType.bytes,
-            followRedirects: false,
-            receiveTimeout: 0),
+          receiveTimeout: 30000,
+          responseType: ResponseType.bytes,
+          followRedirects: false,
+        ),
       );
       File file = File(filePath);
       var raf = file.openSync(mode: FileMode.write);

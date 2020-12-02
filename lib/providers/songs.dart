@@ -174,7 +174,6 @@ class Song extends Asset {
     print("MERGING...");
     await FFMpeg.process.execute(
         "-i $backingTrackPath -i ${this.filePath} -filter_complex amix=inputs=2:duration=longest:dropout_transition=20 -ac 1 $tempMelodyFilePath");
-    // ALSO TRY ADDING dynaudnorm TO PREVENT VOLUME CHANGING AFTER MELODY DROPS OUT "THAT'S ALRIGHT"
     File(tempMelodyFilePath).renameSync(this.filePath);
     File(backingTrackPath).deleteSync();
   }
