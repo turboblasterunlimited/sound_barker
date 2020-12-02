@@ -21,11 +21,7 @@ class Gcloud {
         data: body,
       );
     } catch (e) {
-      print("upload bucket link: ${e.message}");
-      print(e.response.headers);
-      print(e.response.data);
-      print(e.response.request);
-      print("create decoration image body: ${response.data}");
+      throw (e);
     }
     print("upload bucket link response: $response");
     return response.data["url"];
@@ -46,11 +42,11 @@ class Gcloud {
     var fileName = basename(filePath);
     final contentType =
         fileName.split(".")[1] == 'aac' ? 'audio/mpeg' : 'image/jpeg';
-    String uploadUrl =
-        await _uploadBucketLink(fileName, directory, contentType);
-    File file = File(clientFilePath ?? filePath);
     var response;
     try {
+      String uploadUrl =
+          await _uploadBucketLink(fileName, directory, contentType);
+      File file = File(clientFilePath ?? filePath);
       response = await HttpController.dio.put(
         uploadUrl,
         data: Stream.fromIterable(file.readAsBytesSync().map((e) => [e])),
@@ -62,10 +58,7 @@ class Gcloud {
       );
     } catch (e) {
       print("Upload Error: $e");
-      print("upload bucket link: ${e.message}");
-      print(e.response.headers);
-      print(e.response.data);
-      print(e.response.request);
+      throw(e);
     }
     print("upload response: $response");
     final bucketFp = "$directory/$fileName";

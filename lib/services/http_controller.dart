@@ -47,7 +47,7 @@ class HttpController {
     } on DioError catch (e) {
       // HANDLE TIMEOUT
       print("TIMEOUT!!!!");
-      throw ("Could not connect to the internet");
+      throw (e.message);
     }
     // HAPPY PATH
     print("DIO SUCCESS: $response");

@@ -337,6 +337,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   }
 
   Future<String> _handleUpload(Function setDialogState) async {
+    try {
     if (!cards.current.audio.exists)
       showError(context, "Card has no audio");
     else if (_editingCard()) {
@@ -345,6 +346,10 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     } else {
       print("creating new card");
       return await _createCard(setDialogState);
+    }
+    } catch(e) {
+      print("upload card error: $e");
+      showError(context, e);
     }
   }
 
