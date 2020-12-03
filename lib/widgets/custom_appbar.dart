@@ -17,7 +17,6 @@ Widget customAppBar(BuildContext context,
     Widget nameInput,
     String pageTitle}) {
   final cards = Provider.of<KaraokeCards>(context);
-  final currentActivity = Provider.of<CurrentActivity>(context);
   final currentUser = Provider.of<TheUser>(context);
   var notificationPadding = MediaQuery.of(context).padding.top;
   var screenWidth = MediaQuery.of(context).size.width;
@@ -32,8 +31,11 @@ Widget customAppBar(BuildContext context,
         child: Row(
           children: [
             Spacer(),
-            Text(pageTitle,
-                style: TextStyle(fontSize: 18, color: Colors.black)),
+            Text(
+              pageTitle,
+              style: TextStyle(
+                  fontSize: 22, color: Theme.of(context).primaryColor),
+            ),
             Spacer(),
           ],
         ),
@@ -44,10 +46,9 @@ Widget customAppBar(BuildContext context,
       return PhotoNameInput(cards.current.picture, cards.setCurrentName);
   }
 
-  bool noActionIcon() {
-    // main menu without a card ready on screen underneath or viewing terms before signed in.
-    return isMainMenu && !currentActivity.isCreateCard ||
-        currentUser.email == null;
+  bool showActionIcon() {
+    // don't show if on authscreen or if on main menu without a picture loaded in webview underneath
+    return currentUser.email != null && (cards.hasPicture || !isMainMenu);
   }
 
   return AppBar(
@@ -67,13 +68,13 @@ Widget customAppBar(BuildContext context,
         ),
         _getMiddleSpace(),
         Padding(
-          padding: const EdgeInsets.only(right: 10.0),
+          padding: const EdgeInsets.only(right: 10.0, bottom: 10),
           child: isMainMenu || pageTitle != null
               ? Visibility(
                   maintainSize: true,
                   maintainState: true,
                   maintainAnimation: true,
-                  visible: !noActionIcon(),
+                  visible: showActionIcon(),
                   child: IconButton(
                     icon: Icon(
                       isMainMenu
