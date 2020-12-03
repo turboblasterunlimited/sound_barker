@@ -96,7 +96,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     String name = _getShareLink(uuid, setDialogState);
     await Share.share(
         "$name has a message for you.\n\n$shareLink\n\nCreated with K-9 Karaoke.",
-        subject: "$name has a message for you.");
+        subject: "K-9 Karaoke greeting card");
     SystemChrome.restoreSystemUIOverlays();
     final snackBar = SnackBar(
       content: Text('Done Sharing!'),
@@ -221,17 +221,6 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                           _loadingMessage == null
                               ? Column(
                                   children: [
-                                    Center(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(12.0),
-                                        child: Text(
-                                          "Send card to",
-                                          style: TextStyle(
-                                              color: Theme.of(context)
-                                                  .primaryColor),
-                                        ),
-                                      ),
-                                    ),
                                     Padding(
                                       padding: EdgeInsets.only(
                                           left: 30.0, right: 30.0),
