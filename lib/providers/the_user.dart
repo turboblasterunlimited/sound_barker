@@ -8,6 +8,7 @@ class TheUser with ChangeNotifier {
   TheUser({this.email});
 
   Future<dynamic> logout() async {
+    email = null;
     return await RestAPI.logoutUser(email);
   }
 
@@ -23,6 +24,8 @@ class TheUser with ChangeNotifier {
   }
 
   Future<dynamic> delete() async {
-    return await RestAPI.deleteUser(email);
+    var oldEmail = email;
+    email = null;
+    return await RestAPI.deleteUser(oldEmail);
   }
 }

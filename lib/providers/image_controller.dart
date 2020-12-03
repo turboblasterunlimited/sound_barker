@@ -15,6 +15,7 @@ class ImageController with ChangeNotifier {
   bool isReady = false;
   Timer randomGestureTimer;
   Timer mouthOpenAndClose;
+  bool isPlaying = false;
 
   void setPicture(Picture pic) {
     picture = pic;
@@ -50,8 +51,10 @@ class ImageController with ChangeNotifier {
   }
 
   void stopAnimation() {
+    isPlaying = false;
     // Pass false to keep headsway alive
     this.webViewController.evaluateJavascript("stop_all_animations(false)");
+    notifyListeners();
   }
 
   // Probably Depricated
@@ -60,7 +63,7 @@ class ImageController with ChangeNotifier {
   }
 
   void mouthTrackSound({String filePath, List amplitudes}) async {
-    stopAnimation();
+    if (isPlaying) stopAnimation();
     if (filePath != null) {
       List amplitudes = await AmplitudeExtractor.fileToList(filePath);
       print("amps on playback: $amplitudes");
@@ -68,6 +71,8 @@ class ImageController with ChangeNotifier {
     } else if (amplitudes != null) {
       webViewController.evaluateJavascript("mouth_track_sound($amplitudes)");
     }
+    isPlaying = true;
+    notifyListeners();
   }
 
   void startMouthOpenAndClose() {

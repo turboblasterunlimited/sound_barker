@@ -1,6 +1,7 @@
 import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
+import 'package:K9_Karaoke/providers/the_user.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/widgets/photo_name_input.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ Widget customAppBar(BuildContext context,
     String pageTitle}) {
   final cards = Provider.of<KaraokeCards>(context);
   final currentActivity = Provider.of<CurrentActivity>(context);
+  final currentUser = Provider.of<TheUser>(context);
   var notificationPadding = MediaQuery.of(context).padding.top;
   var screenWidth = MediaQuery.of(context).size.width;
   var logoWidth = (screenWidth / 4.5) - notificationPadding;
@@ -42,6 +44,12 @@ Widget customAppBar(BuildContext context,
       return PhotoNameInput(cards.current.picture, cards.setCurrentName);
   }
 
+  bool noActionIcon() {
+    // main menu without a card ready on screen underneath or viewing terms before signed in.
+    return isMainMenu && !currentActivity.isCreateCard ||
+        currentUser.email == null;
+  }
+
   return AppBar(
     backgroundColor: Colors.transparent,
     elevation: 0,
@@ -60,31 +68,37 @@ Widget customAppBar(BuildContext context,
         _getMiddleSpace(),
         Padding(
           padding: const EdgeInsets.only(right: 10.0),
-          child: isMainMenu && !currentActivity.isCreateCard
-              ? null
-              : isMainMenu || pageTitle != null
-                  ? IconButton(
-                      icon: Icon(
-                        isMainMenu ? CustomIcons.hambooger_close : LineAwesomeIcons.arrow_circle_left,
-                        color: Colors.black,
-                        size: 35,
-                      ),
-                      onPressed: () {
-                        SystemChrome.setEnabledSystemUIOverlays([]);
-                        Navigator.of(context).pop();
-                      },
-                    )
-                  : IconButton(
-                      icon: Icon(
-                        CustomIcons.hambooger,
-                        color: Colors.black,
-                        size: 30,
-                      ),
-                      onPressed: () {
-                        SystemChrome.setEnabledSystemUIOverlays([]);
-                        Navigator.of(context).pushNamed(MenuScreen.routeName);
-                      },
+          child: isMainMenu || pageTitle != null
+              ? Visibility(
+                  maintainSize: true,
+                  maintainState: true,
+                  maintainAnimation: true,
+                  visible: !noActionIcon(),
+                  child: IconButton(
+                    icon: Icon(
+                      isMainMenu
+                          ? CustomIcons.hambooger_close
+                          : LineAwesomeIcons.arrow_circle_left,
+                      color: Colors.black,
+                      size: 35,
                     ),
+                    onPressed: () {
+                      SystemChrome.setEnabledSystemUIOverlays([]);
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                )
+              : IconButton(
+                  icon: Icon(
+                    CustomIcons.hambooger,
+                    color: Colors.black,
+                    size: 30,
+                  ),
+                  onPressed: () {
+                    SystemChrome.setEnabledSystemUIOverlays([]);
+                    Navigator.of(context).pushNamed(MenuScreen.routeName);
+                  },
+                ),
         ),
       ],
     ),
