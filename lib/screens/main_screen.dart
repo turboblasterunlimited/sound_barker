@@ -38,7 +38,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   CurrentActivity currentActivity;
   KaraokeCards cards;
   SoundController soundController;
-  bool _isPlaying = false;
   double screenWidth;
   // frame width in pixels / screenWidth in pixels
   double frameToScreenWidth;
@@ -122,8 +121,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   // }
 
   void stopAll() {
-    if (_isPlaying) {
-      setState(() => _isPlaying = false);
+    if (imageController.isPlaying) {
       imageController.stopAnimation();
       soundController.stopPlayer();
     }
@@ -131,7 +129,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
 
   void startAll() async {
     print("start all");
-    setState(() => _isPlaying = true);
     // Only songs have a .csv amplitude file, barks, messages and card/combined audio have a List of amplitudes in memory.
     await soundController.startPlayer(_playbackFiles[0], stopCallback: stopAll);
     !_canPlayAudio && _canPlaySong
@@ -171,11 +168,11 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
 
   void _handleTapPuppet() {
     print("Tapping webview!");
-    if (_playbackFiles != null) _isPlaying ? stopAll() : startAll();
+    if (_playbackFiles != null) imageController.isPlaying ? stopAll() : startAll();
   }
 
   bool get canPlay {
-    return !_isPlaying && (_playbackFiles != null);
+    return !imageController.isPlaying && (_playbackFiles != null);
   }
 
   bool get _showDecorationCanvas {

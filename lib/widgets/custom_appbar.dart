@@ -1,6 +1,7 @@
 import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
+import 'package:K9_Karaoke/providers/the_user.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/widgets/photo_name_input.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,7 @@ Widget customAppBar(BuildContext context,
     Widget nameInput,
     String pageTitle}) {
   final cards = Provider.of<KaraokeCards>(context);
-  final currentActivity = Provider.of<CurrentActivity>(context);
+  final currentUser = Provider.of<TheUser>(context);
   var notificationPadding = MediaQuery.of(context).padding.top;
   var screenWidth = MediaQuery.of(context).size.width;
   var logoWidth = (screenWidth / 4.5) - notificationPadding;
@@ -30,8 +31,11 @@ Widget customAppBar(BuildContext context,
         child: Row(
           children: [
             Spacer(),
-            Text(pageTitle,
-                style: TextStyle(fontSize: 18, color: Colors.black)),
+            Text(
+              pageTitle,
+              style: TextStyle(
+                  fontSize: 22, color: Theme.of(context).primaryColor),
+            ),
             Spacer(),
           ],
         ),
@@ -40,6 +44,11 @@ Widget customAppBar(BuildContext context,
       return Spacer();
     else
       return PhotoNameInput(cards.current.picture, cards.setCurrentName);
+  }
+
+  bool showActionIcon() {
+    // don't show if on authscreen or if on main menu without a picture loaded in webview underneath
+    return currentUser.email != null && (cards.hasPicture || !isMainMenu);
   }
 
   return AppBar(
@@ -59,32 +68,38 @@ Widget customAppBar(BuildContext context,
         ),
         _getMiddleSpace(),
         Padding(
-          padding: const EdgeInsets.only(right: 10.0),
-          child: isMainMenu && !currentActivity.isCreateCard
-              ? null
-              : isMainMenu || pageTitle != null
-                  ? IconButton(
-                      icon: Icon(
-                        isMainMenu ? CustomIcons.hambooger_close : LineAwesomeIcons.arrow_circle_left,
-                        color: Colors.black,
-                        size: 35,
-                      ),
-                      onPressed: () {
-                        SystemChrome.setEnabledSystemUIOverlays([]);
-                        Navigator.of(context).pop();
-                      },
-                    )
-                  : IconButton(
-                      icon: Icon(
-                        CustomIcons.hambooger,
-                        color: Colors.black,
-                        size: 30,
-                      ),
-                      onPressed: () {
-                        SystemChrome.setEnabledSystemUIOverlays([]);
-                        Navigator.of(context).pushNamed(MenuScreen.routeName);
-                      },
+          padding: const EdgeInsets.only(right: 10.0, bottom: 10),
+          child: isMainMenu || pageTitle != null
+              ? Visibility(
+                  maintainSize: true,
+                  maintainState: true,
+                  maintainAnimation: true,
+                  visible: showActionIcon(),
+                  child: IconButton(
+                    icon: Icon(
+                      isMainMenu
+                          ? CustomIcons.hambooger_close
+                          : LineAwesomeIcons.arrow_circle_left,
+                      color: Colors.black,
+                      size: 35,
                     ),
+                    onPressed: () {
+                      SystemChrome.setEnabledSystemUIOverlays([]);
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                )
+              : IconButton(
+                  icon: Icon(
+                    CustomIcons.hambooger,
+                    color: Colors.black,
+                    size: 30,
+                  ),
+                  onPressed: () {
+                    SystemChrome.setEnabledSystemUIOverlays([]);
+                    Navigator.of(context).pushNamed(MenuScreen.routeName);
+                  },
+                ),
         ),
       ],
     ),

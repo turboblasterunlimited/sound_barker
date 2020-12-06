@@ -23,12 +23,12 @@ class _LoadingScreenWidgetState extends State<LoadingScreenWidget> {
       ),
       child: Stack(
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Positioned(
-              left: 0,
-              right: 0,
-              top: 0,
+          Positioned(
+            left: 0,
+            right: 0,
+            top: 0,
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
               child: SvgPicture.asset(
                 "assets/logos/K9_logotype.svg",
               ),
@@ -40,10 +40,12 @@ class _LoadingScreenWidgetState extends State<LoadingScreenWidget> {
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.only(top: 100.0),
-                child: widget.widget != null ? widget.widget : SpinKitWave(
-                  color: Colors.blue,
-                  size: 100,
-                ),
+                child: widget.widget != null
+                    ? widget.widget
+                    : SpinKitWave(
+                        color: Colors.blue,
+                        size: 100,
+                      ),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 25.0),

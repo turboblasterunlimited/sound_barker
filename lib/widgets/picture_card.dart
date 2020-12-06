@@ -134,11 +134,11 @@ class _PictureCardState extends State<PictureCard>
                     child: _getImage(),
                   ),
                 ),
-                Visibility(
-                  visible: !widget.picture.isStock,
-                  child: Positioned(
-                    right: -25,
-                    top: -5,
+                Positioned(
+                  right: -25,
+                  top: -5,
+                  child: Visibility(
+                    visible: !widget.picture.isStock,
                     child: Stack(
                       children: <Widget>[
                         PopupMenuButton(

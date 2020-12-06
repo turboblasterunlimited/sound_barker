@@ -143,7 +143,7 @@ class Barks with ChangeNotifier {
     deleteTempRawBark();
   }
 
-  String _lengthAdjective(seconds) {
+  String _lengthAdjective(double seconds) {
     print("Seconds: $seconds");
     if (seconds < 0.7)
       return "short";
@@ -171,7 +171,7 @@ class Barks with ChangeNotifier {
       fileUrl: serverBark["bucket_fp"],
       fileId: serverBark["uuid"],
       created: DateTime.parse(serverBark["created"]),
-      length: _lengthAdjective(serverBark["duration_seconds"]),
+      length: _lengthAdjective(serverBark["duration_seconds"].toDouble()),
     );
   }
 }

@@ -139,6 +139,10 @@ class KaraokeCards with ChangeNotifier {
   bool get currentPictureIsStock {
     return current.picture != null && current.picture.isStock;
   }
+
+  bool get hasPicture {
+    return current != null && current.hasPicture;
+  }
 }
 
 class KaraokeCard with ChangeNotifier {
@@ -306,8 +310,6 @@ class KaraokeCard with ChangeNotifier {
   bool hasSong(songToCheck) {
     return song == songToCheck;
   }
-
-
 
   bool get hasMessage {
     return message.exists;

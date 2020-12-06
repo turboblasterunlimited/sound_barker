@@ -1,4 +1,3 @@
-import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_card_decoration_controller.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
@@ -8,8 +7,6 @@ import 'package:K9_Karaoke/screens/my_cards.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 
@@ -20,10 +17,31 @@ class MenuScreen extends StatefulWidget {
   _MenuState createState() => _MenuState();
 }
 
-class _MenuState extends State<MenuScreen> {
+class _MenuState extends State<MenuScreen> with TickerProviderStateMixin {
   KaraokeCards cards;
   CurrentActivity currentActivity;
   KaraokeCardDecorationController cardDecorator;
+  Animation _animation;
+  AnimationController _animationController;
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    _animationController =
+        AnimationController(vsync: this, duration: Duration(seconds: 1));
+    _animationController.repeat(reverse: true);
+    _animation =
+        CurveTween(curve: Curves.elasticIn).animate(_animationController)
+          ..addListener(() {
+            setState(() {});
+          });
+    super.initState();
+  }
 
   void handleCreateNewCard() {
     cards.newCurrent();
@@ -65,50 +83,53 @@ class _MenuState extends State<MenuScreen> {
                 onTap: handleCreateNewCard,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0),
-                        child: Icon(
-                          LineAwesomeIcons.plus_circle,
-                          size: 40,
-                          color: Theme.of(context).primaryColor,
+                  child: Transform.rotate(
+                    angle: _animation.value * 0.1,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0, right: 5),
+                          child: Icon(
+                            LineAwesomeIcons.plus_circle,
+                            size: 40,
+                            color: Theme.of(context).primaryColor,
+                          ),
                         ),
-                      ),
-                      Text(
-                        "Karaoke Card",
-                        style: TextStyle(
-                            fontSize: 40,
-                            color: Theme.of(context).primaryColor),
-                      ),
-                    ],
+                        Text(
+                          "Karaoke Card",
+                          style: TextStyle(
+                              fontSize: 40,
+                              color: Theme.of(context).primaryColor),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-              GestureDetector(
-                onTap: handleCreateNewCard,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Padding(
-                          padding: const EdgeInsets.only(bottom: 6.0),
-                          child: Icon(LineAwesomeIcons.plus_circle,
-                              size: 30, color: Theme.of(context).primaryColor)),
-                      Text(
-                        "Normal Card",
-                        style: TextStyle(
-                            fontSize: 30,
-                            color: Theme.of(context).primaryColor),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              // GestureDetector(
+              //   onTap: handleCreateNewCard,
+              //   child: Padding(
+              //     padding: const EdgeInsets.only(bottom: 8.0),
+              //     child: Row(
+              //       mainAxisAlignment: MainAxisAlignment.center,
+              //       crossAxisAlignment: CrossAxisAlignment.center,
+              //       children: [
+              //         Padding(
+              //             padding: const EdgeInsets.only(bottom: 6.0),
+              //             child: Icon(LineAwesomeIcons.plus_circle,
+              //                 size: 30, color: Theme.of(context).primaryColor)),
+              //         Text(
+              //           "Normal Card",
+              //           style: TextStyle(
+              //               fontSize: 30,
+              //               color: Theme.of(context).primaryColor),
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              // ),
               GestureDetector(
                 onTap: handleMyCards,
                 child: Padding(
