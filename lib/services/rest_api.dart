@@ -313,7 +313,7 @@ class RestAPI {
     return response?.data;
   }
 
-  static void renameBark(Bark bark, newName) async {
+  static Future<void> renameBark(Bark bark, newName) async {
     Map body = {'name': newName};
     final url = 'https://$serverURL/crop/${bark.fileId}';
     var response;
