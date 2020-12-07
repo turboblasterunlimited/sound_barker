@@ -89,16 +89,16 @@ class _MenuState extends State<MenuScreen> with TickerProviderStateMixin {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0, right: 5),
-                          child: Icon(
-                            LineAwesomeIcons.plus_circle,
-                            size: 40,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        ),
+                        // Padding(
+                        //   padding: const EdgeInsets.only(bottom: 8.0, right: 5),
+                        //   child: Icon(
+                        //     LineAwesomeIcons.plus_circle,
+                        //     size: 40,
+                        //     color: Theme.of(context).primaryColor,
+                        //   ),
+                        // ),
                         Text(
-                          "Karaoke Card",
+                          "New Card",
                           style: TextStyle(
                               fontSize: 40,
                               color: Theme.of(context).primaryColor),
@@ -134,7 +134,7 @@ class _MenuState extends State<MenuScreen> with TickerProviderStateMixin {
                 onTap: handleMyCards,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text("All Cards",
+                  child: Text("My Cards",
                       style: TextStyle(
                           fontSize: 40, color: Theme.of(context).primaryColor)),
                 ),
