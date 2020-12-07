@@ -243,6 +243,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       // If agreement was not previously accepted
       if (!_agreementAccepted) {
         setState(() => _showAgreement = true);
+        SystemChrome.setEnabledSystemUIOverlays([]);
         await agreementCompleter.future;
       }
       // Then, after showing the agreement
@@ -356,7 +357,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                     },
                                     onSubmitted: (_) {
                                       FocusScope.of(context).unfocus();
-                                      SystemChrome.setEnabledSystemUIOverlays([]);
+                                      SystemChrome.setEnabledSystemUIOverlays(
+                                          []);
                                     },
                                     decoration: InputDecoration(
                                       filled: true,
