@@ -60,6 +60,7 @@ dependencies:
   flutter_svg: ^0.19.1
   airplane_mode_detection: ^1.0.0
   connectivity: ^2.0.2
+  in_app_purchase: 0.3.4+16
 
 dev_dependencies:
   flutter_test:
