@@ -16,6 +16,7 @@ import 'package:K9_Karaoke/screens/my_cards.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/screens/privacy_policy_screen.dart';
 import 'package:K9_Karaoke/screens/retrieve_data_screen.dart';
+import 'package:K9_Karaoke/screens/subscription_screen.dart';
 import 'package:K9_Karaoke/screens/terms_of_use_screen.dart';
 import 'package:custom_paddle_slider_value_indicator_shape/custom_paddle_slider_value_indicator_shape.dart';
 import 'package:flutter/material.dart';
@@ -148,6 +149,7 @@ class MyApp extends StatelessWidget {
           ),
           home: CheckAuthenticationScreen(),
           routes: {
+            SubscriptionScreen.routeName: (ctx) => SubscriptionScreen(),
             AboutScreen.routeName: (ctx) => AboutScreen(),
             PrivacyPolicyScreen.routeName: (ctx) => PrivacyPolicyScreen(),
             TermsOfUseScreen.routeName: (ctx) => TermsOfUseScreen(),

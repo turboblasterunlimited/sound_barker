@@ -5,6 +5,7 @@ import 'package:K9_Karaoke/providers/pictures.dart';
 import 'package:K9_Karaoke/providers/songs.dart';
 import 'package:K9_Karaoke/providers/the_user.dart';
 import 'package:K9_Karaoke/screens/authentication_screen.dart';
+import 'package:K9_Karaoke/screens/subscription_screen.dart';
 import 'package:K9_Karaoke/widgets/custom_appbar.dart';
 import 'package:K9_Karaoke/widgets/custom_dialog.dart';
 import 'package:K9_Karaoke/widgets/error_dialog.dart';
@@ -157,11 +158,15 @@ class _AccountState extends State<AccountScreen> {
                     style: TextStyle(
                         fontSize: 40, color: Theme.of(context).primaryColor)),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("Subscription",
-                    style: TextStyle(
-                        fontSize: 40, color: Theme.of(context).primaryColor)),
+              GestureDetector(
+                onTap: () =>
+                    Navigator.of(context).pushNamed(SubscriptionScreen.routeName),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("Subscription",
+                      style: TextStyle(
+                          fontSize: 40, color: Theme.of(context).primaryColor)),
+                ),
               ),
               GestureDetector(
                 onTap: () => _handleDeleteAccount(),

@@ -23,7 +23,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomInset: false,
-      appBar: customAppBar(context, isMenu: true, pageTitle: "Terms of Use"),
+      appBar: customAppBar(context, isMenu: true, pageTitle: "Subscription"),
       // Background image
       body: Container(
         height: MediaQuery.of(context).size.height,
@@ -37,13 +37,24 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
           children: [
             Padding(padding: EdgeInsets.only(top: 75)),
             Center(
-                child: Text(user.hasActiveSubscription ? "Subscribed" : "Not Subscribed")),
+                child: Text(user.hasActiveSubscription
+                    ? "Subscribed"
+                    : "Not Subscribed")),
             Center(
               child: RawMaterialButton(
                 child: Text("Buy Subscription"),
                 onPressed: null,
               ),
-            )
+            ),
+            FutureBuilder(
+              future: user.getOfferings(),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.connectionState == ConnectionState.done)
+                  return Text("Packages: ${user.packages}");
+                else
+                  return Text("LOADING LOADING");
+              },
+            ),
           ],
         ),
       ),
