@@ -37,11 +37,11 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
           children: [
             Padding(padding: EdgeInsets.only(top: 75)),
             Center(
-                child: Text(hasPurchase() ? "Subscribed" : "Not Subscribed")),
+                child: Text(user.hasActiveSubscription ? "Subscribed" : "Not Subscribed")),
             Center(
               child: RawMaterialButton(
                 child: Text("Buy Subscription"),
-                onPressed: makePurchase,
+                onPressed: null,
               ),
             )
           ],
