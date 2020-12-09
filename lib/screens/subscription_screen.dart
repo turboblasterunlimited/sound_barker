@@ -1,9 +1,7 @@
-import 'dart:async';
-import 'dart:io';
-
+import 'package:K9_Karaoke/providers/the_user.dart';
 import 'package:K9_Karaoke/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
-import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:provider/provider.dart';
 
 final String itemId = "68c73107cd4643458af014b47b8e3fa2";
 
@@ -16,87 +14,12 @@ class SubscriptionScreen extends StatefulWidget {
 }
 
 class _SubscriptionScreenState extends State<SubscriptionScreen> {
-  InAppPurchaseConnection _iap = InAppPurchaseConnection.instance;
-  bool available = true;
-
-  List<ProductDetails> _products = [];
-
-  List<PurchaseDetails> _purchases = [];
-
-  StreamSubscription _subscription;
-
-  bool hasSubscription = false;
-
-  @override
-  void initState() {
-    _initialize();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _subscription.cancel();
-    super.dispose();
-  }
-
-  void _initialize() async {
-    available = await _iap.isAvailable();
-
-    if (available) {
-      List<Future> futures = [_getProducts(), _getPastPurchases()];
-      await Future.wait(futures);
-
-      _subscription = _iap.purchaseUpdatedStream.listen((data) => setState(() {
-            print("New Purchase");
-            _purchases.addAll(data);
-          }));
-    }
-  }
-
-  bool hasPurchase() {
-    return _purchases.isNotEmpty;
-  }
-
-  void makePurchase() {}
-
-  Future<void> _getProducts() async {
-    Set<String> ids = Set.from([itemId]);
-    ProductDetailsResponse response = await _iap.queryProductDetails(ids);
-    print("product details response: $response");
-    setState(() => _products = response.productDetails);
-  }
-
-  Future<void> _getPastPurchases() async {
-    QueryPurchaseDetailsResponse response = await _iap.queryPastPurchases();
-    for (PurchaseDetails purchase in response.pastPurchases) {
-      if (Platform.isIOS) {
-        _iap.completePurchase(purchase);
-      }
-    }
-
-    setState(() => _purchases = response.pastPurchases);
-  }
-
-  PurchaseDetails _hasPurchased(String productId) {
-    return _purchases.firstWhere((purchase) => purchase.productID == productId,
-        orElse: () => null);
-  }
-
-  void _verifyPurchase() {
-    PurchaseDetails purchase = _hasPurchased(itemId);
-
-    if (purchase != null && purchase.status == PurchaseStatus.purchased) {
-      setState(() => hasSubscription = true);
-    }
-  }
-
-  void _buyProduct(ProductDetails details) {
-    final PurchaseParam purchaseParam = PurchaseParam(productDetails: details);
-    _iap.buyNonConsumable(purchaseParam: purchaseParam);
-  }
+  TheUser user;
 
   @override
   Widget build(BuildContext context) {
+    user = Provider.of<TheUser>(context);
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomInset: false,

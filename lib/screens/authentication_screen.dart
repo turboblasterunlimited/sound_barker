@@ -139,7 +139,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     }
   }
 
-  _handleFacebookAuthentication() async {
+  Future<void> _handleFacebookAuthentication() async {
     try {
       final facebookLogin = FacebookLogin();
       facebookLogin.currentAccessToken;
@@ -174,7 +174,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     }
   }
 
-  void _handleGoogleAuthentication() async {
+  Future<void> _handleGoogleAuthentication() async {
     // setState(() => signingIn = true);
     var token;
     var response;

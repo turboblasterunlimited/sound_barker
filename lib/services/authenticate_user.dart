@@ -7,7 +7,7 @@ authenticate(Uri issuer, String clientId, List<String> scopes) async {
   var discoveredIssuer = await Issuer.discover(issuer);
   var client = new Client(discoveredIssuer, clientId);
 
-  // create a function to open a browser with an url
+  // create a function to open a browser with a url
   urlLauncher(String url) async {
     if (await canLaunch(url)) {
       await launch(url, forceWebView: false);
