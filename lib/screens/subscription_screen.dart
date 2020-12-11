@@ -17,32 +17,30 @@ class SubscriptionScreen extends StatefulWidget {
 class _SubscriptionScreenState extends State<SubscriptionScreen> {
   TheUser user;
 
-  ButtonBar purchaseButtons() {
-    return ButtonBar(
-      children: user.packages.map(
-        (Package e) => MaterialButton(
-          height: 20,
-          minWidth: 50,
-          onPressed: null,
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 8),
-            child: FittedBox(
+  makePurchase(package) {
+    user.makePurchase(package);
+  }
+
+  Column purchaseButtons() {
+    return Column(
+      children: user.packages
+          .map(
+            (Package package) => RawMaterialButton(
+              onPressed: () => makePurchase(package),
               child: Text(
-                e.product.identifier,
-                style: TextStyle(
-                  color: Colors.white,
-                ),
+                package.product.priceString,
+                style: TextStyle(color: Colors.white, fontSize: 20),
               ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
+              ),
+              elevation: 2.0,
+              fillColor: Theme.of(context).primaryColor,
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
             ),
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30.0),
-          ),
-          elevation: 2.0,
-          color: Theme.of(context).primaryColor,
-          padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
-        ),
-      ).toList(),
+          )
+          .toList(),
     );
   }
 
@@ -64,22 +62,31 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
           ),
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(padding: EdgeInsets.only(top: 75)),
             Center(
-                child: Text(user.hasActiveSubscription
-                    ? "Subscribed"
-                    : "Not Subscribed")),
+              child: Text(
+                "YOUR SUBSCRIPTION IS",
+                style: TextStyle(
+                    fontSize: 20, color: Theme.of(context).primaryColor),
+              ),
+            ),
             Center(
               child: Text(
-                "Buy Subscription",
+                user.hasActiveSubscription ? "ACTIVE" : "INACTIVE",
+                style: TextStyle(
+                    fontSize: 20, color: Theme.of(context).primaryColor),
+              ),
+            ),
+            Center(
+              child: Text(
+                "WOULD YOU LIKE TO SUBSCRIBE TO A PLAN?",
                 style: TextStyle(fontSize: 20),
               ),
             ),
             FutureBuilder(
-              future: user.getOfferings(),
+              future: user.getPackages(),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 if (snapshot.connectionState == ConnectionState.done)
                   return purchaseButtons();
