@@ -1,3 +1,4 @@
+import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/creatable_songs.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
@@ -6,6 +7,7 @@ import 'package:K9_Karaoke/screens/set_picture_coordinates_screen.dart';
 import 'package:K9_Karaoke/widgets/creatable_song_card.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:flutter/material.dart';
+import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/sound_controller.dart';
@@ -155,22 +157,27 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
             ),
             Padding(padding: EdgeInsets.only(left: 16)),
             RawMaterialButton(
+              constraints: const BoxConstraints(minWidth: 25, minHeight: 25),
               onPressed: _skipCallback,
-              child: Text(
-                "No Music",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).primaryColor,
-                    fontSize: 15),
+              child: Stack(
+                children: [
+                  Positioned(
+                  bottom: 3,
+                    child: Icon(LineAwesomeIcons.music, size: 30),
+                  ),
+                  Align(
+                      alignment: Alignment.center,
+                      child:
+                          Icon(Icons.clear, color: Colors.red[900], size: 30)),
+                ],
               ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(40.0),
+              shape: CircleBorder(
                 side:
                     BorderSide(color: Theme.of(context).primaryColor, width: 3),
               ),
               elevation: 2.0,
               fillColor: null,
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 18),
+              padding: EdgeInsets.all(5),
             ),
           ],
         ),
