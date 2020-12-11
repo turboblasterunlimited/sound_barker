@@ -56,8 +56,6 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       Navigator.of(context).popAndPushNamed(RetrieveDataScreen.routeName);
     } else {
       print("agreement refused");
-      showError(c,
-          "You must accept the agreement before using K-9 Karaoke. You have been signed out.");
     }
   }
 

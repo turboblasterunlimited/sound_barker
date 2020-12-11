@@ -34,6 +34,18 @@ class _CheckAuthenticationScreenState extends State<CheckAuthenticationScreen> {
     });
   }
 
+    void _handleSignedIn(email) async {
+    print("user email from handle signed in: $email");
+    _agreementAccepted = await user.hasAgreedToTerms(email);
+    if (!_agreementAccepted) {
+      showAgreement();
+      SystemChrome.setEnabledSystemUIOverlays([]);
+    } else {
+      user.signIn(email);
+      Navigator.of(context).popAndPushNamed(RetrieveDataScreen.routeName);
+    }
+  }
+
   Future<void> acceptAgreement(bool isAccepted) async {
     setState(() {
       _showAgreement = false;
@@ -58,17 +70,7 @@ class _CheckAuthenticationScreenState extends State<CheckAuthenticationScreen> {
     return response?.data;
   }
 
-  void _handleSignedIn(email) async {
-    print("user email from handle signed in: $email");
-    _agreementAccepted = await user.hasAgreedToTerms(email);
-    if (!_agreementAccepted) {
-      showAgreement();
-      SystemChrome.setEnabledSystemUIOverlays([]);
-    } else {
-      user.signIn(email);
-      Navigator.of(context).popAndPushNamed(RetrieveDataScreen.routeName);
-    }
-  }
+
 
   void _handleNotSignedIn() {
     Navigator.of(context).popAndPushNamed(AuthenticationScreen.routeName);
