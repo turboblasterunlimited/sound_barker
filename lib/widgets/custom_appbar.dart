@@ -35,6 +35,10 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
 class _CustomAppBarState extends State<CustomAppBar> {
   KaraokeCards cards;
   TheUser currentUser;
+  var notificationPadding;
+  var screenWidth;
+  var logoWidth;
+  bool showActionIcon;
 
   Widget _getMiddleSpace() {
     if (widget.nameInput != null)
@@ -59,15 +63,19 @@ class _CustomAppBarState extends State<CustomAppBar> {
       return PhotoNameInput(cards.current.picture, cards.setCurrentName);
   }
 
+  getLogoWidth() {
+    var width = (screenWidth / 4.5) - notificationPadding;
+    return width > 100 ? 100 : width;
+  }
+
   @override
   Widget build(BuildContext context) {
-    cards = Provider.of<KaraokeCards>(context);
-    currentUser = Provider.of<TheUser>(context);
-    var notificationPadding = MediaQuery.of(context).padding.top;
-    var screenWidth = MediaQuery.of(context).size.width;
-    var logoWidth = (screenWidth / 4.5) - notificationPadding;
-    logoWidth = logoWidth > 100 ? 100 : logoWidth;
-    bool showActionIcon =
+    cards ??= Provider.of<KaraokeCards>(context);
+    currentUser ??= Provider.of<TheUser>(context);
+    notificationPadding ??= MediaQuery.of(context).padding.top;
+    screenWidth ??= MediaQuery.of(context).size.width;
+    logoWidth ??= getLogoWidth();
+    showActionIcon ??=
         currentUser.email != null && (cards.hasPicture || !widget.isMainMenu);
 
     return AppBar(
