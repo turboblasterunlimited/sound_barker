@@ -65,7 +65,7 @@ class _MenuState extends State<MenuScreen> with TickerProviderStateMixin {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       extendBodyBehindAppBar: true,
-      appBar: customAppBar(context, isMenu: true, isMainMenu: true),
+      appBar: CustomAppBar(isMenu: true, isMainMenu: true),
       body: Container(
         padding: EdgeInsets.only(top: 60),
         decoration: BoxDecoration(

@@ -9,29 +9,43 @@ import 'package:flutter_svg/svg.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 
-Widget customAppBar(BuildContext context,
-    {bool noName = false,
-    bool isMenu = false,
-    bool isMainMenu = false,
-    Widget nameInput,
-    String pageTitle}) {
-  final cards = Provider.of<KaraokeCards>(context);
-  final currentUser = Provider.of<TheUser>(context);
-  var notificationPadding = MediaQuery.of(context).padding.top;
-  var screenWidth = MediaQuery.of(context).size.width;
-  var logoWidth = (screenWidth / 4.5) - notificationPadding;
-  logoWidth = logoWidth > 100 ? 100 : logoWidth;
+class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
+  bool noName;
+  bool isMenu;
+  bool isMainMenu;
+  Widget nameInput;
+  String pageTitle;
+  CustomAppBar(
+      {Key key,
+      this.noName = false,
+      this.isMenu = false,
+      this.isMainMenu = false,
+      this.nameInput,
+      this.pageTitle})
+      : preferredSize = Size.fromHeight(kToolbarHeight),
+        super(key: key);
+
+  @override
+  final Size preferredSize; // default is 56.0
+
+  @override
+  _CustomAppBarState createState() => _CustomAppBarState();
+}
+
+class _CustomAppBarState extends State<CustomAppBar> {
+  KaraokeCards cards;
+  TheUser currentUser;
 
   Widget _getMiddleSpace() {
-    if (nameInput != null)
-      return nameInput;
-    else if (pageTitle != null)
+    if (widget.nameInput != null)
+      return widget.nameInput;
+    else if (widget.pageTitle != null)
       return Expanded(
         child: Row(
           children: [
             Spacer(),
             Text(
-              pageTitle,
+              widget.pageTitle,
               style: TextStyle(
                   fontSize: 22, color: Theme.of(context).primaryColor),
             ),
@@ -39,71 +53,75 @@ Widget customAppBar(BuildContext context,
           ],
         ),
       );
-    else if (isMenu || noName || cards?.current == null)
+    else if (widget.isMenu || widget.noName || cards?.current == null)
       return Spacer();
     else
       return PhotoNameInput(cards.current.picture, cards.setCurrentName);
   }
 
-  bool showActionIcon() {
-    print("email: ${currentUser.email != null}");
-    print("has picture: ${cards.hasPicture}");
-    print("is not main menu: ${!isMainMenu}");
-    // don't show if on authscreen or if on main menu without a picture loaded in webview underneath
-    return currentUser.email != null && (cards.hasPicture || !isMainMenu);
-  }
+  @override
+  Widget build(BuildContext context) {
+    cards = Provider.of<KaraokeCards>(context);
+    currentUser = Provider.of<TheUser>(context);
+    var notificationPadding = MediaQuery.of(context).padding.top;
+    var screenWidth = MediaQuery.of(context).size.width;
+    var logoWidth = (screenWidth / 4.5) - notificationPadding;
+    logoWidth = logoWidth > 100 ? 100 : logoWidth;
+    bool showActionIcon =
+        currentUser.email != null && (cards.hasPicture || !widget.isMainMenu);
 
-  return AppBar(
-    backgroundColor: Colors.transparent,
-    elevation: 0,
-    automaticallyImplyLeading: false, // Don't show the leading button
-    toolbarHeight: 80 - notificationPadding,
-    titleSpacing: 0,
-    title: Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        Container(
-          padding: EdgeInsets.only(left: 10),
-          child: SvgPicture.asset("assets/logos/K9_logotype.svg",
-              width: logoWidth),
-        ),
-        _getMiddleSpace(),
-        Padding(
-          padding: const EdgeInsets.only(right: 10.0, bottom: 10),
-          child: isMainMenu || pageTitle != null
-              ? Visibility(
-                  maintainSize: true,
-                  maintainState: true,
-                  maintainAnimation: true,
-                  visible: showActionIcon(),
-                  child: IconButton(
+    return AppBar(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      automaticallyImplyLeading: false, // Don't show the leading button
+      toolbarHeight: 80 - notificationPadding,
+      titleSpacing: 0,
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.only(left: 10),
+            child: SvgPicture.asset("assets/logos/K9_logotype.svg",
+                width: logoWidth),
+          ),
+          _getMiddleSpace(),
+          Padding(
+            padding: const EdgeInsets.only(right: 10.0, bottom: 10),
+            child: widget.isMainMenu || widget.pageTitle != null
+                ? Visibility(
+                    maintainSize: true,
+                    maintainState: true,
+                    maintainAnimation: true,
+                    visible: showActionIcon,
+                    child: IconButton(
+                      icon: Icon(
+                        widget.isMainMenu
+                            ? CustomIcons.hambooger_close
+                            : LineAwesomeIcons.arrow_circle_left,
+                        color: Colors.black,
+                        size: 35,
+                      ),
+                      onPressed: () {
+                        SystemChrome.setEnabledSystemUIOverlays([]);
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  )
+                : IconButton(
                     icon: Icon(
-                      isMainMenu
-                          ? CustomIcons.hambooger_close
-                          : LineAwesomeIcons.arrow_circle_left,
+                      CustomIcons.hambooger,
                       color: Colors.black,
-                      size: 35,
+                      size: 30,
                     ),
                     onPressed: () {
                       SystemChrome.setEnabledSystemUIOverlays([]);
-                      Navigator.of(context).pop();
+                      Navigator.of(context).pushNamed(MenuScreen.routeName);
                     },
                   ),
-                )
-              : IconButton(
-                  icon: Icon(
-                    CustomIcons.hambooger,
-                    color: Colors.black,
-                    size: 30,
-                  ),
-                  onPressed: () {
-                    SystemChrome.setEnabledSystemUIOverlays([]);
-                    Navigator.of(context).pushNamed(MenuScreen.routeName);
-                  },
-                ),
-        ),
-      ],
-    ),
-  );
+          ),
+        ],
+      ),
+    );
+  }
 }

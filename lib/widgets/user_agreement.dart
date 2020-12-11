@@ -22,7 +22,7 @@ class UserAgreement extends StatelessWidget {
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomInset: false,
-      appBar: customAppBar(context, isMenu: true, pageTitle: "Terms of Use"),
+      appBar: CustomAppBar(isMenu: true, pageTitle: "Terms of Use"),
       // Background image
       body: Container(
         decoration: BoxDecoration(

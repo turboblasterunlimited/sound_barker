@@ -107,7 +107,7 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomPadding: false,
-      appBar: customAppBar(context, noName: true),
+      appBar: CustomAppBar(noName: true),
       body: Container(
         // appbar offset
         padding: EdgeInsets.only(top: 80),

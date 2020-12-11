@@ -308,8 +308,7 @@ class _SetPictureCoordinatesScreenState
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomPadding: false,
-      appBar: customAppBar(
-        context,
+      appBar: CustomAppBar(
         nameInput: PhotoNameInput(widget.newPicture, handleNameChange),
       ),
       body: Container(

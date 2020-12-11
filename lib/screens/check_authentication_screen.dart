@@ -25,6 +25,8 @@ class _CheckAuthenticationScreenState extends State<CheckAuthenticationScreen> {
   TheUser user;
   bool noInternet = false;
   BuildContext c;
+
+  // This is the same for authentication screen
   bool _agreementAccepted = false;
   bool _showAgreement = false;
 
@@ -59,6 +61,9 @@ class _CheckAuthenticationScreenState extends State<CheckAuthenticationScreen> {
       Navigator.of(context).popAndPushNamed(AuthenticationScreen.routeName);
     }
   }
+
+  // END same for authentication screen
+
 
   Future<Map> checkIfSignedIn() async {
     var response;

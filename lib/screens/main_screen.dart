@@ -211,7 +211,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomInset: false,
-      appBar: everythingReady() ? customAppBar(context) : null,
+      appBar: everythingReady() ? CustomAppBar() : null,
       // Background image
       body: Container(
         height: MediaQuery.of(context).size.height,

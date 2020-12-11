@@ -9,7 +9,7 @@ class AboutScreen extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       extendBodyBehindAppBar: true,
-      appBar: customAppBar(context, isMenu: true, pageTitle: "About"),
+      appBar: CustomAppBar(isMenu: true, pageTitle: "About"),
       body: Container(
         padding: EdgeInsets.only(top: 60),
         decoration: BoxDecoration(

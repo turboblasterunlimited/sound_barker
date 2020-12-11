@@ -24,7 +24,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomInset: false,
-      appBar: customAppBar(context, isMenu: true, pageTitle: "Privacy Policy"),
+      appBar: CustomAppBar(isMenu: true, pageTitle: "Privacy Policy"),
       // Background image
       body: Container(
         height: MediaQuery.of(context).size.height,

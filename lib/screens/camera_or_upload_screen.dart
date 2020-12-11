@@ -97,7 +97,7 @@ class CameraOrUploadScreen extends StatelessWidget {
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomPadding: false,
-      appBar: customAppBar(ctx, noName: true),
+      appBar: CustomAppBar(noName: true),
       body: Builder(
         builder: (BuildContext context) {
           return Container(

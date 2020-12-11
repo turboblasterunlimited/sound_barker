@@ -53,7 +53,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomInset: false,
-      appBar: customAppBar(context, isMenu: true, pageTitle: "Subscription"),
+      appBar: CustomAppBar(isMenu: true, pageTitle: "Subscription"),
       // Background image
       body: Container(
         height: MediaQuery.of(context).size.height,
@@ -64,6 +64,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
           ),
         ),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(padding: EdgeInsets.only(top: 75)),
             Center(
