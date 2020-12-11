@@ -1,5 +1,4 @@
 import 'package:K9_Karaoke/icons/custom_icons.dart';
-import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/the_user.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
@@ -47,6 +46,9 @@ Widget customAppBar(BuildContext context,
   }
 
   bool showActionIcon() {
+    print("email: ${currentUser.email != null}");
+    print("has picture: ${cards.hasPicture}");
+    print("is not main menu: ${!isMainMenu}");
     // don't show if on authscreen or if on main menu without a picture loaded in webview underneath
     return currentUser.email != null && (cards.hasPicture || !isMainMenu);
   }

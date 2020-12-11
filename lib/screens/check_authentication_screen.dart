@@ -4,9 +4,11 @@ import 'package:K9_Karaoke/screens/retrieve_data_screen.dart';
 
 import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import 'package:K9_Karaoke/widgets/loading_screen_widget.dart';
+import 'package:K9_Karaoke/widgets/user_agreement.dart';
 import 'package:flutter/material.dart';
 
 import 'package:K9_Karaoke/services/http_controller.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/globals.dart';
 
@@ -23,6 +25,28 @@ class _CheckAuthenticationScreenState extends State<CheckAuthenticationScreen> {
   TheUser user;
   bool noInternet = false;
   BuildContext c;
+  bool _agreementAccepted = false;
+  bool _showAgreement = false;
+
+  void showAgreement() {
+    setState(() {
+      _showAgreement = true;
+    });
+  }
+
+  Future<void> acceptAgreement(bool isAccepted) async {
+    setState(() {
+      _showAgreement = false;
+      _agreementAccepted = isAccepted;
+    });
+    if (isAccepted) {
+      await user.agreeToTerms();
+      Navigator.of(context).popAndPushNamed(RetrieveDataScreen.routeName);
+    } else {
+      print("agreement refused");
+      Navigator.of(context).popAndPushNamed(AuthenticationScreen.routeName);
+    }
+  }
 
   Future<Map> checkIfSignedIn() async {
     var response;
@@ -35,8 +59,15 @@ class _CheckAuthenticationScreenState extends State<CheckAuthenticationScreen> {
   }
 
   void _handleSignedIn(email) async {
-    user.signIn(email);
-    Navigator.of(context).popAndPushNamed(RetrieveDataScreen.routeName);
+    print("user email from handle signed in: $email");
+    _agreementAccepted = await user.hasAgreedToTerms(email);
+    if (!_agreementAccepted) {
+      showAgreement();
+      SystemChrome.setEnabledSystemUIOverlays([]);
+    } else {
+      user.signIn(email);
+      Navigator.of(context).popAndPushNamed(RetrieveDataScreen.routeName);
+    }
   }
 
   void _handleNotSignedIn() {
@@ -88,7 +119,9 @@ class _CheckAuthenticationScreenState extends State<CheckAuthenticationScreen> {
                     onPressed: tryAgain,
                   ),
                 )
-              : LoadingScreenWidget("Authorizing");
+              : _showAgreement
+                  ? UserAgreement(acceptAgreement)
+                  : LoadingScreenWidget("Authorizing");
         },
       ),
     );
