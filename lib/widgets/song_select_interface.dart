@@ -153,6 +153,25 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
               fillColor: showMySongs ? Theme.of(context).primaryColor : null,
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 18),
             ),
+            Padding(padding: EdgeInsets.only(left: 16)),
+            RawMaterialButton(
+              onPressed: _skipCallback,
+              child: Text(
+                "No Music",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 15),
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(40.0),
+                side:
+                    BorderSide(color: Theme.of(context).primaryColor, width: 3),
+              ),
+              elevation: 2.0,
+              fillColor: null,
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 18),
+            ),
           ],
         ),
         Padding(padding: EdgeInsets.only(top: 14)),
