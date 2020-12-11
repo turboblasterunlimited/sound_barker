@@ -2,6 +2,7 @@ import 'package:K9_Karaoke/providers/the_user.dart';
 import 'package:K9_Karaoke/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 
 final String itemId = "68c73107cd4643458af014b47b8e3fa2";
 
@@ -15,6 +16,35 @@ class SubscriptionScreen extends StatefulWidget {
 
 class _SubscriptionScreenState extends State<SubscriptionScreen> {
   TheUser user;
+
+  ButtonBar purchaseButtons() {
+    return ButtonBar(
+      children: user.packages.map(
+        (Package e) => MaterialButton(
+          height: 20,
+          minWidth: 50,
+          onPressed: null,
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 8),
+            child: FittedBox(
+              child: Text(
+                e.product.identifier,
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
+          ),
+          elevation: 2.0,
+          color: Theme.of(context).primaryColor,
+          padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
+        ),
+      ).toList(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,16 +71,16 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                     ? "Subscribed"
                     : "Not Subscribed")),
             Center(
-              child: RawMaterialButton(
-                child: Text("Buy Subscription"),
-                onPressed: null,
+              child: Text(
+                "Buy Subscription",
+                style: TextStyle(fontSize: 20),
               ),
             ),
             FutureBuilder(
               future: user.getOfferings(),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 if (snapshot.connectionState == ConnectionState.done)
-                  return Text("Packages: ${user.packages}");
+                  return purchaseButtons();
                 else
                   return Text("LOADING LOADING");
               },

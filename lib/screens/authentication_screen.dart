@@ -39,14 +39,26 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   BuildContext c;
   bool _showAgreement = false;
   bool _agreementAccepted = false;
-  var agreementCompleter = Completer();
 
-  void acceptAgreement(bool isAccepted) {
+  void showAgreement() {
+    setState(() {
+      _showAgreement = true;
+    });
+  }
+
+  Future<void> acceptAgreement(bool isAccepted) async {
     setState(() {
       _showAgreement = false;
       _agreementAccepted = isAccepted;
-      agreementCompleter.complete();
     });
+    if (isAccepted) {
+      await user.agreeToTerms();
+      Navigator.of(context).popAndPushNamed(RetrieveDataScreen.routeName);
+    } else {
+      print("agreement refused");
+      showError(c,
+          "You must accept the agreement before using K-9 Karaoke. You have been signed out.");
+    }
   }
 
   void _showLoadingModal(Function getLoadingContext) async {
@@ -81,7 +93,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                 showError(c, response["error"]);
               else {
                 Navigator.of(modalContext).pop();
-                _handleServerResponse(response);
+                _handleSigninResponse(response);
               }
               SystemChrome.setEnabledSystemUIOverlays([]);
             },
@@ -102,9 +114,16 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         });
   }
 
-  void _handleSignedIn(email) async {
-    user.signIn(email);
-    Navigator.of(context).popAndPushNamed(RetrieveDataScreen.routeName);
+  void _handleSignedIn(String email) async {
+    print("user email from handle signed in: $email");
+    _agreementAccepted = await user.hasAgreedToTerms(email);
+    if (!_agreementAccepted) {
+      showAgreement();
+      SystemChrome.setEnabledSystemUIOverlays([]);
+    } else {
+      user.signIn(email);
+      Navigator.of(context).popAndPushNamed(RetrieveDataScreen.routeName);
+    }
   }
 
   String get platform {
@@ -115,7 +134,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     }
   }
 
-  _handleServerResponse(responseData) async {
+  _handleSigninResponse(responseData) async {
     print("Sign in response data: $responseData");
     if (responseData["success"]) {
       print("the response data: $responseData");
@@ -139,7 +158,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     }
   }
 
-  Future<void> _handleFacebookAuthentication() async {
+  Future<bool> _handleFacebookAuthentication() async {
     try {
       final facebookLogin = FacebookLogin();
       facebookLogin.currentAccessToken;
@@ -150,7 +169,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
           responseData =
               await _sendFacebookTokenToServer(result.accessToken.token);
 
-          _handleServerResponse(responseData?.data);
+          _handleSigninResponse(responseData?.data);
           break;
         case FacebookLoginStatus.cancelledByUser:
           showError(c,
@@ -190,7 +209,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         'https://$serverURL/openid-token/${platform}',
         data: token,
       );
-      _handleServerResponse(response?.data);
+      _handleSigninResponse(response?.data);
     } catch (e) {
       showError(
         c,
@@ -207,7 +226,9 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     if (!response["success"])
       showError(c, response["error"]);
     else if (response["account_already_exists"] == true) {
-      _handleSignedIn(response["payload"]["email"]);
+      var signInresponse = await _handleManualSignIn();
+      if (signInresponse['success'])
+        _handleSignedIn(response["payload"]["email"]);
     } else {
       print("Server response: $response");
       _showVerifyEmail();
@@ -222,13 +243,12 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     FocusScope.of(context).unfocus();
     if (invalidInput)
       return showError(c, "Please enter a valid email and password");
-    ;
     var response = await _handleManualSignIn();
     print("Response check: $response");
     if (!response["success"]) {
       showError(c, response["error"]);
     } else
-      _handleServerResponse(response);
+      _handleSigninResponse(response);
   }
 
   bool get invalidInput {
@@ -237,23 +257,10 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
 
   Function _handleSignUp(Function signUpFunction, {bool manualSignUp = false}) {
     return () async {
-      if (manualSignUp && invalidInput)
-        return showError(c, "Please enter a valid email and password");
-
-      // If agreement was not previously accepted
-      if (!_agreementAccepted) {
-        setState(() => _showAgreement = true);
-        SystemChrome.setEnabledSystemUIOverlays([]);
-        await agreementCompleter.future;
-      }
-      // Then, after showing the agreement
-      if (_agreementAccepted)
+      if (manualSignUp && invalidInput) {
+        showError(c, "Please enter a valid email and password");
+      } else
         signUpFunction();
-      else
-        setState(() {
-          _showAgreement = false;
-          agreementCompleter = Completer();
-        });
     };
   }
 

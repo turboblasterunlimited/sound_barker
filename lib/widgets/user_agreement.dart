@@ -19,7 +19,6 @@ class UserAgreement extends StatelessWidget {
   Widget build(BuildContext context) {
     final title = TextStyle(
         fontWeight: FontWeight.w800, color: Colors.black, fontSize: 22);
-
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomInset: false,

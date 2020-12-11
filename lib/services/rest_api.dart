@@ -26,6 +26,32 @@ class RestAPI {
     if (response == null) return noInternetResponse;
   }
 
+  static Future<dynamic> agreeToTerms() async {
+    print("Agreeing to terms...");
+    var response;
+    try {
+      response =
+          await HttpController.dioPost("https://$serverURL/agree-to-terms");
+    } catch (e) {
+      return _handleAccountError(response, e);
+    }
+    return response?.data;
+  }
+
+  // this is temporary until user data is returned on signup/signin
+  static Future getUser(email) async {
+    print("Getting user...");
+    print("request: https://$serverURL/user/$email");
+    var response;
+    try {
+      response = await HttpController.dioGet("https://$serverURL/user/$email");
+      print("the response data: ${response.data}");
+    } catch (e) {
+      return _handleAccountError(response, e);
+    }
+    return response.data;
+  }
+
   static Future<dynamic> userManualSignUp(email, password) async {
     Map data = {"email": email.toLowerCase(), "password": password};
     var response;
@@ -472,7 +498,7 @@ class RestAPI {
       'image_id': imageId,
     };
     print("splitRawBark req body $body");
-    final url = 'https://$serverURL/to_crops';
+    final url = 'https://$serverURL/cloud/to_crops';
     var response;
     try {
       response = await HttpController.dioPost(

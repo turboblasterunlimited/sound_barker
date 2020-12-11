@@ -17,6 +17,18 @@ class TheUser with ChangeNotifier {
     return await RestAPI.logoutUser(email);
   }
 
+  Future<bool> hasAgreedToTerms(userEmail) async {
+    print("Getting user...");
+    var response = await RestAPI.getUser(userEmail);
+    print("get user response: $response");
+    return response["user_agreed_to_terms_v1"] == 1;
+  }
+
+  Future<bool> agreeToTerms() async {
+    var response = await RestAPI.agreeToTerms();
+    return response["success"];
+  }
+
   bool isSignedIn() {
     print("email from within: $email");
     return email != null;
@@ -76,7 +88,147 @@ class TheUser with ChangeNotifier {
     }
   }
 
+  makePurchase(package) async {
+    try {
+      PurchaserInfo purchaserInfo = await Purchases.purchasePackage(package);
+      if (purchaserInfo
+          .entitlements.all["my_entitlement_identifier"].isActive) {
+        // Unlock that great "pro" content
+      }
+    } catch (e) {
+      var errorCode = PurchasesErrorHelper.getErrorCode(e);
+      if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
+        print("Something went wrong with purchase");
+      }
+    }
+  }
+
   bool get hasActiveSubscription {
     return purchaserInfo.entitlements.active.isNotEmpty;
   }
 }
+
+// "Offerings"{
+//    "current":"Offering"{
+//       "identifier":"Monthly",
+//       "serverDescription":"Pay for Karaoke UNLIMITED with a monthly subscription.",
+//       "availablePackages":[
+//          "Package"{
+//             "identifier":"$rc_monthly",
+//             "packageType":"PackageType.monthly",
+//             "product":"Product"{
+//                "identifier":1m_399,
+//                "description":"Save and send UNLIMITED Karaoke cards.",
+//                "title":"Karaoke UNLIMITED",
+//                "price":3.990000009536743,
+//                "priceString":$3.99,
+//                "currencyCode":"USD",
+//                "introductoryPrice":null
+//             },
+//             "offeringIdentifier":"Monthly"
+//          }
+//       ],
+//       "lifetime":null,
+//       "annual":null,
+//       "sixMonth":null,
+//       "threeMonth":null,
+//       "twoMonth":null,
+//       "monthly":"Package"{
+//          "identifier":"$rc_monthly",
+//          "packageType":"PackageType.monthly",
+//          "product":"Product"{
+//             "identifier":1m_399,
+//             "description":"Save and send UNLIMITED Karaoke cards.",
+//             "title":"Karaoke UNLIMITED",
+//             "price":3.990000009536743,
+//             "priceString":$3.99,
+//             "currencyCode":"USD",
+//             "introductoryPrice":null
+//          },
+//          "offeringIdentifier":"Monthly"
+//       },
+//       "weekly":null
+//    },
+//    "all":{
+//       "Monthly":"Offering"{
+//          "identifier":"Monthly",
+//          "serverDescription":"Pay for Karaoke UNLIMITED with a monthly subscription.",
+//          "availablePackages":[
+//             "Package"{
+//                "identifier":"$rc_monthly",
+//                "packageType":"PackageType.monthly",
+//                "product":"Product"{
+//                   "identifier":1m_399,
+//                   "description":"Save and send UNLIMITED Karaoke cards.",
+//                   "title":"Karaoke UNLIMITED",
+//                   "price":3.990000009536743,
+//                   "priceString":$3.99,
+//                   "currencyCode":"USD",
+//                   "introductoryPrice":null
+//                },
+//                "offeringIdentifier":"Monthly"
+//             }
+//          ],
+//          "lifetime":null,
+//          "annual":null,
+//          "sixMonth":null,
+//          "threeMonth":null,
+//          "twoMonth":null,
+//          "monthly":"Package"{
+//             "identifier":"$rc_monthly",
+//             "packageType":"PackageType.monthly",
+//             "product":"Product"{
+//                "identifier":1m_399,
+//                "description":"Save and send UNLIMITED Karaoke cards.",
+//                "title":"Karaoke UNLIMITED",
+//                "price":3.990000009536743,
+//                "priceString":$3.99,
+//                "currencyCode":"USD",
+//                "introductoryPrice":null
+//             },
+//             "offeringIdentifier":"Monthly"
+//          },
+//          "weekly":null
+//       },
+//       "Annually":"Offering"{
+//          "identifier":"Annually",
+//          "serverDescription":"Pay for Karaoke UNLIMITED with an annual subscription.",
+//          "availablePackages":[
+//             "Package"{
+//                "identifier":"$rc_annual",
+//                "packageType":"PackageType.annual",
+//                "product":"Product"{
+//                   "identifier":1y_2499,
+//                   "description":"Save and send UNLIMITED Karaoke Cards.",
+//                   "title":"Karaoke UNLIMITED",
+//                   "price":24.489999771118164,
+//                   "priceString":$24.49,
+//                   "currencyCode":"USD",
+//                   "introductoryPrice":null
+//                },
+//                "offeringIdentifier":"Annually"
+//             }
+//          ],
+//          "lifetime":null,
+//          "annual":"Package"{
+//             "identifier":"$rc_annual",
+//             "packageType":"PackageType.annual",
+//             "product":"Product"{
+//                "identifier":1y_2499,
+//                "description":"Save and send UNLIMITED Karaoke Cards.",
+//                "title":"Karaoke UNLIMITED",
+//                "price":24.489999771118164,
+//                "priceString":$24.49,
+//                "currencyCode":"USD",
+//                "introductoryPrice":null
+//             },
+//             "offeringIdentifier":"Annually"
+//          },
+//          "sixMonth":null,
+//          "threeMonth":null,
+//          "twoMonth":null,
+//          "monthly":null,
+//          "weekly":null
+//       }
+//    }
+// }
