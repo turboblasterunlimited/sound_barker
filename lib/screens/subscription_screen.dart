@@ -23,6 +23,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     return capitalize(getSubscriptionName(package)) + " Subscription";
   }
 
+  // monthly OR yearly
   String getSubscriptionName(package) {
     return package.packageType.toString().split('.').last;
   }
@@ -31,9 +32,13 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     return "${string[0].toUpperCase()}${string.substring(1)}";
   }
 
-  Column purchaseButtons() {
+  Column purchaseButtons([Package activePackage]) {
+    List<Package> remainingPackages = user.availablePackages;
+    if (activePackage != null) {
+      remainingPackages.remove(activePackage);
+    }
     return Column(
-      children: user.packages
+      children: remainingPackages
           .map(
             (Package package) => Padding(
               padding: EdgeInsets.symmetric(vertical: 10),
@@ -68,6 +73,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     );
   }
 
+  Future cancelSubscription() async {}
+
   @override
   Widget build(BuildContext context) {
     user = Provider.of<TheUser>(context);
@@ -78,98 +85,110 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       appBar: CustomAppBar(isMenu: true, pageTitle: "Subscription"),
       // Background image
       body: Container(
-          height: MediaQuery.of(context).size.height,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/backgrounds/menu_background.png"),
-              fit: BoxFit.cover,
-            ),
+        height: MediaQuery.of(context).size.height,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/backgrounds/menu_background.png"),
+            fit: BoxFit.cover,
           ),
-          child: user.hasActiveSubscription
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(padding: EdgeInsets.only(top: 75)),
-                    Center(
+        ),
+        child: user.hasActiveSubscription
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(padding: EdgeInsets.only(top: 75)),
+                  Center(
+                    child: Text(
+                      "YOUR SUBSCRIPTION IS",
+                      style: TextStyle(
+                          fontSize: 20, color: Theme.of(context).primaryColor),
+                    ),
+                  ),
+                  Center(
+                    child: Text(
+                      "INACTIVE",
+                      style: TextStyle(
+                          fontSize: 20, color: Theme.of(context).errorColor),
+                    ),
+                  ),
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
                       child: Text(
-                        "YOUR SUBSCRIPTION IS",
+                        "WOULD YOU LIKE TO SUBSCRIBE TO A PLAN?",
                         style: TextStyle(
                             fontSize: 20,
                             color: Theme.of(context).primaryColor),
+                        textAlign: TextAlign.center,
                       ),
                     ),
-                    Center(
+                  ),
+                  purchaseButtons(),
+                ],
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(padding: EdgeInsets.only(top: 75)),
+                  Center(
+                    child: Text(
+                      "YOUR ${getSubscriptionName(user.getActivePackage())} SUBSCRIPTION IS",
+                      style: TextStyle(
+                          fontSize: 20, color: Theme.of(context).primaryColor),
+                    ),
+                  ),
+                  Center(
+                    child: Text(
+                      "ACTIVE",
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Theme.of(context).highlightColor),
+                    ),
+                  ),
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
                       child: Text(
-                        "INACTIVE",
-                        style: TextStyle(
-                            fontSize: 20, color: Theme.of(context).errorColor),
-                      ),
-                    ),
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: Text(
-                          "WOULD YOU LIKE TO SUBSCRIBE TO A PLAN?",
-                          style: TextStyle(
-                              fontSize: 20,
-                              color: Theme.of(context).primaryColor),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                    FutureBuilder(
-                      future: user.getPackages(),
-                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                        if (snapshot.connectionState == ConnectionState.done)
-                          return purchaseButtons();
-                        else
-                          return Text("LOADING LOADING");
-                      },
-                    ),
-                  ],
-                )
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(padding: EdgeInsets.only(top: 75)),
-                    Center(
-                      child: Text(
-                        "YOUR ${getSubscriptionName(user.getCurrentPackage())} SUBSCRIPTION IS",
+                        "WOULD YOU LIKE TO CHANGE YOUR PLAN?",
                         style: TextStyle(
                             fontSize: 20,
                             color: Theme.of(context).primaryColor),
+                        textAlign: TextAlign.center,
                       ),
                     ),
-                    Center(
+                  ),
+                  purchaseButtons(user.getActivePackage()),
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
                       child: Text(
-                        "ACTIVE",
+                        "WOULD YOU LIKE TO CANCEL?",
                         style: TextStyle(
-                            fontSize: 20, color: Theme.of(context).errorColor),
+                            fontSize: 20,
+                            color: Theme.of(context).primaryColor),
+                        textAlign: TextAlign.center,
                       ),
                     ),
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: Text(
-                          "WOULD YOU LIKE TO SUBSCRIBE TO A PLAN?",
-                          style: TextStyle(
-                              fontSize: 20,
-                              color: Theme.of(context).primaryColor),
-                          textAlign: TextAlign.center,
-                        ),
+                  ),
+                  Center(
+                    child: RawMaterialButton(
+                      onPressed: cancelSubscription,
+                      child: Text(
+                        "CANCEL UNLIMITED",
+                        style: TextStyle(color: Colors.white, fontSize: 20),
                       ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      elevation: 2.0,
+                      fillColor: Theme.of(context).errorColor,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20.0, vertical: 15),
                     ),
-                    FutureBuilder(
-                      future: user.getPackages(),
-                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                        if (snapshot.connectionState == ConnectionState.done)
-                          return purchaseButtons();
-                        else
-                          return Text("LOADING LOADING");
-                      },
-                    ),
-                  ],
-                ),),
+                  ),
+                ],
+              ),
+      ),
     );
   }
 }

@@ -7,7 +7,8 @@ class TheUser with ChangeNotifier {
   String email;
   bool filesLoaded = false;
   PurchaserInfo purchaserInfo;
-  List<Package> packages;
+  List<Package> availablePackages;
+  Offerings offerings;
 
   TheUser({this.email});
 
@@ -59,6 +60,7 @@ class TheUser with ChangeNotifier {
           // email needs to be replaced with user app UUID
           appUserId: email);
       await _getPurchases();
+      await getPackages();
       print("Purchaser info: $purchaserInfo");
     } catch (e) {
       print("init purchase failed: $e");
@@ -69,8 +71,11 @@ class TheUser with ChangeNotifier {
     });
   }
 
-  Package getCurrentPackage() {
+  Package getActivePackage() {
     String sku = purchaserInfo.activeSubscriptions[0];
+    Package activePackage = availablePackages.firstWhere((Package package) => package.product.identifier == sku);
+    print("active Package: $activePackage");
+    return activePackage;
   }
 
   Future _getPurchases() async {
@@ -82,16 +87,13 @@ class TheUser with ChangeNotifier {
     }
   }
 
-  Future<List> getPackages() async {
-    if (packages != null) return packages;
+  Future<void> getPackages() async {
+    if (availablePackages != null) return availablePackages;
     try {
-      print("Getting offereings");
-      Offerings offerings = await Purchases.getOfferings();
+      offerings = await Purchases.getOfferings();
       if (offerings.current == null) return null;
-      packages = offerings.current.availablePackages;
-      if (packages.isEmpty) return null;
-      print("offerings available: $packages");
-      return packages;
+      availablePackages = offerings.current.availablePackages;
+      if (availablePackages.isEmpty) return null;
     } catch (e) {
       print("get offerings error: $e");
     }

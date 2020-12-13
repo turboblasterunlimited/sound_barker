@@ -152,12 +152,6 @@ class _AccountState extends State<AccountScreen> {
                           fontSize: 40, color: Theme.of(context).primaryColor)),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("Purchases",
-                    style: TextStyle(
-                        fontSize: 40, color: Theme.of(context).primaryColor)),
-              ),
               GestureDetector(
                 onTap: () =>
                     Navigator.of(context).pushNamed(SubscriptionScreen.routeName),
