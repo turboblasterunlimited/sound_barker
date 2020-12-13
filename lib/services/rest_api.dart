@@ -244,7 +244,7 @@ class RestAPI {
     /// "Song" on the server side means "creatable song"
     Map body = {'uuids': cropIds, 'song_id': songId.toString()};
     print("create song on server req body: $body");
-    final url = 'https://$serverURL/to_sequence';
+    final url = 'https://$serverURL/cloud/to_sequence';
     var response;
     try {
       response = await HttpController.dioPost(

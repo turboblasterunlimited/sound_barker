@@ -45,8 +45,6 @@ class HttpController {
     try {
       response = await httpCall();
     } on DioError catch (e) {
-      // HANDLE TIMEOUT
-      print("TIMEOUT!!!!");
       throw (e.message);
     }
     // HAPPY PATH

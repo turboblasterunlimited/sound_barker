@@ -65,9 +65,12 @@ class Gcloud {
     return bucketFp;
   }
 
-  static Future<String> downloadFromBucket(
-      String bucketFp, String filePath) async {
+  static Future<String> downloadFromBucket(String bucketFp, String filePath,
+      [int retry = 0]) async {
     print("Downloading!!! $filePath");
+    print(
+        "Full Download path: https://storage.googleapis.com/$bucketName/$bucketFp");
+
     Response response;
     try {
       response = await HttpController.dioGet(
@@ -89,6 +92,13 @@ class Gcloud {
       print("response: $response");
       print("bucket name: $bucketName");
       print("bucket fp: $bucketFp");
+
+      if (retry > 2) throw "Cloud Error 404";
+      print("Retry # $retry");
+      return await Future.delayed(
+        Duration(seconds: 1),
+        () async => await downloadFromBucket(bucketFp, filePath, retry + 1),
+      );
     }
     return filePath;
   }

@@ -47,20 +47,30 @@ class TheUser with ChangeNotifier {
     return await RestAPI.deleteUser(oldEmail);
   }
 
+  // REVENUECAT PURCHASE LOGIC
+
   // email needs to be replaced with user app UUID
   Future<void> _initPurchases() async {
     try {
       print("Starting init purchase");
       await Purchases.setDebugLogsEnabled(true);
       await Purchases.setup("kfQNBpPMjButvkTYkSYizepoXBCjLBxA",
+
+          // email needs to be replaced with user app UUID
           appUserId: email);
       await _getPurchases();
+      print("Purchaser info: $purchaserInfo");
     } catch (e) {
       print("init purchase failed: $e");
     }
-    Purchases.addPurchaserInfoUpdateListener((info) {
-      print("Purchaser info updated: $info");
+    Purchases.addPurchaserInfoUpdateListener((PurchaserInfo info) {
+      purchaserInfo = info;
+      notifyListeners();
     });
+  }
+
+  Package getCurrentPackage() {
+    String sku = purchaserInfo.activeSubscriptions[0];
   }
 
   Future _getPurchases() async {
@@ -88,14 +98,18 @@ class TheUser with ChangeNotifier {
   }
 
   makePurchase(package) async {
+    print("Attempting Purchase");
     try {
-      PurchaserInfo purchaserInfo = await Purchases.purchasePackage(package);
+      await Purchases.purchasePackage(package);
       print("Purchaser info: $purchaserInfo");
       if (hasActiveSubscription) {
         print("Unlock Unlimited");
       }
+      notifyListeners();
     } catch (e) {
+      print("Something went wrong");
       var errorCode = PurchasesErrorHelper.getErrorCode(e);
+      print("Something went wrong with purchase. Error: $errorCode");
       if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
         print("Something went wrong with purchase");
       }
@@ -106,6 +120,111 @@ class TheUser with ChangeNotifier {
     return purchaserInfo.entitlements.active.isNotEmpty;
   }
 }
+
+// "PurchaserInfo"{
+//    "entitlements":"EntitlementInfos"{
+//       "all":{
+//          "Karaoke UNLIMITED":"EntitlementInfo"{
+//             "identifier":"Karaoke UNLIMITED",
+//             "isActive":false,
+//             "willRenew":false,
+//             "periodType":"PeriodType.normal",
+//             "latestPurchaseDate":2020-12-13T06:55:52Z,
+//             "originalPurchaseDate":2020-12-13T06:50:53Z,
+//             "expirationDate":2020-12-13T07:00:52Z,
+//             "store":"Store.appStore",
+//             "productIdentifier":1m_399,
+//             "isSandbox":true,
+//             "unsubscribeDetectedAt":null,
+//             "billingIssueDetectedAt":2020-12-13T07:02:33Z
+//          }
+//       },
+//       "active":{
+
+//       }
+//    },
+//    "latestExpirationDate":2020-12-13T07:00:52Z,
+//    "allExpirationDates":{
+//       1m_399:2020-12-13T07:00:52Z
+//    },
+//    "allPurchaseDates":{
+//       1m_399:2020-12-13T06:55:52Z
+//    },
+//    "activeSubscriptions":[
+
+//    ],
+//    "allPurchasedProductIdentifiers":[
+//       1m_399
+//    ],
+//    "firstSeen":2020-12-11T05:45:00Z,
+//    "originalAppUserId":"deartovi@yahoo.com",
+//    "requestDate":2020-12-13T07:02:33Z,
+//    "originalApplicationVersion":1.0,
+//    "originalPurchaseDate":2013-08-01T07:00:00Z,
+//    "managementURL":null,
+//    "nonSubscriptionTransactions":[
+
+//    ]
+// }
+
+// "Purchaser info":"PurchaserInfo"{
+//    "entitlements":"EntitlementInfos"{
+//       "all":{
+//          "Karaoke UNLIMITED":"EntitlementInfo"{
+//             "identifier":"Karaoke UNLIMITED",
+//             "isActive":true,
+//             "willRenew":true,
+//             "periodType":"PeriodType.normal",
+//             "latestPurchaseDate":2020-12-13T06:50:52Z,
+//             "originalPurchaseDate":2020-12-13T06:50:53Z,
+//             "expirationDate":2020-12-13T06:55:52Z,
+//             "store":"Store.appStore",
+//             "productIdentifier":1m_399,
+//             "isSandbox":true,
+//             "unsubscribeDetectedAt":null,
+//             "billingIssueDetectedAt":null
+//          }
+//       },
+//       "active":{
+//          "Karaoke UNLIMITED":"EntitlementInfo"{
+//             "identifier":"Karaoke UNLIMITED",
+//             "isActive":true,
+//             "willRenew":true,
+//             "periodType":"PeriodType.normal",
+//             "latestPurchaseDate":2020-12-13T06:50:52Z,
+//             "originalPurchaseDate":2020-12-13T06:50:53Z,
+//             "expirationDate":2020-12-13T06:55:52Z,
+//             "store":"Store.appStore",
+//             "productIdentifier":1m_399,
+//             "isSandbox":true,
+//             "unsubscribeDetectedAt":null,
+//             "billingIssueDetectedAt":null
+//          }
+//       }
+//    },
+//    "latestExpirationDate":2020-12-13T06:55:52Z,
+//    "allExpirationDates":{
+//       1m_399:2020-12-13T06:55:52Z
+//    },
+//    "allPurchaseDates":{
+//       1m_399:2020-12-13T06:50:52Z
+//    },
+//    "activeSubscriptions":[
+//       1m_399
+//    ],
+//    "allPurchasedProductIdentifiers":[
+//       1m_399
+//    ],
+//    "firstSeen":2020-12-11T05:45:00Z,
+//    "originalAppUserId":"deartovi@yahoo.com",
+//    "requestDate":2020-12-13T06:53:18Z,
+//    "originalApplicationVersion":1.0,
+//    "originalPurchaseDate":2013-08-01T07:00:00Z,
+//    "managementURL":"itms-apps":,
+//    "nonSubscriptionTransactions":[
+
+//    ]
+// }
 
 // "Offerings":"Offerings"{
 //    "current":"Offering"{

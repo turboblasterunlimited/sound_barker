@@ -16,7 +16,6 @@ abstract class Asset with ChangeNotifier {
 
   Future<void> download() async {
     await Gcloud.downloadFromBucket(fileUrl, filePath);
-    // notifyListeners();
   }
 
   String get filePathBase {
