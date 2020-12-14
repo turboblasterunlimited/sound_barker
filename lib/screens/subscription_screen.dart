@@ -35,7 +35,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   Column purchaseButtons() {
     print("purchase buttons init");
     List<Package> inactivePackages = user.getInactivePackages();
-
+    print("inactive packages: $inactivePackages");
     return Column(
       children: inactivePackages
           .map(

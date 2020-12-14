@@ -72,6 +72,7 @@ class TheUser with ChangeNotifier {
   }
 
   Package getActivePackage() {
+    if (purchaserInfo.activeSubscriptions.isEmpty) return null;
     String sku = purchaserInfo.activeSubscriptions[0];
     Package activePackage = availablePackages
         .firstWhere((Package package) => package.product.identifier == sku);
@@ -80,6 +81,7 @@ class TheUser with ChangeNotifier {
   }
 
   List<Package> getInactivePackages() {
+    print("Getting inactive packages");
     Package activePackage = getActivePackage();
     List<Package> remainingPackages = availablePackages.toList();
     print("packages: $remainingPackages");
