@@ -33,7 +33,9 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   }
 
   Column purchaseButtons([Package activePackage]) {
+    print("purchase buttons init");
     List<Package> remainingPackages = user.availablePackages;
+    print("packages: $remainingPackages");
     if (activePackage != null) {
       remainingPackages.remove(activePackage);
     }
@@ -77,6 +79,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("building subscription screen");
     user = Provider.of<TheUser>(context);
 
     return Scaffold(
@@ -92,7 +95,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             fit: BoxFit.cover,
           ),
         ),
-        child: user.hasActiveSubscription
+        child: !user.hasActiveSubscription
             ? Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
