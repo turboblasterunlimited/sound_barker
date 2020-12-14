@@ -32,15 +32,12 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     return "${string[0].toUpperCase()}${string.substring(1)}";
   }
 
-  Column purchaseButtons([Package activePackage]) {
+  Column purchaseButtons() {
     print("purchase buttons init");
-    List<Package> remainingPackages = user.availablePackages;
-    print("packages: $remainingPackages");
-    if (activePackage != null) {
-      remainingPackages.remove(activePackage);
-    }
+    List<Package> inactivePackages = user.getInactivePackages();
+
     return Column(
-      children: remainingPackages
+      children: inactivePackages
           .map(
             (Package package) => Padding(
               padding: EdgeInsets.symmetric(vertical: 10),
@@ -74,8 +71,6 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
           .toList(),
     );
   }
-
-  Future cancelSubscription() async {}
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +130,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                   Padding(padding: EdgeInsets.only(top: 75)),
                   Center(
                     child: Text(
-                      "YOUR ${getSubscriptionName(user.getActivePackage())} SUBSCRIPTION IS",
+                      "YOUR ${getSubscriptionName(user.getActivePackage()).toUpperCase()} SUBSCRIPTION IS",
                       style: TextStyle(
                           fontSize: 20, color: Theme.of(context).primaryColor),
                     ),
@@ -160,33 +155,19 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                       ),
                     ),
                   ),
-                  purchaseButtons(user.getActivePackage()),
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Text(
-                        "WOULD YOU LIKE TO CANCEL?",
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: Theme.of(context).primaryColor),
-                        textAlign: TextAlign.center,
+                  purchaseButtons(),
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text(
+                          "Manage your subscription in\nSETTINGS -> APPLE ID -> SUBSCRIPTIONS",
+                          style:
+                              TextStyle(color: Theme.of(context).primaryColor),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                    ),
-                  ),
-                  Center(
-                    child: RawMaterialButton(
-                      onPressed: cancelSubscription,
-                      child: Text(
-                        "CANCEL UNLIMITED",
-                        style: TextStyle(color: Colors.white, fontSize: 20),
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      elevation: 2.0,
-                      fillColor: Theme.of(context).errorColor,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20.0, vertical: 15),
                     ),
                   ),
                 ],

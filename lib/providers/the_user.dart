@@ -73,9 +73,22 @@ class TheUser with ChangeNotifier {
 
   Package getActivePackage() {
     String sku = purchaserInfo.activeSubscriptions[0];
-    Package activePackage = availablePackages.firstWhere((Package package) => package.product.identifier == sku);
+    Package activePackage = availablePackages
+        .firstWhere((Package package) => package.product.identifier == sku);
     print("active Package: $activePackage");
     return activePackage;
+  }
+
+  List<Package> getInactivePackages() {
+    Package activePackage = getActivePackage();
+    List<Package> remainingPackages = availablePackages.toList();
+    print("packages: $remainingPackages");
+    print("active packages: $activePackage");
+
+    if (activePackage != null) {
+      remainingPackages.remove(activePackage);
+    }
+    return remainingPackages;
   }
 
   Future _getPurchases() async {
@@ -119,6 +132,7 @@ class TheUser with ChangeNotifier {
   }
 
   bool get hasActiveSubscription {
+    print("User's active subscriptions: ${purchaserInfo.entitlements.active}");
     return purchaserInfo.entitlements.active.isNotEmpty;
   }
 }
