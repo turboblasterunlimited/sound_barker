@@ -32,6 +32,10 @@ class KaraokeCards with ChangeNotifier {
     all.forEach((card) => card.removeFiles());
   }
 
+  List<KaraokeCard> get saved {
+    return all.where((KaraokeCard card) => card.uuid != null).toList();
+  }
+
   Future<void> remove(KaraokeCard card) async {
     print("TODO: implement delete");
     await RestAPI.deleteCardAudio(card.audio.fileId);

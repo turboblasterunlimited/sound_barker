@@ -1,6 +1,8 @@
 import 'package:K9_Karaoke/globals.dart';
 import 'package:K9_Karaoke/icons/custom_icons.dart';
+import 'package:K9_Karaoke/providers/the_user.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
+import 'package:K9_Karaoke/screens/subscription_screen.dart';
 import 'package:K9_Karaoke/widgets/custom_dialog.dart';
 import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import 'package:intl/intl.dart';
@@ -15,6 +17,7 @@ import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:share/share.dart';
@@ -30,6 +33,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   SoundController soundController;
   ImageController imageController;
   KaraokeCards cards;
+  TheUser user;
   KaraokeCardDecorationController cardDecorator;
   CurrentActivity currentActivity;
   String recipientName = "You";
@@ -168,158 +172,180 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     );
   }
 
-// Based on customDialog, but code is decoupled.
-
   _shareDialog() async {
     await showDialog<Null>(
-        context: context,
-        builder: (ctx) {
-          return StatefulBuilder(
-              builder: (BuildContext context, Function setDialogState) {
-            return SingleChildScrollView(
-              child: AlertDialog(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(32.0))),
-                contentPadding: EdgeInsets.only(top: 10.0),
-                content: Container(
-                  width: 300.0,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Stack(
-                        children: [
-                          Positioned(
-                            right: 20,
-                            bottom: 5,
-                            child: Icon(
-                              CustomIcons.modal_share,
-                              size: 42,
-                              color: Colors.grey[300],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Center(
-                              child: Text(
-                                "Sharing is Caring",
-                                style: TextStyle(
-                                    color: Theme.of(context).primaryColor,
-                                    fontSize: 20),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Divider(
-                        color: Colors.grey[300],
-                        thickness: 2,
-                      ),
-                      Column(
-                        children: [
-                          _loadingMessage == null
-                              ? Column(
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                          left: 30.0, right: 30.0),
-                                      child: TextField(
-                                        onChanged: (name) {
-                                          recipientName = name;
-                                        },
-                                        onSubmitted: (_) async {
-                                          await _handleUploadAndShare(
-                                              setDialogState);
-                                        },
-                                        decoration: InputDecoration(
-                                          filled: true,
-                                          fillColor: Colors.white,
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(16),
-                                          ),
-                                          labelText: 'Recipient Name',
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              : _loading(),
-                          Row(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+          builder: (BuildContext context, Function setDialogState) {
+        return SingleChildScrollView(
+          // IF USER IS NOT SUBSCRIBED AND OUT OF FREE CARDS, 
+          // USER IS PREVENTED FROM SAVING/SENDING AND PROMPTED TO SUBSCRIBE.
+            child: user.hasActiveSubscription || cards.saved.length < 1
+                ? AlertDialog(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(32.0))),
+                    contentPadding: EdgeInsets.only(top: 10.0),
+                    content: Container(
+                      width: 300.0,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Stack(
                             children: [
-                              Padding(
-                                padding: EdgeInsets.all(18),
+                              Positioned(
+                                right: 20,
+                                bottom: 5,
                                 child: Icon(
-                                  CustomIcons.modal_paws_bottomright,
+                                  CustomIcons.modal_share,
                                   size: 42,
                                   color: Colors.grey[300],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: Center(
+                                  child: Text(
+                                    "Sharing is Caring",
+                                    style: TextStyle(
+                                        color: Theme.of(context).primaryColor,
+                                        fontSize: 20),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Divider(
+                            color: Colors.grey[300],
+                            thickness: 2,
+                          ),
+                          Column(
+                            children: [
+                              _loadingMessage == null
+                                  ? Column(
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                              left: 30.0, right: 30.0),
+                                          child: TextField(
+                                            onChanged: (name) {
+                                              recipientName = name;
+                                            },
+                                            onSubmitted: (_) async {
+                                              await _handleUploadAndShare(
+                                                  setDialogState);
+                                            },
+                                            decoration: InputDecoration(
+                                              filled: true,
+                                              fillColor: Colors.white,
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(16),
+                                              ),
+                                              labelText: 'Recipient Name',
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  : _loading(),
+                              Row(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.all(18),
+                                    child: Icon(
+                                      CustomIcons.modal_paws_bottomright,
+                                      size: 42,
+                                      color: Colors.grey[300],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: InkWell(
+                                  onTap: _loadingMessage != null
+                                      ? null
+                                      : () => _shareToClipboard(setDialogState),
+                                  child: Container(
+                                    padding: EdgeInsets.only(
+                                        top: 20.0, bottom: 20.0),
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context).primaryColor,
+                                      borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(32.0),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      "CLIPBOARD",
+                                      style: TextStyle(color: Colors.white),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                width: 1,
+                              ),
+                              Expanded(
+                                child: InkWell(
+                                  onTap: _loadingMessage != null
+                                      ? null
+                                      : () async {
+                                          _handleUploadAndShare(setDialogState);
+                                        },
+                                  child: Container(
+                                    padding: EdgeInsets.only(
+                                        top: 20.0, bottom: 20.0),
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context).primaryColor,
+                                      borderRadius: BorderRadius.only(
+                                        bottomRight: Radius.circular(32.0),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      "SHARE",
+                                      style: TextStyle(color: Colors.white),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ],
                           ),
                         ],
                       ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: InkWell(
-                              onTap: _loadingMessage != null
-                                  ? null
-                                  : () => _shareToClipboard(setDialogState),
-                              child: Container(
-                                padding:
-                                    EdgeInsets.only(top: 20.0, bottom: 20.0),
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).primaryColor,
-                                  borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(32.0),
-                                  ),
-                                ),
-                                child: Text(
-                                  "CLIPBOARD",
-                                  style: TextStyle(color: Colors.white),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            width: 1,
-                          ),
-                          Expanded(
-                            child: InkWell(
-                              onTap: _loadingMessage != null
-                                  ? null
-                                  : () async {
-                                      _handleUploadAndShare(setDialogState);
-                                    },
-                              child: Container(
-                                padding:
-                                    EdgeInsets.only(top: 20.0, bottom: 20.0),
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).primaryColor,
-                                  borderRadius: BorderRadius.only(
-                                    bottomRight: Radius.circular(32.0),
-                                  ),
-                                ),
-                                child: Text(
-                                  "SHARE",
-                                  style: TextStyle(color: Colors.white),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          });
-        });
+                    ),
+                  )
+                : CustomDialog(
+                    header: "Subscribe!",
+                    bodyText:
+                        "You've reached your save & share limit for a free account. Subscribe to save and share more cards!",
+                    secondaryFunction: (BuildContext modalContext) {
+                      Navigator.of(modalContext).pop();
+                    },
+                    primaryFunction: (BuildContext modalContext) async {
+                      Navigator.pushNamed(
+                          context, SubscriptionScreen.routeName);
+                    },
+                    iconPrimary: Icon(
+                      LineAwesomeIcons.plus_circle,
+                      size: 42,
+                      color: Colors.grey[300],
+                    ),
+                    iconSecondary: Icon(
+                      CustomIcons.modal_paws_topleft,
+                      size: 42,
+                      color: Colors.grey[300],
+                    ),
+                    isYesNo: true,
+                  ));
+      }),
+    );
   }
 
   Future<void> _handleUploadAndShare(setDialogState) async {
@@ -389,6 +415,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     soundController ??= Provider.of<SoundController>(context, listen: false);
     imageController ??= Provider.of<ImageController>(context, listen: false);
     cards = Provider.of<KaraokeCards>(context, listen: true);
+    user = Provider.of<TheUser>(context, listen: false);
     cardDecorator =
         Provider.of<KaraokeCardDecorationController>(context, listen: false);
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
