@@ -123,7 +123,7 @@ class Song extends Asset {
     this.fileId = songData["uuid"];
     this.name = songData["name"];
     this.bucketFp = songData["bucket_fp"];
-    this.formulaId = songData["song_id"];
+    this.formulaId = songData["song_id"].toString();
     this.created = DateTime.parse(songData["created"]);
 
     _setIfFilesExist(filePathBase);

@@ -20,6 +20,10 @@ class KaraokeCards with ChangeNotifier {
   List<KaraokeCard> all = [];
   KaraokeCard current;
 
+  List<KaraokeCard> get saved {
+    return all.where((KaraokeCard card) => card.uuid != null).toList();
+  }
+
   void removeAll() {
     all = [];
   }
@@ -30,10 +34,6 @@ class KaraokeCards with ChangeNotifier {
 
   void deleteAll() {
     all.forEach((card) => card.removeFiles());
-  }
-
-  List<KaraokeCard> get saved {
-    return all.where((KaraokeCard card) => card.uuid != null).toList();
   }
 
   Future<void> remove(KaraokeCard card) async {
