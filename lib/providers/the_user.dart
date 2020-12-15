@@ -114,7 +114,7 @@ class TheUser with ChangeNotifier {
     }
   }
 
-  makePurchase(package) async {
+  makePurchase(package, errorCallback) async {
     print("Attempting Purchase");
     try {
       await Purchases.purchasePackage(package);
@@ -124,11 +124,10 @@ class TheUser with ChangeNotifier {
       }
       notifyListeners();
     } catch (e) {
-      print("Something went wrong");
       var errorCode = PurchasesErrorHelper.getErrorCode(e);
-      print("Something went wrong with purchase. Error: $errorCode");
+      errorCallback(errorCode.toString());
       if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
-        print("Something went wrong with purchase");
+        errorCallback("Purchase Failed");
       }
     }
   }
