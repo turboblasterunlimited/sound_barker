@@ -9,7 +9,7 @@ import 'package:K9_Karaoke/tools/ffmpeg.dart';
 import 'package:K9_Karaoke/widgets/custom_dialog.dart';
 import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
-import 'package:K9_Karaoke/widgets/spinner_half_screen_widget.dart';
+import 'package:K9_Karaoke/widgets/loading_half_screen_widget.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_sound/flutter_sound.dart';
 // import 'package:flutter_sound_lite/flutter_sound.dart';
@@ -198,7 +198,7 @@ class BarkRecorderState extends State<BarkRecorder>
           InterfaceTitleNav('CAPTURE BARKS',
               backCallback: _backCallback, skipCallback: _skipCallback),
           _loading
-              ? SpinnerHalfScreenWidget("Processing Barks...")
+              ? LoadingHalfScreenWidget("Processing Barks...")
               : Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [

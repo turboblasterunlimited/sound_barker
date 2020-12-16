@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-class SpinnerHalfScreenWidget extends StatefulWidget {
+class LoadingHalfScreenWidget extends StatefulWidget {
   String message;
 
-  SpinnerHalfScreenWidget(this.message);
+  LoadingHalfScreenWidget(this.message);
   @override
-  _SpinnerHalfScreenWidget createState() => _SpinnerHalfScreenWidget();
+  _LoadingHalfScreenWidget createState() => _LoadingHalfScreenWidget();
 }
 
-class _SpinnerHalfScreenWidget extends State<SpinnerHalfScreenWidget> {
+class _LoadingHalfScreenWidget extends State<LoadingHalfScreenWidget> {
   Widget build(BuildContext context) {
 
     // Must be child of COLUMN or ROW widget and parent of COLUMN or ROW must have fixed height.
@@ -26,7 +26,6 @@ class _SpinnerHalfScreenWidget extends State<SpinnerHalfScreenWidget> {
             padding: const EdgeInsets.only(top: 25.0),
             child: Center(
               child: Text(
-                // toString incase null
                 widget.message ?? "Loading...",
                 textAlign: TextAlign.center,
                 style: TextStyle(

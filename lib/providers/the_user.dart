@@ -9,6 +9,7 @@ class TheUser with ChangeNotifier {
   PurchaserInfo purchaserInfo;
   List<Package> availablePackages;
   Offerings offerings;
+  bool isLoading = false;
 
   TheUser({this.email});
 
@@ -115,14 +116,12 @@ class TheUser with ChangeNotifier {
   }
 
   makePurchase(package, errorCallback) async {
+    isLoading = true;
+    notifyListeners();
     print("Attempting Purchase");
     try {
       await Purchases.purchasePackage(package);
       print("Purchaser info: $purchaserInfo");
-      if (hasActiveSubscription) {
-        print("Unlock Unlimited");
-      }
-      notifyListeners();
     } catch (e) {
       var errorCode = PurchasesErrorHelper.getErrorCode(e);
       errorCallback(errorCode.toString());
@@ -130,6 +129,8 @@ class TheUser with ChangeNotifier {
         errorCallback("Purchase Failed");
       }
     }
+    isLoading = false;
+    notifyListeners();
   }
 
   bool get hasActiveSubscription {

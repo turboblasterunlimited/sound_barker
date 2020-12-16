@@ -1,6 +1,7 @@
 import 'package:K9_Karaoke/providers/the_user.dart';
 import 'package:K9_Karaoke/widgets/custom_appbar.dart';
 import 'package:K9_Karaoke/widgets/error_dialog.dart';
+import 'package:K9_Karaoke/widgets/loading_half_screen_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
@@ -94,92 +95,105 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
         ),
         child: Builder(
           builder: (BuildContext ctx) {
-            return !user.hasActiveSubscription
+            return user.isLoading
                 ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Padding(padding: EdgeInsets.only(top: 75)),
-                      Center(
-                        child: Text(
-                          "YOUR SUBSCRIPTION IS",
-                          style: TextStyle(
-                              fontSize: 20,
-                              color: Theme.of(context).primaryColor),
-                        ),
-                      ),
-                      Center(
-                        child: Text(
-                          "INACTIVE",
-                          style: TextStyle(
-                              fontSize: 20,
-                              color: Theme.of(context).errorColor),
-                        ),
-                      ),
-                      Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Text(
-                            "WOULD YOU LIKE TO SUBSCRIBE TO A PLAN?",
-                            style: TextStyle(
-                                fontSize: 20,
-                                color: Theme.of(context).primaryColor),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                      purchaseButtons(ctx),
-                    ],
+                    children: [LoadingHalfScreenWidget("Processing Payment")],
                   )
-                : Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Padding(padding: EdgeInsets.only(top: 75)),
-                      Center(
-                        child: Text(
-                          "YOUR ${getSubscriptionName(user.getActivePackage()).toUpperCase()} SUBSCRIPTION IS",
-                          style: TextStyle(
-                              fontSize: 20,
-                              color: Theme.of(context).primaryColor),
-                        ),
-                      ),
-                      Center(
-                        child: Text(
-                          "ACTIVE",
-                          style: TextStyle(
-                              fontSize: 20,
-                              color: Theme.of(context).highlightColor),
-                        ),
-                      ),
-                      Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Text(
-                            "WOULD YOU LIKE TO CHANGE YOUR PLAN?",
-                            style: TextStyle(
-                                fontSize: 20,
-                                color: Theme.of(context).primaryColor),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                      purchaseButtons(ctx),
-                      Expanded(
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
+                : !user.hasActiveSubscription
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Padding(padding: EdgeInsets.only(top: 75)),
+                          Center(
                             child: Text(
-                              "Manage your subscription in\nSETTINGS -> APPLE ID -> SUBSCRIPTIONS",
+                              "YOUR SUBSCRIPTION IS",
                               style: TextStyle(
+                                  fontSize: 20,
                                   color: Theme.of(context).primaryColor),
                               textAlign: TextAlign.center,
                             ),
                           ),
-                        ),
-                      ),
-                    ],
-                  );
+                          Center(
+                            child: Text(
+                              "INACTIVE",
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  color: Theme.of(context).errorColor),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Text(
+                                "WOULD YOU LIKE TO SUBSCRIBE TO A PLAN?",
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    color: Theme.of(context).primaryColor),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                          purchaseButtons(ctx),
+                        ],
+                      )
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Padding(padding: EdgeInsets.only(top: 75)),
+                          Center(
+                            child: RichText(
+                              textAlign: TextAlign.center,
+                              text: TextSpan(
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text:
+                                        "YOUR ${getSubscriptionName(user.getActivePackage()).toUpperCase()} SUBSCRIPTION\nIS",
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        color: Theme.of(context).primaryColor),
+                                  ),
+                                  TextSpan(
+                                    text: ' ACTIVE',
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        color:
+                                            Theme.of(context).highlightColor),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Text(
+                                "WOULD YOU LIKE TO CHANGE YOUR PLAN?",
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    color: Theme.of(context).primaryColor),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                          purchaseButtons(ctx),
+                          Expanded(
+                            child: Align(
+                              alignment: Alignment.bottomCenter,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Text(
+                                  "Manage your subscription in\nSETTINGS -> APPLE ID -> SUBSCRIPTIONS",
+                                  style: TextStyle(
+                                      color: Theme.of(context).primaryColor),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
           },
         ),
       ),

@@ -4,7 +4,7 @@ import 'package:K9_Karaoke/providers/songs.dart';
 import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
-import 'package:K9_Karaoke/widgets/spinner_half_screen_widget.dart';
+import 'package:K9_Karaoke/widgets/loading_half_screen_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -56,11 +56,14 @@ class _SongArrangementSelector extends State<SongArrangementSelector> {
           InterfaceTitleNav("CHOOSE STYLE",
               titleSize: 20, backCallback: currentActivity.setPreviousSubStep),
           _isLoading
-              ? SpinnerHalfScreenWidget("Creating Song...")
+              ? LoadingHalfScreenWidget("Creating Song...")
               : SizedBox(
                   height: MediaQuery.of(context).size.height / 3,
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 20.0),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 20.0,
+                      horizontal: 10,
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,19 +71,21 @@ class _SongArrangementSelector extends State<SongArrangementSelector> {
                         RawMaterialButton(
                           constraints: const BoxConstraints(
                               minWidth: 70.0, minHeight: 36.0),
-                          onPressed: () =>
-                              _createSong(songFormula.arrangement["harmonized"]),
+                          onPressed: () => _createSong(
+                              songFormula.arrangement["harmonized"]),
                           child: Text(
                             "Make my dog\nsound realistic",
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Theme.of(context).primaryColor,
                                 fontSize: 16),
+                            textAlign: TextAlign.center,
                           ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),
                             side: BorderSide(
-                                color: Theme.of(context).primaryColor, width: 3),
+                                color: Theme.of(context).primaryColor,
+                                width: 3),
                           ),
                           elevation: 2.0,
                           fillColor: null,
@@ -100,11 +105,13 @@ class _SongArrangementSelector extends State<SongArrangementSelector> {
                               color: Theme.of(context).primaryColor,
                               fontSize: 16,
                             ),
+                            textAlign: TextAlign.center,
                           ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),
                             side: BorderSide(
-                                color: Theme.of(context).primaryColor, width: 3),
+                                color: Theme.of(context).primaryColor,
+                                width: 3),
                           ),
                           elevation: 2.0,
                           fillColor: null,
