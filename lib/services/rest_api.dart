@@ -38,20 +38,6 @@ class RestAPI {
     return response?.data;
   }
 
-  // this is temporary until user data is returned on signup/signin
-  static Future getUser(email) async {
-    print("Getting user...");
-    print("request: https://$serverURL/user/$email");
-    var response;
-    try {
-      response = await HttpController.dioGet("https://$serverURL/user/$email");
-      print("the response data: ${response.data}");
-    } catch (e) {
-      return _handleAccountError(response, e);
-    }
-    return response.data;
-  }
-
   static Future<dynamic> userManualSignUp(email, password) async {
     Map data = {"email": email.toLowerCase(), "password": password};
     var response;

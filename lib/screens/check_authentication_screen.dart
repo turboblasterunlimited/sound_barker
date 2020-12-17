@@ -36,14 +36,16 @@ class _CheckAuthenticationScreenState extends State<CheckAuthenticationScreen> {
     });
   }
 
-    void _handleSignedIn(email) async {
-    print("user email from handle signed in: $email");
-    _agreementAccepted = await user.hasAgreedToTerms(email);
+    void _handleSignedIn(userObj) async {
+    print("user obj: $userObj");
+    _agreementAccepted = userObj["user_agreed_to_terms_v1"] == 1;
+    print("agreement accepted: $_agreementAccepted");
     if (!_agreementAccepted) {
       showAgreement();
       SystemChrome.setEnabledSystemUIOverlays([]);
     } else {
-      user.signIn(email);
+      user.signIn(userObj);
+      print("navigating to retrieve data");
       Navigator.of(context).popAndPushNamed(RetrieveDataScreen.routeName);
     }
   }
@@ -64,7 +66,6 @@ class _CheckAuthenticationScreenState extends State<CheckAuthenticationScreen> {
 
   // END same for authentication screen
 
-
   Future<Map> checkIfSignedIn() async {
     var response;
     try {
@@ -74,8 +75,6 @@ class _CheckAuthenticationScreenState extends State<CheckAuthenticationScreen> {
     }
     return response?.data;
   }
-
-
 
   void _handleNotSignedIn() {
     Navigator.of(context).popAndPushNamed(AuthenticationScreen.routeName);
@@ -88,11 +87,12 @@ class _CheckAuthenticationScreenState extends State<CheckAuthenticationScreen> {
 
   void signedInOrGotoAuthScreen() async {
     Map response = await checkIfSignedIn();
+    var userObj = response['user_obj'];
     print("response is....: $response");
     if (response["error"] != null) {
       _handleNoInternet(response["error"]);
     } else if (response["logged_in"] != null && response["logged_in"]) {
-      _handleSignedIn(response["user_id"]);
+      _handleSignedIn(userObj);
     } else {
       _handleNotSignedIn();
     }

@@ -5,25 +5,18 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 class TheUser with ChangeNotifier {
   // NEED TO ADD USER APP ID (UUID) FOR PURCHASES INSTEAD OF EMAIL.
   String email;
-  bool filesLoaded = false;
+  String uuid;
+  bool agreedToTerms;
   PurchaserInfo purchaserInfo;
   List<Package> availablePackages;
   Offerings offerings;
   bool isLoading = false;
-
-  TheUser({this.email});
+  bool filesLoaded = false;
 
   Future<dynamic> logout() async {
     email = null;
     Purchases.reset();
     return await RestAPI.logoutUser(email);
-  }
-
-  Future<bool> hasAgreedToTerms(userEmail) async {
-    print("Getting user...");
-    var response = await RestAPI.getUser(userEmail);
-    print("get user response: $response");
-    return response["user_agreed_to_terms_v1"] == 1;
   }
 
   Future<bool> agreeToTerms() async {
@@ -36,11 +29,13 @@ class TheUser with ChangeNotifier {
     return email != null;
   }
 
-  void signIn(userEmail) {
-    email = userEmail;
-    print("signIn email from within: $email");
+  void signIn(Map userObj) {
+    email = userObj["user_id"];
+    agreedToTerms = userObj["user_agreed_to_terms_v1"] == 1;
+    uuid = userObj["account_uuid"];
     _initPurchases();
     notifyListeners();
+    print("completed sign in");
   }
 
   Future<dynamic> delete() async {
@@ -50,15 +45,11 @@ class TheUser with ChangeNotifier {
   }
 
   // REVENUECAT PURCHASE LOGIC
-
-  // email needs to be replaced with user app UUID
   Future<void> _initPurchases() async {
     try {
       print("Starting init purchase");
       await Purchases.setDebugLogsEnabled(true);
       await Purchases.setup("kfQNBpPMjButvkTYkSYizepoXBCjLBxA",
-
-          // email needs to be replaced with user app UUID
           appUserId: email);
       await _getPurchases();
       await getPackages();
@@ -138,6 +129,20 @@ class TheUser with ChangeNotifier {
     return purchaserInfo.entitlements.active.isNotEmpty;
   }
 }
+
+// Debug,  Trying to change from annual to monthly:
+// User's active subscriptions: {Karaoke UNLIMITED: EntitlementInfo{identifier: Karaoke UNLIMITED, isActive: true, willRenew: true, periodType: PeriodType.normal, latestPurchaseDate: 2020-12-16T23:52:21Z, originalPurchaseDate: 2020-12-14T19:01:58Z, expirationDate: 2020-12-17T00:52:21Z, store: Store.appStore, productIdentifier: 1y_2499, isSandbox: true, unsubscribeDetectedAt: null, billingIssueDetectedAt: null}}
+// 2020-12-16 16:14:34.786855-0800 Runner[8188:3014383] flutter: active Package: Package{identifier: $rc_annual, packageType: PackageType.annual, product: Product{identifier: 1y_2499, description: Save and send UNLIMITED Karaoke Cards., title: Karaoke UNLIMITED, price: 24.489999771118164, priceString: $24.49, currencyCode: USD, introductoryPrice: null}, offeringIdentifier: Standard}
+// 2020-12-16 16:14:34.787416-0800 Runner[8188:3014383] flutter: purchase buttons init
+// 2020-12-16 16:14:34.787676-0800 Runner[8188:3014383] flutter: Getting inactive packages
+// 2020-12-16 16:14:34.787730-0800 Runner[8188:3014383] flutter: active Package: Package{identifier: $rc_annual, packageType: PackageType.annual, product: Product{identifier: 1y_2499, description: Save and send UNLIMITED Karaoke Cards., title: Karaoke UNLIMITED, price: 24.489999771118164, priceString: $24.49, currencyCode: USD, introductoryPrice: null}, offeringIdentifier: Standard}
+// 2020-12-16 16:14:34.787889-0800 Runner[8188:3014383] flutter: packages: [Package{identifier: $rc_monthly, packageType: PackageType.monthly, product: Product{identifier: 1m_399, description: Save and send UNLIMITED Karaoke cards., title: Karaoke UNLIMITED, price: 3.990000009536743, priceString: $3.99, currencyCode: USD, introductoryPrice: null}, offeringIdentifier: Standard}, Package{identifier: $rc_annual, packageType: PackageType.annual, product: Product{identifier: 1y_2499, description: Save and send UNLIMITED Karaoke Cards., title: Karaoke UNLIMITED, price: 24.489999771118164, priceString: $24.49, currencyCode: USD, introductoryPrice: null}, offeringIdentifier: Standard}]
+// 2020-12-16 16:14:34.788620-0800 Runner[8188:3014383] flutter: active packages: Package{identifier: $rc_annual, packageType: PackageType.annual, product: Product{identifier: 1y_2499, description: Save and send UNLIMITED Karaoke Cards., title: Karaoke UNLIMITED, price: 24.489999771118164, priceString: $24.49, currencyCode: USD, introductoryPrice: null}, offeringIdentifier: Standard}
+// 2020-12-16 16:14:34.788684-0800 Runner[8188:3014383] flutter: inactive packages: [Package{identifier: $rc_monthly, packageType: PackageType.monthly, product: Product{identifier: 1m_399, description: Save and send UNLIMITED Karaoke cards., title: Karaoke UNLIMITED, price: 3.990000009536743, priceString: $3.99, currencyCode: USD, introductoryPrice: null}, offeringIdentifier: Standard}]
+// 2020-12-16 16:14:35.379526-0800 Runner[8188:3014178] [Purchases] - DEBUG: PaymentQueue removedTransaction: 1m_399 1000000755351079 (1000000753676953 (null)) (null) - 1
+// 2020-12-16 16:15:04.843084-0800 Runner[8188:3014949] [tcp] tcp_input [C6.1:3] flags=[R] seq=1254810344, ack=0, win=0 state=LAST_ACK rcv_nxt=1254810344, snd_una=1318901939
+// 2020-12-16 16:15:04.845983-0800 Runner[8188:3014949] [tcp] tcp_input [C6.1:3] flags=[R] seq=1254810344, ack=0, win=0 state=CLOSED rcv_nxt=1254810344, snd_una=1318901939
+// 2020-12-16 16:15:04.848216-0800 Runner[8188:3014949] [tcp] tcp_input [C6.1:3] flags=[R] seq=1254810344, ack=0, win=0 state=CLOSED rcv_nxt=1254810344, snd_una=1318901939
 
 // "PurchaserInfo"{
 //    "entitlements":"EntitlementInfos"{

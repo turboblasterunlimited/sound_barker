@@ -112,14 +112,14 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         });
   }
 
-  void _handleSignedIn(String email) async {
+  void _handleSignedIn(Map userObj) async {
     print("user email from handle signed in: $email");
-    _agreementAccepted = await user.hasAgreedToTerms(email);
+    _agreementAccepted = userObj["user_agreed_to_terms_v1"] == 1; 
     if (!_agreementAccepted) {
       showAgreement();
       SystemChrome.setEnabledSystemUIOverlays([]);
     } else {
-      user.signIn(email);
+      user.signIn(userObj);
       Navigator.of(context).popAndPushNamed(RetrieveDataScreen.routeName);
     }
   }
@@ -133,10 +133,11 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   }
 
   _handleSigninResponse(responseData) async {
+    Map userObj = responseData["user"];
     print("Sign in response data: $responseData");
     if (responseData["success"]) {
       print("the response data: $responseData");
-      _handleSignedIn(responseData["payload"]["email"]);
+      _handleSignedIn(userObj);
     } else {
       showError(c, responseData["error"]);
     }
@@ -220,13 +221,14 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     BuildContext loadingContext;
     _showLoadingModal((ctx) => loadingContext = ctx);
     Map response = await RestAPI.userManualSignUp(email, password);
+    var userObj = response["user"];
     Navigator.of(loadingContext).pop();
     if (!response["success"])
       showError(c, response["error"]);
     else if (response["account_already_exists"] == true) {
       var signInresponse = await _handleManualSignIn();
       if (signInresponse['success'])
-        _handleSignedIn(response["payload"]["email"]);
+        _handleSignedIn(userObj);
     } else {
       print("Server response: $response");
       _showVerifyEmail();
@@ -279,7 +281,6 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   Widget build(BuildContext ctx) {
     user = Provider.of<TheUser>(ctx);
     double height = MediaQuery.of(ctx).size.height;
-    print("Height: $height");
     double iconPadding = height > 1000 ? 100 : height / 15;
     double iconPaddingTop = height > 1000 ? 130 : 0;
 
