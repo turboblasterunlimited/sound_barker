@@ -136,7 +136,7 @@ class MyApp extends StatelessWidget {
               ),
             ),
             primarySwatch: MaterialColor(0xff234498, color),
-            accentColor: MaterialColor(0xff605a5a, color),  // Grey
+            accentColor: MaterialColor(0xff605a5a, color), // Grey
             highlightColor: MaterialColor(0xff3F944A, color), // Green
             errorColor: MaterialColor(0xff9a2020, color),
             fontFamily: 'Museo',

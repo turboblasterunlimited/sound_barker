@@ -117,6 +117,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                             child: Text(
                               "INACTIVE",
                               style: TextStyle(
+                                  fontFamily: "Museo",
                                   fontSize: 20,
                                   color: Theme.of(context).errorColor),
                               textAlign: TextAlign.center,
@@ -128,6 +129,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                               child: Text(
                                 "WOULD YOU LIKE TO SUBSCRIBE TO A PLAN?",
                                 style: TextStyle(
+                                    fontFamily: "Museo",
                                     fontSize: 20,
                                     color: Theme.of(context).primaryColor),
                                 textAlign: TextAlign.center,
@@ -150,12 +152,14 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                                     text:
                                         "YOUR ${getSubscriptionName(user.getActivePackage()).toUpperCase()} SUBSCRIPTION\nIS",
                                     style: TextStyle(
+                                        fontFamily: "Museo",
                                         fontSize: 20,
                                         color: Theme.of(context).primaryColor),
                                   ),
                                   TextSpan(
                                     text: ' ACTIVE',
                                     style: TextStyle(
+                                        fontFamily: "Museo",
                                         fontSize: 20,
                                         color:
                                             Theme.of(context).highlightColor),
@@ -164,25 +168,25 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                               ),
                             ),
                           ),
-                          Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(20.0),
-                              child: Text(
-                                "WOULD YOU LIKE TO CHANGE YOUR PLAN?",
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    color: Theme.of(context).primaryColor),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                          purchaseButtons(ctx),
+                          // Center(
+                          //   child: Padding(
+                          //     padding: const EdgeInsets.all(20.0),
+                          //     child: Text(
+                          //       "WOULD YOU LIKE TO CHANGE YOUR PLAN?",
+                          //       style: TextStyle(
+                          //           fontSize: 20,
+                          //           color: Theme.of(context).primaryColor),
+                          //       textAlign: TextAlign.center,
+                          //     ),
+                          //   ),
+                          // ),
+                          // purchaseButtons(ctx),
                           Expanded(
                             child: Align(
-                              alignment: Alignment.bottomCenter,
+                              alignment: Alignment.topCenter,
                               child: Padding(
                                 padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                    const EdgeInsets.only(left: 8.0, right: 8.0, top: 20),
                                 child: Text(
                                   "Manage your subscription in\nSETTINGS -> APPLE ID -> SUBSCRIPTIONS",
                                   style: TextStyle(
