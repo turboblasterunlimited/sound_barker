@@ -62,7 +62,6 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     return [
       Text('Birthday', style: TextStyle(fontSize: 15)),
       Text('Christmas', style: TextStyle(fontSize: 15)),
-      Text('Designs', style: TextStyle(fontSize: 15)),
       Text('Holidays', style: TextStyle(fontSize: 15)),
       Text('Jewish', style: TextStyle(fontSize: 15)),
       Text('Kids', style: TextStyle(fontSize: 15)),
@@ -70,6 +69,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       Text('National', style: TextStyle(fontSize: 15)),
       Text('New Years', style: TextStyle(fontSize: 15)),
       Text('Sports', style: TextStyle(fontSize: 15)),
+      Text('Styles', style: TextStyle(fontSize: 15)),
       Text('Tint', style: TextStyle(fontSize: 15)),
     ];
   }
@@ -93,14 +93,6 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       'christmas-gifts.png',
       'christmas-ornaments.png',
       'christmas-wreath.png',
-    ],
-    "Designs": [
-      'abstract1.png',
-      'abstract2.png',
-      'abstract3.png',
-      'abstract4.png',
-      'abstract-rainbow.png',
-      'abstract-psychedelic.png',
     ],
     "Holidays": [
       'july-4th.png',
@@ -156,6 +148,14 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       'football.png',
       'hockey.png',
       'soccer.png',
+    ],
+    "Styles": [
+      'abstract1.png',
+      'abstract2.png',
+      'abstract3.png',
+      'abstract4.png',
+      'abstract-rainbow.png',
+      'abstract-psychedelic.png',
     ],
     "Tint": [
       'color-white.png',
