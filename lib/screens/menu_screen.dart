@@ -48,7 +48,6 @@ class _MenuState extends State<MenuScreen> with TickerProviderStateMixin {
     cardDecorator.reset();
     currentActivity.setCardCreationStep(CardCreationSteps.snap);
     currentActivity.startCreateCard();
-
     Navigator.of(context).popAndPushNamed(PhotoLibraryScreen.routeName);
   }
 
@@ -89,14 +88,6 @@ class _MenuState extends State<MenuScreen> with TickerProviderStateMixin {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        // Padding(
-                        //   padding: const EdgeInsets.only(bottom: 8.0, right: 5),
-                        //   child: Icon(
-                        //     LineAwesomeIcons.plus_circle,
-                        //     size: 40,
-                        //     color: Theme.of(context).primaryColor,
-                        //   ),
-                        // ),
                         Text(
                           "New Card",
                           style: TextStyle(
@@ -108,28 +99,6 @@ class _MenuState extends State<MenuScreen> with TickerProviderStateMixin {
                   ),
                 ),
               ),
-              // GestureDetector(
-              //   onTap: handleCreateNewCard,
-              //   child: Padding(
-              //     padding: const EdgeInsets.only(bottom: 8.0),
-              //     child: Row(
-              //       mainAxisAlignment: MainAxisAlignment.center,
-              //       crossAxisAlignment: CrossAxisAlignment.center,
-              //       children: [
-              //         Padding(
-              //             padding: const EdgeInsets.only(bottom: 6.0),
-              //             child: Icon(LineAwesomeIcons.plus_circle,
-              //                 size: 30, color: Theme.of(context).primaryColor)),
-              //         Text(
-              //           "Normal Card",
-              //           style: TextStyle(
-              //               fontSize: 30,
-              //               color: Theme.of(context).primaryColor),
-              //         ),
-              //       ],
-              //     ),
-              //   ),
-              // ),
               GestureDetector(
                 onTap: handleMyCards,
                 child: Padding(

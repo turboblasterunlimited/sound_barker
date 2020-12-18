@@ -85,7 +85,7 @@ class Song extends Asset {
   String backingTrackUrl;
   DateTime created;
   String amplitudesPath;
-  String songFamily;
+  String songFamily; // fullName of creatableSong (name OR "$name ($style)")
   String bucketFp;
   Song(
       {this.bucketFp,

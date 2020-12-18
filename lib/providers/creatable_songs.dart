@@ -51,8 +51,8 @@ class CreatableSongs with ChangeNotifier {
 }
 
 class CreatableSong {
-  final String name;
-  final String style;
+  final String name; // "Happy Birthday"
+  final String style; // "Guitar"
   final String backingTrackUrl;
   final int backingTrackOffset;
   final Map arrangement; // {"harmonized": "someId", "pitched": "someId"}

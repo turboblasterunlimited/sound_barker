@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:K9_Karaoke/providers/sound_controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart' as PATH;
 
@@ -73,6 +74,26 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       Text('Tint', style: TextStyle(fontSize: 15)),
     ];
   }
+
+  Map<String, String> songFamilyToCardFileName = {
+    "ABC Song": 'abc1.png',
+    // "Auld Lang Syne": '',
+    "Baby Shark": "baby-shark.png",
+    "Dreidel Song": 'hanukkah-dreidel.png',
+    "Happy Birthday (guitar)": 'birthday-bone.png',
+    "Happy Birthday (oompah)": 'birthday-bone.png',
+    "Happy Birthday (rock)": 'birthday-bone.png',
+    "Hava Nagila": 'torah.png',
+    "Jingle Bells": 'christmas-santa.png',
+    "O Canada": "o-canada.png",
+    "Old Macdonald": "farm.png",
+    "Star Spangled Banner": "liberty-flag.png",
+    "Take Me Out To The Ball Game": 'baseball.png',
+    "That's Alright": "50's.png",
+    "Twinkle Twinkle": "twinkle-star.png",
+    "We Wish You A Merry X-Mas": 'christmas-wreath.png',
+    "Beethoven's 5th": "beethoven's_5th.png",
+  };
 
   Map<String, List<String>> frameFileNames = {
     "Birthday": [
@@ -167,13 +188,26 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     ],
   };
 
+  setFrame(
+      {String fileName, bool noFrame = false, bool decorationImage = false}) {
+    if (fileName != null) {
+      setState(() => selectedFrame = fileName);
+      cards.setFrame(rootPath + fileName);
+    } else if (noFrame) {
+      setState(() => selectedFrame = "");
+      cards.setFrame(null);
+    } else if (decorationImage) {
+      setState(() => selectedFrame = "existing-art");
+      cards.setFrame(null, cards.current.decorationImage.hasFrameDimension);
+    }
+  }
+
   Widget frameSelectable(fileName) {
     if (fileName == "no-frame") return noFrame();
     if (fileName == "existing-art") return decorationImage();
     return GestureDetector(
       onTap: () {
-        setState(() => selectedFrame = fileName);
-        cards.setFrame(rootPath + fileName);
+        setFrame(fileName: fileName);
         cards.current.setShouldDeleteOldDecortionImage();
         SystemChrome.setEnabledSystemUIOverlays([]);
       },
@@ -241,8 +275,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   Widget noFrame() {
     return GestureDetector(
       onTap: () {
-        setState(() => selectedFrame = "");
-        cards.setFrame(null);
+        setFrame(noFrame: true);
         SystemChrome.setEnabledSystemUIOverlays([]);
         cards.current.setShouldDeleteOldDecortionImage();
       },
@@ -288,8 +321,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   Widget decorationImage() {
     return GestureDetector(
       onTap: () {
-        setState(() => selectedFrame = "existing-art");
-        cards.setFrame(null, cards.current.decorationImage.hasFrameDimension);
+        setFrame(decorationImage: true);
         cards.current.shouldDeleteOldDecoration = false;
         SystemChrome.setEnabledSystemUIOverlays([]);
       },
@@ -355,7 +387,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   }
 
   void _handleCarouselSlider(index) {
-    int frameIndex = _categoryIndexToFrameIndex(index);
+    int frameIndex = categoryIndexToFrameIndex(index);
     // print("frame index selected: $frameIndex");
     _handleCategoryChange(index, frameIndex: frameIndex);
   }
@@ -445,7 +477,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     }
   }
 
-  int _categoryIndexToFrameIndex(int selectedCategoryIndex) {
+  int categoryIndexToFrameIndex(int selectedCategoryIndex) {
     int frameCount = 0;
     for (int categoryIndex = 0;
         categoryIndex < _categoriesCount;
@@ -459,12 +491,6 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     // rendered item width + list padding
     var itemWidth = _listItemWidth + 5;
     return (pixels / itemWidth % _framesCount).round();
-  }
-
-  void _handleCarouselDirection(bool moveForward) {
-    moveForward
-        ? _carouselController.nextPage()
-        : _carouselController.previousPage();
   }
 
   // prevents animating through all categories between first and last categories on the carousel
@@ -483,8 +509,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   }
 
   Widget frameList() {
-    // first item should be no frame, and second is decoration image if exists.
-    var iOffset = cards.current.decorationImage == null ? 1 : 2;
+    // First item should be no frame, and second is decoration image (user art combined with or without frame) if exists.
     return Center(
       child: Container(
         height: 140,
@@ -564,6 +589,13 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       selectedFrame = "existing-art";
     else if (cards.current.framePath != null)
       selectedFrame = PATH.basename(cards.current.framePath);
+    else if (cards.current.song?.songFamily != null) {
+      String songFamily = cards.current.song?.songFamily;
+      print("song family: $songFamily");
+      selectedFrame = songFamilyToCardFileName[songFamily];
+      setFrame(fileName: selectedFrame);
+      print("selectedFrame: $selectedFrame");
+    }
   }
 
   void _insertIfExistingArtFrame() {
@@ -573,10 +605,10 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
 
   @override
   Widget build(context) {
-    cards = Provider.of<KaraokeCards>(context, listen: false);
-    currentActivity = Provider.of<CurrentActivity>(context, listen: false);
-    imageController = Provider.of<ImageController>(context, listen: false);
-    soundController = Provider.of<SoundController>(context, listen: false);
+    cards ??= Provider.of<KaraokeCards>(context, listen: false);
+    currentActivity ??= Provider.of<CurrentActivity>(context, listen: false);
+    imageController ??= Provider.of<ImageController>(context, listen: false);
+    soundController ??= Provider.of<SoundController>(context, listen: false);
     if (currentFrameCategories == null) {
       currentFrameCategories = getFrameCategories();
       _handleCategoryChange(0);
