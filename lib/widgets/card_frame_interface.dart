@@ -54,7 +54,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     }
   }
 
-  String rootPath = "assets/card_borders/";
+  String rootPath = "assets/card_frames/";
 
   // Text string and Map Keys must match.
   // needs to be a method so widgets wont be mutated.
@@ -62,14 +62,15 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     return [
       Text('Birthday', style: TextStyle(fontSize: 15)),
       Text('Christmas', style: TextStyle(fontSize: 15)),
-      Text('Jewish', style: TextStyle(fontSize: 15)),
-      Text('New Years', style: TextStyle(fontSize: 15)),
-      Text('USA Holidays', style: TextStyle(fontSize: 15)),
-      Text('Holidays', style: TextStyle(fontSize: 15)),
-      Text('Sports', style: TextStyle(fontSize: 15)),
-      Text('Themes', style: TextStyle(fontSize: 15)),
       Text('Designs', style: TextStyle(fontSize: 15)),
-      Text('Simple', style: TextStyle(fontSize: 15)),
+      Text('Holidays', style: TextStyle(fontSize: 15)),
+      Text('Jewish', style: TextStyle(fontSize: 15)),
+      Text('Kids', style: TextStyle(fontSize: 15)),
+      Text('Misc', style: TextStyle(fontSize: 15)),
+      Text('National', style: TextStyle(fontSize: 15)),
+      Text('New Years', style: TextStyle(fontSize: 15)),
+      Text('Sports', style: TextStyle(fontSize: 15)),
+      Text('Tint', style: TextStyle(fontSize: 15)),
     ];
   }
 
@@ -93,12 +94,54 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       'christmas-ornaments.png',
       'christmas-wreath.png',
     ],
+    "Designs": [
+      'abstract1.png',
+      'abstract2.png',
+      'abstract3.png',
+      'abstract4.png',
+      'abstract-rainbow.png',
+      'abstract-psychedelic.png',
+    ],
+    "Holidays": [
+      'july-4th.png',
+      'thanksgiving.png',
+      'halloween.png',
+      'easter.png',
+      'fathers-day.png',
+      'mothers-day.png',
+      'valentine.png',
+    ],
     "Jewish": [
       'hanukkah-dreidel.png',
       'hanukkah-dreidel2.png',
       'hanukkah-package.png',
       'kiddush-cup.png',
       'torah.png',
+    ],
+    "Kids": [
+      'abc1.png',
+      'abc2.png',
+      'baby-shark.png',
+      'twinkle-star.png',
+      'farm.png',
+      'odor.png',
+    ],
+    "Misc": [
+      "beethoven's_5th.png",
+      '50s.png',
+      'beach.png',
+      'flowers.png',
+      'ocean.png',
+      'space.png',
+    ],
+    "National": [
+      'oh-canada.png',
+      'liberty-flag.png',
+      'fireworks.png',
+      'flag.png',
+      'liberty.png',
+      'liberty-flag-4th1.png',
+      'flag-4th2.png'
     ],
     "New Years": [
       'new-year-baby.png',
@@ -107,23 +150,6 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       'new-year-champagne.png',
       'new-year-fireworks.png',
     ],
-    "USA Holidays": [
-      'july-4th.png',
-      'liberty-flag.png',
-      'fireworks.png',
-      'flag.png',
-      'liberty.png',
-      'liberty-flag-4th1.png',
-      'flag-4th2.png'
-    ],
-    "Holidays": [
-      'thanksgiving.png',
-      'halloween.png',
-      'easter.png',
-      'fathers-day.png',
-      'mothers-day.png',
-      'valentine.png',
-    ],
     "Sports": [
       'baseball.png',
       'basketball.png',
@@ -131,30 +157,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       'hockey.png',
       'soccer.png',
     ],
-    "Themes": [
-      '50s.png',
-      'beach.png',
-      'farm.png',
-      'flowers.png',
-      'ocean.png',
-      'space.png',
-      'odor.png',
-    ],
-    "Designs": [
-      'abstract1.png',
-      'abstract2.png',
-      'abstract3.png',
-      'abstract4.png',
-      'abstract-rainbow.png',
-      'abstract-psychedelic.png',
-      'color-white.png',
-      'color-black.png',
-      'color-magenta.png',
-      'color-teal.png',
-      'color-red.png',
-      'color-blue.png',
-    ],
-    "Simple": [
+    "Tint": [
       'color-white.png',
       'color-black.png',
       'color-magenta.png',
