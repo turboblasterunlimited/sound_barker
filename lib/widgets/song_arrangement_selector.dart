@@ -64,9 +64,9 @@ class _SongArrangementSelector extends State<SongArrangementSelector> {
                       vertical: 20.0,
                       horizontal: 10,
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         RawMaterialButton(
                           constraints: const BoxConstraints(

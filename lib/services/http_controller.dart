@@ -48,7 +48,6 @@ class HttpController {
       throw (e.message);
     }
     // HAPPY PATH
-    print("DIO SUCCESS: $response");
     return response;
   }
 

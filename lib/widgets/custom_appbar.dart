@@ -10,11 +10,11 @@ import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
-  bool noName;
-  bool isMenu;
-  bool isMainMenu;
-  Widget nameInput;
-  String pageTitle;
+  final bool noName;
+  final bool isMenu;
+  final bool isMainMenu;
+  final Widget nameInput;
+  final String pageTitle;
   CustomAppBar(
       {Key key,
       this.noName = false,
@@ -77,6 +77,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
     logoWidth ??= getLogoWidth();
     showActionIcon ??=
         currentUser.email != null && (cards.hasPicture || !widget.isMainMenu);
+    print("show action icon: $showActionIcon");
 
     return AppBar(
       backgroundColor: Colors.transparent,

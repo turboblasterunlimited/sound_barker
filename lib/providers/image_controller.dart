@@ -66,7 +66,6 @@ class ImageController with ChangeNotifier {
     if (isPlaying) stopAnimation();
     if (filePath != null) {
       List amplitudes = await AmplitudeExtractor.fileToList(filePath);
-      print("amps on playback: $amplitudes");
       webViewController.evaluateJavascript("mouth_track_sound($amplitudes)");
     } else if (amplitudes != null) {
       webViewController.evaluateJavascript("mouth_track_sound($amplitudes)");

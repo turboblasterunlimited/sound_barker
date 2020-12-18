@@ -45,7 +45,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   double framePadding;
   final textController = TextEditingController();
   List _playbackFiles;
-  
+  bool firstBuild = true;
+
   List _getPlaybackFiles() {
     if (_canPlayAudio) {
       print("_canPlayAudio");
@@ -96,10 +97,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  @override
-  void didChangeDependencies() {
-    print("Did change Dep");
-    super.didChangeDependencies();
+  _runOnce() {
+    firstBuild = false;
     user = Provider.of<TheUser>(context);
     barks = Provider.of<Barks>(context);
     songs = Provider.of<Songs>(context, listen: false);
@@ -109,16 +108,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     currentActivity = Provider.of<CurrentActivity>(context);
     cards = Provider.of<KaraokeCards>(context);
   }
-
-  // void didChangeAppLifecycleState(AppLifecycleState state) {
-  //   if (state == AppLifecycleState.resumed) {
-  // SystemChrome.restoreSystemUIOverlays();
-  //     print("App State $state");
-  //     print("restoring system ui overlays");
-  //   } else {
-  //     print("App State $state");
-  //   }
-  // }
 
   void stopAll() {
     if (imageController.isPlaying) {
@@ -168,7 +157,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
 
   void _handleTapPuppet() {
     print("Tapping webview!");
-    if (_playbackFiles != null) imageController.isPlaying ? stopAll() : startAll();
+    if (_playbackFiles != null)
+      imageController.isPlaying ? stopAll() : startAll();
   }
 
   bool get canPlay {
@@ -197,6 +187,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    if (firstBuild) _runOnce();
+
     print("Building main screen");
     screenWidth ??= MediaQuery.of(context).size.width;
     frameToScreenWidth ??= screenWidth / 656;
