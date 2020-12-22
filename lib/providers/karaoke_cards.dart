@@ -281,6 +281,7 @@ class KaraokeCard with ChangeNotifier {
 
   void setSong(Song newSong) {
     song = newSong;
+    if (newSong == null) return;
     if (decorationImage == null && decoration.isEmpty) {
       String selectedFrame = songFamilyToCardFileName[song.songFamily];
       setFrame(selectedFrame);

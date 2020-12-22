@@ -43,7 +43,8 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
     try {
       setState(() => _isLoading = true);
       if (widget.creatableSong.backingTrackOffset != null)
-        widget.soundController.player.seekTo(Duration(milliseconds: widget.creatableSong.backingTrackOffset));
+        widget.soundController.player.seekTo(
+            Duration(milliseconds: widget.creatableSong.backingTrackOffset));
       await widget.soundController.startPlayer(
           "https://storage.googleapis.com/song_barker_sequences/" +
               widget.creatableSong.backingTrackUrl,
@@ -63,7 +64,12 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
   void _selectSongFormula() {
     print("formula selected");
     widget.cards.setCurrentSong(null);
+    print("checkpoint 1");
+    print("checkpoint 2: ${widget.creatableSong}");
+
     widget.cards.setCurrentSongFormula(widget.creatableSong);
+    print("checkpoint 3: ${widget.creatableSong}");
+
     Future.delayed(
       Duration(milliseconds: 500),
       () => widget.currentActivity.setCardCreationStep(CardCreationSteps.speak),
