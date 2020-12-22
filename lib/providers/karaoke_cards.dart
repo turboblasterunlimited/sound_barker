@@ -15,6 +15,7 @@ import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:K9_Karaoke/tools/ffmpeg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:K9_Karaoke/globals.dart';
 
 class KaraokeCards with ChangeNotifier {
   List<KaraokeCard> all = [];
@@ -90,7 +91,7 @@ class KaraokeCards with ChangeNotifier {
   }
 
   void setCurrentSong(Song newSong) {
-    current.song = newSong;
+    current.setSong(newSong);
     current.markLastAudioForDelete();
     notifyListeners();
   }
@@ -123,16 +124,6 @@ class KaraokeCards with ChangeNotifier {
 
   void newCurrent() {
     current = KaraokeCard();
-    notifyListeners();
-  }
-
-  void setFrame(newFramePath, [bool hasFrame = false]) {
-    if (hasFrame)
-      current.framelessIsSelected = false;
-    else
-      current.framelessIsSelected = newFramePath == null ? true : false;
-    current.setShouldDeleteOldDecortionImage();
-    current.framePath = newFramePath;
     notifyListeners();
   }
 
@@ -285,6 +276,21 @@ class KaraokeCard with ChangeNotifier {
 
   void setSong(Song newSong) {
     song = newSong;
+    if (decorationImage == null && decoration.isEmpty) {
+      String selectedFrame = songFamilyToCardFileName[song.songFamily];
+      setFrame(selectedFrame);
+      print("selectedFrame: $selectedFrame");
+    }
+    notifyListeners();
+  }
+
+  void setFrame(newFrameFileName, [bool hasFrameDimensions = false]) {
+    if (hasFrameDimensions)
+      framelessIsSelected = false;
+    else
+      framelessIsSelected = newFrameFileName == null ? true : false;
+    setShouldDeleteOldDecortionImage();
+    framePath = framesPath + newFrameFileName;
     notifyListeners();
   }
 

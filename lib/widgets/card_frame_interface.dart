@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:K9_Karaoke/providers/sound_controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart' as PATH;
 
@@ -11,6 +10,7 @@ import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:K9_Karaoke/globals.dart';
 
 class CardFrameInterface extends StatefulWidget {
   @override
@@ -29,6 +29,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   final _scrollController = ScrollController();
   double _listItemWidth;
   bool userManipulatingCategory = false;
+  bool firstBuild = true;
 
   @override
   void dispose() {
@@ -51,11 +52,10 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
               .setCardCreationSubStep(CardCreationSubSteps.three));
     } else {
       currentActivity.setNextSubStep();
-      Future.delayed(Duration(milliseconds: 500), () => cards.setFrame(null));
+      Future.delayed(
+          Duration(milliseconds: 500), () => cards.current.setFrame(null));
     }
   }
-
-  String rootPath = "assets/card_frames/";
 
   // Text string and Map Keys must match.
   // needs to be a method so widgets wont be mutated.
@@ -75,130 +75,18 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     ];
   }
 
-  Map<String, String> songFamilyToCardFileName = {
-    "ABC Song": 'abc1.png',
-    // "Auld Lang Syne": '',
-    "Baby Shark": "baby-shark.png",
-    "Dreidel Song": 'hanukkah-dreidel.png',
-    "Happy Birthday (guitar)": 'birthday-bone.png',
-    "Happy Birthday (oompah)": 'birthday-bone.png',
-    "Happy Birthday (rock)": 'birthday-bone.png',
-    "Hava Nagila": 'torah.png',
-    "Jingle Bells": 'christmas-santa.png',
-    "O Canada": "o-canada.png",
-    "Old Macdonald": "farm.png",
-    "Star Spangled Banner": "liberty-flag.png",
-    "Take Me Out To The Ball Game": 'baseball.png',
-    "That's Alright": "50's.png",
-    "Twinkle Twinkle": "twinkle-star.png",
-    "We Wish You A Merry X-Mas": 'christmas-wreath.png',
-    "Beethoven's 5th": "beethoven's_5th.png",
-  };
-
-  Map<String, List<String>> frameFileNames = {
-    "Birthday": [
-      'no-frame',
-      'birthday-bone.png',
-      'birthday-4.png',
-      'birthday-1.png',
-      'birthday-2.png',
-      'birthday-3.png',
-      'birthday-package.png',
-      'birthday-package-blue.png',
-      'birthday-package-orange.png',
-      'birthday-package-pink.png',
-    ],
-    "Christmas": [
-      "christmas-package.png",
-      'christmas-santa.png',
-      'christmas-gifts.png',
-      'christmas-ornaments.png',
-      'christmas-wreath.png',
-    ],
-    "Holidays": [
-      'july-4th.png',
-      'thanksgiving.png',
-      'halloween.png',
-      'easter.png',
-      'fathers-day.png',
-      'mothers-day.png',
-      'valentine.png',
-    ],
-    "Jewish": [
-      'hanukkah-dreidel.png',
-      'hanukkah-dreidel2.png',
-      'hanukkah-package.png',
-      'kiddush-cup.png',
-      'torah.png',
-    ],
-    "Kids": [
-      'abc1.png',
-      'abc2.png',
-      'baby-shark.png',
-      'twinkle-star.png',
-      'farm.png',
-      'odor.png',
-    ],
-    "Misc": [
-      "beethoven's_5th.png",
-      '50s.png',
-      'beach.png',
-      'flowers.png',
-      'ocean.png',
-      'space.png',
-    ],
-    "National": [
-      'oh-canada.png',
-      'liberty-flag.png',
-      'fireworks.png',
-      'flag.png',
-      'liberty.png',
-      'liberty-flag-4th1.png',
-      'flag-4th2.png'
-    ],
-    "New Years": [
-      'new-year-baby.png',
-      'new-year-cat.png',
-      'new-year-dog.png',
-      'new-year-champagne.png',
-      'new-year-fireworks.png',
-    ],
-    "Sports": [
-      'baseball.png',
-      'basketball.png',
-      'football.png',
-      'hockey.png',
-      'soccer.png',
-    ],
-    "Styles": [
-      'abstract1.png',
-      'abstract2.png',
-      'abstract3.png',
-      'abstract4.png',
-      'abstract-rainbow.png',
-      'abstract-psychedelic.png',
-    ],
-    "Tint": [
-      'color-white.png',
-      'color-black.png',
-      'color-magenta.png',
-      'color-teal.png',
-      'color-red.png',
-      'color-blue.png',
-    ],
-  };
-
   setFrame(
       {String fileName, bool noFrame = false, bool decorationImage = false}) {
     if (fileName != null) {
       setState(() => selectedFrame = fileName);
-      cards.setFrame(rootPath + fileName);
+      cards.current.setFrame(fileName);
     } else if (noFrame) {
       setState(() => selectedFrame = "");
-      cards.setFrame(null);
+      cards.current.setFrame(null);
     } else if (decorationImage) {
       setState(() => selectedFrame = "existing-art");
-      cards.setFrame(null, cards.current.decorationImage.hasFrameDimension);
+      cards.current
+          .setFrame(null, cards.current.decorationImage.hasFrameDimension);
     }
   }
 
@@ -226,8 +114,11 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
             children: [
               LayoutBuilder(
                 builder: (_, constraints) {
-                  // if (_listItemWidth == null)
-                  _listItemWidth ??= constraints.biggest.width;
+                  if (firstBuild) {
+                    firstBuild = false;
+                    _listItemWidth ??= constraints.biggest.width;
+                    initialNavigateToSelectedFrame();
+                  }
                   return Padding(
                     padding: EdgeInsets.only(
                       top: constraints.biggest.height * 72 / 778,
@@ -239,7 +130,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
                   );
                 },
               ),
-              Image.asset(rootPath + fileName),
+              Image.asset(framesPath + fileName),
             ],
           ),
         ),
@@ -493,8 +384,21 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     return (pixels / itemWidth % _framesCount).round();
   }
 
+  int pixelsToCategoryIndex(double pixels) {
+    var frameIndex = _pixelsToFrameIndex(pixels);
+    return _frameIndexToCategoryIndex(frameIndex);
+  }
+
+  List<String> get getFrameList {
+    List<String> result = [];
+    frameFileNames.forEach((categoryName, frames) {
+      frames.forEach((frame) => result.add(frame));
+    });
+    return result;
+  }
+
   // prevents animating through all categories between first and last categories on the carousel
-  void animateToPage(frameCategoryIndex) {
+  void animateToPage(int frameCategoryIndex) {
     if (frameCategoryIndex == null) return;
     // transitioning from last category to first category
     if (_currentFrameCategoryIndex == _categoriesCount - 1 &&
@@ -516,11 +420,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
         child: NotificationListener<ScrollUpdateNotification>(
           onNotification: (notification) {
             var pixels = notification.metrics.pixels;
-            var frameIndex = _pixelsToFrameIndex(pixels);
-            int frameCategoryIndex = _frameIndexToCategoryIndex(frameIndex);
-            print("frame index: $frameIndex");
-            print("current category index: $_currentFrameCategoryIndex");
-            print("new category index: $frameCategoryIndex");
+            int frameCategoryIndex = pixelsToCategoryIndex(pixels);
             if (frameCategoryIndex != _currentFrameCategoryIndex &&
                 !userManipulatingCategory) {
               animateToPage(frameCategoryIndex);
@@ -584,17 +484,32 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     );
   }
 
-  void _setFrameSelection() {
+  int _getFrameIndex(String frameFileName) {
+    return getFrameList.indexOf(frameFileName);
+  }
+
+  void initialNavigateToSelectedFrame() {
+    int frameIndex = _getFrameIndex(selectedFrame);
+    print("frameIndex $frameIndex");
+
+    print("_listItemWidth: $_listItemWidth");
+    double pixels = frameIndex * _listItemWidth + 5.0;
+    print("pixels $pixels");
+    int categoryIndex = pixelsToCategoryIndex(pixels);
+    print("category index: $categoryIndex");
+    Future.delayed(Duration(milliseconds: 500), () {
+      _currentFrameCategoryIndex = categoryIndex;
+      animateToPage(categoryIndex);
+      _handleCategoryChange(categoryIndex, frameIndex: frameIndex);
+    });
+  }
+
+  void _setFrameAndCategorySelection() {
+    print("setframe and category selction");
     if (cards.current.isUsingDecorationImage)
       selectedFrame = "existing-art";
-    else if (cards.current.framePath != null)
+    else if (cards.current.framePath != null) {
       selectedFrame = PATH.basename(cards.current.framePath);
-    else if (cards.current.song?.songFamily != null) {
-      String songFamily = cards.current.song?.songFamily;
-      print("song family: $songFamily");
-      selectedFrame = songFamilyToCardFileName[songFamily];
-      setFrame(fileName: selectedFrame);
-      print("selectedFrame: $selectedFrame");
     }
   }
 
@@ -613,8 +528,8 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       currentFrameCategories = getFrameCategories();
       _handleCategoryChange(0);
       _insertIfExistingArtFrame();
+      _setFrameAndCategorySelection();
     }
-    _setFrameSelection();
 
     return Column(
       children: <Widget>[
