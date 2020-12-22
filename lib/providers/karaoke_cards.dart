@@ -37,6 +37,11 @@ class KaraokeCards with ChangeNotifier {
     all.forEach((card) => card.removeFiles());
   }
 
+  void setFrame(newFrameFileName, [bool hasFrameDimensions = false]) {
+    current.setFrame(newFrameFileName, hasFrameDimensions);
+    notifyListeners();
+  }
+
   Future<void> remove(KaraokeCard card) async {
     print("TODO: implement delete");
     await RestAPI.deleteCardAudio(card.audio.fileId);
@@ -291,7 +296,6 @@ class KaraokeCard with ChangeNotifier {
       framelessIsSelected = newFrameFileName == null ? true : false;
     setShouldDeleteOldDecortionImage();
     framePath = framesPath + newFrameFileName;
-    notifyListeners();
   }
 
   void noSongNoFormula() {

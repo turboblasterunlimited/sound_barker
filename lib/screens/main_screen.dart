@@ -106,7 +106,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     imageController = Provider.of<ImageController>(context);
     soundController = Provider.of<SoundController>(context);
     currentActivity = Provider.of<CurrentActivity>(context);
-    cards = Provider.of<KaraokeCards>(context);
+    cards = Provider.of<KaraokeCards>(context, listen: true);
   }
 
   void stopAll() {

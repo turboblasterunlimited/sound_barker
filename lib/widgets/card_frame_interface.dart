@@ -30,6 +30,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   double _listItemWidth;
   bool userManipulatingCategory = false;
   bool firstBuild = true;
+  Map<String, List<String>> frameFiles = frameFileNames;
 
   @override
   void dispose() {
@@ -53,7 +54,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     } else {
       currentActivity.setNextSubStep();
       Future.delayed(
-          Duration(milliseconds: 500), () => cards.current.setFrame(null));
+          Duration(milliseconds: 500), () => cards.setFrame(null));
     }
   }
 
@@ -77,16 +78,16 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
 
   setFrame(
       {String fileName, bool noFrame = false, bool decorationImage = false}) {
+    print("setting frame");
     if (fileName != null) {
       setState(() => selectedFrame = fileName);
-      cards.current.setFrame(fileName);
+      cards.setFrame(fileName);
     } else if (noFrame) {
       setState(() => selectedFrame = "");
-      cards.current.setFrame(null);
+      cards.setFrame(null);
     } else if (decorationImage) {
       setState(() => selectedFrame = "existing-art");
-      cards.current
-          .setFrame(null, cards.current.decorationImage.hasFrameDimension);
+      cards.setFrame(null, cards.current.decorationImage.hasFrameDimension);
     }
   }
 
@@ -338,20 +339,24 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     );
   }
 
-  List<String> get _allFrames {
-    return frameFileNames.values.expand((element) => element).toList();
+  List<String> get getFrameList {
+    List<String> result = [];
+    frameFiles.forEach((categoryName, frames) {
+      frames.forEach((frame) => result.add(frame));
+    });
+    return result;
   }
 
   int get _framesCount {
-    return _allFrames.length;
+    return getFrameList.length;
   }
 
   List<int> get _frameCategoryCounts {
-    return frameFileNames.values.map((cat) => cat.length).toList();
+    return frameFiles.values.map((cat) => cat.length).toList();
   }
 
   List<String> get _frameCategories {
-    return frameFileNames.keys.toList();
+    return frameFiles.keys.toList();
   }
 
   int get _categoriesCount {
@@ -387,14 +392,6 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   int pixelsToCategoryIndex(double pixels) {
     var frameIndex = _pixelsToFrameIndex(pixels);
     return _frameIndexToCategoryIndex(frameIndex);
-  }
-
-  List<String> get getFrameList {
-    List<String> result = [];
-    frameFileNames.forEach((categoryName, frames) {
-      frames.forEach((frame) => result.add(frame));
-    });
-    return result;
   }
 
   // prevents animating through all categories between first and last categories on the carousel
@@ -442,7 +439,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
                 delegate: SliverChildBuilderDelegate(
                   (BuildContext _, int scrollIndex) {
                     int frameIndex = scrollIndex % _framesCount;
-                    return frameSelectable(_allFrames[frameIndex]);
+                    return frameSelectable(getFrameList[frameIndex]);
                   },
                 ),
               ),
@@ -515,7 +512,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
 
   void _insertIfExistingArtFrame() {
     if (cards.current.decorationImage != null)
-      frameFileNames["Birthday"].insert(1, "existing-art");
+      frameFiles["Birthday"].insert(1, "existing-art");
   }
 
   @override
