@@ -37,6 +37,7 @@ class CreatableSongs with ChangeNotifier {
 
   Future<void> retrieveFromServer() async {
     List data = await RestAPI.retrieveAllCreatableSongs();
+    print("creatable song data: $data");
     // creatable songs have two arrangements which exist as separate songs on the server. They are combined on the frontend into one song with two versions.
     data.forEach((songData) {
       CreatableSong existing = dataMatchesSong(songData);

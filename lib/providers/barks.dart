@@ -125,6 +125,7 @@ class Barks with ChangeNotifier {
   }
 
   void deleteTempRawBark() {
+    if (tempRawBark == null) return;
     if (File(tempRawBark.filePath).existsSync())
       File(tempRawBark.filePath).deleteSync();
     tempRawBark = null;

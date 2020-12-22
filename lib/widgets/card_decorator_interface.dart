@@ -143,16 +143,21 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
       height: 170,
       child: Stack(
         children: <Widget>[
-          Opacity(
-            opacity: 0,
-            child: TextField(
-              controller: textController,
-              focusNode: focusNode,
-              onChanged: (text) {
-                print("Text: $text");
-                decorationController.updateText(text);
-              },
-              onSubmitted: (text) {},
+          GestureDetector(
+            onTap: null,
+            behavior: HitTestBehavior.opaque,
+            child: Opacity(
+              opacity: 0,
+              child: TextField(
+                onTap: null,
+                controller: textController,
+                focusNode: focusNode,
+                onChanged: (text) {
+                  print("Text: $text");
+                  decorationController.updateText(text);
+                },
+                onSubmitted: (text) {},
+              ),
             ),
           ),
           Column(
@@ -163,7 +168,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   GestureDetector(
-                    behavior: HitTestBehavior.translucent,
+                    behavior: HitTestBehavior.opaque,
                     onTap: () {
                       currentActivity.setPreviousSubStep();
                     },

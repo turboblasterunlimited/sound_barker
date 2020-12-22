@@ -230,6 +230,9 @@ class CaretPainter extends CustomPainter {
 
     if (!decorationController.isTyping) return;
 
+    if (decorationController.decoration.typings.isEmpty)
+      decorationController.addTyping();
+
     Typing lastTyping = decorationController.decoration.typings.last;
     var size = lastTyping.textSpan.text == ""
         ? decorationController.size
