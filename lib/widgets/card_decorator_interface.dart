@@ -127,6 +127,10 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
     return decorationController.isTyping ? "Font Size" : "Line Size";
   }
 
+  void backCallback() {
+    currentActivity.setPreviousSubStep();
+  }
+
   @override
   Widget build(BuildContext context) {
     soundController ??= Provider.of<SoundController>(context);
@@ -144,7 +148,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
       child: Stack(
         children: <Widget>[
           GestureDetector(
-            onTap: null,
+            onTap: backCallback,
             behavior: HitTestBehavior.opaque,
             child: Opacity(
               opacity: 0,
@@ -169,9 +173,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                 children: [
                   GestureDetector(
                     behavior: HitTestBehavior.opaque,
-                    onTap: () {
-                      currentActivity.setPreviousSubStep();
-                    },
+                    onTap: backCallback,
                     child: Row(children: <Widget>[
                       Icon(LineAwesomeIcons.angle_left, color: Colors.grey),
                       Text(

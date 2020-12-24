@@ -284,7 +284,7 @@ class KaraokeCard with ChangeNotifier {
     if (newSong == null) return;
     if (decorationImage == null && decoration.isEmpty) {
       String selectedFrame = songFamilyToCardFileName[song.songFamily];
-      setFrame(selectedFrame);
+      setFrame(selectedFrame, true);
       print("selectedFrame: $selectedFrame");
     }
     notifyListeners();
@@ -296,7 +296,8 @@ class KaraokeCard with ChangeNotifier {
     else
       framelessIsSelected = newFrameFileName == null ? true : false;
     setShouldDeleteOldDecortionImage();
-    framePath = framesPath + newFrameFileName;
+    framePath = newFrameFileName == null ? null : framesPath + newFrameFileName;
+    notifyListeners();
   }
 
   void noSongNoFormula() {

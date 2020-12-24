@@ -20,7 +20,7 @@ class CardFrameInterface extends StatefulWidget {
 class _CardFrameInterfaceState extends State<CardFrameInterface> {
   KaraokeCards cards;
   CurrentActivity currentActivity;
-  String selectedFrame;
+  String selectedFrame = "";
   int _currentFrameCategoryIndex = 0;
   ImageController imageController;
   SoundController soundController;
@@ -45,6 +45,8 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   }
 
   void skipCallback() {
+    print("Card framepath: ${cards.current.framePath}");
+    print("card decoration image: ${cards.current.decorationImage}");
     if (cards.current.decorationImage != null) {
       cards.current.shouldDeleteOldDecoration = false;
       Future.delayed(
@@ -54,7 +56,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     } else {
       currentActivity.setNextSubStep();
       Future.delayed(
-          Duration(milliseconds: 500), () => cards.setFrame(null));
+          Duration(milliseconds: 500), () => setFrame(noFrame: true));
     }
   }
 
@@ -473,9 +475,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
           borderRadius: BorderRadius.circular(30.0),
         ),
         elevation: 2.0,
-        color: selectedFrame != null
-            ? Theme.of(context).primaryColor
-            : Colors.grey,
+        color: Theme.of(context).primaryColor,
         padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 0),
       ),
     );
@@ -486,6 +486,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   }
 
   void initialNavigateToSelectedFrame() {
+    if (!cards.current.hasFrame) return;
     int frameIndex = _getFrameIndex(selectedFrame);
     print("frameIndex $frameIndex");
 
