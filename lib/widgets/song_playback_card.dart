@@ -167,6 +167,8 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
   }
 
   void selectSong() async {
+    if (!widget.song.hasFile) await download();
+    
     cards.setCurrentSongFormula(null);
     cards.setCurrentSong(widget.song);
     Future.delayed(
