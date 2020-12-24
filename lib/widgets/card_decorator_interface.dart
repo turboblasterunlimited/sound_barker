@@ -150,8 +150,11 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
           GestureDetector(
             onTap: backCallback,
             behavior: HitTestBehavior.opaque,
-            child: Opacity(
-              opacity: 0,
+            child: Visibility(
+              visible: false,
+              maintainState: true,
+              maintainAnimation: true,
+              maintainSize: true,
               child: TextField(
                 onTap: null,
                 controller: textController,
