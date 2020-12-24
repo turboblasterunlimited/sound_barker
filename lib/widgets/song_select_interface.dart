@@ -155,28 +155,22 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 18),
             ),
             Padding(padding: EdgeInsets.only(left: 16)),
-            RawMaterialButton(
-              constraints: const BoxConstraints(minWidth: 25, minHeight: 25),
-              onPressed: _skipCallback,
+            GestureDetector(
+              onTap: _skipCallback,
               child: Stack(
+                alignment: Alignment.center,
                 children: [
-                  Positioned(
-                  bottom: 3,
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 5),
                     child: Icon(LineAwesomeIcons.music, size: 30),
                   ),
-                  Align(
-                      alignment: Alignment.center,
-                      child:
-                          Icon(Icons.clear, color: Colors.red[900], size: 30)),
+                  Icon(
+                    Icons.not_interested,
+                    color: Theme.of(context).errorColor,
+                    size: 45,
+                  ),
                 ],
               ),
-              shape: CircleBorder(
-                side:
-                    BorderSide(color: Theme.of(context).primaryColor, width: 3),
-              ),
-              elevation: 2.0,
-              fillColor: null,
-              padding: EdgeInsets.all(5),
             ),
           ],
         ),
