@@ -6,7 +6,6 @@ import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/screens/subscription_screen.dart';
 import 'package:K9_Karaoke/widgets/custom_dialog.dart';
 import 'package:K9_Karaoke/widgets/error_dialog.dart';
-import 'package:intl/intl.dart';
 
 import 'package:K9_Karaoke/providers/card_decoration_image.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
@@ -41,8 +40,9 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   String _loadingMessage;
   String shareLink;
   String saveAndSendButtonText = "Save & Send";
-  FocusNode messageNode;
+  final messageNode = FocusNode();
   bool isSent = false;
+  String cardMessage = "";
 
   Future<void> _captureArtwork() async {
     if (cards.current.decorationImage != null) return;
@@ -101,9 +101,8 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   }
 
   void _handleShare(uuid, setDialogState) async {
-    String name = _getShareLink(uuid, setDialogState);
-    await Share.share(
-        "$name has a message for you.\n\n$shareLink\n\nCreated with K-9 Karaoke.",
+    _getShareLink(uuid, setDialogState);
+    await Share.share("$cardMessage\n\n$shareLink\n\nCreated with K-9 Karaoke.",
         subject: "K-9 Karaoke greeting card");
     SystemChrome.restoreSystemUIOverlays();
     final snackBar = SnackBar(
@@ -142,14 +141,12 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     return responseData["uuid"];
   }
 
-  String _getShareLink(uuid, setDialogState) {
-    String name = toBeginningOfSentenceCase(cards.current.picture.name);
+  void _getShareLink(uuid, setDialogState) {
     setDialogState(() {
       _loadingMessage = null;
       shareLink =
           "https://www.$serverURL/card/$uuid?recipient_name=$_getCleanedRecipientName";
     });
-    return name;
   }
 
   void _shareToClipboard(setDialogState) async {
@@ -255,57 +252,11 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                   color: Colors.grey[300],
                   thickness: 2,
                 ),
-                Column(
+                Stack(
                   children: [
-                    _loadingMessage == null
-                        ? Column(
-                            children: [
-                              Padding(
-                                padding:
-                                    EdgeInsets.only(left: 30.0, right: 30.0),
-                                child: TextField(
-                                  onChanged: (name) {
-                                    recipientName = name;
-                                  },
-                                  onSubmitted: (_) async {
-                                    messageNode.requestFocus();
-                                  },
-                                  decoration: InputDecoration(
-                                    filled: true,
-                                    fillColor: Colors.white,
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                    labelText: 'Recipient Name',
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding:
-                                    EdgeInsets.only(left: 30.0, right: 30.0),
-                                child: TextField(
-                                  focusNode: messageNode,
-                                  onChanged: (name) {
-                                    recipientName = name;
-                                  },
-                                  onSubmitted: (_) async {
-                                    await _handleUploadAndShare(setDialogState);
-                                  },
-                                  decoration: InputDecoration(
-                                    filled: true,
-                                    fillColor: Colors.white,
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                    labelText: 'Recipient Name',
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                        : _loading(),
-                    Row(
+                    Column(
                       children: [
+                        // Spacer(),
                         Padding(
                           padding: EdgeInsets.all(18),
                           child: Icon(
@@ -316,6 +267,68 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                         ),
                       ],
                     ),
+                    _loadingMessage == null
+                        ? Column(
+                            children: [
+                              Padding(
+                                padding:
+                                    EdgeInsets.only(left: 30.0, right: 30.0),
+                                child: TextField(
+                                  onChanged: (name) {
+                                    recipientName = name;
+                                  },
+                                  onSubmitted: (_) =>
+                                      messageNode.requestFocus(),
+                                  style: TextStyle(
+                                      fontSize: 15.0,
+                                      height: 1,
+                                      color: Colors.black),
+                                  decoration: InputDecoration(
+                                    isDense: true,
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    labelText: 'Recipient Name',
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    top: 20,
+                                    left: 30.0,
+                                    right: 30.0,
+                                    bottom: 20),
+                                child: TextField(
+                                  textInputAction: TextInputAction.done,
+                                  keyboardType: TextInputType.multiline,
+                                  minLines: null,
+                                  maxLines: null,
+                                  focusNode: messageNode,
+                                  onChanged: (message) {
+                                    setState(() => cardMessage = message);
+                                  },
+                                  style: TextStyle(
+                                      fontSize: 15.0,
+                                      height: 1,
+                                      color: Colors.black),
+                                  onSubmitted: (_) async {
+                                    await _handleUploadAndShare(setDialogState);
+                                  },
+                                  decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    labelText: 'Message',
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        : _loading(),
                   ],
                 ),
                 Row(
@@ -460,48 +473,56 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                RawMaterialButton(
-                  // IF USER IS NOT SUBSCRIBED AND OUT OF FREE CARDS,
-                  // USER IS PREVENTED FROM SAVING/SENDING AND PROMPTED TO SUBSCRIBE.
-                  onPressed: user.hasActiveSubscription ||
-                          cards.current == cards.all.first
-                      ? _shareDialog
-                      : _subscribeDialog,
-                  child: Text(
-                    isSent ? "Send Again" : "Save & Send",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                  ),
-                  elevation: 2.0,
-                  fillColor: Theme.of(context).primaryColor,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    RawMaterialButton(
+                      // IF USER IS NOT SUBSCRIBED AND OUT OF FREE CARDS,
+                      // USER IS PREVENTED FROM SAVING/SENDING AND PROMPTED TO SUBSCRIBE.
+                      onPressed: user.hasActiveSubscription ||
+                              cards.current == cards.all.first
+                          ? _shareDialog
+                          : _subscribeDialog,
+                      child: Text(
+                        isSent ? "Send Again" : "Save & Send",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      elevation: 2.0,
+                      fillColor: Theme.of(context).primaryColor,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 40.0, vertical: 2),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 10),
+                    ),
+                    if (isSent)
+                      RawMaterialButton(
+                        onPressed: () {
+                          cards.newCurrent();
+                          cardDecorator.reset();
+                          currentActivity
+                              .setCardCreationStep(CardCreationSteps.snap);
+                          currentActivity.startCreateCard();
+                          Navigator.of(context)
+                              .popAndPushNamed(PhotoLibraryScreen.routeName);
+                        },
+                        child: Text(
+                          "New Card",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                        elevation: 2.0,
+                        fillColor: Theme.of(context).primaryColor,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 40.0, vertical: 2),
+                      ),
+                  ],
                 ),
-                if (isSent)
-                  RawMaterialButton(
-                    onPressed: () {
-                      cards.newCurrent();
-                      cardDecorator.reset();
-                      currentActivity
-                          .setCardCreationStep(CardCreationSteps.snap);
-                      currentActivity.startCreateCard();
-                      Navigator.of(context)
-                          .popAndPushNamed(PhotoLibraryScreen.routeName);
-                    },
-                    child: Text(
-                      "New Card",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    elevation: 2.0,
-                    fillColor: Theme.of(context).primaryColor,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 40.0, vertical: 2),
-                  ),
                 if (cards.current.uuid != null)
                   RawMaterialButton(
                     onPressed: _deleteDialog,
