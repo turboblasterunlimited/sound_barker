@@ -2,6 +2,7 @@ import 'package:K9_Karaoke/globals.dart';
 import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/the_user.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
+import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/screens/subscription_screen.dart';
 import 'package:K9_Karaoke/widgets/custom_dialog.dart';
 import 'package:K9_Karaoke/widgets/error_dialog.dart';
@@ -40,6 +41,8 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   String _loadingMessage;
   String shareLink;
   String saveAndSendButtonText = "Save & Send";
+  FocusNode messageNode;
+  bool isSent = false;
 
   Future<void> _captureArtwork() async {
     if (cards.current.decorationImage != null) return;
@@ -207,7 +210,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   }
 
   _shareDialog() async {
-    setState(() => saveAndSendButtonText = "Send Again");
+    setState(() => isSent = true);
     await showDialog<Null>(
       context: context,
       builder: (ctx) => StatefulBuilder(
@@ -261,6 +264,27 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                                 padding:
                                     EdgeInsets.only(left: 30.0, right: 30.0),
                                 child: TextField(
+                                  onChanged: (name) {
+                                    recipientName = name;
+                                  },
+                                  onSubmitted: (_) async {
+                                    messageNode.requestFocus();
+                                  },
+                                  decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    labelText: 'Recipient Name',
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding:
+                                    EdgeInsets.only(left: 30.0, right: 30.0),
+                                child: TextField(
+                                  focusNode: messageNode,
                                   onChanged: (name) {
                                     recipientName = name;
                                   },
@@ -439,12 +463,12 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                 RawMaterialButton(
                   // IF USER IS NOT SUBSCRIBED AND OUT OF FREE CARDS,
                   // USER IS PREVENTED FROM SAVING/SENDING AND PROMPTED TO SUBSCRIBE.
-                  onPressed:
-                      user.hasActiveSubscription || cards.current == cards.all.first
-                          ? _shareDialog
-                          : _subscribeDialog,
+                  onPressed: user.hasActiveSubscription ||
+                          cards.current == cards.all.first
+                      ? _shareDialog
+                      : _subscribeDialog,
                   child: Text(
-                    saveAndSendButtonText,
+                    isSent ? "Send Again" : "Save & Send",
                     style: TextStyle(color: Colors.white),
                   ),
                   shape: RoundedRectangleBorder(
@@ -455,6 +479,29 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
                 ),
+                if (isSent)
+                  RawMaterialButton(
+                    onPressed: () {
+                      cards.newCurrent();
+                      cardDecorator.reset();
+                      currentActivity
+                          .setCardCreationStep(CardCreationSteps.snap);
+                      currentActivity.startCreateCard();
+                      Navigator.of(context)
+                          .popAndPushNamed(PhotoLibraryScreen.routeName);
+                    },
+                    child: Text(
+                      "New Card",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                    elevation: 2.0,
+                    fillColor: Theme.of(context).primaryColor,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 40.0, vertical: 2),
+                  ),
                 if (cards.current.uuid != null)
                   RawMaterialButton(
                     onPressed: _deleteDialog,
