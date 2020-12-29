@@ -39,6 +39,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   String recipientName = "You";
   String _loadingMessage;
   String shareLink;
+  String saveAndSendButtonText = "Save & Send";
 
   Future<void> _captureArtwork() async {
     if (cards.current.decorationImage != null) return;
@@ -186,6 +187,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
             Navigator.of(modalContext).pop();
           },
           primaryFunction: (BuildContext modalContext) async {
+            Navigator.of(modalContext).pop();
             Navigator.pushNamed(context, SubscriptionScreen.routeName);
           },
           iconPrimary: Icon(
@@ -205,6 +207,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   }
 
   _shareDialog() async {
+    setState(() => saveAndSendButtonText = "Send Again");
     await showDialog<Null>(
       context: context,
       builder: (ctx) => StatefulBuilder(
@@ -437,11 +440,11 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                   // IF USER IS NOT SUBSCRIBED AND OUT OF FREE CARDS,
                   // USER IS PREVENTED FROM SAVING/SENDING AND PROMPTED TO SUBSCRIBE.
                   onPressed:
-                      user.hasActiveSubscription || cards.saved.length < 1
+                      user.hasActiveSubscription || cards.current == cards.all.first
                           ? _shareDialog
                           : _subscribeDialog,
                   child: Text(
-                    "Save & Send",
+                    saveAndSendButtonText,
                     style: TextStyle(color: Colors.white),
                   ),
                   shape: RoundedRectangleBorder(
