@@ -214,6 +214,12 @@ class CaretPainter extends CustomPainter {
       ..strokeWidth = 4.0
       ..color = Colors.blue;
 
+    final circlePaint = Paint()
+      ..strokeWidth = 2
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0
+      ..color = Colors.blue;
+
     Offset caretOffset(Typing typing) {
       var tp = TextPainter(
           textScaleFactor: 3.0,
@@ -238,7 +244,9 @@ class CaretPainter extends CustomPainter {
         ? decorationController.size
         : lastTyping.textSpan.style.fontSize;
     //paint drag thumb
-    canvas.drawCircle(lastTyping.offset, size / 2, paint);
+    canvas.drawOval(
+        Rect.fromCenter(center: lastTyping.offset, width: size, height: size),
+        circlePaint);
     //paint caret
     if (decorationController.paintCarat) {
       var offset = caretOffset(lastTyping);

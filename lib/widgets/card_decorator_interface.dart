@@ -2,6 +2,7 @@ import 'package:K9_Karaoke/components/triangular_slider_track_shape.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/sound_controller.dart';
+import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/karaoke_card_decoration_controller.dart';
@@ -98,7 +99,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
               decorationController.setColor(color);
             },
             child: Padding(
-              padding: const EdgeInsets.all(5.0),
+              padding: const EdgeInsets.symmetric(horizontal: 5.0),
               child: Container(
                 height: 30,
                 width: 28,
@@ -121,7 +122,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
         .toList();
   }
 
-  double iconButtonSize = 35;
+  double iconButtonSize = 30;
 
   String get _sizeSliderLabel {
     return decorationController.isTyping ? "Font Size" : "Line Size";
@@ -129,6 +130,10 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
 
   void backCallback() {
     currentActivity.setPreviousSubStep();
+  }
+
+  void skipCallback() {
+    currentActivity.setNextSubStep();
   }
 
   @override
@@ -144,32 +149,33 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
     decorationController.setTextController(textController, focusNode);
 
     return Container(
-      height: 170,
+      height: 174,
       child: Stack(
         children: <Widget>[
-          GestureDetector(
-            onTap: backCallback,
-            behavior: HitTestBehavior.opaque,
-            child: Visibility(
-              visible: false,
-              maintainState: true,
-              maintainAnimation: true,
-              maintainSize: true,
-              child: TextField(
-                onTap: null,
-                controller: textController,
-                focusNode: focusNode,
-                onChanged: (text) {
-                  print("Text: $text");
-                  decorationController.updateText(text);
-                },
-                onSubmitted: (text) {},
-              ),
+          Visibility(
+            visible: false,
+            maintainState: true,
+            maintainAnimation: true,
+            maintainSize: true,
+            child: TextField(
+              onTap: null,
+              controller: textController,
+              focusNode: focusNode,
+              onChanged: (text) {
+                print("Text: $text");
+                decorationController.updateText(text);
+              },
+              onSubmitted: (_) {},
             ),
           ),
           Column(
-            // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
+              // InterfaceTitleNav(
+              //   "title",
+              //   backCallback: currentActivity.setPreviousSubStep,
+              //   skipCallback: currentActivity.setNextSubStep,
+              // ),
               // back, draw, write, sizeSlider, undo
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -187,7 +193,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                   ),
                   // Drawing button
                   Padding(
-                    padding: const EdgeInsets.only(left: 15.0),
+                    padding: const EdgeInsets.only(left: 0),
                     child: IconButton(
                       color: decorationController.isDrawing
                           ? Colors.blue
@@ -202,7 +208,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                   ),
                   // Typing button
                   Padding(
-                    padding: const EdgeInsets.only(right: 5),
+                    padding: const EdgeInsets.only(right: 0),
                     child: IconButton(
                       color: decorationController.isTyping
                           ? Colors.blue
@@ -216,63 +222,78 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                       // icon: Icon(CustomIcons.aa, size: iconButtonSize + 10),
                     ),
                   ),
-                  // Text/Drawing Size slider
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        _sizeSliderLabel,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 100,
-                        child: SliderTheme(
-                          data: SliderTheme.of(context).copyWith(
-                            thumbColor: Colors.blue[700],
-                            trackHeight: 20,
-                            trackShape: TriangularSliderTrackShape(
-                              Theme.of(context).primaryColor,
-                            ),
-                          ),
-                          child: Slider(
-                            value: decorationController.size,
-                            min: 8,
-                            max: 40,
-                            divisions: 32,
-                            label: decorationController.size.round().toString(),
-                            onChanged: (double sliderVal) {
-                              decorationController.setSize(sliderVal);
-                            },
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-
                   // Undo button
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 5.0),
+                    padding: const EdgeInsets.only(left: 15),
                     child: IconButton(
                       color: Theme.of(context).primaryColor,
                       onPressed: _handleUndo,
                       icon: Icon(CustomIcons.undo, size: iconButtonSize),
                     ),
                   ),
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: skipCallback,
+                    child: Row(children: <Widget>[
+                      Text(
+                        'Skip',
+                        style: TextStyle(color: Theme.of(context).accentColor),
+                      ),
+                      Icon(LineAwesomeIcons.angle_right, color: Colors.grey),
+                    ]),
+                  ),
                 ],
               ),
-              // Color Select
-              Expanded(
+              // Text/Drawing Size slider
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      _sizeSliderLabel,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 180,
+                      child: SliderTheme(
+                        data: SliderTheme.of(context).copyWith(
+                          thumbColor: Colors.blue[700],
+                          trackHeight: 10,
+                          trackShape: TriangularSliderTrackShape(
+                            Theme.of(context).primaryColor,
+                          ),
+                        ),
+                        child: Slider(
+                          value: decorationController.size,
+                          min: 8,
+                          max: 40,
+                          divisions: 32,
+                          label: decorationController.size.round().toString(),
+                          onChanged: (double sliderVal) {
+                            decorationController.setSize(sliderVal);
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Color select
+              Container(
+                height: 30,
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 5.0),
                   child: ListView(
-                      // This next line does the trick.
                       scrollDirection: Axis.horizontal,
                       children: _colorButtons()),
                 ),
               ),
+
               // Row(
               //   children: <Widget>[
               //     Flexible(
@@ -370,13 +391,13 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
               // ),
               // Reset/Check buttons
               Padding(
-                padding: const EdgeInsets.only(bottom: 15.0),
+                padding: const EdgeInsets.only(bottom: 0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     MaterialButton(
-                      height: 20,
+                      height: 15,
                       minWidth: 50,
                       onPressed: _handleReset,
                       child: Padding(
@@ -405,7 +426,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                       padding: EdgeInsets.only(left: 20),
                     ),
                     MaterialButton(
-                      height: 20,
+                      height: 15,
                       minWidth: 50,
                       onPressed: () {
                         decorationController.startDrawing();
@@ -414,7 +435,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                       child: Icon(
                         Icons.check,
                         color: Colors.white,
-                        size: 30,
+                        size: 27,
                       ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30.0),

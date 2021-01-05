@@ -121,16 +121,17 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
                 ),
                 if (showMySongs && songs.all.isEmpty)
                   AnimatedBuilder(
-                      animation: animationController,
-                      builder: (BuildContext context, Widget child) {
-                        return Positioned(
-                          bottom: tween.value,
-                          left: 0,
-                          right: 0,
-                          child: Icon(Icons.arrow_upward,
-                              size: 50, color: Theme.of(context).primaryColor),
-                        );
-                      }),
+                    animation: animationController,
+                    builder: (BuildContext context, Widget child) {
+                      return Positioned(
+                        bottom: tween.value,
+                        left: 0,
+                        right: 0,
+                        child: Icon(Icons.arrow_upward,
+                            size: 50, color: Theme.of(context).primaryColor),
+                      );
+                    },
+                  ),
               ],
             ),
             Padding(padding: EdgeInsets.only(left: 16)),

@@ -209,6 +209,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   _shareDialog() async {
     setState(() => isSent = true);
     await showDialog<Null>(
+      barrierDismissible: true,
       context: context,
       builder: (ctx) => StatefulBuilder(
           builder: (BuildContext context, Function setDialogState) {
@@ -256,7 +257,6 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                   children: [
                     Column(
                       children: [
-                        // Spacer(),
                         Padding(
                           padding: EdgeInsets.all(18),
                           child: Icon(

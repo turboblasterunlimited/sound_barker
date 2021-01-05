@@ -309,7 +309,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                       ),
                     ),
                   ),
-
                   if (cards.current != null && !isDecorationScreen) CardProgressBar(),
                   if (cards.current != null)
                     Padding(

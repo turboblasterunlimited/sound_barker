@@ -76,6 +76,20 @@ Map<String, List<String>> get frameFileNames {
       'christmas-ornaments.png',
       'christmas-wreath.png',
     ],
+    "Jewish": [
+      'hanukkah-dreidel.png',
+      'hanukkah-dreidel2.png',
+      'hanukkah-package.png',
+      'kiddush-cup.png',
+      'torah.png',
+    ],
+    "New Years": [
+      'new-year-baby.png',
+      'new-year-cat.png',
+      'new-year-dog.png',
+      'new-year-champagne.png',
+      'new-year-fireworks.png',
+    ],
     "Holidays": [
       'july-4th.png',
       'thanksgiving.png',
@@ -85,12 +99,14 @@ Map<String, List<String>> get frameFileNames {
       'mothers-day.png',
       'valentine.png',
     ],
-    "Jewish": [
-      'hanukkah-dreidel.png',
-      'hanukkah-dreidel2.png',
-      'hanukkah-package.png',
-      'kiddush-cup.png',
-      'torah.png',
+    "National": [
+      'o-canada.png',
+      'liberty-flag.png',
+      'fireworks.png',
+      'flag.png',
+      'liberty.png',
+      'liberty-flag-4th1.png',
+      'flag-4th2.png'
     ],
     "Kids": [
       'abc1.png',
@@ -108,22 +124,6 @@ Map<String, List<String>> get frameFileNames {
       'ocean.png',
       'space.png',
     ],
-    "National": [
-      'o-canada.png',
-      'liberty-flag.png',
-      'fireworks.png',
-      'flag.png',
-      'liberty.png',
-      'liberty-flag-4th1.png',
-      'flag-4th2.png'
-    ],
-    "New Years": [
-      'new-year-baby.png',
-      'new-year-cat.png',
-      'new-year-dog.png',
-      'new-year-champagne.png',
-      'new-year-fireworks.png',
-    ],
     "Sports": [
       'baseball.png',
       'basketball.png',
@@ -131,7 +131,7 @@ Map<String, List<String>> get frameFileNames {
       'hockey.png',
       'soccer.png',
     ],
-    "Styles": [
+    "Abstract": [
       'abstract1.png',
       'abstract2.png',
       'abstract3.png',
@@ -139,7 +139,7 @@ Map<String, List<String>> get frameFileNames {
       'abstract-rainbow.png',
       'abstract-psychedelic.png',
     ],
-    "Tint": [
+    "Colors": [
       'color-black.png',
       'color-blue.png',
       'color-green.png',
