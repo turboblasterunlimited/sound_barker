@@ -140,12 +140,14 @@ Map<String, List<String>> get frameFileNames {
       'abstract-psychedelic.png',
     ],
     "Tint": [
-      'color-white.png',
       'color-black.png',
-      'color-magenta.png',
-      'color-teal.png',
-      'color-red.png',
       'color-blue.png',
+      'color-green.png',
+      'color-orange.png',
+      'color-pink.png',
+      'color-purple.png',
+      'color-red.png',
+      'color-white.png',
     ],
   };
 }

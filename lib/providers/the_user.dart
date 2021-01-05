@@ -125,9 +125,8 @@ class TheUser with ChangeNotifier {
   }
 
   bool get hasActiveSubscription {
-    return true;
-    // print("User's active subscriptions: ${purchaserInfo.entitlements.active}");
-    // return purchaserInfo.entitlements.active.isNotEmpty;
+    print("User's active subscriptions: ${purchaserInfo.entitlements.active}");
+    return purchaserInfo.entitlements.active.isNotEmpty;
   }
 }
 
