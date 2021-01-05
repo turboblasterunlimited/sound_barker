@@ -185,6 +185,10 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     return currentActivity.isStyle && cards.current.hasFrameDimension;
   }
 
+  bool get isDecorationScreen {
+    return currentActivity.isStyle && currentActivity.isTwo;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (firstBuild) _runOnce();
@@ -306,7 +310,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                     ),
                   ),
 
-                  if (cards.current != null) CardProgressBar(),
+                  if (cards.current != null && !isDecorationScreen) CardProgressBar(),
                   if (cards.current != null)
                     Padding(
                       padding: const EdgeInsets.only(top: 10.0),
