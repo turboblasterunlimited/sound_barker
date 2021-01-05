@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'package:K9_Karaoke/globals.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
+import 'package:K9_Karaoke/screens/main_screen.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/widgets/card_progress_bar.dart';
 import 'package:K9_Karaoke/widgets/custom_appbar.dart';
@@ -203,7 +204,7 @@ class _SetPictureCoordinatesScreenState
       widget.editing ? _submitEditedPicture() : _submitPicture();
       Navigator.popUntil(
         context,
-        ModalRoute.withName("main-screen"),
+        ModalRoute.withName(MainScreen.routeName),
       );
     } else {
       return null;

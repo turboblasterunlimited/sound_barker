@@ -1,4 +1,6 @@
+import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/the_user.dart';
+import 'package:K9_Karaoke/screens/main_screen.dart';
 import 'package:K9_Karaoke/widgets/custom_appbar.dart';
 import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import 'package:K9_Karaoke/widgets/loading_half_screen_widget.dart';
@@ -16,6 +18,7 @@ class SubscriptionScreen extends StatefulWidget {
 
 class _SubscriptionScreenState extends State<SubscriptionScreen> {
   TheUser user;
+  CurrentActivity currentActivity;
 
   makePurchase(BuildContext ctx, Package package) {
     Function errorCallback = (errorMessage) => showError(ctx, errorMessage);
@@ -79,6 +82,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   Widget build(BuildContext context) {
     print("building subscription screen");
     user = Provider.of<TheUser>(context);
+    currentActivity = Provider.of<CurrentActivity>(context, listen: false);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -185,8 +189,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                             child: Align(
                               alignment: Alignment.topCenter,
                               child: Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 8.0, right: 8.0, top: 20),
+                                padding: const EdgeInsets.only(
+                                    left: 8.0, right: 8.0, top: 20),
                                 child: Text(
                                   "Manage your subscription in\nSETTINGS -> APPLE ID -> SUBSCRIPTIONS",
                                   style: TextStyle(
@@ -196,6 +200,29 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                               ),
                             ),
                           ),
+                          if (currentActivity.isCreateCard)
+                            Expanded(
+                              child: Align(
+                                alignment: Alignment.topCenter,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 8.0, right: 8.0, top: 20),
+                                  child: RawMaterialButton(
+                                    onPressed: () => Navigator.of(context)
+                                        .popUntil(ModalRoute.withName(
+                                            MainScreen.routeName)),
+                                    child: Text("Resume"),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30.0),
+                                    ),
+                                    elevation: 2.0,
+                                    fillColor: Theme.of(context).primaryColor,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 40.0, vertical: 2),
+                                  ),
+                                ),
+                              ),
+                            )
                         ],
                       );
           },

@@ -1,6 +1,7 @@
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/pictures.dart';
+import 'package:K9_Karaoke/screens/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
@@ -45,7 +46,7 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
         CardCreationSteps.style, CardCreationSubSteps.three);
     Navigator.popUntil(
       context,
-      ModalRoute.withName("main-screen"),
+      ModalRoute.withName(MainScreen.routeName),
     );
   }
 

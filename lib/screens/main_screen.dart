@@ -66,9 +66,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   }
 
   Future<void> _navigate() async {
-    // if (pictures.all.isEmpty)
-    //   startCreateCard();
-    // else
     Navigator.of(context).pushNamed(MenuScreen.routeName);
   }
 

@@ -1,5 +1,6 @@
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
+import 'package:K9_Karaoke/screens/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
@@ -75,7 +76,7 @@ class _PictureCardState extends State<PictureCard>
     cards.setCurrentPicture(widget.picture);
     currentActivity.setCardCreationStep(CardCreationSteps.song);
     imageController.createDog(widget.picture);
-    Navigator.popUntil(context, ModalRoute.withName("main-screen"));
+    Navigator.popUntil(context, ModalRoute.withName(MainScreen.routeName));
   }
 
   Widget _imageWidget() {

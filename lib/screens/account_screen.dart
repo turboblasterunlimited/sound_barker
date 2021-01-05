@@ -5,6 +5,7 @@ import 'package:K9_Karaoke/providers/pictures.dart';
 import 'package:K9_Karaoke/providers/songs.dart';
 import 'package:K9_Karaoke/providers/the_user.dart';
 import 'package:K9_Karaoke/screens/authentication_screen.dart';
+import 'package:K9_Karaoke/screens/main_screen.dart';
 import 'package:K9_Karaoke/screens/subscription_screen.dart';
 import 'package:K9_Karaoke/widgets/custom_appbar.dart';
 import 'package:K9_Karaoke/widgets/custom_dialog.dart';
@@ -57,11 +58,7 @@ class _AccountState extends State<AccountScreen> {
               var response = await user.delete();
               if (response["success"]) {
                 _deleteFiles();
-                _removeData();
-                Navigator.of(modalContext)
-                    .popUntil(ModalRoute.withName("main-screen"));
-                Navigator.of(modalContext)
-                    .popAndPushNamed(AuthenticationScreen.routeName);
+                removeDataAndNavToAuth(modalContext);
               } else {
                 showError(modalContext, response["error"]);
               }
@@ -83,6 +80,13 @@ class _AccountState extends State<AccountScreen> {
         });
   }
 
+  void removeDataAndNavToAuth(modalContext) {
+    _removeData();
+    Navigator.of(modalContext)
+        .popUntil(ModalRoute.withName(MainScreen.routeName));
+    Navigator.of(modalContext).popAndPushNamed(AuthenticationScreen.routeName);
+  }
+
   void _handleLogout() async {
     return showDialog(
         context: context,
@@ -94,11 +98,7 @@ class _AccountState extends State<AccountScreen> {
             primaryFunction: (BuildContext modalContext) async {
               var response = await user.logout();
               if (response["success"]) {
-                _removeData();
-                Navigator.of(modalContext)
-                    .popUntil(ModalRoute.withName("main-screen"));
-                Navigator.of(modalContext)
-                    .popAndPushNamed(AuthenticationScreen.routeName);
+                removeDataAndNavToAuth(modalContext);
               } else {
                 showError(modalContext, response["error"]);
               }
@@ -153,8 +153,8 @@ class _AccountState extends State<AccountScreen> {
                 ),
               ),
               GestureDetector(
-                onTap: () =>
-                    Navigator.of(context).pushNamed(SubscriptionScreen.routeName),
+                onTap: () => Navigator.of(context)
+                    .pushNamed(SubscriptionScreen.routeName),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text("Subscription",
@@ -166,9 +166,11 @@ class _AccountState extends State<AccountScreen> {
                 onTap: () => _handleDeleteAccount(),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text("Delete Account",
-                      style: TextStyle(
-                          fontSize: 40, color: Theme.of(context).primaryColor)),
+                  child: Text(
+                    "Delete Account",
+                    style: TextStyle(
+                        fontSize: 40, color: Theme.of(context).primaryColor),
+                  ),
                 ),
               ),
               Container(

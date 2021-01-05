@@ -1,6 +1,7 @@
 import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
+import 'package:K9_Karaoke/screens/main_screen.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/screens/set_picture_coordinates_screen.dart';
 import 'package:flutter/material.dart';
@@ -102,7 +103,7 @@ class CardProgressBar extends StatelessWidget {
     void navigateToSong() {
       currentActivity.setCardCreationStep(CardCreationSteps.song);
       // This is in case SetCoordinatesScreen is on the stack.
-      Navigator.of(context).popUntil(ModalRoute.withName("main-screen"));
+      Navigator.of(context).popUntil(ModalRoute.withName(MainScreen.routeName));
     }
 
     void navigateToSpeak() {
@@ -115,13 +116,13 @@ class CardProgressBar extends StatelessWidget {
         currentActivity.setCardCreationStep(
             CardCreationSteps.speak, CardCreationSubSteps.seven);
       // This is in case SetCoordinatesScreen is on the stack.
-      Navigator.of(context).popUntil(ModalRoute.withName("main-screen"));
+      Navigator.of(context).popUntil(ModalRoute.withName(MainScreen.routeName));
     }
 
     void navigateToStyle() {
       currentActivity.setCardCreationStep(CardCreationSteps.style);
       // This is in case SetCoordinatesScreen is on the stack.
-      Navigator.of(context).popUntil(ModalRoute.withName("main-screen"));
+      Navigator.of(context).popUntil(ModalRoute.withName(MainScreen.routeName));
     }
 
     return Row(

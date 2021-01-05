@@ -66,15 +66,15 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     return [
       Text('Birthday', style: TextStyle(fontSize: 15)),
       Text('Christmas', style: TextStyle(fontSize: 15)),
-      Text('Holidays', style: TextStyle(fontSize: 15)),
       Text('Jewish', style: TextStyle(fontSize: 15)),
+      Text('New Years', style: TextStyle(fontSize: 15)),
+      Text('Holidays', style: TextStyle(fontSize: 15)),
+      Text('National', style: TextStyle(fontSize: 15)),
       Text('Kids', style: TextStyle(fontSize: 15)),
       Text('Misc', style: TextStyle(fontSize: 15)),
-      Text('National', style: TextStyle(fontSize: 15)),
-      Text('New Years', style: TextStyle(fontSize: 15)),
       Text('Sports', style: TextStyle(fontSize: 15)),
-      Text('Styles', style: TextStyle(fontSize: 15)),
-      Text('Tint', style: TextStyle(fontSize: 15)),
+      Text('Abstract', style: TextStyle(fontSize: 15)),
+      Text('Colors', style: TextStyle(fontSize: 15)),
     ];
   }
 
