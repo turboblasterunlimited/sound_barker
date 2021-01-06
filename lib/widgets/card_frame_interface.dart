@@ -31,6 +31,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   bool userManipulatingCategory = false;
   bool firstBuild = true;
   Map<String, List<String>> frameFiles = frameFileNames;
+  double halfScreenWidth;
 
   @override
   void dispose() {
@@ -252,7 +253,8 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     }
   }
 
-  void _handleCategoryChange(frameCategoryIndex, {int frameIndex}) {
+  void _handleCategoryChange(frameCategoryIndex,
+      {int frameIndex, bool centerFrame = false}) {
     print("checkpoint");
     var categories = getFrameCategories();
     var selectedCategoryWidget = categories[frameCategoryIndex] as Text;
@@ -276,8 +278,11 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       ),
     );
     // category is selected (vs frame scrolling)
-    if (frameIndex != null)
-      _scrollController.jumpTo(frameIndex * (_listItemWidth + 5));
+    if (frameIndex != null) {
+      double offset = halfScreenWidth - _listItemWidth / 2;
+      _scrollController.jumpTo(
+          frameIndex * (_listItemWidth + 5) - (centerFrame ? offset : 0));
+    }
   }
 
   void _handleCarouselSlider(index) {
@@ -393,6 +398,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
 
   int pixelsToCategoryIndex(double pixels) {
     var frameIndex = _pixelsToFrameIndex(pixels);
+    frameIndex += 2;
     return _frameIndexToCategoryIndex(frameIndex);
   }
 
@@ -498,7 +504,8 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     Future.delayed(Duration(milliseconds: 500), () {
       _currentFrameCategoryIndex = categoryIndex;
       animateToPage(categoryIndex);
-      _handleCategoryChange(categoryIndex, frameIndex: frameIndex);
+      _handleCategoryChange(categoryIndex,
+          frameIndex: frameIndex, centerFrame: true);
     });
   }
 
@@ -527,6 +534,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       _handleCategoryChange(0);
       _insertIfExistingArtFrame();
       _setFrameAndCategorySelection();
+      halfScreenWidth = MediaQuery.of(context).size.width / 2;
     }
 
     return Column(
