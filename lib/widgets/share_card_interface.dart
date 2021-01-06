@@ -347,7 +347,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                             ),
                           ),
                           child: Text(
-                            "CLIPBOARD",
+                            "COPY LINK",
                             style: TextStyle(color: Colors.white),
                             textAlign: TextAlign.center,
                           ),

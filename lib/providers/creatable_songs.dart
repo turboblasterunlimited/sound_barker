@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 class CreatableSongs with ChangeNotifier {
   List<CreatableSong> all = [];
 
+  void sort() {
+    all.sort((a, b) => a.displayOrder.compareTo(b.displayOrder));
+  }
+
   static String getFullName(theName, theStyle) {
     if (theStyle == "")
       return theName;
@@ -25,6 +29,7 @@ class CreatableSongs with ChangeNotifier {
       arrangement: {data["arrangement"]: data["id"]},
       backingTrackUrl: "backing_tracks/${data["backing_track"]}/0.aac",
       backingTrackOffset: data["backingtrack_offset"],
+      displayOrder: int.parse(data["display_order"]),
     );
     all.add(newSong);
   }
@@ -57,13 +62,15 @@ class CreatableSong {
   final String backingTrackUrl;
   final int backingTrackOffset;
   final Map arrangement; // {"harmonized": "someId", "pitched": "someId"}
+  final int displayOrder;
 
   CreatableSong(
       {this.name,
       this.style,
       this.backingTrackUrl,
       this.arrangement,
-      this.backingTrackOffset});
+      this.backingTrackOffset,
+      this.displayOrder});
 
   List<int> get ids {
     return [arrangement["harmonized"], arrangement["pitched"]];

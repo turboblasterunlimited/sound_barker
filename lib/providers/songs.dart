@@ -13,16 +13,17 @@ import '../tools/amplitude_extractor.dart';
 
 class Songs with ChangeNotifier {
   List<Song> all = [];
-  List<CreatableSong> creatableSongs;
+  // List<CreatableSong> creatableSongs;
+  CreatableSongs creatableSongs;
 
   void removeAll() {
     all = [];
-    creatableSongs = [];
+    creatableSongs.all = [];
   }
 
-  void setCreatableSongs(List<CreatableSong> creatables) {
+  void setCreatableSongs(CreatableSongs creatables) {
     creatableSongs = creatables;
-    creatableSongs.sort((a, b) => a.fullName.compareTo(b.fullName));
+    creatableSongs.sort();
   }
 
   Song findById(String id) {
@@ -50,9 +51,9 @@ class Songs with ChangeNotifier {
   }
 
   String getSongFamily(String id) {
-    int i = creatableSongs
+    int i = creatableSongs.all
         .indexWhere((creatable) => creatable.ids.indexOf(int.parse(id)) != -1);
-    return creatableSongs[i].fullName;
+    return creatableSongs.all[i].fullName;
   }
 
   // ALL SONGS THAT AREN'T HIDDEN UNLESS THEY ALREADY EXIST ON THE CLIENT
