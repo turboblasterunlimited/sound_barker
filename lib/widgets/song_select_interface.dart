@@ -157,11 +157,11 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
             ),
             Padding(padding: EdgeInsets.only(left: 16)),
             Spacer(),
-            Padding(
-              padding: const EdgeInsets.only(right: 4.0),
+            Transform.translate(
+              offset: Offset(-10, -10),
               child: Column(
                 children: [
-                  Icon(Icons.arrow_upward),
+                  Icon(Icons.arrow_upward, size: 20),
                   Text("No Song"),
                 ],
               ),
