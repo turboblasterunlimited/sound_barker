@@ -95,6 +95,7 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Spacer(),
             Stack(
               overflow: Overflow.visible,
               children: [
@@ -156,20 +157,13 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 18),
             ),
             Padding(padding: EdgeInsets.only(left: 16)),
-            GestureDetector(
-              onTap: _skipCallback,
-              child: Stack(
-                alignment: Alignment.center,
+            Spacer(),
+            Padding(
+              padding: const EdgeInsets.only(right: 4.0),
+              child: Column(
                 children: [
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 5),
-                    child: Icon(LineAwesomeIcons.music, size: 30),
-                  ),
-                  Icon(
-                    Icons.not_interested,
-                    color: Theme.of(context).errorColor,
-                    size: 45,
-                  ),
+                  Icon(Icons.arrow_upward),
+                  Text("No Song"),
                 ],
               ),
             ),
