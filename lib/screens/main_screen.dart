@@ -220,7 +220,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
           children: <Widget>[
             // portrait, progress bar, interface, spinner
             Padding(
-              padding: const EdgeInsets.only(top: 70.0),
+              padding: const EdgeInsets.only(top: 55.0),
               child: Column(
                 children: <Widget>[
                   // frame and portrait

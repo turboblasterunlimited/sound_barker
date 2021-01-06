@@ -106,9 +106,15 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       child: Container(
         decoration: selectedFrame == fileName
             ? BoxDecoration(
-                border: Border.all(
-                  color: Colors.blue,
-                  width: 3,
+                border: Border.symmetric(
+                  horizontal: BorderSide(
+                    color: Colors.blue,
+                    width: 10,
+                  ),
+                  vertical: BorderSide(
+                    color: Colors.blue,
+                    width: 8,
+                  ),
                 ),
               )
             : BoxDecoration(),
