@@ -5,7 +5,9 @@ class CreatableSongs with ChangeNotifier {
   List<CreatableSong> all = [];
 
   void sort() {
+    print("sorting creatables");
     all.sort((a, b) => a.displayOrder.compareTo(b.displayOrder));
+    print("done sorting");
   }
 
   static String getFullName(theName, theStyle) {
@@ -29,7 +31,7 @@ class CreatableSongs with ChangeNotifier {
       arrangement: {data["arrangement"]: data["id"]},
       backingTrackUrl: "backing_tracks/${data["backing_track"]}/0.aac",
       backingTrackOffset: data["backingtrack_offset"],
-      displayOrder: int.parse(data["display_order"]),
+      displayOrder: data["display_order"],
     );
     all.add(newSong);
   }
@@ -45,6 +47,8 @@ class CreatableSongs with ChangeNotifier {
     print("creatable song data: $data");
     // creatable songs have two arrangements which exist as separate songs on the server. They are combined on the frontend into one song with two versions.
     data.forEach((songData) {
+            print("checkpoint");
+
       CreatableSong existing = dataMatchesSong(songData);
       if (existing == null) {
         createNewSong(songData);

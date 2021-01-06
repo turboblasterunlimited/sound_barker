@@ -33,8 +33,12 @@ class _RetrieveDataScreenState extends State<RetrieveDataScreen> {
     if (!mounted) return;
     await pictures.retrieveAll();
     // need creatableSongData to get songIds
+        print("before retrieving");
+
     await creatableSongs.retrieveFromServer();
+    print("done");
     await barks.retrieveAll();
+    print("before sorting");
     songs.setCreatableSongs(creatableSongs);
     await songs.retrieveAll();
     await cardAudios.retrieveAll();
