@@ -50,13 +50,16 @@ class _LoadingScreenWidgetState extends State<LoadingScreenWidget> {
               Padding(
                 padding: const EdgeInsets.only(top: 25.0),
                 child: Center(
-                  child: Text(
-                    // toString incase null
-                    widget.messageText.toString(),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Theme.of(context).primaryColor,
-                      fontSize: 25,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Text(
+                      // toString incase null
+                      widget.messageText.toString(),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontSize: 25,
+                      ),
                     ),
                   ),
                 ),

@@ -7,10 +7,13 @@ import 'package:K9_Karaoke/widgets/creatable_song_card.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:math' as math;
 
 import '../providers/sound_controller.dart';
 import 'package:K9_Karaoke/widgets/song_playback_card.dart';
 import '../providers/songs.dart';
+
+
 
 class SongSelectInterface extends StatefulWidget {
   @override
@@ -161,8 +164,20 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
               offset: Offset(-10, -10),
               child: Column(
                 children: [
-                  Icon(Icons.arrow_upward, size: 20),
-                  Text("No Song"),
+                  Transform.rotate(
+                    angle: -math.pi / -12.0,
+                    child: Icon(
+                      Icons.arrow_upward,
+                      size: 20,
+                      color: Theme.of(context).accentColor,
+                    ),
+                  ),
+                  Text(
+                    "No Song",
+                    style: TextStyle(
+                      color: Theme.of(context).accentColor,
+                    ),
+                  ),
                 ],
               ),
             ),

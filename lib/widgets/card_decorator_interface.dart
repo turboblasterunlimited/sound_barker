@@ -2,7 +2,6 @@ import 'package:K9_Karaoke/components/triangular_slider_track_shape.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/sound_controller.dart';
-import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/karaoke_card_decoration_controller.dart';
@@ -123,10 +122,6 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
   }
 
   double iconButtonSize = 30;
-
-  String get _sizeSliderLabel {
-    return decorationController.isTyping ? "Font Size" : "Line Size";
-  }
 
   void backCallback() {
     currentActivity.setPreviousSubStep();
@@ -251,7 +246,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      _sizeSliderLabel,
+                      "Font/Line Size",
                       style: TextStyle(
                         fontSize: 16,
                         color: Theme.of(context).primaryColor,
