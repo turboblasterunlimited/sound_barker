@@ -103,7 +103,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   void _handleShare(uuid, setDialogState) async {
     _getShareLink(uuid, setDialogState);
     await Share.share("$cardMessage\n\n$shareLink\n\nCreated with K-9 Karaoke.",
-        subject: "K-9 Karaoke greeting card");
+        subject: "K-9 Karaoke");
     SystemChrome.restoreSystemUIOverlays();
     final snackBar = SnackBar(
       content: Text('Done Sharing!'),
@@ -240,7 +240,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                       padding: const EdgeInsets.all(20.0),
                       child: Center(
                         child: Text(
-                          "Sharing is Caring",
+                          "Share Card",
                           style: TextStyle(
                               color: Theme.of(context).primaryColor,
                               fontSize: 20),
@@ -290,7 +290,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(16),
                                     ),
-                                    labelText: 'Recipient Name',
+                                    labelText: 'Recipient (optional)',
                                   ),
                                 ),
                               ),
@@ -317,12 +317,13 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                                     await _handleUploadAndShare(setDialogState);
                                   },
                                   decoration: InputDecoration(
+                                    hintText: 'Hi mom. Happy birthday from Spot.',
                                     filled: true,
                                     fillColor: Colors.white,
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(16),
                                     ),
-                                    labelText: 'Message',
+                                    labelText: 'Message (optional)',
                                   ),
                                 ),
                               ),

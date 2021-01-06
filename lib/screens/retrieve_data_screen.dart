@@ -9,7 +9,6 @@ import 'package:K9_Karaoke/screens/main_screen.dart';
 
 import 'package:K9_Karaoke/widgets/loading_screen_widget.dart';
 import 'package:flutter/material.dart';
-
 import 'package:provider/provider.dart';
 
 class RetrieveDataScreen extends StatefulWidget {
@@ -31,9 +30,10 @@ class _RetrieveDataScreenState extends State<RetrieveDataScreen> {
 
   Future<void> downloadDataAndNavigate() async {
     if (!mounted) return;
+    
     await pictures.retrieveAll();
     // need creatableSongData to get songIds
-        print("before retrieving");
+    print("before retrieving");
 
     await creatableSongs.retrieveFromServer();
     print("done");
@@ -62,8 +62,8 @@ class _RetrieveDataScreenState extends State<RetrieveDataScreen> {
       downloadDataAndNavigate();
     }
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      resizeToAvoidBottomInset: false,
-      body: LoadingScreenWidget("Getting your stuff!"));
+        extendBodyBehindAppBar: true,
+        resizeToAvoidBottomInset: false,
+        body: LoadingScreenWidget("Getting your stuff!"));
   }
 }
