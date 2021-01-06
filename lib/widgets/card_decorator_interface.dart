@@ -166,12 +166,6 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              // InterfaceTitleNav(
-              //   "title",
-              //   backCallback: currentActivity.setPreviousSubStep,
-              //   skipCallback: currentActivity.setNextSubStep,
-              // ),
-              // back, draw, write, sizeSlider, undo
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -288,102 +282,6 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                       children: _colorButtons()),
                 ),
               ),
-
-              // Row(
-              //   children: <Widget>[
-              //     Flexible(
-              //       flex: 1,
-              //       child: RawMaterialButton(
-              //         fillColor: Colors.black,
-              //         shape: CircleBorder(),
-              //         onPressed: () {
-              //           decorationController.setColor(Colors.black);
-              //         },
-              //         child: decorationController.color == Colors.black
-              //             ? Icon(Icons.check, size: 20, color: Colors.white)
-              //             : Container(height: 20),
-              //       ),
-              //     ),
-              //     Flexible(
-              //       flex: 1,
-              //       child: RawMaterialButton(
-              //         fillColor: Colors.white,
-              //         shape: CircleBorder(),
-              //         onPressed: () {
-              //           decorationController.setColor(Colors.white);
-              //         },
-              //         child: decorationController.color == Colors.white
-              //             ? Icon(Icons.check, size: 20)
-              //             : Container(height: 20),
-              //       ),
-              //     ),
-              //     Flexible(
-              //       flex: 1,
-              //       child: RawMaterialButton(
-              //         fillColor: Colors.green,
-              //         shape: CircleBorder(),
-              //         onPressed: () {
-              //           decorationController.setColor(Colors.green);
-              //         },
-              //         child: decorationController.color == Colors.green
-              //             ? Icon(Icons.check, size: 20)
-              //             : Container(height: 20),
-              //       ),
-              //     ),
-              //     Flexible(
-              //       flex: 1,
-              //       child: RawMaterialButton(
-              //         fillColor: Colors.blue,
-              //         shape: CircleBorder(),
-              //         onPressed: () {
-              //           decorationController.setColor(Colors.blue);
-              //         },
-              //         child: decorationController.color == Colors.blue
-              //             ? Icon(Icons.check, size: 20)
-              //             : Container(height: 20),
-              //       ),
-              //     ),
-              //     Flexible(
-              //       flex: 1,
-              //       child: RawMaterialButton(
-              //         fillColor: Colors.pink,
-              //         shape: CircleBorder(),
-              //         onPressed: () {
-              //           decorationController.setColor(Colors.pink);
-              //         },
-              //         child: decorationController.color == Colors.pink
-              //             ? Icon(Icons.check, size: 20)
-              //             : Container(height: 20),
-              //       ),
-              //     ),
-              //     Flexible(
-              //       flex: 1,
-              //       child: RawMaterialButton(
-              //         fillColor: Colors.purple,
-              //         shape: CircleBorder(),
-              //         onPressed: () {
-              //           decorationController.setColor(Colors.purple);
-              //         },
-              //         child: decorationController.color == Colors.purple
-              //             ? Icon(Icons.check, size: 20)
-              //             : Container(height: 20),
-              //       ),
-              //     ),
-              //     Flexible(
-              //       flex: 1,
-              //       child: RawMaterialButton(
-              //         fillColor: Colors.yellow,
-              //         shape: CircleBorder(),
-              //         onPressed: () {
-              //           decorationController.setColor(Colors.yellow);
-              //         },
-              //         child: decorationController.color == Colors.yellow
-              //             ? Icon(Icons.check, size: 20)
-              //             : Container(height: 20),
-              //       ),
-              //     ),
-              //   ],
-              // ),
               // Reset/Check buttons
               Padding(
                 padding: const EdgeInsets.only(bottom: 0),
@@ -410,9 +308,6 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                         borderRadius: BorderRadius.circular(30.0),
                       ),
                       elevation: 2.0,
-                      // color: decorationController.decoration.isEmpty
-                      //     ? Colors.grey
-                      //     : Theme.of(context).errorColor,
                       color: Theme.of(context).errorColor,
                       padding: const EdgeInsets.symmetric(
                           horizontal: 40.0, vertical: 2),

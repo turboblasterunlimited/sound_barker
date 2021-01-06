@@ -309,7 +309,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                   if (cards.current != null && !isDecorationScreen) CardProgressBar(),
                   if (cards.current != null)
                     Padding(
-                      padding: const EdgeInsets.only(top: 10.0),
+                      padding: EdgeInsets.only(top: isDecorationScreen ? 0 : 10.0),
                       child: AnimatedSize(
                           duration: Duration(milliseconds: 400),
                           vsync: this,
