@@ -212,7 +212,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
       barrierDismissible: true,
       context: context,
       builder: (ctx) => StatefulBuilder(
-          builder: (BuildContext context, Function setDialogState) {
+          builder: (BuildContext modalContext, Function setDialogState) {
         return SingleChildScrollView(
             child: AlertDialog(
           shape: RoundedRectangleBorder(
@@ -242,7 +242,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                         child: Text(
                           "Share Card",
                           style: TextStyle(
-                              color: Theme.of(context).primaryColor,
+                              color: Theme.of(modalContext).primaryColor,
                               fontSize: 20),
                         ),
                       ),
@@ -317,7 +317,8 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                                     await _handleUploadAndShare(setDialogState);
                                   },
                                   decoration: InputDecoration(
-                                    hintText: 'Hi mom. Happy birthday from Spot.',
+                                    hintText:
+                                        'Hi mom. Happy birthday from Spot.',
                                     filled: true,
                                     fillColor: Colors.white,
                                     border: OutlineInputBorder(
@@ -342,7 +343,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                         child: Container(
                           padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
                           decoration: BoxDecoration(
-                            color: Theme.of(context).primaryColor,
+                            color: Theme.of(modalContext).primaryColor,
                             borderRadius: BorderRadius.only(
                               bottomLeft: Radius.circular(32.0),
                             ),
@@ -368,7 +369,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                         child: Container(
                           padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
                           decoration: BoxDecoration(
-                            color: Theme.of(context).primaryColor,
+                            color: Theme.of(modalContext).primaryColor,
                             borderRadius: BorderRadius.only(
                               bottomRight: Radius.circular(32.0),
                             ),
@@ -387,6 +388,116 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
             ),
           ),
         ));
+      }),
+    );
+  }
+
+  _envelopeDialog() async {
+    await showDialog<Null>(
+      barrierDismissible: true,
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+          builder: (BuildContext modalContext, Function setDialogState) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(32.0))),
+          contentPadding: EdgeInsets.only(top: 10.0),
+          content: Container(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "Presentation",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 26,
+                          color: Theme.of(modalContext).primaryColor),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      cards.current.setEnvelope(true);
+                      Navigator.of(modalContext).pop();
+                      _shareDialog();
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        border: Border.all(
+                          color: Colors.grey,
+                          width: 3,
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Text(
+                              "Add Envelope",
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  color: Theme.of(modalContext).primaryColor),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Image.asset("assets/images/mini-envelope.jpg"),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 10),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      cards.current.setEnvelope(false);
+                      Navigator.of(modalContext).pop();
+                      _shareDialog();
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        border: Border.all(
+                          color: Colors.grey,
+                          width: 3,
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Text(
+                              "No Envelope",
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  color: Theme.of(modalContext).primaryColor),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Image.asset(
+                              "assets/images/no-envelope.jpg",
+                              width: 165,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(padding: EdgeInsets.only(top: 15),),
+                ],
+              ),
+            ),
+          ),
+        );
       }),
     );
   }
@@ -482,7 +593,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                       // USER IS PREVENTED FROM SAVING/SENDING AND PROMPTED TO SUBSCRIBE.
                       onPressed: user.hasActiveSubscription ||
                               cards.current == cards.all.first
-                          ? _shareDialog
+                          ? _envelopeDialog
                           : _subscribeDialog,
                       child: Text(
                         isSent ? "Send Again" : "Save & Send",

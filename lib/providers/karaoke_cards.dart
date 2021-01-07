@@ -154,7 +154,7 @@ class KaraokeCard with ChangeNotifier {
 
   // used to create or manage card components
   CreatableSong
-      songFormula; // This is a creatable song, which has two arrangments. One of the arrangement ids gets sent to the server with the bark ids to create an actual song.
+      songFormula; // This is a creatable song, which has two arrangments. One of the arrangement ids will get sent to the server with the bark ids to create an actual song.
   Song song; // This is an actual song
   final message = CardMessage();
   Bark shortBark;
@@ -166,9 +166,17 @@ class KaraokeCard with ChangeNotifier {
   CardAudio oldCardAudio;
   bool framelessIsSelected = false;
 
+  // only used on the website
+  bool hasEnvelope;
+
+
   KaraokeCard(
       {this.uuid, this.picture, this.audio, this.song, this.decorationImage}) {
     this.audio ??= CardAudio();
+  }
+
+  void setEnvelope(envelope) {
+    hasEnvelope = envelope;
   }
 
   bool hasBark(bark) {

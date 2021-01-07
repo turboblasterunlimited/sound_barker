@@ -77,7 +77,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
     logoWidth ??= getLogoWidth();
     showActionIcon ??=
         currentUser.email != null && (cards.hasPicture || !widget.isMainMenu);
-    print("show action icon: $showActionIcon");
 
     return AppBar(
       backgroundColor: Colors.transparent,

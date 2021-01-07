@@ -86,6 +86,7 @@ flutter:
     - assets/fonts/
     - assets/card_frames/
     - assets/sounds/
+    - assets/images/
 
 
   #  - images/a_dot_ham.jpeg

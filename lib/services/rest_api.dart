@@ -208,6 +208,7 @@ class RestAPI {
       'song_id': card.song?.fileId,
       "image_id": card.picture.fileId,
       'decoration_image_id': card.decorationImage?.fileId,
+      'has_envelope': card.hasEnvelope,
       'animation_json':
           '{"mouth_positions": ${card.audio.amplitudes.toString()}}',
     };
