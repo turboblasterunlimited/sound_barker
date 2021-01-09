@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
 class CustomDialog extends StatefulWidget {
-  String header;
-  double headerSize;
-  String bodyText;
-  Widget body;
-  String primaryButtonText;
-  Function primaryFunction;
-  String secondaryButtonText;
-  Function secondaryFunction;
-  Icon iconPrimary;
-  Icon iconSecondary;
-  bool isYesNo;
+  final String header;
+  final double headerSize;
+  final String bodyText;
+  final Widget body;
+  final String primaryButtonText;
+  final Function primaryFunction;
+  final String secondaryButtonText;
+  final Function secondaryFunction;
+  final Icon iconPrimary;
+  final Icon iconSecondary;
+  final bool isYesNo;
 
   CustomDialog({
     this.header,
@@ -22,8 +22,8 @@ class CustomDialog extends StatefulWidget {
     this.primaryFunction,
     this.secondaryButtonText = "NO",
     this.secondaryFunction,
-    this.iconPrimary,
-    this.iconSecondary,
+    @required this.iconPrimary,
+    @required this.iconSecondary,
     this.isYesNo = false,
   });
 

@@ -1,3 +1,4 @@
+import 'package:K9_Karaoke/animations/bounce.dart';
 import 'package:K9_Karaoke/providers/barks.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
@@ -28,30 +29,8 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
   final _listKey = GlobalKey<AnimatedListState>();
   SoundController soundController;
   bool _isFirstLoad = true;
-  AnimationController animationController;
-  var tween;
+
   var cards = KaraokeCards();
-
-  @override
-  void initState() {
-    super.initState();
-    animationController = AnimationController(
-      vsync: this,
-      // lowerBound: -60,
-      // upperBound: -40,
-      duration: Duration(seconds: 1),
-    )
-      // ..addListener(() => setState(() {}))
-      ..repeat(reverse: true);
-
-    tween = Tween(begin: -60.0, end: -40.0).animate(animationController);
-  }
-
-  @override
-  void dispose() {
-    animationController.dispose();
-    super.dispose();
-  }
 
   String get _currentBarkLength {
     if (currentActivity.isTwo) {
@@ -274,18 +253,12 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
                       ),
                       if (currentBarks == BarkTypes.myBarks &&
                           displayedBarks.length == 0)
-                        AnimatedBuilder(
-                            animation: animationController,
-                            builder: (BuildContext context, Widget child) {
-                              return Positioned(
-                                bottom: tween.value,
-                                left: 0,
-                                right: 0,
-                                child: Icon(Icons.arrow_upward,
-                                    size: 50,
-                                    color: Theme.of(context).primaryColor),
-                              );
-                            }),
+                        Bounce(
+                            icon: Icon(Icons.arrow_upward,
+                                size: 50,
+                                color: Theme.of(context).primaryColor),
+                            begin: 35,
+                            end: 50),
                     ],
                   ),
                   Stack(
@@ -319,18 +292,12 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
                       ),
                       if (currentBarks == BarkTypes.myBarks &&
                           displayedBarks.length == 0)
-                        AnimatedBuilder(
-                            animation: animationController,
-                            builder: (BuildContext context, Widget child) {
-                              return Positioned(
-                                bottom: tween.value,
-                                left: 0,
-                                right: 0,
-                                child: Icon(Icons.arrow_upward,
-                                    size: 50,
-                                    color: Theme.of(context).primaryColor),
-                              );
-                            }),
+                        Bounce(
+                            icon: Icon(Icons.arrow_upward,
+                                size: 50,
+                                color: Theme.of(context).primaryColor),
+                            begin: 35,
+                            end: 50),
                     ],
                   ),
                 ],

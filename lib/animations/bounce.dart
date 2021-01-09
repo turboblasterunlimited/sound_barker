@@ -11,8 +11,7 @@ class Bounce extends StatefulWidget {
   _BounceState createState() => _BounceState();
 }
 
-class _BounceState extends State<Bounce>
-    with SingleTickerProviderStateMixin {
+class _BounceState extends State<Bounce> with SingleTickerProviderStateMixin {
   AnimationController animationController;
   var tween;
 
@@ -23,7 +22,8 @@ class _BounceState extends State<Bounce>
       vsync: this,
       duration: Duration(seconds: 1),
     )..repeat(reverse: true);
-    tween = Tween(begin: widget.begin, end: widget.end).animate(animationController);
+    tween = Tween(begin: widget.begin, end: widget.end)
+        .animate(animationController);
   }
 
   @override
@@ -37,10 +37,8 @@ class _BounceState extends State<Bounce>
     return AnimatedBuilder(
         animation: animationController,
         builder: (BuildContext context, Widget child) {
-          return Positioned(
-            bottom: tween.value,
-            left: 0,
-            right: 0,
+          return Transform.translate(
+            offset: Offset(0, tween.value),
             child: widget.icon,
           );
         });

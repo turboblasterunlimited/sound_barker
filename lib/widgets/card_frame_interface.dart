@@ -104,20 +104,8 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
         SystemChrome.setEnabledSystemUIOverlays([]);
       },
       child: Container(
-        decoration: selectedFrame == fileName
-            ? BoxDecoration(
-                border: Border.symmetric(
-                  horizontal: BorderSide(
-                    color: Colors.blue,
-                    width: 10,
-                  ),
-                  vertical: BorderSide(
-                    color: Colors.blue,
-                    width: 8,
-                  ),
-                ),
-              )
-            : BoxDecoration(),
+        decoration:
+            selectedFrame == fileName ? selectedBoxDecoration : BoxDecoration(),
         child: SizedBox(
           child: Stack(
             alignment: AlignmentDirectional.center,
@@ -181,14 +169,8 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
         cards.current.setShouldDeleteOldDecortionImage();
       },
       child: Container(
-        decoration: selectedFrame == ""
-            ? BoxDecoration(
-                border: Border.all(
-                  color: Colors.blue,
-                  width: 3,
-                ),
-              )
-            : BoxDecoration(),
+        decoration:
+            selectedFrame == "" ? selectedBoxDecoration : BoxDecoration(),
         child: SizedBox(
           child: Stack(
             alignment: AlignmentDirectional.center,
@@ -199,6 +181,21 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
               _frameLabel("No Frame"),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  BoxDecoration get selectedBoxDecoration {
+    return const BoxDecoration(
+      border: Border.symmetric(
+        horizontal: BorderSide(
+          color: Colors.blue,
+          width: 10,
+        ),
+        vertical: BorderSide(
+          color: Colors.blue,
+          width: 8,
         ),
       ),
     );
@@ -228,12 +225,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       },
       child: Container(
         decoration: selectedFrame == "existing-art"
-            ? BoxDecoration(
-                border: Border.all(
-                  color: Colors.blue,
-                  width: 3,
-                ),
-              )
+            ? selectedBoxDecoration
             : BoxDecoration(),
         child: SizedBox(
           child: Stack(

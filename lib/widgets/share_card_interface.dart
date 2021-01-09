@@ -418,7 +418,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
           // headerSize: 18,
           iconPrimary: Icon(
             Icons.mail_outline_outlined,
-            size: 42,
+            size: 60,
             color: Colors.grey[300],
           ),
           iconSecondary: Icon(
@@ -427,26 +427,12 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
             color: Colors.grey[300],
           ),
           body: Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
+            child: Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Image.asset(
-                    "assets/images/no-envelope.jpg",
-                    width: 100,
+                    "assets/images/card-in-envelope.png",
                   ),
                 ),
-                Bounce(icon: Icon(Icons.arrow_downward), begin: -40, end: -80),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Image.asset(
-                    "assets/images/mini-envelope.jpg",
-                    width: 150,
-                  ),
-                ),
-              ],
-            ),
           ),
           isYesNo: true,
           primaryFunction: (con) {
