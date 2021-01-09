@@ -30,7 +30,7 @@ class _RetrieveDataScreenState extends State<RetrieveDataScreen> {
 
   Future<void> downloadDataAndNavigate() async {
     if (!mounted) return;
-    
+
     await pictures.retrieveAll();
     // need creatableSongData to get songIds
     print("before retrieving");
@@ -44,6 +44,7 @@ class _RetrieveDataScreenState extends State<RetrieveDataScreen> {
     await cardAudios.retrieveAll();
     await decorationImages.retrieveAll();
     await cards.retrieveAll(pictures, cardAudios, songs, decorationImages);
+    cards.sort();
     Navigator.of(context).popAndPushNamed(MainScreen.routeName);
   }
 

@@ -25,6 +25,12 @@ class KaraokeCards with ChangeNotifier {
     return all.where((KaraokeCard card) => card.uuid != null).toList();
   }
 
+  void sort() {
+    all.sort((card1, card2) {
+      return card1.created.compareTo(card2.created);
+    });
+  }
+
   void removeAll() {
     all = [];
   }
@@ -64,6 +70,7 @@ class KaraokeCards with ChangeNotifier {
 
       try {
         final card = KaraokeCard(
+          created: DateTime.parse(cardData["created"]),
           uuid: cardData["uuid"],
           picture: pictures.findById(cardData["image_id"]),
           decorationImage:
@@ -151,6 +158,7 @@ class KaraokeCard with ChangeNotifier {
   Picture picture;
   CardAudio audio;
   CardDecorationImage decorationImage;
+  DateTime created;
 
   // used to create or manage card components
   CreatableSong
@@ -169,9 +177,13 @@ class KaraokeCard with ChangeNotifier {
   // only used on the website
   bool hasEnvelope;
 
-
   KaraokeCard(
-      {this.uuid, this.picture, this.audio, this.song, this.decorationImage}) {
+      {this.uuid,
+      this.picture,
+      this.audio,
+      this.song,
+      this.decorationImage,
+      this.created}) {
     this.audio ??= CardAudio();
   }
 

@@ -1,3 +1,4 @@
+import 'package:K9_Karaoke/animations/bounce.dart';
 import 'package:K9_Karaoke/globals.dart';
 import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/the_user.dart';
@@ -268,68 +269,82 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                       ],
                     ),
                     _loadingMessage == null
-                        ? Column(
-                            children: [
-                              Padding(
-                                padding:
-                                    EdgeInsets.only(left: 30.0, right: 30.0),
-                                child: TextField(
-                                  onChanged: (name) {
-                                    recipientName = name;
-                                  },
-                                  onSubmitted: (_) =>
-                                      messageNode.requestFocus(),
-                                  style: TextStyle(
-                                      fontSize: 15.0,
-                                      height: 1,
-                                      color: Colors.black),
-                                  decoration: InputDecoration(
-                                    isDense: true,
-                                    filled: true,
-                                    fillColor: Colors.white,
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(16),
+                        ? cards.current.hasEnvelope
+                            ? Column(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        left: 30.0, right: 30.0),
+                                    child: TextField(
+                                      onChanged: (name) {
+                                        recipientName = name;
+                                      },
+                                      onSubmitted: (_) =>
+                                          messageNode.requestFocus(),
+                                      style: TextStyle(
+                                          fontSize: 15.0,
+                                          height: 1,
+                                          color: Colors.black),
+                                      decoration: InputDecoration(
+                                        isDense: true,
+                                        filled: true,
+                                        fillColor: Colors.white,
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                        ),
+                                        labelText: 'Recipient (optional)',
+                                      ),
                                     ),
-                                    labelText: 'Recipient (optional)',
                                   ),
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    top: 20,
-                                    left: 30.0,
-                                    right: 30.0,
-                                    bottom: 20),
-                                child: TextField(
-                                  textInputAction: TextInputAction.done,
-                                  keyboardType: TextInputType.multiline,
-                                  minLines: null,
-                                  maxLines: null,
-                                  focusNode: messageNode,
-                                  onChanged: (message) {
-                                    setState(() => cardMessage = message);
-                                  },
-                                  style: TextStyle(
-                                      fontSize: 15.0,
-                                      height: 1,
-                                      color: Colors.black),
-                                  onSubmitted: (_) async {
-                                    await _handleUploadAndShare(setDialogState);
-                                  },
-                                  decoration: InputDecoration(
-                                    hintText:
-                                        'Hi mom. Happy birthday from Spot.',
-                                    filled: true,
-                                    fillColor: Colors.white,
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(16),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        top: 20,
+                                        left: 30.0,
+                                        right: 30.0,
+                                        bottom: 20),
+                                    child: TextField(
+                                      textInputAction: TextInputAction.done,
+                                      keyboardType: TextInputType.multiline,
+                                      minLines: null,
+                                      maxLines: null,
+                                      focusNode: messageNode,
+                                      onChanged: (message) {
+                                        setState(() => cardMessage = message);
+                                      },
+                                      style: TextStyle(
+                                          fontSize: 15.0,
+                                          height: 1,
+                                          color: Colors.black),
+                                      onSubmitted: (_) async {
+                                        await _handleUploadAndShare(
+                                            setDialogState);
+                                      },
+                                      decoration: InputDecoration(
+                                        hintText:
+                                            'Hi mom. Happy birthday from Spot.',
+                                        filled: true,
+                                        fillColor: Colors.white,
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                        ),
+                                        labelText: 'Message (optional)',
+                                      ),
                                     ),
-                                    labelText: 'Message (optional)',
                                   ),
+                                ],
+                              )
+                            // No Envelope
+                            : Padding(
+                                padding: EdgeInsets.all(20),
+                                child: Text(
+                                  "Ready to Share!",
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      color: Theme.of(context).primaryColor),
                                 ),
-                              ),
-                            ],
-                          )
+                              )
                         : _loading(),
                   ],
                 ),
@@ -398,105 +413,52 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
       context: context,
       builder: (ctx) => StatefulBuilder(
           builder: (BuildContext modalContext, Function setDialogState) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(32.0))),
-          contentPadding: EdgeInsets.only(top: 10.0),
-          content: Container(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      "Presentation",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: 26,
-                          color: Theme.of(modalContext).primaryColor),
-                    ),
+        return CustomDialog(
+          header: "Put your card in an envelope?",
+          // headerSize: 18,
+          iconPrimary: Icon(
+            Icons.mail_outline_outlined,
+            size: 42,
+            color: Colors.grey[300],
+          ),
+          iconSecondary: Icon(
+            CustomIcons.modal_paws_bottomright,
+            size: 42,
+            color: Colors.grey[300],
+          ),
+          body: Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Image.asset(
+                    "assets/images/no-envelope.jpg",
+                    width: 100,
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      cards.current.setEnvelope(true);
-                      Navigator.of(modalContext).pop();
-                      _shareDialog();
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        border: Border.all(
-                          color: Colors.grey,
-                          width: 3,
-                        ),
-                      ),
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
-                            child: Text(
-                              "Add Envelope",
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  color: Theme.of(modalContext).primaryColor),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Image.asset("assets/images/mini-envelope.jpg"),
-                          )
-                        ],
-                      ),
-                    ),
+                ),
+                Bounce(icon: Icon(Icons.arrow_downward), begin: -40, end: -80),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Image.asset(
+                    "assets/images/mini-envelope.jpg",
+                    width: 150,
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 10),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      cards.current.setEnvelope(false);
-                      Navigator.of(modalContext).pop();
-                      _shareDialog();
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        border: Border.all(
-                          color: Colors.grey,
-                          width: 3,
-                        ),
-                      ),
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
-                            child: Text(
-                              "No Envelope",
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  color: Theme.of(modalContext).primaryColor),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Image.asset(
-                              "assets/images/no-envelope.jpg",
-                              width: 165,
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  Padding(padding: EdgeInsets.only(top: 15),),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
+          isYesNo: true,
+          primaryFunction: (con) {
+            cards.current.setEnvelope(true);
+            Navigator.of(con).pop();
+            _shareDialog();
+          },
+          secondaryFunction: (con) {
+            cards.current.setEnvelope(false);
+            Navigator.of(con).pop();
+            _shareDialog();
+          },
         );
       }),
     );

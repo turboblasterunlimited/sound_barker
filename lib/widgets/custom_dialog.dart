@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class CustomDialog extends StatefulWidget {
   String header;
+  double headerSize;
   String bodyText;
-  String body;
+  Widget body;
   String primaryButtonText;
   Function primaryFunction;
   String secondaryButtonText;
@@ -14,6 +15,7 @@ class CustomDialog extends StatefulWidget {
 
   CustomDialog({
     this.header,
+    this.headerSize,
     this.bodyText,
     this.body,
     this.primaryButtonText = "YES",
@@ -54,7 +56,7 @@ class _CustomDialogState extends State<CustomDialog> {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Theme.of(context).primaryColor,
-                        fontSize: 20,
+                        fontSize: widget.headerSize ?? 20,
                       ),
                     ),
                   ),
