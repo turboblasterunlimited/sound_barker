@@ -5,7 +5,6 @@ import 'package:K9_Karaoke/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
-
 import '../providers/sound_controller.dart';
 import '../providers/barks.dart';
 import '../providers/image_controller.dart';
@@ -25,14 +24,10 @@ class BarkPlaybackCard extends StatefulWidget {
   _BarkPlaybackCardState createState() => _BarkPlaybackCardState();
 }
 
-class _BarkPlaybackCardState extends State<BarkPlaybackCard>
-    with TickerProviderStateMixin {
-  //   AutomaticKeepAliveClientMixin {
-  // bool get wantKeepAlive => true;
+class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
   ImageController imageController;
   bool _isPlaying = false;
   bool _isLoading = false;
-  final _controller = TextEditingController();
   String tempName;
   KaraokeCards cards;
   CurrentActivity currentActivity;
@@ -71,8 +66,6 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
       await download();
       play();
     }
-    print("bark playback");
-    print("bark id: ${widget.bark.fileId}");
     print("bark id: ${widget.bark.filePath}");
   }
 
@@ -149,7 +142,6 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
             child: RawMaterialButton(
               onPressed: selectBark,
               fillColor: isSelected ? Theme.of(context).primaryColor : null,
-
               child: Column(
                 children: <Widget>[
                   Center(

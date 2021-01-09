@@ -1,3 +1,4 @@
+import 'package:K9_Karaoke/animations/waggle.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_card_decoration_controller.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
@@ -21,27 +22,6 @@ class _MenuState extends State<MenuScreen> with TickerProviderStateMixin {
   KaraokeCards cards;
   CurrentActivity currentActivity;
   KaraokeCardDecorationController cardDecorator;
-  Animation _animation;
-  AnimationController _animationController;
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    _animationController =
-        AnimationController(vsync: this, duration: Duration(seconds: 1));
-    _animationController.repeat(reverse: true);
-    _animation =
-        CurveTween(curve: Curves.elasticIn).animate(_animationController)
-          ..addListener(() {
-            setState(() {});
-          });
-    super.initState();
-  }
 
   void handleCreateNewCard() {
     cards.newCurrent();
@@ -82,9 +62,7 @@ class _MenuState extends State<MenuScreen> with TickerProviderStateMixin {
                 onTap: handleCreateNewCard,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Transform.rotate(
-                    angle: _animation.value * 0.1,
-                    child: Row(
+                  child: Waggle(child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -95,8 +73,7 @@ class _MenuState extends State<MenuScreen> with TickerProviderStateMixin {
                               color: Theme.of(context).primaryColor),
                         ),
                       ],
-                    ),
-                  ),
+                    ),),
                 ),
               ),
               GestureDetector(

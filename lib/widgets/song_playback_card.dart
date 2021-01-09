@@ -5,7 +5,6 @@ import 'package:K9_Karaoke/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
-
 import '../providers/sound_controller.dart';
 import '../providers/songs.dart';
 import '../widgets/error_dialog.dart';
@@ -24,12 +23,8 @@ class SongPlaybackCard extends StatefulWidget {
   _SongPlaybackCardState createState() => _SongPlaybackCardState();
 }
 
-class _SongPlaybackCardState extends State<SongPlaybackCard>
-    with TickerProviderStateMixin {
-  //   AutomaticKeepAliveClientMixin {
-  // bool get wantKeepAlive => true;
+class _SongPlaybackCardState extends State<SongPlaybackCard> {
   ImageController imageController;
-  AnimationController renameAnimationController;
   bool _isPlaying = false;
   bool _isLoading = false;
   final _controller = TextEditingController();
@@ -37,29 +32,9 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
   CurrentActivity currentActivity;
   KaraokeCards cards;
 
-  @override
-  void initState() {
-    tempName = widget.song.name;
-    imageController = Provider.of<ImageController>(context, listen: false);
-    renameAnimationController = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 500),
-    );
-    super.initState();
-    renameAnimationController.forward();
-  }
-
-  @override
-  void dispose() {
-    stopAll();
-    renameAnimationController.dispose();
-    super.dispose();
-  }
-
   void stopAll() {
     widget.soundController.stopPlayer();
     imageController.stopAnimation();
-
     if (_isPlaying) {
       setState(() => _isPlaying = false);
     }
@@ -106,69 +81,9 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
     );
   }
 
-  void renameSong() async {
-    _controller.text = tempName;
-    _controller.selection = TextSelection(
-      baseOffset: 0,
-      extentOffset: tempName.length,
-    );
-    void _submitNameChange(ctx) async {
-      if (tempName == widget.song.name)
-        Navigator.of(ctx).pop();
-      else if (tempName != "") {
-        Navigator.of(ctx).pop();
-        await renameAnimationController.reverse();
-        setState(() {
-          widget.song.rename(tempName);
-          widget.song.name = tempName;
-        });
-        renameAnimationController.forward();
-      } else {
-        setState(() => tempName = widget.song.name);
-        Navigator.of(ctx).pop();
-      }
-    }
-
-    await showDialog<Null>(
-      context: context,
-      builder: (ctx) => SimpleDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
-        ),
-        title: Center(child: Text('Rename Song')),
-        contentPadding: EdgeInsets.all(10),
-        titlePadding: EdgeInsets.all(10),
-        children: <Widget>[
-          TextFormField(
-            controller: _controller,
-            autofocus: true,
-            onChanged: (newName) {
-              setState(() => tempName = newName);
-            },
-            onFieldSubmitted: (_) {
-              _submitNameChange(ctx);
-            },
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'Please provide a name.';
-              }
-              return null;
-            },
-          ),
-          FlatButton(
-            child: Text('OK'),
-            onPressed: () {
-              _submitNameChange(ctx);
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
   void selectSong() async {
     if (!widget.song.hasFile) await download();
-    
+
     cards.setCurrentSongFormula(null);
     cards.setCurrentSong(widget.song);
     Future.delayed(
@@ -180,7 +95,7 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
     );
   }
 
-    Future<void> play() async {
+  Future<void> play() async {
     setState(() => _isPlaying = true);
     await widget.soundController
         .startPlayer(widget.song.filePath, stopCallback: stopAll);
@@ -233,9 +148,10 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
 
   @override
   Widget build(BuildContext context) {
-    cards = Provider.of<KaraokeCards>(context, listen: false);
-    currentActivity = Provider.of<CurrentActivity>(context, listen: false);
+    cards ??= Provider.of<KaraokeCards>(context, listen: false);
+    currentActivity ??= Provider.of<CurrentActivity>(context, listen: false);
     bool isSelected = cards.current.hasSong(widget.song);
+    imageController ??= Provider.of<ImageController>(context, listen: false);
 
     return SizeTransition(
       sizeFactor: widget.animation,
@@ -247,27 +163,24 @@ class _SongPlaybackCardState extends State<SongPlaybackCard>
           Expanded(
             child: RawMaterialButton(
               fillColor: isSelected ? Theme.of(context).primaryColor : null,
-
               onPressed: selectSong,
-              child: FadeTransition(
-                opacity: renameAnimationController,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                  child: Center(
-                    child: Text(
-                      widget.song.songFamily,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: isSelected
-                            ? Colors.white
-                            : Theme.of(context).primaryColor,
-                        fontSize: 16,
-                      ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                child: Center(
+                  child: Text(
+                    widget.song.songFamily,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: isSelected
+                          ? Colors.white
+                          : Theme.of(context).primaryColor,
+                      fontSize: 16,
                     ),
                   ),
                 ),
               ),
+
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(40.0),
                 side:
