@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 class Waggle extends StatefulWidget {
   Widget child;
-
   Waggle({this.child});
 
   @override
@@ -10,29 +9,27 @@ class Waggle extends StatefulWidget {
 }
 
 class _WaggleState extends State<Waggle> with SingleTickerProviderStateMixin {
+  Animation animation;
   AnimationController animationController;
-  var tween;
-
-  Animation _animation;
-  AnimationController _animationController;
 
   @override
   void dispose() {
-    _animationController.dispose();
+    animationController.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
-    _animationController =
+    animationController =
         AnimationController(vsync: this, duration: Duration(seconds: 1));
-    _animationController.repeat(reverse: true);
-    _animation =
-        CurveTween(curve: Curves.elasticIn).animate(_animationController)
+    animationController.repeat(reverse: true);
+    animation =
+        CurveTween(curve: Curves.elasticIn).animate(animationController)
           ..addListener(() {
             setState(() {});
           });
     super.initState();
+
   }
 
   @override
@@ -41,7 +38,7 @@ class _WaggleState extends State<Waggle> with SingleTickerProviderStateMixin {
         animation: animationController,
         builder: (BuildContext context, Widget child) {
           return Transform.rotate(
-            angle: _animation.value * 0.1,
+            angle: animation.value * 0.1,
             child: widget.child,
           );
         });

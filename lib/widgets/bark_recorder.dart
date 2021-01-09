@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:K9_Karaoke/animations/waggle.dart';
 import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
@@ -10,9 +11,6 @@ import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:K9_Karaoke/widgets/loading_half_screen_widget.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_sound/flutter_sound.dart';
-// import 'package:flutter_sound_lite/flutter_sound.dart';
-
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -26,8 +24,7 @@ class BarkRecorder extends StatefulWidget {
   BarkRecorderState createState() => BarkRecorderState();
 }
 
-class BarkRecorderState extends State<BarkRecorder>
-    with TickerProviderStateMixin {
+class BarkRecorderState extends State<BarkRecorder> {
   KaraokeCards cards;
   String filePath;
   bool _isRecording = false;
@@ -37,28 +34,12 @@ class BarkRecorderState extends State<BarkRecorder>
   KaraokeCard card;
   Barks barks;
   CurrentActivity currentActivity;
-  AnimationController _animationController;
-  Animation _animation;
   bool _loading = false;
 
   @override
   void dispose() {
     _recordingTimer?.cancel();
-    _animationController.dispose();
     super.dispose();
-  }
-
-  @override
-  void initState() {
-    _animationController =
-        AnimationController(vsync: this, duration: Duration(seconds: 1));
-    _animationController.repeat(reverse: true);
-    _animation =
-        CurveTween(curve: Curves.elasticIn).animate(_animationController)
-          ..addListener(() {
-            setState(() {});
-          });
-    super.initState();
   }
 
   void _recordSound() {
@@ -289,26 +270,17 @@ class BarkRecorderState extends State<BarkRecorder>
                         ),
                       ),
                     if (barks.tempRawBark != null && !_isRecording)
-                      // maintainState: true,
-                      // maintainAnimation: true,
-                      // maintainSize: true,
+                
 
                       GestureDetector(
                         onTap: _handleCropBarksAndContinue,
-                        child: Transform.rotate(
-                          angle: _animation.value * 0.1,
+                        child: Waggle(
                           child: Container(
                             padding: EdgeInsets.all(15),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
                               shape: BoxShape.rectangle,
                               color: Theme.of(context).primaryColor,
-                              // boxShadow: [
-                              //   BoxShadow(
-                              //       color: Colors.green,
-                              //       blurRadius: _animation.value,
-                              //       spreadRadius: _animation.value)
-                              // ]
                             ),
                             child: Text(
                               "ADD BARKS\nAND CONTINUE",

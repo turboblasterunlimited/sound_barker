@@ -18,7 +18,7 @@ class MenuScreen extends StatefulWidget {
   _MenuState createState() => _MenuState();
 }
 
-class _MenuState extends State<MenuScreen> with TickerProviderStateMixin {
+class _MenuState extends State<MenuScreen> {
   KaraokeCards cards;
   CurrentActivity currentActivity;
   KaraokeCardDecorationController cardDecorator;
@@ -62,7 +62,8 @@ class _MenuState extends State<MenuScreen> with TickerProviderStateMixin {
                 onTap: handleCreateNewCard,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Waggle(child: Row(
+                  child: Waggle(
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -73,7 +74,8 @@ class _MenuState extends State<MenuScreen> with TickerProviderStateMixin {
                               color: Theme.of(context).primaryColor),
                         ),
                       ],
-                    ),),
+                    ),
+                  ),
                 ),
               ),
               GestureDetector(

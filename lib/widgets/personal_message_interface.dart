@@ -1,3 +1,4 @@
+import 'package:K9_Karaoke/animations/waggle.dart';
 import 'package:K9_Karaoke/classes/card_message.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
@@ -24,8 +25,7 @@ class PersonalMessageInterface extends StatefulWidget {
       PersonalMessageInterfaceState();
 }
 
-class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
-    with TickerProviderStateMixin {
+class PersonalMessageInterfaceState extends State<PersonalMessageInterface> {
   StreamSubscription _recorderSubscription;
   SoundController soundController;
   bool _isRecording = false;
@@ -39,8 +39,6 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
   CurrentActivity currentActivity;
   KaraokeCards cards;
   CardMessage message;
-  AnimationController _animationController;
-  Animation _animation;
   ImageController imageController;
   Timer _recordingTimer;
 
@@ -65,21 +63,7 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
   @override
   void dispose() {
     _recordingTimer?.cancel();
-    _animationController.dispose();
     super.dispose();
-  }
-
-  @override
-  void initState() {
-    _animationController =
-        AnimationController(vsync: this, duration: Duration(seconds: 1));
-    _animationController.repeat(reverse: true);
-    _animation =
-        CurveTween(curve: Curves.elasticIn).animate(_animationController)
-          ..addListener(() {
-            setState(() {});
-          });
-    super.initState();
   }
 
   void _recordSound() {
@@ -223,8 +207,7 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
                 child: Column(
                   children: <Widget>[
                     RawMaterialButton(
-                      onPressed: _isLoading ||
-                              soundController.player.isPlaying
+                      onPressed: _isLoading || soundController.player.isPlaying
                           ? null
                           : onStartRecorderPressed,
                       child: _isLoading
@@ -265,8 +248,7 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface>
                     ? Center()
                     : GestureDetector(
                         onTap: _handleCombineAndContinue,
-                        child: Transform.rotate(
-                          angle: _canAddMessage() ? _animation.value * 0.1 : 0,
+                        child: Waggle(
                           child: Container(
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
