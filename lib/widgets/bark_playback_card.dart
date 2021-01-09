@@ -29,7 +29,6 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
     with TickerProviderStateMixin {
   //   AutomaticKeepAliveClientMixin {
   // bool get wantKeepAlive => true;
-  AnimationController renameAnimationController;
   ImageController imageController;
   bool _isPlaying = false;
   bool _isLoading = false;
@@ -37,25 +36,6 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
   String tempName;
   KaraokeCards cards;
   CurrentActivity currentActivity;
-
-  @override
-  void initState() {
-    tempName = widget.bark.name;
-    renameAnimationController = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 500),
-    );
-    super.initState();
-    renameAnimationController.forward();
-    imageController = Provider.of<ImageController>(context, listen: false);
-  }
-
-  @override
-  void dispose() {
-    stopAll();
-    renameAnimationController.dispose();
-    super.dispose();
-  }
 
   void stopAll() {
     if (_isPlaying) {
@@ -121,68 +101,6 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
     );
   }
 
-  void renameBark() async {
-    _controller.text = tempName;
-    _controller.selection = TextSelection(
-      baseOffset: 0,
-      extentOffset: tempName.length,
-    );
-    void _submitNameChange(ctx) async {
-      if (tempName == widget.bark.name)
-        Navigator.of(ctx).pop();
-      else if (tempName != "") {
-        Navigator.of(ctx).pop();
-        await renameAnimationController.reverse();
-        setState(() {
-          widget.bark.rename(tempName);
-          widget.bark.name = tempName;
-        });
-        renameAnimationController.forward();
-      } else {
-        setState(() => tempName = widget.bark.name);
-        Navigator.of(ctx).pop();
-      }
-    }
-
-    await showDialog<Null>(
-      context: context,
-      builder: (ctx) => SimpleDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        title: Center(
-          child: Text('Rename Bark'),
-        ),
-        contentPadding: EdgeInsets.all(10),
-        titlePadding: EdgeInsets.all(10),
-        children: <Widget>[
-          TextFormField(
-            controller: _controller,
-            autofocus: true,
-            onChanged: (newName) {
-              setState(() => tempName = newName);
-            },
-            onFieldSubmitted: (_) {
-              _submitNameChange(ctx);
-            },
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'Please provide a name.';
-              }
-              return null;
-            },
-          ),
-          FlatButton(
-            child: Text('OK'),
-            onPressed: () {
-              _submitNameChange(ctx);
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
   selectBark() async {
     if (currentActivity.isTwo)
       cards.setCurrentShortBark(widget.bark);
@@ -215,9 +133,10 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
 
   @override
   Widget build(BuildContext context) {
-    cards = Provider.of<KaraokeCards>(context, listen: false);
-    currentActivity = Provider.of<CurrentActivity>(context, listen: false);
+    cards ??= Provider.of<KaraokeCards>(context, listen: false);
+    currentActivity ??= Provider.of<CurrentActivity>(context, listen: false);
     bool isSelected = cards.current.hasBark(widget.bark);
+    imageController ??= Provider.of<ImageController>(context, listen: false);
 
     return SizeTransition(
       sizeFactor: widget.animation,
@@ -230,38 +149,36 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard>
             child: RawMaterialButton(
               onPressed: selectBark,
               fillColor: isSelected ? Theme.of(context).primaryColor : null,
-              child: FadeTransition(
-                opacity: renameAnimationController,
-                child: Column(
-                  children: <Widget>[
-                    Center(
-                      child: RichText(
-                        text: TextSpan(
-                          children: <TextSpan>[
-                            // Title
-                            TextSpan(
-                              text: widget.bark.name,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: isSelected
-                                    ? Colors.white
-                                    : Theme.of(context).primaryColor,
-                                fontSize: 16,
-                              ),
+
+              child: Column(
+                children: <Widget>[
+                  Center(
+                    child: RichText(
+                      text: TextSpan(
+                        children: <TextSpan>[
+                          // Title
+                          TextSpan(
+                            text: widget.bark.name,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: isSelected
+                                  ? Colors.white
+                                  : Theme.of(context).primaryColor,
+                              fontSize: 16,
                             ),
-                            // Subtitle
-                            TextSpan(
-                              text: " " + widget.bark.length,
-                              style:
-                                  TextStyle(color: Colors.grey, fontSize: 10),
-                            ),
-                          ],
-                        ),
+                          ),
+                          // Subtitle
+                          TextSpan(
+                            text: " " + widget.bark.length,
+                            style: TextStyle(color: Colors.grey, fontSize: 10),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
+
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(40.0),
                 side:

@@ -253,12 +253,15 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
                       ),
                       if (currentBarks == BarkTypes.myBarks &&
                           displayedBarks.length == 0)
-                        Bounce(
-                            icon: Icon(Icons.arrow_upward,
-                                size: 50,
-                                color: Theme.of(context).primaryColor),
-                            begin: 35,
-                            end: 50),
+                        Positioned(
+                          right: 28,
+                          child: Bounce(
+                              icon: Icon(Icons.arrow_upward,
+                                  size: 50,
+                                  color: Theme.of(context).primaryColor),
+                              begin: 35,
+                              end: 50),
+                        ),
                     ],
                   ),
                   Stack(
