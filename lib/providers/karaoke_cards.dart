@@ -18,7 +18,10 @@ import 'package:flutter/foundation.dart';
 import 'package:K9_Karaoke/globals.dart';
 
 class KaraokeCards with ChangeNotifier {
+  // the base card without recipient name, envelope option, mini url.
   List<KaraokeCard> all = [];
+  // This is what the user shares. Uses a Karaoke card as its base.
+  List<FinishedCard> allFinished = [];
   KaraokeCard current;
 
   List<KaraokeCard> get saved {
@@ -88,6 +91,28 @@ class KaraokeCards with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> retrieveFinishedCards() async {
+    var response = await RestAPI.retrieveFinishedCards();
+    response.forEach((cardData) {
+      if (cardData["hidden"] == 1) return;
+      try {
+        final card = FinishedCard(
+            // created: DateTime.parse(cardData["created"]),
+            // hasEnvelope: cardData["has_envelope"],
+            baseCard:
+                all.firstWhere((card) => card.uuid = cardData["card_uuid"]),
+            recipientName: cardData["card_uuid"],
+            miniUuid: cardData["key_uuid"]);
+
+        allFinished.add(card);
+      } catch (e) {
+        print(e);
+        return;
+      }
+    });
+    notifyListeners();
+  }
+
   String get currentName {
     return current?.picture?.name ?? "";
   }
@@ -149,6 +174,26 @@ class KaraokeCards with ChangeNotifier {
 
   bool get hasPicture {
     return current != null && current.hasPicture;
+  }
+}
+
+class FinishedCard with ChangeNotifier {
+  String miniUuid;
+  String recipientName;
+  // NEED THIS ON BACKEND;
+  // DateTime created;
+  // boolean hasEnvelope;
+
+  // BASE CARD
+  KaraokeCard baseCard;
+
+  FinishedCard(
+      {@required this.recipientName,
+      @required this.miniUuid,
+      @required this.baseCard});
+
+  String get url {
+    return "$serverURL/c/$miniUuid";
   }
 }
 

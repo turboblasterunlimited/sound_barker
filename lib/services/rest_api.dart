@@ -391,6 +391,19 @@ class RestAPI {
     return response?.data;
   }
 
+  static Future<List> retrieveFinishedCards() async {
+    final url = 'https://$serverURL/all/card_key';
+    var response;
+    try {
+      response = await HttpController.dioGet(url);
+    } catch (e) {
+      print(
+          "Get all finished cards response body: ${response?.data.map((card) => card["hidden"])}");
+      _handleAssetError(response, e);
+    }
+    return response?.data;
+  }
+
   static Future<List> retrieveAllImages() async {
     final url = 'https://$serverURL/all/image';
     print("retrieveAllImages req url: $url");

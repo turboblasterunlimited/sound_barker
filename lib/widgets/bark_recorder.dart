@@ -143,7 +143,13 @@ class BarkRecorderState extends State<BarkRecorder> {
     if (pickedFile == null) return;
     barks.deleteTempRawBark();
     await FFMpeg.process.execute(
-        '-i ${pickedFile.path} -ss 00:00:00 -t 15 -vn -ar 44100 -ac 1 $filePath');
+        '-y -i ${pickedFile.path} -ss 00:00:00 -t 15 -vn -ar 44100 -ac 1 -b:a 128k -f .aac -ar 44100 $filePath');
+    // FFMpeg.probe.getMediaInformation(filePath).then((info) {
+    //   print("Media Information");
+    //   print("Channels: ${info.getMediaProperties()['channelLayout']}");
+    //   print("Everything: ${info.getAllProperties()}");
+    // });
+
     await barks.setTempRawBark(Bark(filePath: filePath));
   }
 
@@ -270,8 +276,6 @@ class BarkRecorderState extends State<BarkRecorder> {
                         ),
                       ),
                     if (barks.tempRawBark != null && !_isRecording)
-                
-
                       GestureDetector(
                         onTap: _handleCropBarksAndContinue,
                         child: Waggle(

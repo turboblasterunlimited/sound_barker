@@ -57,12 +57,12 @@ class AACMediaFormat extends NativeMediaFormat {
   const AACMediaFormat({
     int sampleRate = 44100,
     int numChannels = 1,
-    int bitRate = 192000,
+    int bitRate = 128000,
   }) : super.detail(
           name: 'adts/aac',
-          sampleRate: 44100,
-          numChannels: 1,
-          bitRate: 192000,
+          sampleRate: sampleRate,
+          numChannels: numChannels,
+          bitRate: bitRate,
         );
 
   @override
