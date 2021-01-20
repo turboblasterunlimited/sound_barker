@@ -511,7 +511,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                               .setCardCreationStep(CardCreationSteps.snap);
                           currentActivity.startCreateCard();
                           Navigator.of(context)
-                              .popAndPushNamed(PhotoLibraryScreen.routeName);
+                              .pushNamed(PhotoLibraryScreen.routeName);
                         },
                         child: Text(
                           "New Card",
