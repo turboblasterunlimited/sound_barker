@@ -1,4 +1,3 @@
-import 'package:K9_Karaoke/animations/bounce.dart';
 import 'package:K9_Karaoke/globals.dart';
 import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/the_user.dart';
@@ -42,7 +41,6 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   String shareLink;
   String saveAndSendButtonText = "Save & Send";
   final messageNode = FocusNode();
-  bool isSent = false;
   String cardMessage = "";
 
   Future<void> _captureArtwork() async {
@@ -208,7 +206,6 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   }
 
   _shareDialog() async {
-    setState(() => isSent = true);
     await showDialog<Null>(
       barrierDismissible: true,
       context: context,
@@ -428,11 +425,11 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
           ),
           body: Center(
             child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Image.asset(
-                    "assets/images/card-in-envelope.png",
-                  ),
-                ),
+              padding: const EdgeInsets.all(10.0),
+              child: Image.asset(
+                "assets/images/card-in-envelope.png",
+              ),
+            ),
           ),
           isYesNo: true,
           primaryFunction: (con) {
@@ -479,9 +476,12 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   }
 
   void _backCallback() {
-    return cards.current.isUsingDecorationImage
-        ? currentActivity.setCardCreationSubStep(CardCreationSubSteps.one)
-        : currentActivity.setPreviousSubStep();
+    if (cards.current.isSaved)
+      return null;
+    else
+      return cards.current.isUsingDecorationImage
+          ? currentActivity.setCardCreationSubStep(CardCreationSubSteps.one)
+          : currentActivity.setPreviousSubStep();
   }
 
   _deleteDialog() async {
@@ -516,8 +516,8 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   Widget build(BuildContext context) {
     soundController ??= Provider.of<SoundController>(context, listen: false);
     imageController ??= Provider.of<ImageController>(context, listen: false);
-    cards = Provider.of<KaraokeCards>(context, listen: true);
-    user = Provider.of<TheUser>(context, listen: false);
+    cards ??= Provider.of<KaraokeCards>(context, listen: true);
+    user ??= Provider.of<TheUser>(context, listen: false);
     cardDecorator =
         Provider.of<KaraokeCardDecorationController>(context, listen: false);
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
@@ -528,7 +528,9 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
       height: 170,
       child: Column(
         children: [
-          InterfaceTitleNav("ALL DONE!", backCallback: _backCallback),
+          InterfaceTitleNav(
+              cards.current.isSaved ? "Share Again?" : "ALL DONE!",
+              backCallback: cards.current.isSaved ? null : _backCallback),
           Container(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -544,7 +546,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                           ? _envelopeDialog
                           : _subscribeDialog,
                       child: Text(
-                        isSent ? "Send Again" : "Save & Send",
+                        cards.current.isSaved ? "Send Again" : "Save & Send",
                         style: TextStyle(color: Colors.white),
                       ),
                       shape: RoundedRectangleBorder(
@@ -558,7 +560,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                     Padding(
                       padding: EdgeInsets.only(left: 10),
                     ),
-                    if (isSent)
+                    if (cards.current.isSaved)
                       RawMaterialButton(
                         onPressed: () {
                           cards.newCurrent();
@@ -583,21 +585,6 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                       ),
                   ],
                 ),
-                if (cards.current.uuid != null)
-                  RawMaterialButton(
-                    onPressed: _deleteDialog,
-                    child: Text(
-                      "Delete",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    elevation: 2.0,
-                    fillColor: Theme.of(context).errorColor,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 40.0, vertical: 2),
-                  ),
               ],
             ),
           ),

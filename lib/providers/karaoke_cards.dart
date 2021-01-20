@@ -91,27 +91,27 @@ class KaraokeCards with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> retrieveFinishedCards() async {
-    var response = await RestAPI.retrieveFinishedCards();
-    response.forEach((cardData) {
-      if (cardData["hidden"] == 1) return;
-      try {
-        final card = FinishedCard(
-            // created: DateTime.parse(cardData["created"]),
-            // hasEnvelope: cardData["has_envelope"],
-            baseCard:
-                all.firstWhere((card) => card.uuid = cardData["card_uuid"]),
-            recipientName: cardData["card_uuid"],
-            miniUuid: cardData["key_uuid"]);
+  // Future<void> retrieveFinishedCards() async {
+  //   var response = await RestAPI.retrieveFinishedCards();
+  //   response.forEach((cardData) {
+  //     if (cardData["hidden"] == 1) return;
+  //     try {
+  //       final card = FinishedCard(
+  //           // created: DateTime.parse(cardData["created"]),
+  //           // hasEnvelope: cardData["has_envelope"],
+  //           baseCard:
+  //               all.firstWhere((card) => card.uuid = cardData["card_uuid"]),
+  //           recipientName: cardData["card_uuid"],
+  //           miniUuid: cardData["key_uuid"]);
 
-        allFinished.add(card);
-      } catch (e) {
-        print(e);
-        return;
-      }
-    });
-    notifyListeners();
-  }
+  //       allFinished.add(card);
+  //     } catch (e) {
+  //       print(e);
+  //       return;
+  //     }
+  //   });
+  //   notifyListeners();
+  // }
 
   String get currentName {
     return current?.picture?.name ?? "";
@@ -184,7 +184,6 @@ class FinishedCard with ChangeNotifier {
   // DateTime created;
   // boolean hasEnvelope;
 
-  // BASE CARD
   KaraokeCard baseCard;
 
   FinishedCard(
@@ -206,9 +205,11 @@ class KaraokeCard with ChangeNotifier {
   DateTime created;
 
   // used to create or manage card components
-  CreatableSong
-      songFormula; // This is a creatable song, which has two arrangments. One of the arrangement ids will get sent to the server with the bark ids to create an actual song.
-  Song song; // This is an actual song
+
+  // This is a creatable song, which has two arrangments. One of the arrangement ids will get sent to the server with the bark ids to create an actual song.
+  CreatableSong songFormula;
+  // This is an actual song
+  Song song; 
   final message = CardMessage();
   Bark shortBark;
   Bark mediumBark;
@@ -219,7 +220,7 @@ class KaraokeCard with ChangeNotifier {
   CardAudio oldCardAudio;
   bool framelessIsSelected = false;
 
-  // only used on the website
+  // only used on the website // this should be removed and added to FinishedCards
   bool hasEnvelope;
 
   KaraokeCard(
@@ -232,6 +233,11 @@ class KaraokeCard with ChangeNotifier {
     this.audio ??= CardAudio();
   }
 
+  bool get isSaved {
+    return uuid != null;
+  }
+
+  // move this to finished cards
   void setEnvelope(envelope) {
     hasEnvelope = envelope;
   }

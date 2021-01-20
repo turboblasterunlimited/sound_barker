@@ -19,7 +19,7 @@ class _InterfaceTitleNavState extends State<InterfaceTitleNav> {
   Widget build(BuildContext context) {
     double screenSize = MediaQuery.of(context).size.width;
     widget.titleSize = screenSize > 400 ? 25 : widget.titleSize;
-    
+
     return Stack(
       children: <Widget>[
         if (widget.backCallback != null)
@@ -37,15 +37,13 @@ class _InterfaceTitleNavState extends State<InterfaceTitleNav> {
               ),
             ),
           ),
-        Positioned.fill(
-          child: Align(
-            alignment: Alignment.topCenter,
-            child: Text(
-              widget.title,
-              style: TextStyle(
-                  fontSize: widget.titleSize ?? 18,
-                  color: Theme.of(context).primaryColor),
-            ),
+        Align(
+          alignment: Alignment.topCenter,
+          child: Text(
+            widget.title,
+            style: TextStyle(
+                fontSize: widget.titleSize ?? 18,
+                color: Theme.of(context).primaryColor),
           ),
         ),
         if (widget.skipCallback != null)
