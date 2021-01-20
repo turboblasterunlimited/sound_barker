@@ -525,7 +525,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     // print();
     return Container(
       // shares height with decorator interface to maintain art canvas art alignment.
-      height: 170,
+      height: 150,
       child: Column(
         children: [
           InterfaceTitleNav(
@@ -535,6 +535,9 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                Padding(
+                  padding: EdgeInsets.only(top: 20),
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

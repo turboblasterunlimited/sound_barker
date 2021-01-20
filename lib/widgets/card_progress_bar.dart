@@ -137,7 +137,7 @@ class CardProgressBar extends StatelessWidget {
             stepIsCompleted: card.hasPicture,
             isCurrentStep: currentActivity.isSnap,
             navigateHere: navigateToSnap,
-            canNavigate: !card.isSaved),
+            canNavigate: true),
 
         progressButton(
             offSetX: 5,
@@ -148,7 +148,7 @@ class CardProgressBar extends StatelessWidget {
             stepIsCompleted: card.hasASong || card.hasASongFormula,
             isCurrentStep: currentActivity.isSong,
             navigateHere: navigateToSong,
-            canNavigate: card.hasPicture && !card.isSaved),
+            canNavigate: card.hasPicture),
 
         // Can click only if creating a new song
         progressButton(
@@ -161,7 +161,7 @@ class CardProgressBar extends StatelessWidget {
             isCurrentStep: currentActivity.isSpeak,
             navigateHere: navigateToSpeak,
             // canNavigate: card.hasASongFormula || card.hasASong),
-            canNavigate: card.hasPicture && !card.isSaved),
+            canNavigate: card.hasPicture),
 
         progressButton(
             offSetX: -13.333,
@@ -172,7 +172,7 @@ class CardProgressBar extends StatelessWidget {
             stepIsCompleted: _hasDecoration,
             isCurrentStep: currentActivity.isStyle,
             navigateHere: navigateToStyle,
-            canNavigate: card.hasAudio && !card.isSaved),
+            canNavigate: card.hasAudio),
       ],
     );
   }
