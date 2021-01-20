@@ -1,4 +1,3 @@
-import 'package:K9_Karaoke/globals.dart';
 import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/the_user.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
@@ -36,13 +35,13 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   TheUser user;
   KaraokeCardDecorationController cardDecorator;
   CurrentActivity currentActivity;
-  String recipientName = "You";
   String _loadingMessage;
-  String shareLink;
   String saveAndSendButtonText = "Save & Send";
   final messageNode = FocusNode();
+
+  String recipientName = "You";
   String cardMessage = "";
-  FinishedCard finishedCard;
+  String shareLink;
 
   Future<void> _captureArtwork() async {
     if (cards.current.decorationImage != null) return;
@@ -56,9 +55,8 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     return recipientName.replaceAll(RegExp(r'[\s+]'), '%20');
   }
 
-  void _handleShare(uuid, setDialogState) async {
-    _getShareLink(uuid, setDialogState);
-    await Share.share("$cardMessage\n\n$shareLink\n\nCreated with K-9 Karaoke.",
+  void _handleShare() async {
+    await Share.share("K-9 Karaoke Card\n\n$cardMessage\n\n$shareLink\n\nCreated with K-9 Karaoke.",
         subject: "K-9 Karaoke");
     SystemChrome.restoreSystemUIOverlays();
     final snackBar = SnackBar(
@@ -80,43 +78,21 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     await RestAPI.createCardDecorationImage(cards.current.decorationImage);
   }
 
-  Future<String> _createCard(Function setDialogState) async {
+  Future<KaraokeCard> _createBaseCard(Function setDialogState) async {
     if (!cards.current.noFrameOrDecoration) {
       await _captureArtwork();
       setDialogState(() => _loadingMessage = "saving artwork...");
       _handleDecorationImage();
     }
-    
+
     setDialogState(() => _loadingMessage = "saving sounds...");
     await _handleAudio();
 
     setDialogState(() => _loadingMessage = "creating link...");
     cards.current.uuid = Uuid().v4();
     cards.addCurrent();
-    var responseData = await RestAPI.createCard(cards.current);
-    return responseData["uuid"];
-  }
-
-  void _getShareLink(uuid, setDialogState) {
-    setDialogState(() {
-      _loadingMessage = null;
-      shareLink =
-          "https://www.$serverURL/card/$uuid?recipient_name=$_getCleanedRecipientName";
-    });
-  }
-
-  void _shareToClipboard(setDialogState) async {
-    if (shareLink == null) {
-      String uuid = await _handleUpload(setDialogState);
-      _getShareLink(uuid, setDialogState);
-    }
-    Clipboard.setData(ClipboardData(text: shareLink)).then((result) {
-      final snackBar = SnackBar(
-        content: Text('Card link copied to Clipboard'),
-      );
-      Navigator.of(context).pop();
-      Scaffold.of(context).showSnackBar(snackBar);
-    });
+    await RestAPI.createCard(cards.current);
+    return cards.current;
   }
 
   Widget _loading() {
@@ -405,24 +381,37 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   }
 
   Future<void> _handleUploadAndShare(setDialogState) async {
-    if (shareLink != null)
-      return _handleShare(cards.current.uuid, setDialogState);
-    String uuid = await _handleUpload(setDialogState);
-    _handleShare(uuid, setDialogState);
+    await _handleUpload(setDialogState);
+    _handleShare();
   }
 
-  Future<String> _handleUpload(Function setDialogState) async {
+  Future<void> _handleUpload(setDialogState) async {
+    var result;
     try {
-      if (!cards.current.audio.exists)
-        showError(context, "Card has no audio");
-      else {
-        print("creating new card");
-        return await _createCard(setDialogState);
+      if (!cards.current.isSaved) {
+        await _createBaseCard(setDialogState);
       }
+      // Now create finished card
+      result = await RestAPI.createFinishedCard(
+          cards.current.uuid, _getCleanedRecipientName);
+      setDialogState(() {
+        _loadingMessage = null;
+        shareLink = result["url"];
+      });
     } catch (e) {
-      print("upload card error: $e");
+      print("Upload Error: $e");
       showError(context, e);
     }
+  }
+
+  void _shareToClipboard(setDialogState) async {
+    await _handleUpload(setDialogState);
+    await Clipboard.setData(ClipboardData(text: shareLink));
+    final snackBar = SnackBar(
+      content: Text('Card link copied to Clipboard'),
+    );
+    Navigator.of(context).pop();
+    Scaffold.of(context).showSnackBar(snackBar);
   }
 
   void _backCallback() {

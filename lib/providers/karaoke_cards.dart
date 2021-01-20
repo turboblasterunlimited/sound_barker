@@ -21,7 +21,6 @@ class KaraokeCards with ChangeNotifier {
   // the base card without recipient name, envelope option, mini url.
   List<KaraokeCard> all = [];
   // This is what the user shares. Uses a Karaoke card as its base.
-  List<FinishedCard> allFinished = [];
   KaraokeCard current;
 
   List<KaraokeCard> get saved {
@@ -40,6 +39,7 @@ class KaraokeCards with ChangeNotifier {
 
   void addCurrent() {
     all.add(current);
+    notifyListeners();
   }
 
   void deleteAll() {
@@ -181,15 +181,11 @@ class FinishedCard with ChangeNotifier {
   String miniUuid;
   String recipientName;
   // NEED THIS ON BACKEND;
-  // DateTime created;
   // boolean hasEnvelope;
 
   KaraokeCard baseCard;
 
-  FinishedCard(
-      {@required this.recipientName,
-      @required this.miniUuid,
-      @required this.baseCard});
+  FinishedCard({this.recipientName, this.miniUuid, this.baseCard});
 
   String get url {
     return "$serverURL/c/$miniUuid";
@@ -209,7 +205,7 @@ class KaraokeCard with ChangeNotifier {
   // This is a creatable song, which has two arrangments. One of the arrangement ids will get sent to the server with the bark ids to create an actual song.
   CreatableSong songFormula;
   // This is an actual song
-  Song song; 
+  Song song;
   final message = CardMessage();
   Bark shortBark;
   Bark mediumBark;

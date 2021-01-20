@@ -177,29 +177,6 @@ class RestAPI {
     }
   }
 
-  static Future updateCard(KaraokeCard card) async {
-    var response;
-    final cardBody = {
-      'card_audio_id': card.audio.fileId,
-      "image_id": card.picture.fileId,
-      'decoration_image_id': card.decorationImage?.fileId,
-      'animation_json':
-          '{"mouth_positions": ${card.audio.amplitudes.toString()}}',
-    };
-    final cardUrl = 'https://$serverURL/greeting_card/${card.uuid}';
-    print("update card request body: $cardBody");
-    try {
-      response = await HttpController.dio.patch(
-        cardUrl,
-        data: cardBody,
-      );
-    } catch (e) {
-      print("update greeting card error: ${e.message}");
-      _handleAssetError(response, e);
-    }
-    return response?.data;
-  }
-
   static Future createCard(KaraokeCard card, {songId}) async {
     var response;
     final cardBody = {
@@ -224,6 +201,27 @@ class RestAPI {
       return {"error": e};
     }
     print("create greeting card body: ${response?.data}");
+    return response?.data;
+  }
+
+  static Future createFinishedCard(String uuid, String recipient) async {
+    var response;
+    final cardBody = {
+      'card_uuid': uuid,
+      'recipient': recipient,
+    };
+    final cardUrl = 'https://$serverURL/to_card_key';
+    print("card key request body: $cardBody");
+    try {
+      response = await HttpController.dioPost(
+        cardUrl,
+        data: cardBody,
+      );
+    } catch (e) {
+      print("create card key error: ${e.message}");
+      return {"error": e};
+    }
+    print("create card key body: ${response?.data}");
     return response?.data;
   }
 
