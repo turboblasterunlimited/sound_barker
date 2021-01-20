@@ -42,6 +42,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   String saveAndSendButtonText = "Save & Send";
   final messageNode = FocusNode();
   String cardMessage = "";
+  FinishedCard finishedCard;
 
   Future<void> _captureArtwork() async {
     if (cards.current.decorationImage != null) return;
@@ -49,50 +50,6 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     decorationImage.filePath = await cardDecorator.cardPainter
         .capturePNG(decorationImage.fileId, cards.current.framePath);
     cards.current.setDecorationImage(decorationImage);
-  }
-
-  Future<void> _uploadAndCreateDecorationImage() async {
-    cards.current.decorationImage.bucketFp = await Gcloud.upload(
-        cards.current.decorationImage.filePath, "decoration_images");
-    await RestAPI.createCardDecorationImage(cards.current.decorationImage);
-  }
-
-  Future<void> _uploadAndCreateCardAudio() async {
-    cards.current.audio.bucketFp =
-        await Gcloud.upload(cards.current.audio.filePath, "card_audios");
-    await RestAPI.createCardAudio(cards.current.audio);
-  }
-
-  Future<String> _updateCard(Function setDialogState) async {
-    print("updating card");
-    bool changed = false;
-    if (cards.current.shouldDeleteOldDecoration) {
-      setDialogState(() => _loadingMessage = "updating artwork...");
-      await cards.current.deleteOldDecorationImage();
-      cards.current.shouldDeleteOldDecoration = false;
-      changed = true;
-    }
-    if (!cards.current.noFrameOrDecoration) {
-      print("capturing artwork...");
-      print("decoration is empty: ${cards.current.decoration.isEmpty}");
-      print("has frame: ${cards.current.hasFrame}");
-      await _captureArtwork();
-      await _uploadAndCreateDecorationImage();
-      changed = true;
-    }
-    if (cards.current.oldCardAudio != null) {
-      setDialogState(() => _loadingMessage = "saving sounds...");
-      await cards.current.deleteOldAudio();
-      setDialogState(() => _loadingMessage = "saving sounds...");
-      await _uploadAndCreateCardAudio();
-      changed = true;
-    }
-    if (changed) {
-      var responseData = await RestAPI.updateCard(cards.current);
-      return responseData["uuid"];
-    } else {
-      return cards.current.uuid;
-    }
   }
 
   String get _getCleanedRecipientName {
@@ -129,7 +86,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
       setDialogState(() => _loadingMessage = "saving artwork...");
       _handleDecorationImage();
     }
-
+    
     setDialogState(() => _loadingMessage = "saving sounds...");
     await _handleAudio();
 
@@ -458,10 +415,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     try {
       if (!cards.current.audio.exists)
         showError(context, "Card has no audio");
-      else if (_editingCard()) {
-        print("editing card");
-        return await _updateCard(setDialogState);
-      } else {
+      else {
         print("creating new card");
         return await _createCard(setDialogState);
       }
@@ -469,10 +423,6 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
       print("upload card error: $e");
       showError(context, e);
     }
-  }
-
-  bool _editingCard() {
-    return cards.current.uuid != null;
   }
 
   void _backCallback() {
