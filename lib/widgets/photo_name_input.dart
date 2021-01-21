@@ -31,6 +31,7 @@ class _PhotoNameInputState extends State<PhotoNameInput> {
   }
 
   int get nameLength {
+    if (widget.picture == null) return 0;
     int inputLength = _textController.text.length;
     int nameLength = widget.picture.name.length;
     return inputLength > nameLength ? inputLength : nameLength;

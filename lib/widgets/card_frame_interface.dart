@@ -251,10 +251,11 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     }
   }
 
-  void _handleCategoryChange(frameCategoryIndex,
+  void _handleCategoryChange(int frameCategoryIndex,
       {int frameIndex, bool centerFrame = false}) {
-    print("checkpoint");
     var categories = getFrameCategories();
+    frameCategoryIndex ??= 0;
+    print("frameCategoryIndex: $frameCategoryIndex");
     var selectedCategoryWidget = categories[frameCategoryIndex] as Text;
     String label = selectedCategoryWidget.data;
     Future.delayed(
@@ -320,7 +321,6 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
             behavior: HitTestBehavior.translucent,
             onTap: () {
               _carouselController.previousPage(reasonIsController: false);
-              // _handleCategoryChange(_currentFrameCategoryIndex - 1);
             },
             onPanStart: (_) =>
                 _carouselController.previousPage(reasonIsController: false),
@@ -333,7 +333,6 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
             behavior: HitTestBehavior.translucent,
             onTap: () {
               _carouselController.nextPage(reasonIsController: false);
-              // _handleCategoryChange(_currentFrameCategoryIndex + 1);
             },
             onPanStart: (_) =>
                 _carouselController.nextPage(reasonIsController: false),
