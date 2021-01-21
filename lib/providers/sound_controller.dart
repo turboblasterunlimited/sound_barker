@@ -55,6 +55,7 @@ import 'package:sounds/src/quality.dart';
 
 class AACMediaFormat extends NativeMediaFormat {
   const AACMediaFormat({
+    String name = "adts/aac",
     int sampleRate = 44100,
     int numChannels = 1,
     int bitRate = 128000,
