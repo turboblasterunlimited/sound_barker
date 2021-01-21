@@ -62,35 +62,47 @@ class CameraOrUploadScreen extends StatelessWidget {
   }
 
   _handleCameraButton(context) {
+    var text =
+        "Have your pet look straight at the camera.\n\nMouth should be visible and closed.";
     return showDialog(
         context: context,
-        builder: (BuildContext ctx) {
-          return CustomDialog(
-            header: "For best results...",
-            bodyText:
-                "Have your pet look straight at the camera.\n\nMouth should be visible and closed.",
-            primaryFunction: (BuildContext modalContext) {
-              Navigator.of(modalContext).pop();
-              getImage(ImageSource.camera, context);
-            },
-            secondaryFunction: (BuildContext modalContext) async {
-              Navigator.of(modalContext).pop();
-            },
-            iconPrimary: Icon(
-              Icons.camera_alt_outlined,
-              size: 42,
-              color: Colors.grey[300],
-            ),
-            iconSecondary: Icon(
-              CustomIcons.modal_paws_topleft,
-              size: 42,
-              color: Colors.grey[300],
-            ),
-            isYesNo: false,
-            primaryButtonText: "Take Picture",
-            secondaryButtonText: "Back",
-          );
-        });
+        builder: (BuildContext ctx) =>
+            photoDialog(text, ImageSource.camera, ctx));
+  }
+
+  _handleUploadButton(context) {
+    var text = "Choose a head-on photo.\n\nMouth should be visible and closed.";
+    return showDialog(
+        context: context,
+        builder: (BuildContext ctx) =>
+            photoDialog(text, ImageSource.gallery, ctx));
+  }
+
+  photoDialog(String text, ImageSource imageSource, BuildContext context) {
+    return CustomDialog(
+      header: "For best results...",
+      bodyText: text,
+      primaryFunction: (BuildContext modalContext) {
+        Navigator.of(modalContext).pop();
+        getImage(imageSource, context);
+      },
+      secondaryFunction: (BuildContext modalContext) async {
+        Navigator.of(modalContext).pop();
+      },
+      iconPrimary: Icon(
+        Icons.camera_alt_outlined,
+        size: 42,
+        color: Colors.grey[300],
+      ),
+      iconSecondary: Icon(
+        CustomIcons.modal_paws_topleft,
+        size: 42,
+        color: Colors.grey[300],
+      ),
+      isYesNo: false,
+      primaryButtonText: "Take Picture",
+      secondaryButtonText: "Back",
+    );
   }
 
   Widget build(BuildContext ctx) {
@@ -156,8 +168,7 @@ class CameraOrUploadScreen extends StatelessWidget {
                             child:
                                 Text("Upload", style: TextStyle(fontSize: 20)),
                             // color: Theme.of(context).primaryColor,
-                            onPressed: () =>
-                                getImage(ImageSource.gallery, context),
+                            onPressed: () => _handleUploadButton(context),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(22.0),
                               side: BorderSide(
