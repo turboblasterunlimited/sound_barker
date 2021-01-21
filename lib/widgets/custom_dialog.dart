@@ -19,7 +19,7 @@ class CustomDialog extends StatefulWidget {
     this.bodyText,
     this.body,
     this.primaryButtonText = "YES",
-    this.primaryFunction,
+    @required this.primaryFunction,
     this.secondaryButtonText = "NO",
     this.secondaryFunction,
     @required this.iconPrimary,

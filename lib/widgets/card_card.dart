@@ -20,7 +20,7 @@ class CardCard extends StatefulWidget {
   _CardCardState createState() => _CardCardState();
 }
 
-class _CardCardState extends State<CardCard>  {
+class _CardCardState extends State<CardCard> {
   ImageController imageController;
   CurrentActivity currentActivity;
 
@@ -104,39 +104,43 @@ class _CardCardState extends State<CardCard>  {
     return GridTile(
       child: GestureDetector(
         onTap: handleTap,
-        child: Stack(
-          children: [
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 5),
-              child: SizedBox(
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    _decorationImageSelectable(
-                      _getImage(),
-                    ),
-                    if (widget.card.decorationImage != null)
-                      Image.file(
-                        File(widget.card.decorationImage.filePath),
-                      ),
-                  ],
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 5),
+          child: SizedBox(
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                _decorationImageSelectable(
+                  _getImage(),
                 ),
-              ),
-            ),
-            if (widget.active)
-              Opacity(
-                opacity: widget.active ? 0 : 0.5,
-                child: Container(
-                  child: Center(
-                    child: Text(
-                      "UNLOCK",
-                      style: TextStyle(color: Theme.of(context).primaryColor),
+                if (widget.card.decorationImage != null)
+                  Image.file(
+                    File(widget.card.decorationImage.filePath),
+                  ),
+                if (!widget.active)
+                  Opacity(
+                    opacity: 0.7,
+                    child: Container(
+                      color: Colors.grey,
                     ),
                   ),
-                  color: Colors.grey,
-                ),
-              ),
-          ],
+                if (!widget.active)
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.lock, color: Theme.of(context).primaryColor),
+                        Text(
+                          "UNLOCK",
+                          style:
+                              TextStyle(color: Theme.of(context).primaryColor),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+          ),
         ),
       ),
     );

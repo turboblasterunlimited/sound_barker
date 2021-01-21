@@ -2,7 +2,6 @@ import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/screens/subscription_screen.dart';
 import 'package:K9_Karaoke/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:line_awesome_icons/line_awesome_icons.dart';
 
 class SubscribeDialog extends StatelessWidget {
   final String dialogText;
@@ -22,7 +21,7 @@ class SubscribeDialog extends StatelessWidget {
         Navigator.pushNamed(context, SubscriptionScreen.routeName);
       },
       iconPrimary: Icon(
-        LineAwesomeIcons.plus_circle,
+        Icons.lock_open,
         size: 42,
         color: Colors.grey[300],
       ),

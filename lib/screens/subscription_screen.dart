@@ -211,7 +211,10 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                                     onPressed: () => Navigator.of(context)
                                         .popUntil(ModalRoute.withName(
                                             MainScreen.routeName)),
-                                    child: Text("Resume"),
+                                    child: Text(
+                                      "Get back to barking!",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(30.0),
                                     ),
