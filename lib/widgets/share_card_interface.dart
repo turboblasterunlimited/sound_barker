@@ -14,6 +14,7 @@ import 'package:K9_Karaoke/providers/sound_controller.dart';
 import 'package:K9_Karaoke/services/gcloud.dart';
 import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
+import 'package:K9_Karaoke/widgets/subscribe_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
@@ -56,7 +57,8 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   }
 
   void _handleShare() async {
-    await Share.share("K-9 Karaoke Card\n\n$cardMessage\n\n$shareLink\n\nCreated with K-9 Karaoke.",
+    await Share.share(
+        "K-9 Karaoke Card\n\n$cardMessage\n\n$shareLink\n\nCreated with K-9 Karaoke.",
         subject: "K-9 Karaoke");
     SystemChrome.restoreSystemUIOverlays();
     final snackBar = SnackBar(
@@ -102,39 +104,6 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
         Text(_loadingMessage,
             style: TextStyle(color: Theme.of(context).primaryColor)),
       ],
-    );
-  }
-
-  _subscribeDialog() async {
-    await showDialog<Null>(
-      context: context,
-      builder: (ctx) => StatefulBuilder(
-          builder: (BuildContext context, Function setDialogState) {
-        return SingleChildScrollView(
-            child: CustomDialog(
-          header: "Subscribe!",
-          bodyText:
-              "You've reached your save & share limit for a free account. Subscribe to save and share more cards!",
-          secondaryFunction: (BuildContext modalContext) {
-            Navigator.of(modalContext).pop();
-          },
-          primaryFunction: (BuildContext modalContext) async {
-            Navigator.of(modalContext).pop();
-            Navigator.pushNamed(context, SubscriptionScreen.routeName);
-          },
-          iconPrimary: Icon(
-            LineAwesomeIcons.plus_circle,
-            size: 42,
-            color: Colors.grey[300],
-          ),
-          iconSecondary: Icon(
-            CustomIcons.modal_paws_topleft,
-            size: 42,
-            color: Colors.grey[300],
-          ),
-          isYesNo: true,
-        ));
-      }),
     );
   }
 
@@ -451,6 +420,16 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
         });
   }
 
+  _subscribeDialog() {
+    showDialog<Null>(
+      context: context,
+      builder: (ctx) =>
+          StatefulBuilder(builder: (BuildContext ctx, Function setDialogState) {
+        return SingleChildScrollView(child: SubscribeDialog());
+      }),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     soundController ??= Provider.of<SoundController>(context, listen: false);
@@ -464,7 +443,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     // print();
     return Container(
       // shares height with decorator interface to maintain art canvas art alignment.
-      height: 150,
+      height: 130,
       child: Column(
         children: [
           InterfaceTitleNav(
@@ -483,10 +462,10 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                     RawMaterialButton(
                       // IF USER IS NOT SUBSCRIBED AND OUT OF FREE CARDS,
                       // USER IS PREVENTED FROM SAVING/SENDING AND PROMPTED TO SUBSCRIBE.
-                      onPressed: user.hasActiveSubscription ||
-                              cards.current == cards.all.first
-                          ? _envelopeDialog
-                          : _subscribeDialog,
+                      onPressed:
+                          user.subscribed || cards.current == cards.all.first
+                              ? _envelopeDialog
+                              : _subscribeDialog,
                       child: Text(
                         cards.current.isSaved ? "Send Again" : "Save & Send",
                         style: TextStyle(color: Colors.white),

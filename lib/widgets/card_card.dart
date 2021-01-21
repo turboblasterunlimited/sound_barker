@@ -2,6 +2,7 @@ import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/pictures.dart';
 import 'package:K9_Karaoke/screens/main_screen.dart';
+import 'package:K9_Karaoke/widgets/subscribe_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
@@ -12,33 +13,31 @@ import 'dart:io';
 class CardCard extends StatefulWidget {
   final KaraokeCard card;
   final KaraokeCards cards;
-  CardCard(this.card, this.cards, {Key key}) : super(key: key);
+  final bool active;
+  CardCard(this.card, this.cards, this.active, {Key key}) : super(key: key);
 
   @override
   _CardCardState createState() => _CardCardState();
 }
 
-class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
+class _CardCardState extends State<CardCard>  {
   ImageController imageController;
-  AnimationController animationController;
   CurrentActivity currentActivity;
 
-  @override
-  void initState() {
-    super.initState();
-    imageController = Provider.of<ImageController>(context, listen: false);
-
-    // animationController =
-    //     AnimationController(vsync: this, duration: const Duration(seconds: 1));
+  subscribeDialog() {
+    showDialog<Null>(
+      context: context,
+      builder: (ctx) =>
+          StatefulBuilder(builder: (BuildContext ctx, Function setDialogState) {
+        return SingleChildScrollView(
+            child: SubscribeDialog(
+                "Subscribe to Karake UNLIMITED to access UNLIMITED cards!"));
+      }),
+    );
   }
 
-  // @override
-  // void dispose() {
-  //   animationController.dispose();
-  //   super.dispose();
-  // }
-
   void handleTap() {
+    if (!widget.active) return subscribeDialog();
     widget.cards.setCurrent(widget.card);
     imageController.createDog(widget.card.picture);
     currentActivity.current = Activities.cardCreation;
@@ -60,8 +59,6 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
                     padding: EdgeInsets.only(
                       top: constraints.biggest.height * 72 / 778,
                       bottom: constraints.biggest.height * 194 / 778,
-                      // left: 0,
-                      // right: constraints.biggest.width * 72 / 656,
                     ),
                     child: image);
               },
@@ -88,7 +85,7 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
             print("it's done:");
             return _imageWidget;
           } else if (snapshot.hasError) {
-            FittedBox(
+            return FittedBox(
               fit: BoxFit.cover,
               child: Icon(
                 LineAwesomeIcons.exclamation_circle,
@@ -107,22 +104,39 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
     return GridTile(
       child: GestureDetector(
         onTap: handleTap,
-        child: Container(
-          margin: EdgeInsets.symmetric(horizontal: 5),
-          child: SizedBox(
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                _decorationImageSelectable(
-                  _getImage(),
+        child: Stack(
+          children: [
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 5),
+              child: SizedBox(
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    _decorationImageSelectable(
+                      _getImage(),
+                    ),
+                    if (widget.card.decorationImage != null)
+                      Image.file(
+                        File(widget.card.decorationImage.filePath),
+                      ),
+                  ],
                 ),
-                if (widget.card.decorationImage != null)
-                  Image.file(
-                    File(widget.card.decorationImage.filePath),
-                  ),
-              ],
+              ),
             ),
-          ),
+            if (widget.active)
+              Opacity(
+                opacity: widget.active ? 0 : 0.5,
+                child: Container(
+                  child: Center(
+                    child: Text(
+                      "UNLOCK",
+                      style: TextStyle(color: Theme.of(context).primaryColor),
+                    ),
+                  ),
+                  color: Colors.grey,
+                ),
+              ),
+          ],
         ),
       ),
     );
@@ -131,20 +145,7 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
-
-    // Animation animation = Tween(begin: 0.0, end: 1.0).animate(
-    //     CurvedAnimation(parent: animationController, curve: Curves.ease));
+    imageController = Provider.of<ImageController>(context, listen: false);
     return decorationImage();
-    // return AnimatedBuilder(
-    //   key: widget.key,
-    //   // animation: animation,
-    //   child: decorationImage(),
-    //   builder: (context, child) {
-    //     return Transform.scale(
-    //       scale: animation.value,
-    //       child: child,
-    //     );
-    //   },
-    // );
   }
 }

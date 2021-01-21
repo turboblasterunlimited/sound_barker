@@ -1,6 +1,7 @@
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_card_decoration_controller.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
+import 'package:K9_Karaoke/providers/the_user.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/widgets/card_card.dart';
 import 'package:K9_Karaoke/widgets/custom_appbar.dart';
@@ -22,12 +23,14 @@ class _MyCardsScreenState extends State<MyCardsScreen> {
   KaraokeCards cards;
   CurrentActivity currentActivity;
   KaraokeCardDecorationController cardDecorator;
+  TheUser user;
 
   List<Widget> _cardGridTiles() {
+    user.subscribed;
     List<Widget> widgets = [];
     widgets.add(_addCardButton());
-    cards.all.forEach((card) {
-      widgets.add(CardCard(card, cards));
+    cards.all.asMap().forEach((index, card) {
+      widgets.add(CardCard(card, cards, user.subscribed || index == 0));
     });
     return widgets;
   }
@@ -61,7 +64,7 @@ class _MyCardsScreenState extends State<MyCardsScreen> {
 
   Widget build(BuildContext context) {
     cards = Provider.of<KaraokeCards>(context);
-    print("card count ${cards.all.length}");
+    user = Provider.of<TheUser>(context, listen: false);
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
     cardDecorator =
         Provider.of<KaraokeCardDecorationController>(context, listen: false);

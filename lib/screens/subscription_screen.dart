@@ -103,7 +103,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 ? Column(
                     children: [LoadingHalfScreenWidget("Processing Payment")],
                   )
-                : !user.hasActiveSubscription
+                : !user.subscribed
                     ? Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
