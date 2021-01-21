@@ -177,31 +177,15 @@ class KaraokeCards with ChangeNotifier {
   }
 }
 
-class FinishedCard with ChangeNotifier {
-  String miniUuid;
-  String recipientName;
-  // NEED THIS ON BACKEND;
-  // boolean hasEnvelope;
-
-  KaraokeCard baseCard;
-
-  FinishedCard({this.recipientName, this.miniUuid, this.baseCard});
-
-  String get url {
-    return "$serverURL/c/$miniUuid";
-  }
-}
-
 class KaraokeCard with ChangeNotifier {
-  // completed components
+  // completed components used by server to playback card
   String uuid;
   Picture picture;
   CardAudio audio;
   CardDecorationImage decorationImage;
   DateTime created;
 
-  // used to create or manage card components
-
+  // only used in app to create card components
   // This is a creatable song, which has two arrangments. One of the arrangement ids will get sent to the server with the bark ids to create an actual song.
   CreatableSong songFormula;
   // This is an actual song
@@ -216,6 +200,8 @@ class KaraokeCard with ChangeNotifier {
   CardAudio oldCardAudio;
   bool framelessIsSelected = false;
 
+  bool seenBarkLengthInfo = false;
+
   // only used on the website // this should be removed and added to FinishedCards
   bool hasEnvelope;
 
@@ -227,6 +213,10 @@ class KaraokeCard with ChangeNotifier {
       this.decorationImage,
       this.created}) {
     this.audio ??= CardAudio();
+  }
+
+  void setSeenBarkLengthInfo(bool hasSeen) {
+    seenBarkLengthInfo = hasSeen;
   }
 
   bool get isSaved {

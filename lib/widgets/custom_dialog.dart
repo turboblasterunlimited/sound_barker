@@ -12,6 +12,7 @@ class CustomDialog extends StatefulWidget {
   final Icon iconPrimary;
   final Icon iconSecondary;
   final bool isYesNo;
+  final bool oneButton;
 
   CustomDialog({
     this.header,
@@ -25,6 +26,7 @@ class CustomDialog extends StatefulWidget {
     @required this.iconPrimary,
     @required this.iconSecondary,
     this.isYesNo = false,
+    this.oneButton = false,
   });
 
   @override
@@ -88,44 +90,17 @@ class _CustomDialogState extends State<CustomDialog> {
                       ),
               ],
             ),
-            Row(
-              children: [
-                Expanded(
-                  child: InkWell(
-                    onTap: widget.secondaryFunction == null
-                        ? () => Navigator.of(context).pop()
-                        : () => widget.secondaryFunction(context),
-                    child: Container(
-                      padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-                      decoration: BoxDecoration(
-                        color: widget.isYesNo
-                            ? Theme.of(context).errorColor
-                            : Theme.of(context).primaryColor,
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(32.0),
-                        ),
-                      ),
-                      child: Text(
-                        widget.secondaryButtonText,
-                        style: TextStyle(color: Colors.white),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-                ),
-                if (!widget.isYesNo)
-                  Container(
-                    width: 1,
-                  ),
-                Expanded(
-                  child: InkWell(
+            widget.oneButton
+                ?
+                // ONE BUTTON
+                InkWell(
                     onTap: () => widget.primaryFunction(context),
                     child: Container(
                       padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
                       decoration: BoxDecoration(
                         color: Theme.of(context).primaryColor,
-                        borderRadius: BorderRadius.only(
-                          bottomRight: Radius.circular(32.0),
+                        borderRadius: BorderRadius.vertical(
+                          bottom: Radius.circular(32.0),
                         ),
                       ),
                       child: Text(
@@ -134,10 +109,59 @@ class _CustomDialogState extends State<CustomDialog> {
                         textAlign: TextAlign.center,
                       ),
                     ),
+                  )
+                :
+                // TWO BUTTONS
+                Row(
+                    children: [
+                      Expanded(
+                        child: InkWell(
+                          onTap: widget.secondaryFunction == null
+                              ? () => Navigator.of(context).pop()
+                              : () => widget.secondaryFunction(context),
+                          child: Container(
+                            padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                            decoration: BoxDecoration(
+                              color: widget.isYesNo
+                                  ? Theme.of(context).errorColor
+                                  : Theme.of(context).primaryColor,
+                              borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(32.0),
+                              ),
+                            ),
+                            child: Text(
+                              widget.secondaryButtonText,
+                              style: TextStyle(color: Colors.white),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                      ),
+                      if (!widget.isYesNo)
+                        Container(
+                          width: 1,
+                        ),
+                      Expanded(
+                        child: InkWell(
+                          onTap: () => widget.primaryFunction(context),
+                          child: Container(
+                            padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).primaryColor,
+                              borderRadius: BorderRadius.only(
+                                bottomRight: Radius.circular(32.0),
+                              ),
+                            ),
+                            child: Text(
+                              widget.primaryButtonText,
+                              style: TextStyle(color: Colors.white),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
-            ),
           ],
         ),
       ),

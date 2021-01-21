@@ -1,10 +1,13 @@
 import 'package:K9_Karaoke/animations/bounce.dart';
+import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/barks.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/widgets/bark_playback_card.dart';
+import 'package:K9_Karaoke/widgets/custom_dialog.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:flutter/material.dart';
+import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/sound_controller.dart';
@@ -29,8 +32,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
   final _listKey = GlobalKey<AnimatedListState>();
   SoundController soundController;
   bool _isFirstLoad = true;
-
-  var cards = KaraokeCards();
+  KaraokeCards cards;
 
   String get _currentBarkLength {
     if (currentActivity.isTwo) {
@@ -60,8 +62,6 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
     displayedBarks.asMap().forEach((i, bark) {
       if (newBarks.indexOf(bark) == -1) toRemove.add(i);
     });
-    // print("toRemove: $toRemove");
-    // print("shownBarks before removal: $shownBarks");
 
     toRemove.reversed.forEach((i) {
       Bark removedBark = displayedBarks[i];
@@ -162,12 +162,46 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
       return null;
   }
 
+  barkLengthInfoDialog(context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          print("INSIDE.");
+          return CustomDialog(
+            header: "1-2-3",
+            bodyText:
+                "We need 3 barks to make a song.\n\nThis first SHORT bark should be one clear sound!",
+            primaryFunction: (BuildContext modalContext) {
+              Navigator.of(modalContext).pop();
+            },
+            iconPrimary: Icon(
+              LineAwesomeIcons.music,
+              size: 42,
+              color: Colors.grey[300],
+            ),
+            iconSecondary: Icon(
+              CustomIcons.modal_paws_topleft,
+              size: 42,
+              color: Colors.grey[300],
+            ),
+            oneButton: true,
+            primaryButtonText: "Got It!",
+          );
+        });
+  }
+
   Widget build(BuildContext context) {
     barks = Provider.of<Barks>(context);
     soundController = Provider.of<SoundController>(context);
     currentActivity = Provider.of<CurrentActivity>(context);
     cards = Provider.of<KaraokeCards>(context);
     _updateDisplayBarks();
+
+    // Show Bark Length Info Modal
+    if (!cards.current.seenBarkLengthInfo) {
+      cards.current.setSeenBarkLengthInfo(true);
+      Future.delayed(Duration.zero, () => barkLengthInfoDialog(context));
+    }
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -187,8 +221,6 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   RawMaterialButton(
-                    // constraints:
-                    //         const BoxConstraints(minWidth: 70, minHeight: 33),
                     onPressed: () =>
                         setState(() => currentBarks = BarkTypes.myBarks),
                     child: Text(
