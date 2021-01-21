@@ -17,6 +17,7 @@ import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/screens/privacy_policy_screen.dart';
 import 'package:K9_Karaoke/screens/retrieve_data_screen.dart';
 import 'package:K9_Karaoke/screens/subscription_screen.dart';
+import 'package:K9_Karaoke/screens/support_screen.dart';
 import 'package:K9_Karaoke/screens/terms_of_use_screen.dart';
 import 'package:custom_paddle_slider_value_indicator_shape/custom_paddle_slider_value_indicator_shape.dart';
 import 'package:flutter/material.dart';
@@ -161,6 +162,7 @@ class MyApp extends StatelessWidget {
             MyCardsScreen.routeName: (ctx) => MyCardsScreen(),
             RetrieveDataScreen.routeName: (ctx) => RetrieveDataScreen(),
             AuthenticationScreen.routeName: (ctx) => AuthenticationScreen(),
+            SupportScreen.routeName: (ctx) => SupportScreen(),
           }),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:K9_Karaoke/screens/privacy_policy_screen.dart';
+import 'package:K9_Karaoke/screens/support_screen.dart';
 import 'package:K9_Karaoke/screens/terms_of_use_screen.dart';
 import 'package:K9_Karaoke/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,6 @@ class AboutScreen extends StatelessWidget {
             children: <Widget>[
               GestureDetector(
                 onTap: () {
-                  print("terms of use tapped");
                   Navigator.of(context).pushNamed(TermsOfUseScreen.routeName);
                 },
                 child: Padding(
@@ -37,12 +37,22 @@ class AboutScreen extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  print("terms of use tapped");
                   Navigator.of(context).pushNamed(PrivacyPolicyScreen.routeName);
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text("Privacy Policy",
+                      style: TextStyle(
+                          fontSize: 40, color: Theme.of(context).primaryColor)),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pushNamed(SupportScreen.routeName);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("Support",
                       style: TextStyle(
                           fontSize: 40, color: Theme.of(context).primaryColor)),
                 ),
