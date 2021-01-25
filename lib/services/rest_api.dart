@@ -185,7 +185,6 @@ class RestAPI {
       'song_id': card.song?.fileId,
       "image_id": card.picture.fileId,
       'decoration_image_id': card.decorationImage?.fileId,
-      'has_envelope': card.hasEnvelope,
       'animation_json':
           '{"mouth_positions": ${card.audio.amplitudes.toString()}}',
     };
@@ -204,11 +203,12 @@ class RestAPI {
     return response?.data;
   }
 
-  static Future createFinishedCard(String uuid, String recipient) async {
+  static Future createFinishedCard(String uuid, String recipient, hasEnvelope) async {
     var response;
     final cardBody = {
       'card_uuid': uuid,
       'recipient': recipient,
+      'has_envelope': hasEnvelope ? 1 : 0,
     };
     final cardUrl = 'https://$serverURL/to_card_key';
     print("card key request body: $cardBody");

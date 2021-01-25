@@ -21,7 +21,6 @@ class _PhotoNameInputState extends State<PhotoNameInput> {
   final _textController = TextEditingController();
   double textWidth = 150;
   double maxTextWidth;
-  // bool _firstBuild = true;
 
   void handleNameChange(name) {
     if (name != "") widget.updateNameCallback(name);

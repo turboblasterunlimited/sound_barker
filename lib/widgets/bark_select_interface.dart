@@ -168,9 +168,9 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
         builder: (BuildContext ctx) {
           print("INSIDE.");
           return CustomDialog(
-            header: "1-2-3",
+            header: "Pick barks for ${cards.current.songFormula.name}",
             bodyText:
-                "We need 3 barks to make a song.\n\nThis first SHORT bark should be one clear sound!",
+                "This first SHORT bark should be one clear sound!",
             primaryFunction: (BuildContext modalContext) {
               Navigator.of(modalContext).pop();
             },

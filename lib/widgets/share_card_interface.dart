@@ -2,7 +2,6 @@ import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/the_user.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
-import 'package:K9_Karaoke/screens/subscription_screen.dart';
 import 'package:K9_Karaoke/widgets/custom_dialog.dart';
 import 'package:K9_Karaoke/widgets/error_dialog.dart';
 
@@ -17,7 +16,6 @@ import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:K9_Karaoke/widgets/subscribe_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:share/share.dart';
@@ -41,7 +39,9 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   final messageNode = FocusNode();
 
   String recipientName = "You";
+  bool hasEnvelope = false;
   String cardMessage = "";
+
   String shareLink;
 
   Future<void> _captureArtwork() async {
@@ -168,7 +168,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                       ],
                     ),
                     _loadingMessage == null
-                        ? cards.current.hasEnvelope
+                        ? hasEnvelope
                             ? Column(
                                 children: [
                                   Padding(
@@ -335,12 +335,11 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
           ),
           isYesNo: true,
           primaryFunction: (con) {
-            cards.current.setEnvelope(true);
+            setState(() => hasEnvelope = true);
             Navigator.of(con).pop();
             _shareDialog();
           },
           secondaryFunction: (con) {
-            cards.current.setEnvelope(false);
             Navigator.of(con).pop();
             _shareDialog();
           },
@@ -362,13 +361,13 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
       }
       // Now create finished card
       result = await RestAPI.createFinishedCard(
-          cards.current.uuid, _getCleanedRecipientName);
+          cards.current.uuid, _getCleanedRecipientName, hasEnvelope);
       setDialogState(() {
         _loadingMessage = null;
         shareLink = result["url"];
       });
     } catch (e) {
-      print("Upload Error: $e");
+      print("card upload Error: $e");
       showError(context, e);
     }
   }

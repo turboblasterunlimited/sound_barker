@@ -202,9 +202,6 @@ class KaraokeCard with ChangeNotifier {
 
   bool seenBarkLengthInfo = false;
 
-  // only used on the website // this should be removed and added to FinishedCards
-  bool hasEnvelope;
-
   KaraokeCard(
       {this.uuid,
       this.picture,
@@ -223,10 +220,6 @@ class KaraokeCard with ChangeNotifier {
     return uuid != null;
   }
 
-  // move this to finished cards
-  void setEnvelope(envelope) {
-    hasEnvelope = envelope;
-  }
 
   bool hasBark(bark) {
     return bark == shortBark || bark == mediumBark || bark == longBark;
