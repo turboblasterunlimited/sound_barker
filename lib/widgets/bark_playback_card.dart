@@ -42,7 +42,7 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
 
   Future<void> play() async {
     setState(() => _isPlaying = true);
-    await widget.soundController
+    widget.soundController
         .startPlayer(widget.bark.filePath, stopCallback: stopAll);
     imageController.mouthTrackSound(filePath: widget.bark.amplitudesPath);
   }

@@ -116,7 +116,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   void startAll() async {
     print("start all");
     // Only songs have a .csv amplitude file, barks, messages and card/combined audio have a List of amplitudes in memory.
-    await soundController.startPlayer(_playbackFiles[0], stopCallback: stopAll);
+    soundController.startPlayer(_playbackFiles[0], stopCallback: stopAll);
     !_canPlayAudio && _canPlaySong
         ? imageController.mouthTrackSound(filePath: _playbackFiles[1])
         : imageController.mouthTrackSound(amplitudes: _playbackFiles[1]);

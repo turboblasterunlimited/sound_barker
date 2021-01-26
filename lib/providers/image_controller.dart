@@ -61,10 +61,10 @@ class ImageController with ChangeNotifier {
     webViewController.evaluateJavascript("mouth_open($width)");
   }
 
-  void mouthTrackSound({String filePath, List amplitudes}) async {
+  Future<void> mouthTrackSound({String filePath, List amplitudes}) async {
     if (isPlaying) stopAnimation();
     if (filePath != null) {
-      List amplitudes = await AmplitudeExtractor.fileToList(filePath);
+      amplitudes = await AmplitudeExtractor.fileToList(filePath);
       webViewController.evaluateJavascript("mouth_track_sound($amplitudes)");
     } else if (amplitudes != null) {
       webViewController.evaluateJavascript("mouth_track_sound($amplitudes)");

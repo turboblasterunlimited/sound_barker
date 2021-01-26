@@ -97,7 +97,7 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
 
   Future<void> play() async {
     setState(() => _isPlaying = true);
-    await widget.soundController
+    widget.soundController
         .startPlayer(widget.song.filePath, stopCallback: stopAll);
     imageController.mouthTrackSound(filePath: widget.song.amplitudesPath);
   }
