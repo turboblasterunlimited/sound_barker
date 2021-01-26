@@ -15,13 +15,17 @@ import 'package:permission_handler/permission_handler.dart';
 
 class CameraOrUploadScreen extends StatelessWidget {
   static const routeName = 'camera_or_upload_screen';
+  BuildContext con;
 
   Future<void> _cropAndNavigate(newPicture, context) async {
     bool cropped = await cropImage(
         newPicture, Theme.of(context).primaryColor, Colors.white);
-    if (!cropped) return;
+    if (!cropped) {
+      print("not cropped");
+      return;
+    }
     Navigator.push(
-      context,
+      con,
       MaterialPageRoute(
         builder: (ctx) => SetPictureCoordinatesScreen(newPicture),
       ),
@@ -58,7 +62,7 @@ class CameraOrUploadScreen extends StatelessWidget {
 
     File(newPicture.filePath).writeAsBytesSync(
         bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
-    await _cropAndNavigate(newPicture, context);
+    await _cropAndNavigate(newPicture, con);
   }
 
   _handleCameraButton(context) {
@@ -100,12 +104,13 @@ class CameraOrUploadScreen extends StatelessWidget {
         color: Colors.grey[300],
       ),
       isYesNo: false,
-      primaryButtonText: "Take Picture",
+      primaryButtonText: "OK",
       secondaryButtonText: "Back",
     );
   }
 
   Widget build(BuildContext ctx) {
+    con = ctx;
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomPadding: false,

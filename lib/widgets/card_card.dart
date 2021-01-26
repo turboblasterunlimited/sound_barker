@@ -20,9 +20,36 @@ class CardCard extends StatefulWidget {
   _CardCardState createState() => _CardCardState();
 }
 
-class _CardCardState extends State<CardCard> {
+class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
+  AnimationController animationController;
+  Animation<double> animateScale;
   ImageController imageController;
   CurrentActivity currentActivity;
+
+  @override
+  void initState() {
+    super.initState();
+    animationController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 500));
+    animateScale = Tween<double>(begin: 1, end: 0).animate(animationController);
+    animationController.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    animationController?.dispose();
+    super.dispose();
+  }
+
+  void imageActions(String action) async {
+    if (action == "DELETE") {
+      await animationController.forward();
+      await widget.cards.remove(widget.card);
+      // widget.setParentState();
+    }
+  }
 
   subscribeDialog() {
     showDialog<Null>(
@@ -138,7 +165,6 @@ class _CardCardState extends State<CardCard> {
                       ],
                     ),
                   ),
-                  
               ],
             ),
           ),
