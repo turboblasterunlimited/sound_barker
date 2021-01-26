@@ -42,9 +42,6 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
   void playSong() async {
     try {
       setState(() => _isLoading = true);
-      if (widget.creatableSong.backingTrackOffset != null)
-        widget.soundController.player.seekTo(
-            Duration(milliseconds: widget.creatableSong.backingTrackOffset));
       await widget.soundController.startPlayer(
           "https://storage.googleapis.com/song_barker_sequences/" +
               widget.creatableSong.backingTrackUrl,
