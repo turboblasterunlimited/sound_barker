@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class Bounce extends StatefulWidget {
-  Icon icon;
-  double begin;
-  double end;
+  final Icon icon;
+  final double begin;
+  final double end;
 
   Bounce({this.icon, this.begin, this.end});
 

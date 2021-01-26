@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class Waggle extends StatefulWidget {
-  Widget child;
+  final Widget child;
+  
   Waggle({this.child});
 
   @override

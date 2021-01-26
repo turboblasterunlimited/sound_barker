@@ -66,6 +66,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   List<Widget> getFrameCategories() {
     return [
       Text('Birthday', style: TextStyle(fontSize: 15)),
+      Text('Greetings', style: TextStyle(fontSize: 15)),
       Text('Christmas', style: TextStyle(fontSize: 15)),
       Text('Jewish', style: TextStyle(fontSize: 15)),
       Text('New Years', style: TextStyle(fontSize: 15)),

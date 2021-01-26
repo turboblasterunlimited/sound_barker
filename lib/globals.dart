@@ -53,6 +53,8 @@ Map<String, String> songFamilyToCardFileName = {
   "Twinkle Twinkle": "twinkle-star.png",
   "We Wish You A Merry X-Mas": 'christmas-wreath.png',
   "Beethoven's 5th": "beethoven's_5th.png",
+  "99 Bottles of Beer": "99.png",
+  "La Cucaracha": "la-cucaracha.png",
 };
 
 Map<String, List<String>> get frameFileNames {
@@ -68,6 +70,13 @@ Map<String, List<String>> get frameFileNames {
       'birthday-package-blue.png',
       'birthday-package-orange.png',
       'birthday-package-pink.png',
+    ],
+    "Greetings": [
+      'congratulations.png',
+      'get-well.png',
+      'thinking-of-you-1.png',
+      'thinking-of-you-2.png',
+      'i-love-you.png',
     ],
     "Christmas": [
       "christmas-package.png",
@@ -106,7 +115,8 @@ Map<String, List<String>> get frameFileNames {
       'flag.png',
       'liberty.png',
       'liberty-flag-4th1.png',
-      'flag-4th2.png'
+      'flag-4th2.png',
+      'la-cucaracha.png'
     ],
     "Kids": [
       'abc1.png',
@@ -120,15 +130,20 @@ Map<String, List<String>> get frameFileNames {
       "beethoven's_5th.png",
       '50s.png',
       'beach.png',
+      'dog-house.png',
       'flowers.png',
       'ocean.png',
       'space.png',
+      'dog-day.png',
+      '99.png',
+      '99-2.png',
     ],
     "Sports": [
       'baseball.png',
       'basketball.png',
       'football.png',
       'hockey.png',
+      'ski.png',
       'soccer.png',
     ],
     "Abstract": [
