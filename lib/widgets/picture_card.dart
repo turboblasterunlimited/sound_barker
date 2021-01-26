@@ -10,21 +10,12 @@ import 'dart:io';
 
 import '../providers/pictures.dart';
 
-// class PictureCard extends StatefulWidget {
-//   final Picture picture;
-//   Function removeCallback;
-
-//   PictureCard(this.picture, this.removeCallback, {Key key}) : super(key: key);
-
-//   @override
-//   _PictureCardState createState() => _PictureCardState();
-// }
 
 class PictureCard extends StatefulWidget {
   final Picture picture;
   final Pictures pictures;
-  List<Widget> displayList;
-  Function setParentState;
+  final List<Widget> displayList;
+  final Function setParentState;
 
   PictureCard(
       this.picture, this.pictures, this.displayList, this.setParentState,
@@ -112,8 +103,6 @@ class _PictureCardState extends State<PictureCard>
     }
   }
 
-  Widget pictureCard() {}
-
   @override
   Widget build(BuildContext context) {
     cards = Provider.of<KaraokeCards>(context, listen: false);
@@ -176,22 +165,5 @@ class _PictureCardState extends State<PictureCard>
         ),
       ),
     );
-
-    // Animation animation = Tween(begin: 0.0, end: 1.0).animate(
-    //     CurvedAnimation(parent: animationController, curve: Curves.ease));
-
-    // return pictureCard();
-
-    // return AnimatedBuilder(
-    //   key: widget.key,
-    //   animation: animation,
-    //   child: pictureCard(animation),
-    //   builder: (context, child) {
-    //     return Transform.scale(
-    //       scale: animation.value,
-    //       child: child,
-    //     );
-    //   },
-    // );
   }
 }

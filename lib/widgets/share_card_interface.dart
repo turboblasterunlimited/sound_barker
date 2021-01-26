@@ -52,10 +52,6 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     cards.current.setDecorationImage(decorationImage);
   }
 
-  String get _getCleanedRecipientName {
-    return recipientName.replaceAll(RegExp(r'[\s+]'), '%20');
-  }
-
   void _handleShare() async {
     await Share.share(
         "K-9 Karaoke Card\n\n$cardMessage\n\n$shareLink\n\nCreated with K-9 Karaoke.",
@@ -361,7 +357,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
       }
       // Now create finished card
       result = await RestAPI.createFinishedCard(
-          cards.current.uuid, _getCleanedRecipientName, hasEnvelope);
+          cards.current.uuid, recipientName, hasEnvelope);
       setDialogState(() {
         _loadingMessage = null;
         shareLink = result["url"];
