@@ -23,6 +23,11 @@ class KaraokeCards with ChangeNotifier {
   // This is what the user shares. Uses a Karaoke card as its base.
   KaraokeCard current;
 
+  bool get currentIsFirst {
+    if (all.isEmpty) return true;
+    return current == all.first;
+  }
+
   List<KaraokeCard> get saved {
     return all.where((KaraokeCard card) => card.uuid != null).toList();
   }

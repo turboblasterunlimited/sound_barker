@@ -8,7 +8,7 @@ abstract class Asset with ChangeNotifier {
   String filePath;
   String fileUrl;
   String fileId;
-  Asset({this.filePath, this.fileUrl, this.fileId}) {}
+  Asset({this.filePath, this.fileUrl, this.fileId});
 
   bool get hasFile {
     return filePath != null && File(filePath).existsSync();

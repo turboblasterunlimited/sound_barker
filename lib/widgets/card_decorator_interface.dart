@@ -128,6 +128,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
   }
 
   void skipCallback() {
+    print("next substep");
     currentActivity.setNextSubStep();
   }
 

@@ -427,6 +427,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
 
   @override
   Widget build(BuildContext context) {
+    print("building share interface");
     soundController ??= Provider.of<SoundController>(context, listen: false);
     imageController ??= Provider.of<ImageController>(context, listen: false);
     cards ??= Provider.of<KaraokeCards>(context, listen: true);
@@ -458,7 +459,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                       // IF USER IS NOT SUBSCRIBED AND OUT OF FREE CARDS,
                       // USER IS PREVENTED FROM SAVING/SENDING AND PROMPTED TO SUBSCRIBE.
                       onPressed:
-                          user.subscribed || cards.current == cards.all.first
+                          user.subscribed || cards.currentIsFirst
                               ? _envelopeDialog
                               : _subscribeDialog,
                       child: Text(

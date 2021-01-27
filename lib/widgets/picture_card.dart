@@ -10,15 +10,13 @@ import 'dart:io';
 
 import '../providers/pictures.dart';
 
-
 class PictureCard extends StatefulWidget {
   final Picture picture;
   final Pictures pictures;
   final List<Widget> displayList;
-  final Function setParentState;
 
   PictureCard(
-      this.picture, this.pictures, this.displayList, this.setParentState,
+      this.picture, this.pictures, this.displayList,
       {Key key})
       : super(key: key);
 
@@ -30,9 +28,10 @@ class _PictureCardState extends State<PictureCard>
     with TickerProviderStateMixin {
   ImageController imageController;
   AnimationController animationController;
+  Animation<double> animateScale;
+
   KaraokeCards cards;
   CurrentActivity currentActivity;
-  Animation<double> animateScale;
 
   @override
   void initState() {
@@ -58,7 +57,6 @@ class _PictureCardState extends State<PictureCard>
       await animationController.forward();
       widget.displayList.remove(this);
       await widget.pictures.remove(widget.picture);
-      widget.setParentState();
     }
   }
 

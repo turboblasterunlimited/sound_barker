@@ -21,11 +21,11 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
   KaraokeCards cards;
 
   List<Widget> _pictureGridTiles(List<Picture> pics,
-      [usersDisplayedPictures, stateSetter]) {
+      [usersDisplayedPictures]) {
     List<Widget> widgets = [];
     pics.forEach((picture) {
       widgets.add(PictureCard(
-          picture, pictures, usersDisplayedPictures, stateSetter,
+          picture, pictures, usersDisplayedPictures,
           key: UniqueKey()));
     });
     return widgets;
@@ -34,7 +34,7 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
   List<Widget> _usersPictureGridTiles() {
     List<Widget> result = [];
     // each picture gets a reference to all the user's own displayed pictues, for handling delete animation: 'result'.
-    _pictureGridTiles(pictures.all, result, () => setState(() => {}))
+    _pictureGridTiles(pictures.all, result)
         .forEach((picCard) => result.add(picCard));
     result.insert(0, _addPictureButton());
     return result;
@@ -100,7 +100,7 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
   }
 
   Widget build(BuildContext context) {
-    pictures = Provider.of<Pictures>(context, listen: false);
+    pictures = Provider.of<Pictures>(context, listen: true);
     cards = Provider.of<KaraokeCards>(context, listen: false);
     return Scaffold(
       extendBodyBehindAppBar: true,
