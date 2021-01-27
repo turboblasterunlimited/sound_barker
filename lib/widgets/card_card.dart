@@ -1,6 +1,7 @@
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/pictures.dart';
+import 'package:K9_Karaoke/providers/the_user.dart';
 import 'package:K9_Karaoke/screens/main_screen.dart';
 import 'package:K9_Karaoke/widgets/subscribe_dialog.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import 'dart:io';
 class CardCard extends StatefulWidget {
   final KaraokeCard card;
   final KaraokeCards cards;
+  // User subscription is active.
   final bool active;
   CardCard(this.card, this.cards, this.active, {Key key}) : super(key: key);
 
@@ -25,6 +27,7 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
   Animation<double> animateScale;
   ImageController imageController;
   CurrentActivity currentActivity;
+  TheUser user;
 
   @override
   void initState() {
@@ -47,7 +50,6 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
     if (action == "DELETE") {
       await animationController.forward();
       await widget.cards.remove(widget.card);
-      // widget.setParentState();
     }
   }
 
@@ -58,7 +60,7 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
           StatefulBuilder(builder: (BuildContext ctx, Function setDialogState) {
         return SingleChildScrollView(
             child: SubscribeDialog(
-                "Subscribe to Karake UNLIMITED to access UNLIMITED cards!"));
+                "Subscribe to Karake UNLIMITED to access UNLIMITED cards and features!"));
       }),
     );
   }
@@ -177,6 +179,60 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
     imageController = Provider.of<ImageController>(context, listen: false);
-    return decorationImage();
+    user = Provider.of<TheUser>(context, listen: false);
+    return Transform.scale(
+      scale: animateScale.value,
+      child: Container(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: GridTile(
+            child: Stack(
+              children: <Widget>[
+                GestureDetector(
+                  onTap: handleTap,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: decorationImage(),
+                  ),
+                ),
+                if (user.subscribed)
+                  Positioned(
+                    right: -25,
+                    top: -5,
+                    child: Stack(
+                      children: <Widget>[
+                        PopupMenuButton(
+                          onSelected: imageActions,
+                          child: RawMaterialButton(
+                            child: Icon(
+                              Icons.more_vert,
+                              color: Colors.black38,
+                              size: 20,
+                            ),
+                            shape: CircleBorder(),
+                            elevation: 2.0,
+                            fillColor: Colors.white,
+                          ),
+                          itemBuilder: (BuildContext context) {
+                            return [
+                              PopupMenuItem<String>(
+                                value: "DELETE",
+                                child: Text(
+                                  "Delete",
+                                  style: TextStyle(color: Colors.redAccent),
+                                ),
+                              ),
+                            ];
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
