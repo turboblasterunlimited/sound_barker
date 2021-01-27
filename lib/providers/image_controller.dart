@@ -54,6 +54,7 @@ class ImageController with ChangeNotifier {
     isPlaying = false;
     // Pass false to keep headsway alive
     this.webViewController.evaluateJavascript("stop_all_animations(false)");
+    // notifyListeners();
   }
 
   // Probably Depricated

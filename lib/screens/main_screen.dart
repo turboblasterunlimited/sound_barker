@@ -46,6 +46,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   final textController = TextEditingController();
   List _playbackFiles;
   bool firstBuild = true;
+  bool isPlaying = false;
 
   List _getPlaybackFiles() {
     if (_canPlayAudio) {
@@ -68,11 +69,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   Future<void> _navigate() async {
     Navigator.of(context).pushNamed(MenuScreen.routeName);
   }
-
-  // void startCreateCard() {
-  //   currentActivity.startCreateCard(cards.newCurrent);
-  //   Navigator.of(context).pushNamed(PhotoLibraryScreen.routeName);
-  // }
 
   @override
   void initState() {
@@ -107,14 +103,16 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   }
 
   void stopAll() {
-    if (imageController.isPlaying) {
+    if (isPlaying) {
       imageController.stopAnimation();
       soundController.stopPlayer();
+      setState(() => isPlaying = false);
     }
   }
 
   void startAll() async {
     print("start all");
+    setState(() => isPlaying = true);
     // Only songs have a .csv amplitude file, barks, messages and card/combined audio have a List of amplitudes in memory.
     soundController.startPlayer(_playbackFiles[0], stopCallback: stopAll);
     !_canPlayAudio && _canPlaySong
@@ -155,11 +153,11 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   void _handleTapPuppet() {
     print("Tapping webview!");
     if (_playbackFiles != null)
-      imageController.isPlaying ? stopAll() : startAll();
+      isPlaying ? stopAll() : startAll();
   }
 
-  bool get canPlay {
-    return !imageController.isPlaying && (_playbackFiles != null);
+  bool get showPlayButton {
+    return !isPlaying && (_playbackFiles != null);
   }
 
   bool get _showDecorationCanvas {
@@ -286,7 +284,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                   }),
                                 ),
                               ),
-                            if (canPlay)
+                            if (showPlayButton)
                               Positioned.fill(
                                 child: Center(
                                   child: RawMaterialButton(
@@ -306,10 +304,14 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                       ),
                     ),
                   ),
-                  if (cards.current != null && !isDecorationScreen && !cards.current.isSaved) CardProgressBar(),
+                  if (cards.current != null &&
+                      !isDecorationScreen &&
+                      !cards.current.isSaved)
+                    CardProgressBar(),
                   if (cards.current != null)
                     Padding(
-                      padding: EdgeInsets.only(top: isDecorationScreen ? 0 : 10.0),
+                      padding:
+                          EdgeInsets.only(top: isDecorationScreen ? 0 : 10.0),
                       child: AnimatedSize(
                           duration: Duration(milliseconds: 400),
                           vsync: this,
