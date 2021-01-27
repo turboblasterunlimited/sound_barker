@@ -27,7 +27,6 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
   ImageController imageController;
   bool _isPlaying = false;
   bool _isLoading = false;
-  final _controller = TextEditingController();
   String tempName;
   CurrentActivity currentActivity;
   KaraokeCards cards;

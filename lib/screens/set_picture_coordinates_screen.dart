@@ -297,9 +297,9 @@ class _SetPictureCoordinatesScreenState
     print("building set picture coordinates screen");
     pictures = Provider.of<Pictures>(context, listen: false);
     imageController = Provider.of<ImageController>(context, listen: false);
-    card = Provider.of<KaraokeCards>(context, listen: false).current;
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
     cards = Provider.of<KaraokeCards>(context, listen: false);
+    card = cards.current;
 
     SystemChrome.restoreSystemUIOverlays();
     if (_isFirstBuild) {

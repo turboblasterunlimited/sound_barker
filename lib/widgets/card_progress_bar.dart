@@ -44,48 +44,6 @@ class CardProgressBar extends StatelessWidget {
 
     final primaryColor = Theme.of(context).primaryColor;
 
-    Widget progressButton(
-        {double offSetX,
-        IconData stepIcon,
-        CustomClipper buttonClip,
-        CustomPainter outlinePainter,
-        bool stepIsCompleted,
-        bool isCurrentStep,
-        Function navigateHere,
-        bool canNavigate}) {
-      return Padding(
-        padding: const EdgeInsets.only(top: 5.0),
-        child: Transform.translate(
-          offset: Offset(offSetX, 0),
-          child: ClipPath(
-            clipper: buttonClip,
-            child: GestureDetector(
-              onTap: canNavigate ? navigateHere : null,
-              child: Opacity(
-                opacity: canNavigate ? 1 : .3,
-                child: Container(
-                  color: stepIsCompleted
-                      ? Theme.of(context).primaryColor
-                      : Colors.transparent,
-                  width: buttonWidth,
-                  height: 30.0,
-                  child: CustomPaint(
-                    painter: outlinePainter,
-                    child: Icon(
-                      stepIcon,
-                      color: stepIsCompleted
-                          ? Colors.white
-                          : Theme.of(context).primaryColor,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-
     void navigateToSnap() {
       if (card.picture.isStock)
         Navigator.of(context).pushNamed(PhotoLibraryScreen.routeName);
@@ -125,10 +83,11 @@ class CardProgressBar extends StatelessWidget {
       Navigator.of(context).popUntil(ModalRoute.withName(MainScreen.routeName));
     }
 
-    return Row(
+    return card == null ? Center() : Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        progressButton(
+        ProgressButton(
+            buttonWidth: buttonWidth,
             offSetX: 13.333,
             stepIcon: CustomIcons.snap_quick,
             buttonClip: FirstButtonClipper(),
@@ -139,7 +98,8 @@ class CardProgressBar extends StatelessWidget {
             navigateHere: navigateToSnap,
             canNavigate: true),
 
-        progressButton(
+        ProgressButton(
+            buttonWidth: buttonWidth,
             offSetX: 5,
             stepIcon: CustomIcons.song_quick,
             buttonClip: MiddleButtonClipper(),
@@ -151,7 +111,8 @@ class CardProgressBar extends StatelessWidget {
             canNavigate: card.hasPicture),
 
         // Can click only if creating a new song
-        progressButton(
+        ProgressButton(
+            buttonWidth: buttonWidth,
             offSetX: -5,
             stepIcon: CustomIcons.speak_quick,
             buttonClip: MiddleButtonClipper(),
@@ -163,7 +124,8 @@ class CardProgressBar extends StatelessWidget {
             // canNavigate: card.hasASongFormula || card.hasASong),
             canNavigate: card.hasPicture),
 
-        progressButton(
+        ProgressButton(
+            buttonWidth: buttonWidth,
             offSetX: -13.333,
             stepIcon: CustomIcons.style_quick,
             buttonClip: LastButtonClipper(),
@@ -302,4 +264,64 @@ class LastButtonClipper extends CustomClipper<Path> {
 
   @override
   bool shouldReclip(CustomClipper oldClipper) => false;
+}
+
+class ProgressButton extends StatelessWidget {
+  final double offSetX;
+  final IconData stepIcon;
+  final CustomClipper buttonClip;
+  final CustomPainter outlinePainter;
+  final bool stepIsCompleted;
+  final bool isCurrentStep;
+  final Function navigateHere;
+  final bool canNavigate;
+  final double buttonWidth;
+  
+  ProgressButton(
+      {this.offSetX,
+      this.stepIcon,
+      this.buttonClip,
+      this.outlinePainter,
+      this.stepIsCompleted,
+      this.isCurrentStep,
+      this.navigateHere,
+      this.canNavigate,
+      this.buttonWidth});
+
+  @override
+  Widget build(BuildContext context) {
+    {
+      return Padding(
+        padding: const EdgeInsets.only(top: 5.0),
+        child: Transform.translate(
+          offset: Offset(offSetX, 0),
+          child: ClipPath(
+            clipper: buttonClip,
+            child: GestureDetector(
+              onTap: canNavigate ? navigateHere : null,
+              child: Opacity(
+                opacity: canNavigate ? 1 : .3,
+                child: Container(
+                  color: stepIsCompleted
+                      ? Theme.of(context).primaryColor
+                      : Colors.transparent,
+                  width: buttonWidth,
+                  height: 30.0,
+                  child: CustomPaint(
+                    painter: outlinePainter,
+                    child: Icon(
+                      stepIcon,
+                      color: stepIsCompleted
+                          ? Colors.white
+                          : Theme.of(context).primaryColor,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+  }
 }

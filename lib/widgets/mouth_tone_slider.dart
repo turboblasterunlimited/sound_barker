@@ -80,14 +80,6 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
     currentActivity.setCardCreationStep(CardCreationSteps.song);
   }
 
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    card = Provider.of<KaraokeCards>(context).current;
-    currentActivity = Provider.of<CurrentActivity>(context);
-    imageController = Provider.of<ImageController>(context);
-    currentMouthTone = mouthColorToInt(card.picture.mouthColor);
-  }
-
   List get sliderMouthTone {
     if (_sliderValue > 2) {
       return fleshMouthTone;
@@ -96,6 +88,7 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
     } else if (_sliderValue >= 0) {
       return redMouthTone;
     }
+    return fleshMouthTone;
   }
 
   void backCallback() {
@@ -110,6 +103,11 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
 
   @override
   Widget build(BuildContext context) {
+    card ??= Provider.of<KaraokeCards>(context).current;
+    currentActivity ??= Provider.of<CurrentActivity>(context);
+    imageController ??= Provider.of<ImageController>(context);
+    currentMouthTone ??= mouthColorToInt(card.picture.mouthColor);
+
     print("Current picture: ${card.picture?.name}");
     imageController.startMouthOpenAndClose();
     print("Building mouth tone slider");
