@@ -46,8 +46,6 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   }
 
   void skipCallback() {
-    print("Card framepath: ${cards.current.framePath}");
-    print("card decoration image: ${cards.current.decorationImage}");
     if (cards.current.decorationImage != null) {
       cards.current.shouldDeleteOldDecoration = false;
       Future.delayed(

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/the_user.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
@@ -16,6 +18,7 @@ import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:K9_Karaoke/widgets/subscribe_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:share/share.dart';
@@ -302,6 +305,46 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     );
   }
 
+  Widget _positionedImage(image) {
+    return (cards.current.decorationImage != null &&
+            cards.current.decorationImage.hasFrameDimension)
+        ? Positioned.fill(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return Padding(
+                    padding: EdgeInsets.only(
+                      top: constraints.biggest.height * 72 / 778,
+                      bottom: constraints.biggest.height * 194 / 778,
+                    ),
+                    child: image);
+              },
+            ),
+          )
+        : Positioned.fill(child: image);
+  }
+
+  Widget cardImage() {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 5),
+      child: SizedBox(
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            _positionedImage(
+              Image.file(
+                File(cards.current.picture.filePath),
+              ),
+            ),
+            if (cards.current.decorationImage != null)
+              Image.file(
+                File(cards.current.decorationImage.filePath),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
   _envelopeDialog() async {
     await showDialog<Null>(
       barrierDismissible: true,
@@ -321,12 +364,23 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
             size: 42,
             color: Colors.grey[300],
           ),
-          body: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Image.asset(
-                "assets/images/card-in-envelope.png",
-              ),
+          body: Container(
+            padding: EdgeInsets.all(20),
+            child: Stack(
+              alignment: Alignment.bottomCenter,
+              children: [
+                Column(
+                  children: [
+                    Image.asset("assets/images/envelope_topflap.png"),
+                    Image.asset("assets/images/pouch_inside_1.png"),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(30.0),
+                  child: cardImage(),
+                ),
+                Image.asset("assets/images/envelope_front.png"),
+              ],
             ),
           ),
           isYesNo: true,
@@ -458,10 +512,9 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                     RawMaterialButton(
                       // IF USER IS NOT SUBSCRIBED AND OUT OF FREE CARDS,
                       // USER IS PREVENTED FROM SAVING/SENDING AND PROMPTED TO SUBSCRIBE.
-                      onPressed:
-                          user.subscribed || cards.currentIsFirst
-                              ? _envelopeDialog
-                              : _subscribeDialog,
+                      onPressed: user.subscribed || cards.currentIsFirst
+                          ? _envelopeDialog
+                          : _subscribeDialog,
                       child: Text(
                         cards.current.isSaved ? "Send Again" : "Save & Send",
                         style: TextStyle(color: Colors.white),

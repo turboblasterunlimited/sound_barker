@@ -75,11 +75,11 @@ class Pictures with ChangeNotifier {
       return pic1.name.compareTo(pic2.name);
     });
 
-    // Put the dog "Dean" first
+    // Put the dog "Dean" 4th
     var deanIndex =
         stockPictures.indexWhere((element) => element.name == "Dean");
     var dean = stockPictures.removeAt(deanIndex);
-    stockPictures.insert(0, dean);
+    stockPictures.insert(3, dean);
   }
 
   Future downloadAllImagesFromBucket([List<Picture> images]) async {

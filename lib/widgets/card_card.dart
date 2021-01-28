@@ -111,7 +111,6 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
         future: picture.download(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            print("it's done:");
             return _imageWidget;
           } else if (snapshot.hasError) {
             return FittedBox(

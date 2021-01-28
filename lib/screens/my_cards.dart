@@ -7,7 +7,6 @@ import 'package:K9_Karaoke/widgets/card_card.dart';
 import 'package:K9_Karaoke/widgets/custom_appbar.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 import 'package:K9_Karaoke/screens/menu_screen.dart';
