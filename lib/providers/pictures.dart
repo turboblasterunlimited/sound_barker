@@ -50,7 +50,6 @@ class Pictures with ChangeNotifier {
   }
 
   Future retrieveAll() async {
-    List tempPics = [];
     List response = await RestAPI.retrieveAllImages();
     print("pictures: $response");
     response.forEach((serverImage) async {
@@ -62,23 +61,25 @@ class Pictures with ChangeNotifier {
         name: serverImage["name"],
         fileUrl: serverImage["bucket_fp"],
         fileId: serverImage["uuid"],
-        // something is wrong with this
         coordinates: jsonDecode(serverImage["coordinates_json"].toString()),
         mouthColor: jsonDecode(serverImage["mouth_color"].toString()),
         created: DateTime.parse(serverImage["created"]),
       );
-      tempPics.add(pic);
-    });
-    // await downloadAllImagesFromBucket(tempPics);
-    tempPics.sort((pic1, pic2) {
-      return pic1.created.compareTo(pic2.created);
-    });
-    tempPics.forEach((pic) {
       pic.isStock ? stockPictures.add(pic) : add(pic);
     });
-    // Important
-    if (tempPics.isEmpty) return null;
-    notifyListeners();
+    all.sort((pic1, pic2) {
+      return pic1.created.compareTo(pic2.created);
+    });
+
+    stockPictures.sort((pic1, pic2) {
+      return pic1.name.compareTo(pic2.name);
+    });
+
+    // Put the dog "Dean" first
+    var deanIndex =
+        stockPictures.indexWhere((element) => element.name == "Dean");
+    var dean = stockPictures.removeAt(deanIndex);
+    stockPictures.insert(0, dean);
   }
 
   Future downloadAllImagesFromBucket([List<Picture> images]) async {

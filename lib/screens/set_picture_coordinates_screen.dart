@@ -426,7 +426,7 @@ class _SetPictureCoordinatesScreenState
                 ),
               ),
             ),
-            CardProgressBar(),
+            card ?? CardProgressBar(),
             Padding(
               padding: EdgeInsets.only(top: 15),
             ),

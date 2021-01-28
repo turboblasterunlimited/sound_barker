@@ -76,7 +76,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     super.initState();
     SystemChrome.setEnabledSystemUIOverlays([]);
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      _navigate();
+      Future.delayed(Duration(seconds: 2), _navigate);
     });
     KeyboardVisibility.onChange.listen((bool visible) {
       print('Keyboard visibility update. Is visible: ${visible}');
@@ -322,7 +322,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
             ),
             // Full screen Spinner
             if (!everythingReady())
-              LoadingScreenWidget("Loading animation engine..."),
+              LoadingScreenWidget("Loading..."),
           ],
         ),
       ),

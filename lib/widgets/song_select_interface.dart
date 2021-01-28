@@ -13,8 +13,6 @@ import '../providers/sound_controller.dart';
 import 'package:K9_Karaoke/widgets/song_playback_card.dart';
 import '../providers/songs.dart';
 
-
-
 class SongSelectInterface extends StatefulWidget {
   @override
   _SongSelectInterfaceState createState() => _SongSelectInterfaceState();
@@ -162,23 +160,26 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
             Spacer(),
             Transform.translate(
               offset: Offset(-10, -10),
-              child: Column(
-                children: [
-                  Transform.rotate(
-                    angle: -math.pi / -12.0,
-                    child: Icon(
-                      Icons.arrow_upward,
-                      size: 20,
-                      color: Theme.of(context).accentColor,
+              child: GestureDetector(
+                onTap: _skipCallback,
+                child: Column(
+                  children: [
+                    Transform.rotate(
+                      angle: -math.pi / -12.0,
+                      child: Icon(
+                        Icons.arrow_upward,
+                        size: 20,
+                        color: Theme.of(context).accentColor,
+                      ),
                     ),
-                  ),
-                  Text(
-                    "No Song",
-                    style: TextStyle(
-                      color: Theme.of(context).accentColor,
+                    Text(
+                      "No Song",
+                      style: TextStyle(
+                        color: Theme.of(context).accentColor,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],

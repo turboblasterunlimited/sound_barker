@@ -100,23 +100,22 @@ Map<String, List<String>> get frameFileNames {
       'new-year-fireworks.png',
     ],
     "Holidays": [
-      'july-4th.png',
-      'thanksgiving.png',
-      'halloween.png',
-      'easter.png',
-      'fathers-day.png',
-      'mothers-day.png',
       'valentine.png',
+      'easter.png',
+      'mothers-day.png',
+      'fathers-day.png',
+      'halloween.png',
+      'thanksgiving.png',
     ],
     "National": [
-      'o-canada.png',
+      'july-4th.png',
       'liberty-flag.png',
       'fireworks.png',
       'flag.png',
       'liberty.png',
       'liberty-flag-4th1.png',
       'flag-4th2.png',
-      'la-cucaracha.png'
+      'o-canada.png',
     ],
     "Kids": [
       'abc1.png',
@@ -129,6 +128,7 @@ Map<String, List<String>> get frameFileNames {
     "Misc": [
       "beethoven's_5th.png",
       '50s.png',
+      'la-cucaracha.png',
       'beach.png',
       'dog-house.png',
       'flowers.png',
@@ -147,12 +147,12 @@ Map<String, List<String>> get frameFileNames {
       'soccer.png',
     ],
     "Abstract": [
+      'abstract-rainbow.png',
+      'abstract-psychedelic.png',
       'abstract1.png',
       'abstract2.png',
       'abstract3.png',
       'abstract4.png',
-      'abstract-rainbow.png',
-      'abstract-psychedelic.png',
     ],
     "Colors": [
       'color-black.png',
