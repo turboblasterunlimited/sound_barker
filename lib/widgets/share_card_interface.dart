@@ -18,7 +18,6 @@ import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:K9_Karaoke/widgets/subscribe_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:share/share.dart';
@@ -306,11 +305,11 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   }
 
   Widget _positionedImage(image) {
-    return (cards.current.decorationImage != null &&
-            cards.current.decorationImage.hasFrameDimension)
-        ? Positioned.fill(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
+    return Positioned.fill(
+      child: (cards.current.decorationImage != null &&
+              cards.current.decorationImage.hasFrameDimension)
+          ? LayoutBuilder(
+              builder: (_, constraints) {
                 return Padding(
                     padding: EdgeInsets.only(
                       top: constraints.biggest.height * 72 / 778,
@@ -318,29 +317,27 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                     ),
                     child: image);
               },
-            ),
-          )
-        : Positioned.fill(child: image);
+            )
+          : image,
+    );
   }
 
   Widget cardImage() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 5),
-      child: SizedBox(
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            _positionedImage(
-              Image.file(
-                File(cards.current.picture.filePath),
-              ),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          _positionedImage(
+            Image.file(
+              File(cards.current.picture.filePath),
             ),
-            if (cards.current.decorationImage != null)
-              Image.file(
-                File(cards.current.decorationImage.filePath),
-              ),
-          ],
-        ),
+          ),
+          if (cards.current.decorationImage != null)
+            Image.file(
+              File(cards.current.decorationImage.filePath),
+            ),
+        ],
       ),
     );
   }
@@ -372,7 +369,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                 Column(
                   children: [
                     Image.asset("assets/images/envelope_topflap.png"),
-                    Image.asset("assets/images/pouch_inside_1.png"),
+                    Image.asset("assets/images/envelope_inside.png"),
                   ],
                 ),
                 Padding(
@@ -441,33 +438,33 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
           : currentActivity.setPreviousSubStep();
   }
 
-  _deleteDialog() async {
-    return showDialog(
-        context: context,
-        builder: (ctx) {
-          return CustomDialog(
-            header: "Delete Card?",
-            bodyText:
-                "You will no longer be able to edit or share this card from the app.",
-            primaryFunction: (BuildContext modalContext) async {
-              await cards.remove(cards.current);
-              Navigator.of(modalContext).pop();
-              Navigator.of(modalContext).pushNamed(MenuScreen.routeName);
-            },
-            iconPrimary: Icon(
-              CustomIcons.modal_trashcan,
-              size: 42,
-              color: Colors.grey[300],
-            ),
-            iconSecondary: Icon(
-              CustomIcons.modal_paws_topleft,
-              size: 42,
-              color: Colors.grey[300],
-            ),
-            isYesNo: true,
-          );
-        });
-  }
+  // _deleteDialog() async {
+  //   return showDialog(
+  //       context: context,
+  //       builder: (ctx) {
+  //         return CustomDialog(
+  //           header: "Delete Card?",
+  //           bodyText:
+  //               "You will no longer be able to edit or share this card from the app.",
+  //           primaryFunction: (BuildContext modalContext) async {
+  //             await cards.remove(cards.current);
+  //             Navigator.of(modalContext).pop();
+  //             Navigator.of(modalContext).pushNamed(MenuScreen.routeName);
+  //           },
+  //           iconPrimary: Icon(
+  //             CustomIcons.modal_trashcan,
+  //             size: 42,
+  //             color: Colors.grey[300],
+  //           ),
+  //           iconSecondary: Icon(
+  //             CustomIcons.modal_paws_topleft,
+  //             size: 42,
+  //             color: Colors.grey[300],
+  //           ),
+  //           isYesNo: true,
+  //         );
+  //       });
+  // }
 
   _subscribeDialog() {
     showDialog<Null>(
