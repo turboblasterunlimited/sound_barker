@@ -394,7 +394,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
 
   int pixelsToCategoryIndex(double pixels) {
     var frameIndex = _pixelsToFrameIndex(pixels);
-    frameIndex += 2;
+    frameIndex += 1;
     return _frameIndexToCategoryIndex(frameIndex);
   }
 
