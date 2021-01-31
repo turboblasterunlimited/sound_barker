@@ -32,9 +32,9 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
   KaraokeCards cards;
 
   void stopAll() {
-    widget.soundController.stopPlayer();
-    imageController.stopAnimation();
     if (_isPlaying) {
+      widget.soundController.stopPlayer();
+      imageController.stopAnimation();
       setState(() => _isPlaying = false);
     }
   }
@@ -82,9 +82,9 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
 
   void selectSong() async {
     if (!widget.song.hasFile) await download();
-
     cards.setCurrentSongFormula(null);
     cards.setCurrentSong(widget.song);
+    stopAll();
     Future.delayed(
       Duration(milliseconds: 500),
       () {

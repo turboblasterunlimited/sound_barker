@@ -100,6 +100,9 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     soundController = Provider.of<SoundController>(context);
     currentActivity = Provider.of<CurrentActivity>(context);
     cards = Provider.of<KaraokeCards>(context, listen: true);
+    currentActivity.addListener(() {
+      stopAll();
+    });
   }
 
   void stopAll() {
@@ -152,8 +155,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
 
   void _handleTapPuppet() {
     print("Tapping webview!");
-    if (_playbackFiles != null)
-      isPlaying ? stopAll() : startAll();
+    if (_playbackFiles != null) isPlaying ? stopAll() : startAll();
   }
 
   bool get showPlayButton {
@@ -321,8 +323,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
               ),
             ),
             // Full screen Spinner
-            if (!everythingReady())
-              LoadingScreenWidget("Loading..."),
+            if (!everythingReady()) LoadingScreenWidget("Loading..."),
           ],
         ),
       ),
