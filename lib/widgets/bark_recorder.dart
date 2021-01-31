@@ -267,7 +267,7 @@ class BarkRecorderState extends State<BarkRecorder> {
                     if (barks.tempRawBark == null)
                       Center(
                         child: Text(
-                          "Press 'Skip' to use Stock Barks and FX",
+                          "Press 'Skip' to use Stock Barks and FX\nor barks you may have already recorded.",
                           style: TextStyle(
                             color: Colors.grey,
                             fontStyle: FontStyle.italic,

@@ -97,8 +97,8 @@ class _MyCardsScreenState extends State<MyCardsScreen> {
                   SliverGrid.count(
                     children: _cardGridTiles(),
                     crossAxisCount: 3,
-                    crossAxisSpacing: 3,
-                    mainAxisSpacing: 3,
+                    crossAxisSpacing: 1,
+                    mainAxisSpacing: 1,
                   ),
                 ],
               ),

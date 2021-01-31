@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/the_user.dart';
-import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/widgets/custom_dialog.dart';
 import 'package:K9_Karaoke/widgets/error_dialog.dart';
@@ -79,29 +78,36 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   }
 
   Future<KaraokeCard> _createBaseCard(Function setDialogState) async {
-    if (!cards.current.noFrameOrDecoration) {
-      await _captureArtwork();
-      setDialogState(() => _loadingMessage = "saving artwork...");
-      _handleDecorationImage();
+    try {
+      if (!cards.current.noFrameOrDecoration) {
+        await _captureArtwork();
+        _handleDecorationImage();
+      }
+      setDialogState(() => _loadingMessage = "saving sounds...");
+      await _handleAudio();
+      setDialogState(() => _loadingMessage = "creating link...");
+      cards.current.uuid = Uuid().v4();
+      cards.addCurrent();
+      await RestAPI.createCard(cards.current);
+      _loadingMessage = null;
+    } catch (e) {
+      cards.current.uuid = null;
+      showError(context, e);
     }
-
-    setDialogState(() => _loadingMessage = "saving sounds...");
-    await _handleAudio();
-
-    setDialogState(() => _loadingMessage = "creating link...");
-    cards.current.uuid = Uuid().v4();
-    cards.addCurrent();
-    await RestAPI.createCard(cards.current);
     return cards.current;
   }
 
   Widget _loading() {
-    return Column(
-      children: [
-        SpinKitWave(color: Theme.of(context).primaryColor),
-        Text(_loadingMessage,
-            style: TextStyle(color: Theme.of(context).primaryColor)),
-      ],
+    return Container(
+      height: 300,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SpinKitWave(color: Theme.of(context).primaryColor),
+          Text(_loadingMessage,
+              style: TextStyle(color: Theme.of(context).primaryColor)),
+        ],
+      ),
     );
   }
 
@@ -305,6 +311,9 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   }
 
   Widget _positionedImage(image) {
+    print("decoration image: ${cards.current.decorationImage}");
+    print(
+        "decoration image filepath: ${cards.current.decorationImage?.filePath}");
     return Positioned.fill(
       child: (cards.current.decorationImage != null &&
               cards.current.decorationImage.hasFrameDimension)
@@ -323,8 +332,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   }
 
   Widget cardImage() {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 5),
+    return SizedBox(
       child: Stack(
         alignment: Alignment.center,
         children: [
@@ -343,13 +351,21 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   }
 
   _envelopeDialog() async {
+    var runOnce = true;
     await showDialog<Null>(
       barrierDismissible: true,
       context: context,
       builder: (ctx) => StatefulBuilder(
           builder: (BuildContext modalContext, Function setDialogState) {
+        if (runOnce && !cards.current.isSaved) {
+          runOnce = false;
+          setDialogState(() => _loadingMessage = "saving artwork...");
+          _createBaseCard(setDialogState);
+        }
         return CustomDialog(
-          header: "Put your card in an envelope?",
+          header: cards.current.isSaved
+              ? "Put your card in an envelope?"
+              : "Saving",
           // headerSize: 18,
           iconPrimary: Icon(
             Icons.mail_outline_outlined,
@@ -361,25 +377,28 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
             size: 42,
             color: Colors.grey[300],
           ),
-          body: Container(
-            padding: EdgeInsets.all(20),
-            child: Stack(
-              alignment: Alignment.bottomCenter,
-              children: [
-                Column(
-                  children: [
-                    Image.asset("assets/images/envelope_topflap.png"),
-                    Image.asset("assets/images/envelope_inside.png"),
-                  ],
+          body: !cards.current.isSaved
+              ? _loading()
+              : Container(
+                  height: 300,
+                  padding: EdgeInsets.all(20),
+                  child: Stack(
+                    alignment: Alignment.bottomCenter,
+                    children: [
+                      Column(
+                        children: [
+                          Image.asset("assets/images/envelope_topflap.png"),
+                          Image.asset("assets/images/envelope_inside.png"),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(30.0),
+                        child: cardImage(),
+                      ),
+                      Image.asset("assets/images/envelope_front.png"),
+                    ],
+                  ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(30.0),
-                  child: cardImage(),
-                ),
-                Image.asset("assets/images/envelope_front.png"),
-              ],
-            ),
-          ),
           isYesNo: true,
           primaryFunction: (con) {
             setState(() => hasEnvelope = true);
@@ -396,31 +415,26 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   }
 
   Future<void> _handleUploadAndShare(setDialogState) async {
-    await _handleUpload(setDialogState);
+    await _handleUploadFinishedCard(setDialogState);
     _handleShare();
   }
 
-  Future<void> _handleUpload(setDialogState) async {
-    var result;
+  _handleUploadFinishedCard(setDialogState) async {
     try {
-      if (!cards.current.isSaved) {
-        await _createBaseCard(setDialogState);
-      }
-      // Now create finished card
-      result = await RestAPI.createFinishedCard(
+      var result = await RestAPI.createFinishedCard(
           cards.current.uuid, recipientName, hasEnvelope);
       setDialogState(() {
         _loadingMessage = null;
         shareLink = result["url"];
       });
     } catch (e) {
-      print("card upload Error: $e");
+      print("finished card upload Error: $e");
       showError(context, e);
     }
   }
 
   void _shareToClipboard(setDialogState) async {
-    await _handleUpload(setDialogState);
+    await _handleUploadFinishedCard(setDialogState);
     await Clipboard.setData(ClipboardData(text: shareLink));
     final snackBar = SnackBar(
       content: Text('Card link copied to Clipboard'),
@@ -438,34 +452,6 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
           : currentActivity.setPreviousSubStep();
   }
 
-  // _deleteDialog() async {
-  //   return showDialog(
-  //       context: context,
-  //       builder: (ctx) {
-  //         return CustomDialog(
-  //           header: "Delete Card?",
-  //           bodyText:
-  //               "You will no longer be able to edit or share this card from the app.",
-  //           primaryFunction: (BuildContext modalContext) async {
-  //             await cards.remove(cards.current);
-  //             Navigator.of(modalContext).pop();
-  //             Navigator.of(modalContext).pushNamed(MenuScreen.routeName);
-  //           },
-  //           iconPrimary: Icon(
-  //             CustomIcons.modal_trashcan,
-  //             size: 42,
-  //             color: Colors.grey[300],
-  //           ),
-  //           iconSecondary: Icon(
-  //             CustomIcons.modal_paws_topleft,
-  //             size: 42,
-  //             color: Colors.grey[300],
-  //           ),
-  //           isYesNo: true,
-  //         );
-  //       });
-  // }
-
   _subscribeDialog() {
     showDialog<Null>(
       context: context,
@@ -474,6 +460,13 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
         return SingleChildScrollView(child: SubscribeDialog());
       }),
     );
+  }
+
+  handleSaveAndSend() {
+    if (user.subscribed || cards.currentIsFirst) {
+      _envelopeDialog();
+    } else
+      _subscribeDialog();
   }
 
   @override
@@ -509,9 +502,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                     RawMaterialButton(
                       // IF USER IS NOT SUBSCRIBED AND OUT OF FREE CARDS,
                       // USER IS PREVENTED FROM SAVING/SENDING AND PROMPTED TO SUBSCRIBE.
-                      onPressed: user.subscribed || cards.currentIsFirst
-                          ? _envelopeDialog
-                          : _subscribeDialog,
+                      onPressed: handleSaveAndSend,
                       child: Text(
                         cards.current.isSaved ? "Send Again" : "Save & Send",
                         style: TextStyle(color: Colors.white),
