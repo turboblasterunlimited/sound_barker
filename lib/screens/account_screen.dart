@@ -157,9 +157,11 @@ class _AccountState extends State<AccountScreen> {
                     .pushNamed(SubscriptionScreen.routeName),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text("Subscription",
-                      style: TextStyle(
-                          fontSize: 40, color: Theme.of(context).primaryColor)),
+                  child: Text(
+                    "Subscription",
+                    style: TextStyle(
+                        fontSize: 40, color: Theme.of(context).primaryColor),
+                  ),
                 ),
               ),
               GestureDetector(

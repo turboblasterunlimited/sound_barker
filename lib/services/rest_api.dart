@@ -49,6 +49,7 @@ class RestAPI {
     } catch (e) {
       return _handleAccountError(response, e);
     }
+    print("manual sign up response: $response");
     return response?.data;
   }
 

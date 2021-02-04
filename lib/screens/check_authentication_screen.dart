@@ -23,6 +23,7 @@ class CheckAuthenticationScreen extends StatefulWidget {
 class _CheckAuthenticationScreenState extends State<CheckAuthenticationScreen> {
   bool firstBuild = true;
   TheUser user;
+  Map userObj;
   bool noInternet = false;
   BuildContext c;
 
@@ -36,8 +37,7 @@ class _CheckAuthenticationScreenState extends State<CheckAuthenticationScreen> {
     });
   }
 
-    void _handleSignedIn(userObj) async {
-    print("user obj: $userObj");
+  void _handleSignedIn() async {
     _agreementAccepted = userObj["user_agreed_to_terms_v1"] == 1;
     print("agreement accepted: $_agreementAccepted");
     if (!_agreementAccepted) {
@@ -57,6 +57,7 @@ class _CheckAuthenticationScreenState extends State<CheckAuthenticationScreen> {
     });
     if (isAccepted) {
       await user.agreeToTerms();
+      await user.signIn(userObj);
       Navigator.of(context).popAndPushNamed(RetrieveDataScreen.routeName);
     } else {
       print("agreement refused");
@@ -73,6 +74,7 @@ class _CheckAuthenticationScreenState extends State<CheckAuthenticationScreen> {
     } catch (e) {
       return {"error": e};
     }
+
     return response?.data;
   }
 
@@ -87,12 +89,12 @@ class _CheckAuthenticationScreenState extends State<CheckAuthenticationScreen> {
 
   void signedInOrGotoAuthScreen() async {
     Map response = await checkIfSignedIn();
-    var userObj = response['user_obj'];
+    setState(() => userObj = response['user_obj']);
     print("response is....: $response");
     if (response["error"] != null) {
       _handleNoInternet(response["error"]);
     } else if (response["logged_in"] != null && response["logged_in"]) {
-      _handleSignedIn(userObj);
+      _handleSignedIn();
     } else {
       _handleNotSignedIn();
     }

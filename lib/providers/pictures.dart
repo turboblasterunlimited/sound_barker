@@ -76,10 +76,13 @@ class Pictures with ChangeNotifier {
     });
 
     // Put the dog "Dean" 4th
-    var deanIndex =
-        stockPictures.indexWhere((element) => element.name == "Dean");
-    var dean = stockPictures.removeAt(deanIndex);
-    stockPictures.insert(3, dean);
+    // temp fix to keep app from crashing, but no stock dogs will be displayed.
+    if (stockPictures.isNotEmpty) {
+      var deanIndex =
+          stockPictures.indexWhere((element) => element.name == "Dean");
+      var dean = stockPictures.removeAt(deanIndex);
+      stockPictures.insert(3, dean);
+    }
   }
 
   Future downloadAllImagesFromBucket([List<Picture> images]) async {

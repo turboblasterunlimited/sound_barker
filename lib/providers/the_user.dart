@@ -29,13 +29,12 @@ class TheUser with ChangeNotifier {
     return email != null;
   }
 
-  void signIn(Map userObj) {
+  Future<void> signIn(Map userObj) async {
     email = userObj["user_id"];
     agreedToTerms = userObj["user_agreed_to_terms_v1"] == 1;
     uuid = userObj["account_uuid"];
-    _initPurchases();
+    await _initPurchases();
     notifyListeners();
-    print("completed sign in");
   }
 
   Future<dynamic> delete() async {

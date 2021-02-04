@@ -36,15 +36,10 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   String password = "";
   bool obscurePassword = true;
   TheUser user;
+  Map userObj;
   BuildContext c;
   bool _showAgreement = false;
   bool _agreementAccepted = false;
-
-  void showAgreement() {
-    setState(() {
-      _showAgreement = true;
-    });
-  }
 
   Future<void> acceptAgreement(bool isAccepted) async {
     setState(() {
@@ -53,6 +48,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     });
     if (isAccepted) {
       await user.agreeToTerms();
+      user.signIn(userObj);
       Navigator.of(context).popAndPushNamed(RetrieveDataScreen.routeName);
     } else {
       print("agreement refused");
@@ -86,14 +82,10 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
             bodyText:
                 'Verification email sent to $email.\n\nGo to your inbox and click the link to confirm.',
             primaryFunction: (BuildContext modalContext) async {
-              var response = await _handleManualSignIn();
-              if (!response["success"])
-                showError(c, response["error"]);
-              else {
+              var response = await _handleManualSignIn(success: () {
                 Navigator.of(modalContext).pop();
-                _handleSigninResponse(response);
-              }
-              SystemChrome.setEnabledSystemUIOverlays([]);
+                SystemChrome.setEnabledSystemUIOverlays([]);
+              });
             },
             primaryButtonText: "Sign In",
             secondaryButtonText: "Cancel",
@@ -112,11 +104,13 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         });
   }
 
-  void _handleSignedIn(Map userObj) async {
+  void _handleSignedIn() async {
     print("user email from handle signed in: $email");
-    _agreementAccepted = userObj["user_agreed_to_terms_v1"] == 1; 
+    _agreementAccepted = userObj["user_agreed_to_terms_v1"] == 1;
     if (!_agreementAccepted) {
-      showAgreement();
+      setState(() {
+        _showAgreement = true;
+      });
       SystemChrome.setEnabledSystemUIOverlays([]);
     } else {
       user.signIn(userObj);
@@ -133,11 +127,11 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   }
 
   _handleSigninResponse(responseData) async {
-    Map userObj = responseData["user"];
+    setState(() => userObj = responseData["user"]);
     print("Sign in response data: $responseData");
     if (responseData["success"]) {
       print("the response data: $responseData");
-      _handleSignedIn(userObj);
+      _handleSignedIn();
     } else {
       showError(c, responseData["error"]);
     }
@@ -167,7 +161,6 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         case FacebookLoginStatus.loggedIn:
           responseData =
               await _sendFacebookTokenToServer(result.accessToken.token);
-
           _handleSigninResponse(responseData?.data);
           break;
         case FacebookLoginStatus.cancelledByUser:
@@ -222,33 +215,34 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     _showLoadingModal((ctx) => loadingContext = ctx);
     Map response = await RestAPI.userManualSignUp(email, password);
     var userObj = response["user"];
+    print("USER OBJECT: $userObj");
     Navigator.of(loadingContext).pop();
     if (!response["success"])
       showError(c, response["error"]);
     else if (response["account_already_exists"] == true) {
-      var signInresponse = await _handleManualSignIn();
-      if (signInresponse['success'])
-        _handleSignedIn(userObj);
+      await _handleManualSignIn();
     } else {
       print("Server response: $response");
       _showVerifyEmail();
     }
   }
 
-  Future<dynamic> _handleManualSignIn() async {
-    return await RestAPI.userManualSignIn(email, password);
+  Future<dynamic> _handleManualSignIn({Function success}) async {
+    var response = await RestAPI.userManualSignIn(email, password);
+    print("Response check: $response");
+    if (!response["success"]) {
+      showError(c, response["error"]);
+    } else {
+      success?.call();
+      _handleSigninResponse(response);
+    }
   }
 
   Future<void> _handleSignInButton() async {
     FocusScope.of(context).unfocus();
     if (invalidInput)
       return showError(c, "Please enter a valid email and password");
-    var response = await _handleManualSignIn();
-    print("Response check: $response");
-    if (!response["success"]) {
-      showError(c, response["error"]);
-    } else
-      _handleSigninResponse(response);
+    _handleManualSignIn();
   }
 
   bool get invalidInput {
