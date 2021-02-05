@@ -26,12 +26,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   }
 
   String getSubscriptionType(Package package) {
-    return capitalize(getSubscriptionName(package)) + " Subscription";
-  }
-
-  // monthly OR yearly
-  String getSubscriptionName(package) {
-    return package.packageType.toString().split('.').last;
+    return capitalize(user.getSubscriptionName()) + " Subscription";
   }
 
   String capitalize(String string) {
@@ -154,7 +149,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                                 children: <TextSpan>[
                                   TextSpan(
                                     text:
-                                        "YOUR ${getSubscriptionName(user.getActivePackage()).toUpperCase()} SUBSCRIPTION\nIS",
+                                        "YOUR ${(user.getSubscriptionName()?.toUpperCase())} SUBSCRIPTION\nIS",
                                     style: TextStyle(
                                         fontFamily: "Museo",
                                         fontSize: 20,

@@ -71,6 +71,11 @@ class TheUser with ChangeNotifier {
     return activePackage;
   }
 
+    // monthly OR yearly
+  String getSubscriptionName() {
+    return getActivePackage()?.packageType.toString().split('.').last;
+  }
+
   List<Package> getInactivePackages() {
     print("Getting inactive packages");
     Package activePackage = getActivePackage();
@@ -124,8 +129,10 @@ class TheUser with ChangeNotifier {
   }
 
   bool get subscribed {
-    if (purchaserInfo == null) return false;
-    print("User's active subscriptions: ${purchaserInfo.entitlements.active}");
-    return purchaserInfo.entitlements.active.isNotEmpty;
+
+    return true;
+    // if (purchaserInfo == null) return false;
+    // print("User's active subscriptions: ${purchaserInfo.entitlements.active}");
+    // return purchaserInfo.entitlements.active.isNotEmpty;
   }
 }
