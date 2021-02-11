@@ -33,7 +33,7 @@ class TheUser with ChangeNotifier {
     email = userObj["user_id"];
     agreedToTerms = userObj["user_agreed_to_terms_v1"] == 1;
     uuid = userObj["account_uuid"];
-    // await _initPurchases();
+    await _initPurchases();
     notifyListeners();
   }
 
