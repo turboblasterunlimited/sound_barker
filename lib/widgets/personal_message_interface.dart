@@ -31,7 +31,6 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface> {
   bool _isRecording = false;
   bool _hasShifted = false;
   bool _isProcessingAudio = false;
-  bool hasRecording = false;
 
   // .5 to 2
   double speedChange = 1;
@@ -110,7 +109,6 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface> {
     message.amplitudes =
         await AmplitudeExtractor.getAmplitudes(message.filePath);
     cards.messageIsReady();
-    setState(() => hasRecording = true);
   }
 
   onStartRecorderPressed() {
@@ -273,7 +271,7 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface> {
           ],
         ),
         Visibility(
-          visible: hasRecording,
+          visible: message.exists,
           maintainSize: true,
           maintainAnimation: true,
           maintainState: true,
@@ -297,9 +295,7 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface> {
                         max: 2,
                         activeColor: Colors.blue,
                         inactiveColor: Colors.grey,
-                        onChanged: _isProcessingAudio ||
-                                !message.exists ||
-                                _isRecording
+                        onChanged: _isProcessingAudio || _isRecording
                             ? null
                             : (value) {
                                 soundController.stopPlayer();
@@ -334,9 +330,7 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface> {
                         max: 2,
                         activeColor: Colors.blue,
                         inactiveColor: Colors.grey,
-                        onChanged: _isProcessingAudio ||
-                                !message.exists ||
-                                _isRecording
+                        onChanged: _isProcessingAudio || _isRecording
                             ? null
                             : (value) async {
                                 soundController.stopPlayer();
