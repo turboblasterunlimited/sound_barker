@@ -27,7 +27,7 @@ Map<String, String> displayNames = {
   "mouth": "Mouth Center",
   "mouthRight": "Right Mouth",
   "mouthLeft": "Left Mouth",
-  "headBottom": "Chin",
+  "headBottom": "Head Bottom",
   "headRight": "Head Right",
   "headLeft": "Head Left",
   "headTop": "Head Top",

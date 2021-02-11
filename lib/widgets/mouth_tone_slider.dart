@@ -110,10 +110,10 @@ class _MouthToneSliderState extends State<MouthToneSlider> {
 
     print("Current picture: ${card.picture?.name}");
     imageController.startMouthOpenAndClose();
-    print("Building mouth tone slider");
+    print("Building mouth COLOR slider");
     return Column(
       children: <Widget>[
-        InterfaceTitleNav("MOUTH TONE", backCallback: backCallback),
+        InterfaceTitleNav("MOUTH COLOR", backCallback: backCallback),
         Container(
           padding: const EdgeInsets.only(top: 20.0),
           // height: 100,

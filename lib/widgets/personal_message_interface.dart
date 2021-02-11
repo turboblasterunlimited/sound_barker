@@ -31,6 +31,7 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface> {
   bool _isRecording = false;
   bool _hasShifted = false;
   bool _isProcessingAudio = false;
+  bool hasRecording = false;
 
   // .5 to 2
   double speedChange = 1;
@@ -109,6 +110,7 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface> {
     message.amplitudes =
         await AmplitudeExtractor.getAmplitudes(message.filePath);
     cards.messageIsReady();
+    setState(() => hasRecording = true);
   }
 
   onStartRecorderPressed() {
@@ -270,123 +272,132 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface> {
             )
           ],
         ),
-        Padding(
-          padding: const EdgeInsets.only(top: 0.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Expanded(
-                child: Column(
-                  children: <Widget>[
-                    Text("Pitch",
+        Visibility(
+          visible: hasRecording,
+          maintainSize: true,
+          maintainAnimation: true,
+          maintainState: true,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 0.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Expanded(
+                  child: Column(
+                    children: <Widget>[
+                      Text("Pitch",
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold)),
+                      Slider(
+                        label: "${pitchChange.toStringAsFixed(1)} X",
+                        value: pitchChange,
+                        divisions: 15,
+                        min: 0.5,
+                        max: 2,
+                        activeColor: Colors.blue,
+                        inactiveColor: Colors.grey,
+                        onChanged: _isProcessingAudio ||
+                                !message.exists ||
+                                _isRecording
+                            ? null
+                            : (value) {
+                                soundController.stopPlayer();
+                                imageController.stopAnimation();
+                                setState(() {
+                                  pitchChange = value;
+                                  _hasShifted = true;
+                                });
+                              },
+                        onChangeEnd: (value) async {
+                          setState(() {
+                            pitchChange = value;
+                            _isProcessingAudio = true;
+                          });
+                          generateAlteredAudioFiles();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    children: <Widget>[
+                      Text("Speed",
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold)),
+                      Slider(
+                        label: "${speedChange.toStringAsFixed(1)} X",
+                        value: speedChange,
+                        divisions: 15,
+                        min: 0.5,
+                        max: 2,
+                        activeColor: Colors.blue,
+                        inactiveColor: Colors.grey,
+                        onChanged: _isProcessingAudio ||
+                                !message.exists ||
+                                _isRecording
+                            ? null
+                            : (value) async {
+                                soundController.stopPlayer();
+                                imageController.stopAnimation();
+                                setState(() {
+                                  speedChange = value;
+                                  _hasShifted = true;
+                                });
+                              },
+                        onChangeEnd: (value) {
+                          setState(() {
+                            speedChange = value;
+                            _isProcessingAudio = true;
+                          });
+                          generateAlteredAudioFiles();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                        "Effect",
+                        // selectedEffect,
                         style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold)),
-                    Slider(
-                      label: "${pitchChange.toStringAsFixed(1)} X",
-                      value: pitchChange,
-                      divisions: 15,
-                      min: 0.5,
-                      max: 2,
-                      activeColor: Colors.blue,
-                      inactiveColor: Colors.grey,
-                      onChanged:
-                          _isProcessingAudio || !message.exists || _isRecording
-                              ? null
-                              : (value) {
-                                  soundController.stopPlayer();
-                                  imageController.stopAnimation();
-                                  setState(() {
-                                    pitchChange = value;
-                                    _hasShifted = true;
-                                  });
-                                },
-                      onChangeEnd: (value) async {
-                        setState(() {
-                          pitchChange = value;
-                          _isProcessingAudio = true;
-                        });
-                        generateAlteredAudioFiles();
-                      },
-                    ),
-                  ],
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      Slider(
+                        value: effectSliderVal,
+                        divisions: effects.length - 1,
+                        min: 0,
+                        max: effects.length.toDouble() - 1,
+                        activeColor: Colors.blue,
+                        inactiveColor: Colors.grey,
+                        label: selectedEffect,
+                        onChanged: _isProcessingAudio ||
+                                !message.exists ||
+                                _isRecording
+                            ? null
+                            : (value) async {
+                                soundController.stopPlayer();
+                                imageController.stopAnimation();
+                                setState(() {
+                                  effectSliderVal = value;
+                                  _hasShifted = true;
+                                });
+                              },
+                        onChangeEnd: (value) {
+                          setState(() {
+                            _isProcessingAudio = true;
+                          });
+                          generateAlteredAudioFiles();
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Expanded(
-                child: Column(
-                  children: <Widget>[
-                    Text("Speed",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold)),
-                    Slider(
-                      label: "${speedChange.toStringAsFixed(1)} X",
-                      value: speedChange,
-                      divisions: 15,
-                      min: 0.5,
-                      max: 2,
-                      activeColor: Colors.blue,
-                      inactiveColor: Colors.grey,
-                      onChanged:
-                          _isProcessingAudio || !message.exists || _isRecording
-                              ? null
-                              : (value) async {
-                                  soundController.stopPlayer();
-                                  imageController.stopAnimation();
-                                  setState(() {
-                                    speedChange = value;
-                                    _hasShifted = true;
-                                  });
-                                },
-                      onChangeEnd: (value) {
-                        setState(() {
-                          speedChange = value;
-                          _isProcessingAudio = true;
-                        });
-                        generateAlteredAudioFiles();
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  children: <Widget>[
-                    Text(
-                      "Effect",
-                      // selectedEffect,
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    Slider(
-                      value: effectSliderVal,
-                      divisions: effects.length - 1,
-                      min: 0,
-                      max: effects.length.toDouble() - 1,
-                      activeColor: Colors.blue,
-                      inactiveColor: Colors.grey,
-                      label: selectedEffect,
-                      onChanged:
-                          _isProcessingAudio || !message.exists || _isRecording
-                              ? null
-                              : (value) async {
-                                  soundController.stopPlayer();
-                                  imageController.stopAnimation();
-                                  setState(() {
-                                    effectSliderVal = value;
-                                    _hasShifted = true;
-                                  });
-                                },
-                      onChangeEnd: (value) {
-                        setState(() {
-                          _isProcessingAudio = true;
-                        });
-                        generateAlteredAudioFiles();
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         Visibility(
