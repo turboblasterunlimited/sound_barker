@@ -63,7 +63,7 @@ class _MyCardsScreenState extends State<MyCardsScreen> {
 
   Widget build(BuildContext context) {
     cards = Provider.of<KaraokeCards>(context);
-    user = Provider.of<TheUser>(context, listen: false);
+    user = Provider.of<TheUser>(context);
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
     cardDecorator =
         Provider.of<KaraokeCardDecorationController>(context, listen: false);

@@ -33,7 +33,7 @@ class TheUser with ChangeNotifier {
     email = userObj["user_id"];
     agreedToTerms = userObj["user_agreed_to_terms_v1"] == 1;
     uuid = userObj["account_uuid"];
-    await _initPurchases();
+    // await _initPurchases();
     notifyListeners();
   }
 
@@ -129,10 +129,9 @@ class TheUser with ChangeNotifier {
   }
 
   bool get subscribed {
-
-    return true;
-    // if (purchaserInfo == null) return false;
-    // print("User's active subscriptions: ${purchaserInfo.entitlements.active}");
-    // return purchaserInfo.entitlements.active.isNotEmpty;
+    // return true;
+    if (purchaserInfo == null) return false;
+    print("User's active subscriptions: ${purchaserInfo.entitlements.active}");
+    return purchaserInfo.entitlements.active.isNotEmpty;
   }
 }

@@ -153,9 +153,8 @@ class _AccountState extends State<AccountScreen> {
                 ),
               ),
               GestureDetector(
-                onTap: null,
-                //  : () => Navigator.of(context)
-                //     .pushNamed(SubscriptionScreen.routeName),
+                onTap: () => Navigator.of(context)
+                    .pushNamed(SubscriptionScreen.routeName),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
