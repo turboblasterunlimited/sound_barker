@@ -384,10 +384,18 @@ class _SetPictureCoordinatesScreenState
                     ),
                     // Points and lines
                     Visibility(
-                      visible: widget.isNamed ? true : false,
+                      visible: widget.isNamed,
                       child: CustomPaint(
                         painter: CoordinatesPainter(getCoordinatesForCanvas(),
                             magnifiedImage, touchedXY),
+                        child: Container(),
+                      ),
+                    ),
+                    // Point labels
+                    Visibility(
+                      visible: !grabbing && widget.isNamed,
+                      child: CustomPaint(
+                        painter: PointLabelsPainter(canvasCoordinates),
                         child: Container(),
                       ),
                     ),
@@ -418,10 +426,6 @@ class _SetPictureCoordinatesScreenState
                         ],
                       ),
                     ),
-                    // CustomPaint(
-                    //   painter: PointLabelsPainter(canvasCoordinates),
-                    //   child: Container(),
-                    // ),
                   ],
                 ),
               ),
@@ -520,43 +524,55 @@ class MagnifiedImage extends CustomClipper<Rect> {
   bool shouldReclip(oldClipper) => true;
 }
 
-// // must be separate for stacking purposes
-// class PointLabelsPainter extends CustomPainter {
-//   final coordinates;
-//   PointLabelsPainter(this.coordinates);
+// must be separate for stacking purposes
+class PointLabelsPainter extends CustomPainter {
+  final coordinates;
+  PointLabelsPainter(this.coordinates);
 
-//   @override
-//   void paint(Canvas canvas, Size size) {
-//     final paint = Paint()
-//       ..style = PaintingStyle.stroke
-//       ..strokeWidth = 4.0
-//       ..color = Colors.blue;
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 4.0
+      ..color = Colors.blue;
 
-//     Offset adjustOffset(List coordinates, Size tpSize) {
-//       return Offset(coordinates[0] - (tpSize.width / 2), coordinates[1] - 40);
-//     }
+    Offset adjustOffset(List coordinates, Size tpSize) {
+      return Offset(coordinates[0] - (tpSize.width / 2), coordinates[1] - 30);
+    }
 
-//     void drawPointLabels() {
-//       coordinates.forEach((name, location) {
-//         var tp = TextPainter(
-//             // textScaleFactor: 1.0,
-//             text: TextSpan(
-//               text: displayNames[name],
-//               style: TextStyle(fontFamily: 'lato', fontSize: 15),
-//             ),
-//             textAlign: TextAlign.center,
-//             textDirection: TextDirection.ltr);
-//         tp.layout();
-//         tp.paint(canvas, adjustOffset(location, tp.size));
-//       });
-//     }
+    void drawPointLabels() {
+      coordinates.forEach((name, location) {
+        if (name == "rightEye" ||
+            name == "leftEye" ||
+            name == "mouthLeft" ||
+            name == "mouthRight") return;
 
-//     drawPointLabels();
-//   }
+        var displayName = displayNames[name];
 
-//   @override
-//   bool shouldRepaint(CustomPainter oldDeligate) => true;
-// }
+        if (name == "mouth") {
+          displayName = "Mouth";
+        }
+
+        print("Coordinate name: $name");
+        var tp = TextPainter(
+            // textScaleFactor: 1.0,
+            text: TextSpan(
+              text: displayName,
+              style: TextStyle(fontFamily: 'lato', fontSize: 15),
+            ),
+            textAlign: TextAlign.center,
+            textDirection: TextDirection.ltr);
+        tp.layout();
+        tp.paint(canvas, adjustOffset(location, tp.size));
+      });
+    }
+
+    drawPointLabels();
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDeligate) => true;
+}
 
 class MagnifyingTargetPainter extends CustomPainter {
   final touchedXY;
@@ -601,8 +617,26 @@ class MagnifyingTargetPainter extends CustomPainter {
             style: TextStyle(
                 fontFamily: 'lato',
                 fontSize: 25,
-                color: Colors.blue,
-                fontWeight: FontWeight.bold),
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                shadows: [
+                  Shadow(
+                      // bottomLeft
+                      offset: Offset(-1.5, -1.5),
+                      color: Colors.black),
+                  Shadow(
+                      // bottomRight
+                      offset: Offset(1.5, -1.5),
+                      color: Colors.black),
+                  Shadow(
+                      // topRight
+                      offset: Offset(1.5, 1.5),
+                      color: Colors.black),
+                  Shadow(
+                      // topLeft
+                      offset: Offset(-1.5, 1.5),
+                      color: Colors.black),
+                ]),
           ),
           textAlign: TextAlign.center,
           textDirection: TextDirection.ltr);
