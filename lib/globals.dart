@@ -1,12 +1,12 @@
 // DEV
-// const String serverIP = '165.227.178.14';
-// const String serverURL = 'thedogbarksthesong.ml';
-// const String bucketName = 'song_barker_sequences';
+const String serverIP = '165.227.178.14';
+const String serverURL = 'thedogbarksthesong.ml';
+const String bucketName = 'song_barker_sequences';
 
 // PROD
-const String serverIP = '68.183.113.8';
-const String serverURL = 'k-9karaoke.com';
-const String bucketName = 'k9karaoke-prod';
+// const String serverIP = '68.183.113.8';
+// const String serverURL = 'k-9karaoke.com';
+// const String bucketName = 'k9karaoke-prod';
 
 // ALL
 const Map<String, dynamic> defaultFaceCoordinates = {
@@ -22,15 +22,15 @@ const Map<String, dynamic> defaultFaceCoordinates = {
 };
 
 Map<String, String> displayNames = {
-  "rightEye": "Right Eye",
-  "leftEye": "Left Eye",
-  "mouth": "Mouth Center",
-  "mouthRight": "Right Mouth Corner",
-  "mouthLeft": "Left Mouth Corner",
-  "headBottom": "Head Bottom",
-  "headRight": "Head Right",
-  "headLeft": "Head Left",
-  "headTop": "Head Top",
+  "rightEye": "Right eye",
+  "leftEye": "Left eye",
+  "mouth": "Mouth center",
+  "mouthRight": "Right mouth corner",
+  "mouthLeft": "Left mouth corner",
+  "headBottom": "Head bottom",
+  "headRight": "Head right",
+  "headLeft": "Head left",
+  "headTop": "Head top",
 };
 
 String framesPath = "assets/card_frames/";
