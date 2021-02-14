@@ -5,7 +5,7 @@ import 'package:K9_Karaoke/widgets/bark_select_interface.dart';
 import 'package:K9_Karaoke/widgets/card_frame_interface.dart';
 import 'package:K9_Karaoke/widgets/card_decorator_interface.dart';
 import 'package:K9_Karaoke/widgets/personal_message_interface.dart';
-import 'package:K9_Karaoke/widgets/mouth_tone_slider.dart';
+import 'package:K9_Karaoke/widgets/mouth_interface.dart';
 import 'package:K9_Karaoke/widgets/share_card_interface.dart';
 import 'package:K9_Karaoke/widgets/song_arrangement_selector.dart';
 import 'package:K9_Karaoke/widgets/song_playback_interface.dart';
@@ -41,7 +41,7 @@ class InterfaceSwitcher extends StatelessWidget {
     }
 
     return (currentActivity.isSnap && card.hasPicture)
-        ? MouthToneSlider()
+        ? MouthInterface()
         : (currentActivity.isSong)
             ? SongSelectInterface()
             : (currentActivity.isSpeak)

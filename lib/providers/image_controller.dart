@@ -192,4 +192,20 @@ class ImageController with ChangeNotifier {
         .evaluateJavascript("mouth_color(${rgb[0]}, ${rgb[1]}, ${rgb[2]});");
     print("done setting mouth color");
   }
+
+  Future setLipColor([rgb]) async {
+    rgb ??= picture.lipColor;
+    print("Lip color: $rgb");
+    await webViewController
+        .evaluateJavascript("lips_color(${rgb[0]}, ${rgb[1]}, ${rgb[2]});");
+    print("done setting lip color");
+  }
+
+  Future setLipThickness([double thickness]) async {
+    thickness ??= picture.lipThickness;
+    print("Lip thickness: $thickness");
+    await webViewController
+        .evaluateJavascript("lips_thickness($thickness);");
+    print("done setting lip color");
+  }
 }

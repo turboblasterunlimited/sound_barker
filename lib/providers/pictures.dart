@@ -63,6 +63,7 @@ class Pictures with ChangeNotifier {
         fileId: serverImage["uuid"],
         coordinates: jsonDecode(serverImage["coordinates_json"].toString()),
         mouthColor: jsonDecode(serverImage["mouth_color"].toString()),
+        lipColor: jsonDecode(serverImage["lip_color"].toString()),
         created: DateTime.parse(serverImage["created"]),
       );
       pic.isStock ? stockPictures.add(pic) : add(pic);
@@ -103,6 +104,8 @@ class Picture extends Asset {
   String fileId;
   Map<String, dynamic> coordinates;
   List mouthColor;
+  List lipColor;
+  double lipThickness;
   bool creationAnimation;
   DateTime created;
   bool isStock;
@@ -114,11 +117,15 @@ class Picture extends Asset {
     this.fileId,
     this.coordinates,
     this.mouthColor,
+    this.lipColor,
+    this.lipThickness,
     this.created,
     this.isStock,
   }) {
     this.coordinates = coordinates ?? Map.of(defaultFaceCoordinates);
     this.mouthColor = mouthColor ?? [0.0, 0.0, 0.0];
+    this.lipColor = lipColor ?? [0.0, 0.0, 0.0];
+    this.lipThickness = lipThickness ?? 0.0;
     this.name = name ?? "Name";
     this.fileId = fileId ??= Uuid().v4();
     this.creationAnimation = true;
@@ -145,8 +152,10 @@ class Picture extends Asset {
     notifyListeners();
   }
 
-  Future<void> updateMouthColor(color) async {
-    mouthColor = color;
+  Future<void> updateMouth(mouthColor, lipColor, lipThickness) async {
+    mouthColor = mouthColor;
+    lipColor = lipColor;
+    lipThickness = lipThickness;
     await RestAPI.updateImage(this);
   }
 

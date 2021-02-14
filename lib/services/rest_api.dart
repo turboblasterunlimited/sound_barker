@@ -204,7 +204,8 @@ class RestAPI {
     return response?.data;
   }
 
-  static Future createFinishedCard(String uuid, String recipient, hasEnvelope) async {
+  static Future createFinishedCard(
+      String uuid, String recipient, hasEnvelope) async {
     var response;
     final cardBody = {
       'card_uuid': uuid,
@@ -286,6 +287,8 @@ class RestAPI {
       'name': image.name,
       'coordinates_json': json.encode(image.coordinates),
       'mouth_color': image.mouthColor.toString(),
+      'lip_color': image.lipColor.toString(),
+      'lip_thickness': image.lipThickness.toString(),
     };
     print("Image update body: $body");
     final url = 'https://$serverURL/image/${image.fileId}';
