@@ -119,11 +119,11 @@ class _AccountState extends State<AccountScreen> {
   }
 
   Widget build(BuildContext context) {
-    user = Provider.of<TheUser>(context, listen: false);
-    cards = Provider.of<KaraokeCards>(context, listen: false);
-    songs = Provider.of<Songs>(context, listen: false);
-    barks = Provider.of<Barks>(context, listen: false);
-    pictures = Provider.of<Pictures>(context, listen: false);
+    user ??= Provider.of<TheUser>(context, listen: false);
+    cards ??= Provider.of<KaraokeCards>(context, listen: false);
+    songs ??= Provider.of<Songs>(context, listen: false);
+    barks ??= Provider.of<Barks>(context, listen: false);
+    pictures ??= Provider.of<Pictures>(context, listen: false);
 
     return Scaffold(
       key: _scaffoldKey,

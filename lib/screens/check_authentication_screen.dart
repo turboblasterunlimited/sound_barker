@@ -1,6 +1,7 @@
 import 'package:K9_Karaoke/providers/the_user.dart';
 import 'package:K9_Karaoke/screens/authentication_screen.dart';
 import 'package:K9_Karaoke/screens/retrieve_data_screen.dart';
+import 'package:K9_Karaoke/transitions/fade.dart';
 
 import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import 'package:K9_Karaoke/widgets/loading_screen_widget.dart';
@@ -31,22 +32,19 @@ class _CheckAuthenticationScreenState extends State<CheckAuthenticationScreen> {
   bool _agreementAccepted = false;
   bool _showAgreement = false;
 
-  void showAgreement() {
-    setState(() {
-      _showAgreement = true;
-    });
-  }
-
   void _handleSignedIn() async {
     _agreementAccepted = userObj["user_agreed_to_terms_v1"] == 1;
     print("agreement accepted: $_agreementAccepted");
     if (!_agreementAccepted) {
-      showAgreement();
+      setState(() {
+        _showAgreement = true;
+      });
       SystemChrome.setEnabledSystemUIOverlays([]);
     } else {
-      user.signIn(userObj);
+      await user.signIn(userObj);
       print("navigating to retrieve data");
-      Navigator.of(context).popAndPushNamed(RetrieveDataScreen.routeName);
+      Navigator.of(context)
+          .pushReplacement(FadeRoute(page: RetrieveDataScreen()));
     }
   }
 
@@ -58,7 +56,8 @@ class _CheckAuthenticationScreenState extends State<CheckAuthenticationScreen> {
     if (isAccepted) {
       await user.agreeToTerms();
       await user.signIn(userObj);
-      Navigator.of(context).popAndPushNamed(RetrieveDataScreen.routeName);
+      Navigator.of(context)
+          .pushReplacement(FadeRoute(page: RetrieveDataScreen()));
     } else {
       print("agreement refused");
       Navigator.of(context).popAndPushNamed(AuthenticationScreen.routeName);
