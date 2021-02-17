@@ -6,6 +6,7 @@ import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/pictures.dart';
 import 'package:K9_Karaoke/providers/songs.dart';
 import 'package:K9_Karaoke/screens/main_screen.dart';
+import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/transitions/fade.dart';
 
 import 'package:K9_Karaoke/widgets/loading_screen_widget.dart';
@@ -42,8 +43,9 @@ class _RetrieveDataScreenState extends State<RetrieveDataScreen> {
     await decorationImages.retrieveAll();
     await cards.retrieveAll(pictures, cardAudios, songs, decorationImages);
     cards.sort();
-    Navigator.of(context).pushReplacement(
-          FadeRoute(page: MainScreen()));
+
+    Navigator.of(context).pushReplacement(FadeRoute(page: MainScreen(), routeName: MainScreen.routeName));
+    Navigator.of(context).push(FadeRoute(page: MenuScreen()));
   }
 
   @override

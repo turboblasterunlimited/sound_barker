@@ -3,14 +3,12 @@ import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/sound_controller.dart';
 import 'package:K9_Karaoke/providers/the_user.dart';
-import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/widgets/custom_appbar.dart';
 import 'package:K9_Karaoke/widgets/interface_switcher.dart';
 import 'package:K9_Karaoke/widgets/card_decorator_canvas.dart';
 import 'package:K9_Karaoke/widgets/card_progress_bar.dart';
 import 'package:K9_Karaoke/widgets/loading_screen_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:provider/provider.dart';
@@ -66,18 +64,13 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     return null;
   }
 
-  Future<void> _navigate() async {
-    Navigator.of(context).pushNamed(MenuScreen.routeName);
-  }
+
 
   @override
   void initState() {
     print("INITING MAIN SCREEN");
     super.initState();
     SystemChrome.setEnabledSystemUIOverlays([]);
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      Future.delayed(Duration(seconds: 2), _navigate);
-    });
     KeyboardVisibility.onChange.listen((bool visible) {
       print('Keyboard visibility update. Is visible: ${visible}');
       if (!visible) SystemChrome.setEnabledSystemUIOverlays([]);

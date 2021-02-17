@@ -273,7 +273,6 @@ class _MouthInterfaceState extends State<MouthInterface> {
         ),
         Center(
           child: RawMaterialButton(
-            
             onPressed: handleSubmitButton,
             child: Icon(
               Icons.check,

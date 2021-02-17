@@ -48,7 +48,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     });
     if (isAccepted) {
       await user.agreeToTerms();
-      user.signIn(userObj);
+      await user.signIn(userObj);
       Navigator.of(context).popAndPushNamed(RetrieveDataScreen.routeName);
     } else {
       print("agreement refused");
