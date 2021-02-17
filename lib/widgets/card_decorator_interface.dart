@@ -183,38 +183,74 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                   ),
                   // Drawing button
                   Padding(
-                    padding: const EdgeInsets.only(left: 0),
-                    child: IconButton(
-                      color: decorationController.isDrawing
-                          ? Colors.blue
-                          : Theme.of(context).primaryColor,
+                    padding: const EdgeInsets.only(left: 20),
+                    child: RawMaterialButton(
                       onPressed: () {
                         focusNode.unfocus();
                         decorationController.startDrawing();
                       },
-                      icon: Icon(CustomIcons.draw, size: iconButtonSize),
-                      // icon: Icon(CustomIcons.draw, size: iconButtonSize + 10),
+                      child: Text(
+                        "draw",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: decorationController.isDrawing
+                                ? Colors.white
+                                : Theme.of(context).primaryColor,
+                            fontSize: 15),
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(40.0),
+                        side: BorderSide(
+                            color: Theme.of(context).primaryColor, width: 3),
+                      ),
+                      elevation: 2.0,
+                      fillColor: decorationController.isDrawing
+                          ? Theme.of(context).primaryColor
+                          : null,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 5,
+                        horizontal: 5,
+                      ),
                     ),
                   ),
                   // Typing button
+
                   Padding(
-                    padding: const EdgeInsets.only(right: 0),
-                    child: IconButton(
-                      color: decorationController.isTyping
-                          ? Colors.blue
-                          : Theme.of(context).primaryColor,
+                    padding: const EdgeInsets.only(left: 15),
+                    child: RawMaterialButton(
                       onPressed: () {
                         focusNode.unfocus();
                         focusNode.requestFocus();
                         decorationController.startTyping();
                       },
-                      icon: Icon(CustomIcons.aa, size: iconButtonSize - 5),
-                      // icon: Icon(CustomIcons.aa, size: iconButtonSize + 10),
+                      child: Text(
+                        "type",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: decorationController.isTyping
+                                ? Colors.white
+                                : Theme.of(context).primaryColor,
+                            fontSize: 15),
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(40.0),
+                        side: BorderSide(
+                            color: Theme.of(context).primaryColor, width: 3),
+                      ),
+                      elevation: 2.0,
+                      fillColor: decorationController.isTyping
+                          ? Theme.of(context).primaryColor
+                          : null,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 5,
+                        horizontal: 5,
+                      ),
                     ),
                   ),
+
                   // Undo button
                   Padding(
-                    padding: const EdgeInsets.only(left: 15),
+                    padding: const EdgeInsets.only(left: 10),
                     child: IconButton(
                       color: Theme.of(context).primaryColor,
                       onPressed: _handleUndo,

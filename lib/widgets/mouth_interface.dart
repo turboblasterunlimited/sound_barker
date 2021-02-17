@@ -277,7 +277,7 @@ class _MouthInterfaceState extends State<MouthInterface> {
             child: Icon(
               Icons.check,
               color: Colors.white,
-              size: 15,
+              size: 20,
             ),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30.0),
