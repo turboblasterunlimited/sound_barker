@@ -65,7 +65,7 @@ class _SingingImageState extends State<SingingImage>
                     print("create puppet finished");
                     imageController.makeReady();
                     await imageController.setFace();
-                    await imageController.setMouthColor();
+                    await imageController.setMouth();
                     imageController.startRandomGesture();
                   }
                 },

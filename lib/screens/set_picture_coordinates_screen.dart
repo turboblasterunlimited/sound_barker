@@ -71,12 +71,6 @@ class _SetPictureCoordinatesScreenState
     return widget.newPicture.isNamed ? "SET FACE" : "NAME PHOTO";
   }
 
-  @override
-  void initState() {
-    print("init state set picture coordinates screen");
-    super.initState();
-  }
-
   _puppetXtoCanvasX(x) {
     double offset = x * middle * 2;
     return offset + middle;
@@ -186,6 +180,7 @@ class _SetPictureCoordinatesScreenState
   }
 
   void _submitPicture() async {
+    print("Submitting picture");
     widget.newPicture.uploadPictureAndSaveToServer();
     pictures.add(widget.newPicture);
     cards.setCurrentPicture(widget.newPicture);

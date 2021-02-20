@@ -49,6 +49,21 @@ class Pictures with ChangeNotifier {
     stockPictures.forEach((picture) => picture.delete());
   }
 
+  static String toTuple(List list) {
+    print("Calling convert to tuple: $list");
+    var string = json.encode(list);
+    var naked = string.substring(1, string.length - 1);
+    print("naked: $naked");
+    return "(" + naked + ")";
+  }
+
+  List fromTuple(String tuple) {
+    print("Calling convert from tuple: $tuple");
+    var naked = tuple.substring(1, tuple.length - 1);
+    print("naked: $naked");
+    return jsonDecode("[" + naked + "]");
+  }
+
   Future retrieveAll() async {
     List response = await RestAPI.retrieveAllImages();
     print("pictures: $response");
@@ -56,14 +71,23 @@ class Pictures with ChangeNotifier {
       if (serverImage["hidden"] == 1) return;
       if (serverImage["uuid"] == null) return;
 
+      var serverLipColor = serverImage["lip_color"] == null
+          ? defaultLipColor
+          : fromTuple(serverImage["lip_color"]);
+          
+      var serverMouthColor = serverImage["mouth_color"] == null
+          ? defaultMouthColor
+          : fromTuple(serverImage["mouth_color"]);
+
       Picture pic = Picture(
         isStock: serverImage["is_stock"] == 1 ? true : false,
         name: serverImage["name"],
         fileUrl: serverImage["bucket_fp"],
         fileId: serverImage["uuid"],
         coordinates: jsonDecode(serverImage["coordinates_json"].toString()),
-        mouthColor: jsonDecode(serverImage["mouth_color"].toString()),
-        lipColor: jsonDecode(serverImage["lip_color"].toString()),
+        mouthColor: serverMouthColor,
+        lipColor: serverLipColor,
+        lipThickness: serverImage["lip_thickness"] ?? defaultLipThickness,
         created: DateTime.parse(serverImage["created"]),
       );
       pic.isStock ? stockPictures.add(pic) : add(pic);
@@ -123,9 +147,9 @@ class Picture extends Asset {
     this.isStock,
   }) {
     this.coordinates = coordinates ?? Map.of(defaultFaceCoordinates);
-    this.mouthColor = mouthColor ?? [0.0, 0.0, 0.0];
-    this.lipColor = lipColor ?? [0.0, 0.0, 0.0];
-    this.lipThickness = lipThickness ?? 0.0;
+    this.mouthColor = mouthColor ?? defaultMouthColor;
+    this.lipColor = lipColor ?? defaultLipColor;
+    this.lipThickness = lipThickness ?? defaultLipThickness;
     this.name = name ?? "Name";
     this.fileId = fileId ??= Uuid().v4();
     this.creationAnimation = true;
@@ -152,10 +176,10 @@ class Picture extends Asset {
     notifyListeners();
   }
 
-  Future<void> updateMouth(mouthColor, lipColor, lipThickness) async {
-    mouthColor = mouthColor;
-    lipColor = lipColor;
-    lipThickness = lipThickness;
+  Future<void> updateMouth(mouthCol, lipCol, lipThick) async {
+    mouthColor = mouthCol;
+    lipColor = lipCol;
+    lipThickness = lipThick;
     await RestAPI.updateImage(this);
   }
 

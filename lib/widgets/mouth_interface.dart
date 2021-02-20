@@ -1,3 +1,4 @@
+import 'package:K9_Karaoke/components/triangular_slider_track_shape.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
@@ -49,21 +50,15 @@ class _MouthInterfaceState extends State<MouthInterface> {
   List<int> redMouthTone = [100, 10, 10];
 
   // MOUTH
-  List<int> startingMouthColor;
   List<int> currentMouthColor;
-  double mouthSliderValue = 0.0;
-
+  double mouthColorSliderValue = 0.0;
 
   // LIPS
-  List<int> startingLipColor;
   List<int> currentLipColor;
   double lipColorSliderValue = 0.0;
 
-  double startingLipThickness;
   double currentLipThickness;
-  double lipThicknessSliderValue = 0.0; 
-  
-
+  double lipThicknessSliderValue = 0.0;
 
   @override
   void dispose() {
@@ -71,7 +66,7 @@ class _MouthInterfaceState extends State<MouthInterface> {
     super.dispose();
   }
 
-  List<double> colorToDecimal(List<int>currentColor) {
+  List<double> colorToDecimal(List<int> currentColor) {
     List<double> result = [0.0, 0.0, 0.0];
     currentColor.asMap().forEach((i, val) {
       result[i] = val / 255;
@@ -89,27 +84,28 @@ class _MouthInterfaceState extends State<MouthInterface> {
 
   void handleSubmitButton() {
     imageController.cancelMouthOpenAndClose();
-    card.picture.updateMouth(colorToDecimal(currentMouthColor), colorToDecimal(currentLipColor), currentLipThickness);
+    card.picture.updateMouth(colorToDecimal(currentMouthColor),
+        colorToDecimal(currentLipColor), currentLipThickness);
     currentActivity.setCardCreationStep(CardCreationSteps.song);
   }
 
   List get sliderMouthTone {
-    if (mouthSliderValue > 2) {
+    if (mouthColorSliderValue > 2) {
       return fleshMouthTone;
-    } else if (mouthSliderValue > 1) {
+    } else if (mouthColorSliderValue > 1) {
       return pinkMouthTone;
-    } else if (mouthSliderValue >= 0) {
+    } else if (mouthColorSliderValue >= 0) {
       return redMouthTone;
     }
     return fleshMouthTone;
   }
 
-    List get sliderLipTone {
-    if (mouthSliderValue > 2) {
+  List get sliderLipTone {
+    if (lipColorSliderValue > 2) {
       return fleshMouthTone;
-    } else if (mouthSliderValue > 1) {
+    } else if (lipColorSliderValue > 1) {
       return pinkMouthTone;
-    } else if (mouthSliderValue >= 0) {
+    } else if (lipColorSliderValue >= 0) {
       return redMouthTone;
     }
     return fleshMouthTone;
@@ -123,6 +119,14 @@ class _MouthInterfaceState extends State<MouthInterface> {
             SetPictureCoordinatesScreen(card.picture, editing: true),
       ),
     );
+  }
+
+  void setLips(double val) {
+    setState(() {
+      lipThicknessSliderValue = val;
+      currentLipThickness = num.parse(val.toStringAsFixed(2));
+    });
+    imageController.setLipThickness(currentLipThickness);
   }
 
   @override
@@ -140,59 +144,91 @@ class _MouthInterfaceState extends State<MouthInterface> {
       children: <Widget>[
         InterfaceTitleNav("MOUTH & LIPS", backCallback: backCallback),
         // MOUTH
-        Container(
-          // height: 100,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              ClipOval(
-                child: Material(
-                  color: Colors.black,
-                  child: InkWell(
-                    child: SizedBox(width: 20, height: 20),
-                  ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            ClipOval(
+              child: Material(
+                color: Colors.black,
+                child: InkWell(
+                  child: SizedBox(width: 20, height: 20),
                 ),
               ),
-              Slider(
-                value: mouthSliderValue,
-                min: 0,
-                max: 3,
-                onChanged: (double sliderVal) {
-                  setState(() {
-                    mouthSliderValue = sliderVal;
-                    sliderMouthTone.asMap().forEach((i, value) {
-                      double adjustedVal;
-                      if (sliderVal > 2) {
-                        adjustedVal = sliderVal - 2;
-                      } else if (sliderVal > 1) {
-                        adjustedVal = sliderVal - 1;
-                      } else if (sliderVal > 0) {
-                        adjustedVal = sliderVal;
-                      }
-                      currentMouthColor[i] = (value * adjustedVal).round();
-                    });
+            ),
+            Slider(
+              value: mouthColorSliderValue,
+              min: 0,
+              max: 3,
+              onChanged: (double sliderVal) {
+                setState(() {
+                  mouthColorSliderValue = sliderVal;
+                  sliderMouthTone.asMap().forEach((i, value) {
+                    double adjustedVal;
+                    if (sliderVal > 2) {
+                      adjustedVal = sliderVal - 2;
+                    } else if (sliderVal > 1) {
+                      adjustedVal = sliderVal - 1;
+                    } else if (sliderVal >= 0) {
+                      adjustedVal = sliderVal;
+                    }
+                    currentMouthColor[i] = (value * adjustedVal).round();
                   });
-                  imageController.setMouthColor(colorToDecimal(currentMouthColor));
-                },
-                onChangeEnd: (_) {},
-              ),
-              ClipOval(
-                child: Material(
-                  color: Color(
-                    hexOfRGB(
-                      sliderMouthTone[0],
-                      sliderMouthTone[1],
-                      sliderMouthTone[2],
-                    ),
-                  ),
-                  child: InkWell(
-                    child: SizedBox(width: 20, height: 20),
+                });
+                imageController
+                    .setMouthColor(colorToDecimal(currentMouthColor));
+              },
+              onChangeEnd: (_) {},
+            ),
+            ClipOval(
+              child: Material(
+                color: Color(
+                  hexOfRGB(
+                    sliderMouthTone[0],
+                    sliderMouthTone[1],
+                    sliderMouthTone[2],
                   ),
                 ),
+                child: InkWell(
+                  child: SizedBox(width: 20, height: 20),
+                ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
+
+        Text("Mouth Color"),
+// LIPS THICKNESS
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            GestureDetector(
+                child: Icon(
+                  Icons.close,
+                  size: 30,
+                  color: Theme.of(context).errorColor,
+                ),
+                onTap: () => setLips(0)),
+            SliderTheme(
+              data: SliderTheme.of(context).copyWith(
+                thumbColor: Colors.blue[700],
+                trackHeight: 12,
+                trackShape: TriangularSliderTrackShape(
+                  Theme.of(context).primaryColor,
+                ),
+              ),
+              child: Slider(
+                value: lipThicknessSliderValue,
+                min: 0,
+                max: 0.4,
+                onChanged: (double sliderVal) {
+                  setLips(sliderVal);
+                },
+              ),
+            ),
+          ],
+        ),
+        Text("Lip Thickness"),
+
         // LIPS COLOR
         Container(
           // height: 100,
@@ -220,7 +256,7 @@ class _MouthInterfaceState extends State<MouthInterface> {
                         adjustedVal = sliderVal - 2;
                       } else if (sliderVal > 1) {
                         adjustedVal = sliderVal - 1;
-                      } else if (sliderVal > 0) {
+                      } else if (sliderVal >= 0) {
                         adjustedVal = sliderVal;
                       }
                       currentLipColor[i] = (value * adjustedVal).round();
@@ -247,30 +283,8 @@ class _MouthInterfaceState extends State<MouthInterface> {
             ],
           ),
         ),
-        // LIPS THICKNESS
-        Container(
-          // height: 100,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text("Thin"),
-              Slider(
-                value: lipThicknessSliderValue,
-                min: 0,
-                max: 1,
-                onChanged: (double sliderVal) {
-                  setState(() {
-                    lipThicknessSliderValue = sliderVal;
-                    currentLipThickness = num.parse(sliderVal.toStringAsFixed(1));
-                  });
-                  imageController.setLipThickness(currentLipThickness);
-                },
-                onChangeEnd: (_) {},
-              ),
-              Text("Thick"),
-            ],
-          ),
-        ),
+        Text("Lip Color"),
+
         Center(
           child: RawMaterialButton(
             onPressed: handleSubmitButton,
@@ -287,7 +301,9 @@ class _MouthInterfaceState extends State<MouthInterface> {
             padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 2),
           ),
         ),
-        Padding(padding: EdgeInsets.only(top: 10.0),)
+        Padding(
+          padding: EdgeInsets.only(top: 10.0),
+        ),
       ],
     );
   }

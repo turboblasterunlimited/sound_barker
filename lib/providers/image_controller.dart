@@ -148,7 +148,7 @@ class ImageController with ChangeNotifier {
           .evaluateJavascript("create_puppet('$base64ImageString')");
       print("Create dog succeeded.");
     } catch (e) {
-      print("Create dog failed :,(");
+      print("Create dog failed/succeeded");
     }
     // webViewController
     //     .evaluateJavascript("test('dog1.jpg')");
@@ -183,6 +183,13 @@ class ImageController with ChangeNotifier {
     await webViewController.evaluateJavascript(
         "set_position('headLeft', ${coordinates['headLeft'][0]}, ${coordinates['headLeft'][1]})");
     print("done setting face");
+  }
+
+
+  Future setMouth() async {
+    await setMouthColor();
+    await setLipColor();
+    await setLipThickness();
   }
 
   Future setMouthColor([rgb]) async {

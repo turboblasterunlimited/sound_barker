@@ -15,7 +15,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 class CameraOrUploadScreen extends StatelessWidget {
   static const routeName = 'camera_or_upload_screen';
-  BuildContext con;
+  static BuildContext con;
 
   Future<void> _cropAndNavigate(newPicture, context) async {
     bool cropped = await cropImage(

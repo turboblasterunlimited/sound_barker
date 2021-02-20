@@ -283,12 +283,14 @@ class RestAPI {
   }
 
   static Future<void> updateImage(Picture image) async {
+    print("UPDATING IMAGE");
+
     Map body = {
       'name': image.name,
       'coordinates_json': json.encode(image.coordinates),
-      'mouth_color': image.mouthColor.toString(),
-      'lip_color': image.lipColor.toString(),
-      'lip_thickness': image.lipThickness.toString(),
+      'mouth_color': Pictures.toTuple(image.mouthColor),
+      'lip_color': Pictures.toTuple(image.lipColor),
+      'lip_thickness': image.lipThickness,
     };
     print("Image update body: $body");
     final url = 'https://$serverURL/image/${image.fileId}';
@@ -306,11 +308,13 @@ class RestAPI {
   }
 
   static Future<Map> createImage(Picture image) async {
+    print("CREATING IMAGE");
     Map body = {
       'uuid': image.fileId,
       'name': image.name,
-      'coordinates_json': json.encode(image.coordinates),
-      'mouth_color': image.mouthColor,
+      'mouth_color': Pictures.toTuple(image.mouthColor),
+      'lip_color': Pictures.toTuple(image.lipColor),
+      'lip_thickness': image.lipThickness,
       'bucket_fp': image.fileUrl,
     };
     print("Image upload body: $body");
@@ -325,6 +329,8 @@ class RestAPI {
       print("Create Image response body: ${response?.data}");
       _handleAssetError(response, e);
     }
+    print("Create Image response body: ${response?.data}");
+
     return response?.data;
   }
 
