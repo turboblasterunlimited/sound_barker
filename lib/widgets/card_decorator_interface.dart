@@ -183,14 +183,16 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                   ),
                   // Drawing button
                   Padding(
-                    padding: const EdgeInsets.only(left: 20),
+                    padding: const EdgeInsets.only(left: 0),
                     child: RawMaterialButton(
                       onPressed: () {
                         focusNode.unfocus();
                         decorationController.startDrawing();
                       },
+                      // constraints:
+                      //     BoxConstraints(minWidth: 52.0, minHeight: 30.0),
                       child: Text(
-                        "draw",
+                        "Draw",
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: decorationController.isDrawing
@@ -216,15 +218,17 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                   // Typing button
 
                   Padding(
-                    padding: const EdgeInsets.only(left: 15),
+                    padding: const EdgeInsets.only(left: 0),
                     child: RawMaterialButton(
                       onPressed: () {
                         focusNode.unfocus();
                         focusNode.requestFocus();
                         decorationController.startTyping();
                       },
+                      // constraints:
+                      //     BoxConstraints(minWidth: 52.0, minHeight: 30.0),
                       child: Text(
-                        "type",
+                        "Type",
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: decorationController.isTyping
@@ -247,16 +251,6 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                       ),
                     ),
                   ),
-
-                  // Undo button
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10),
-                    child: IconButton(
-                      color: Theme.of(context).primaryColor,
-                      onPressed: _handleUndo,
-                      icon: Icon(CustomIcons.undo, size: iconButtonSize),
-                    ),
-                  ),
                   GestureDetector(
                     behavior: HitTestBehavior.opaque,
                     onTap: skipCallback,
@@ -274,35 +268,64 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Text(
-                      "Font/Line Size",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 180,
-                      child: SliderTheme(
-                        data: SliderTheme.of(context).copyWith(
-                          thumbColor: Colors.blue[700],
-                          trackHeight: 10,
-                          trackShape: TriangularSliderTrackShape(
-                            Theme.of(context).primaryColor,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Size:",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Theme.of(context).primaryColor,
                           ),
                         ),
-                        child: Slider(
-                          value: decorationController.size,
-                          min: 8,
-                          max: 40,
-                          divisions: 32,
-                          label: decorationController.size.round().toString(),
-                          onChanged: (double sliderVal) {
-                            decorationController.setSize(sliderVal);
-                          },
+                        SizedBox(
+                          width: 120,
+                          child: SliderTheme(
+                            data: SliderTheme.of(context).copyWith(
+                              thumbColor: Colors.blue[700],
+                              trackHeight: 10,
+                              trackShape: TriangularSliderTrackShape(
+                                Theme.of(context).primaryColor,
+                              ),
+                            ),
+                            child: Slider(
+                              value: decorationController.size,
+                              min: 8,
+                              max: 40,
+                              divisions: 32,
+                              label:
+                                  decorationController.size.round().toString(),
+                              onChanged: (double sliderVal) {
+                                decorationController.setSize(sliderVal);
+                              },
+                            ),
+                          ),
                         ),
+                      ],
+                    ),
+
+                    // Undo button
+                    GestureDetector(
+                      onTap: _handleUndo,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Undo:",
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0, bottom: 5.0),
+                            child: Icon(CustomIcons.undo,
+                                color: Theme.of(context).primaryColor,
+                                size: iconButtonSize),
+                          ),
+                        ],
                       ),
                     ),
                   ],

@@ -61,9 +61,9 @@ class AACMediaFormat extends NativeMediaFormat {
     int bitRate = 128000,
   }) : super.detail(
           name: 'adts/aac',
-          sampleRate: sampleRate,
-          numChannels: numChannels,
-          bitRate: bitRate,
+          sampleRate: 44100,
+          numChannels: 1,
+          bitRate: 128000,
         );
 
   @override
@@ -93,6 +93,7 @@ class SoundController with ChangeNotifier {
       lastCallback();
       await stopPlayer();
     }
+    if (recorder.isRecording) await stopRecording();
 
     // is annoyingly only triggered when audio playback completes, hence 'lastCallback' implementation
     player.onStopped = ({wasUser: true}) {
@@ -121,6 +122,9 @@ class SoundController with ChangeNotifier {
     if (File(filePath).existsSync()) File(filePath).deleteSync();
 
     File(filePath).createSync();
+
+    if (player.isPlaying) await stopPlayer();
+    if (recorder.isRecording) await stopRecording();
 
     await recorder.record(
       Track.fromFile(

@@ -213,6 +213,6 @@ class ImageController with ChangeNotifier {
     print("Lip thickness: $thickness");
     await webViewController
         .evaluateJavascript("lips_thickness($thickness);");
-    print("done setting lip color");
+    print("done setting lip thickness");
   }
 }
