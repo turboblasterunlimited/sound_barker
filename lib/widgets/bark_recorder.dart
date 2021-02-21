@@ -177,23 +177,64 @@ class BarkRecorderState extends State<BarkRecorder> {
     filePath = '$myAppStoragePath/tempRaw.aac';
 
     return SizedBox(
-      height: 300,
+      height: 250,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          InterfaceTitleNav('CAPTURE BARKS',
+          InterfaceTitleNav('CAPTURE BARKS\nBY USING EITHER...',
               backCallback: _backCallback, skipCallback: _skipCallback),
           _loading
               ? LoadingHalfScreenWidget("Processing Barks...")
               : Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    ButtonBar(
-                      alignment: MainAxisAlignment.center,
+                    Padding(
+                      padding: EdgeInsets.all(3),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
+                        // Video Upload
                         SizedBox(
                           height: 130,
-                          width: 150,
+                          width: 135,
+                          child: Column(
+                            children: <Widget>[
+                              RawMaterialButton(
+                                constraints: const BoxConstraints(
+                                    minWidth: 70.0, minHeight: 36.0),
+                                onPressed: _systemBusy()
+                                    ? null
+                                    : _handleUploadVideoButton,
+                                child: Icon(
+                                  Icons.movie,
+                                  size: 30,
+                                  color: Colors.white,
+                                ),
+                                shape: CircleBorder(),
+                                elevation: 2.0,
+                                fillColor: Theme.of(context).primaryColor,
+                                padding: const EdgeInsets.all(20.0),
+                              ),
+                              Padding(padding: EdgeInsets.only(top: 16)),
+                              Text("UPLOAD AUDIO\nFROM VIDEO",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: Theme.of(context).primaryColor))
+                            ],
+                          ),
+                        ),
+                        Text(
+                          "OR",
+                          style: TextStyle(
+                              fontSize: 25,
+                              color: Theme.of(context).accentColor),
+                        ),
+                        // Record Audio
+                        SizedBox(
+                          height: 130,
+                          width: 145,
                           child: Column(
                             children: <Widget>[
                               RawMaterialButton(
@@ -231,48 +272,21 @@ class BarkRecorderState extends State<BarkRecorder> {
                             ],
                           ),
                         ),
-                        SizedBox(
-                          height: 130,
-                          width: 140,
-                          child: Column(
-                            children: <Widget>[
-                              RawMaterialButton(
-                                constraints: const BoxConstraints(
-                                    minWidth: 70.0, minHeight: 36.0),
-                                onPressed: _systemBusy()
-                                    ? null
-                                    : _handleUploadVideoButton,
-                                child: Icon(
-                                  Icons.movie,
-                                  size: 30,
-                                  color: Colors.white,
-                                ),
-                                shape: CircleBorder(),
-                                elevation: 2.0,
-                                fillColor: Theme.of(context).primaryColor,
-                                padding: const EdgeInsets.all(20.0),
-                              ),
-                              Padding(padding: EdgeInsets.only(top: 16)),
-                              Text("UPLOAD AUDIO\nFROM VIDEO",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      color: Theme.of(context).primaryColor))
-                            ],
-                          ),
-                        ),
                       ],
                     ),
                     // ADD BARKS BUTTON
                     if (barks.tempRawBark == null)
-                      Center(
-                        child: Text(
-                          "Press 'Skip' to use Stock Barks and FX\nor barks you may have already recorded.",
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontStyle: FontStyle.italic,
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: Center(
+                          child: Text(
+                            "Press 'Skip' to use Stock Barks and FX\nor barks you may have already recorded.",
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontStyle: FontStyle.italic,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                          textAlign: TextAlign.center,
                         ),
                       ),
                     if (barks.tempRawBark != null && !_isRecording)
@@ -280,7 +294,10 @@ class BarkRecorderState extends State<BarkRecorder> {
                         onTap: _handleCropBarksAndContinue,
                         child: Waggle(
                           child: Container(
-                            padding: EdgeInsets.all(15),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 15,
+                              vertical: 10,
+                            ),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
                               shape: BoxShape.rectangle,
