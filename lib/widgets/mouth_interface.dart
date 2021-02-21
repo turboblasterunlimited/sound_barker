@@ -140,7 +140,7 @@ class _MouthInterfaceState extends State<MouthInterface> {
     imageController.startMouthOpenAndClose();
     return Column(
       children: <Widget>[
-        InterfaceTitleNav("MOUTH & LIPS", backCallback: backCallback),
+        InterfaceTitleNav(title: "MOUTH & LIPS", backCallback: backCallback),
         // MOUTH
         Stack(
           children: [

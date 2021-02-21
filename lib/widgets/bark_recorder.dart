@@ -181,7 +181,7 @@ class BarkRecorderState extends State<BarkRecorder> {
       child: Column(
         // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          InterfaceTitleNav('CAPTURE BARKS\nBY USING EITHER...',
+          InterfaceTitleNav(title: 'CAPTURE BARKS\nBY USING EITHER...',
               backCallback: _backCallback, skipCallback: _skipCallback),
           _loading
               ? LoadingHalfScreenWidget("Processing Barks...")
@@ -226,12 +226,13 @@ class BarkRecorderState extends State<BarkRecorder> {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 25.0),
+                          padding: const EdgeInsets.only(bottom: 35.0),
                           child: Text(
                             "OR",
                             style: TextStyle(
-                                fontSize: 30,
-                                color: Theme.of(context).accentColor),
+                              fontSize: 25,
+                              color: Theme.of(context).accentColor,
+                            ),
                           ),
                         ),
                         // Record Audio

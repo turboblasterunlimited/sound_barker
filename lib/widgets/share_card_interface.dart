@@ -486,7 +486,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
       height: 130,
       child: Column(
         children: [
-          InterfaceTitleNav(
+          InterfaceTitleNav(title: 
               cards.current.isSaved ? "Share Again?" : "ALL DONE!",
               backCallback: cards.current.isSaved ? null : _backCallback),
           Container(

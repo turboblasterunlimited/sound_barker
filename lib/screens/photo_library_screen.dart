@@ -120,7 +120,7 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
             Padding(
               padding: EdgeInsets.only(top: 20),
               child: InterfaceTitleNav(
-                "CHOOSE PHOTO",
+                title: "CHOOSE PHOTO",
                 titleSize: 20,
                 backCallback: _backCallback,
               ),

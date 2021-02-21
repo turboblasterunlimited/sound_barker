@@ -430,7 +430,7 @@ class _SetPictureCoordinatesScreenState
               padding: EdgeInsets.only(top: 15),
             ),
             InterfaceTitleNav(
-              _instructionalText,
+              title: _instructionalText,
               titleSize: 22,
               backCallback: _backCallback,
             ),

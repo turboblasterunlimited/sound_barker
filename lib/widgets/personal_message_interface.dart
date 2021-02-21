@@ -192,7 +192,7 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface> {
     return Column(
       children: <Widget>[
         InterfaceTitleNav(
-            cards.current.hasASong ? "PRE-SONG MESSAGE" : "CARD MESSAGE",
+            title: cards.current.hasASong ? "PRE-SONG MESSAGE" : "CARD MESSAGE",
             backCallback: backCallback,
             skipCallback: skipCallback),
         Row(
@@ -431,16 +431,13 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface> {
                   ),
                 ),
               )
-            : Padding(
-              padding: const EdgeInsets.only(bottom: 5.0),
-              child: Text(
-                  "MESSAGE CANNOT\nEXCEED 25-SECONDS",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Theme.of(context).accentColor,
-                  ),
+            : Text(
+                "MESSAGE CANNOT\nEXCEED 25-SECONDS",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Theme.of(context).accentColor,
                 ),
-            )
+              )
       ],
     );
   }

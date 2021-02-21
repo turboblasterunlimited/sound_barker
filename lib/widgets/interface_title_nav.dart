@@ -3,12 +3,17 @@ import 'package:line_awesome_icons/line_awesome_icons.dart';
 
 class InterfaceTitleNav extends StatefulWidget {
   String title;
+  Widget titleWidget;
   Function backCallback;
   Function skipCallback;
   double titleSize;
 
-  InterfaceTitleNav(this.title,
-      {this.backCallback, this.skipCallback, this.titleSize});
+  InterfaceTitleNav(
+      {this.title,
+      this.titleWidget,
+      this.backCallback,
+      this.skipCallback,
+      this.titleSize});
 
   @override
   _InterfaceTitleNavState createState() => _InterfaceTitleNavState();
@@ -39,12 +44,14 @@ class _InterfaceTitleNavState extends State<InterfaceTitleNav> {
           ),
         Align(
           alignment: Alignment.topCenter,
-          child: Text(
-            widget.title,
-            style: TextStyle(
-                fontSize: widget.titleSize ?? 18,
-                color: Theme.of(context).primaryColor),
-          ),
+          child: widget.titleWidget != null
+              ? widget.titleWidget
+              : Text(
+                  widget.title,
+                  style: TextStyle(
+                      fontSize: widget.titleSize ?? 18,
+                      color: Theme.of(context).primaryColor),
+                ),
         ),
         if (widget.skipCallback != null)
           Positioned(

@@ -53,7 +53,7 @@ class _SongArrangementSelector extends State<SongArrangementSelector> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          InterfaceTitleNav("CHOOSE STYLE",
+          InterfaceTitleNav(title: "CHOOSE STYLE",
               titleSize: 20, backCallback: currentActivity.setPreviousSubStep),
           _isLoading
               ? LoadingHalfScreenWidget("Creating Song...")

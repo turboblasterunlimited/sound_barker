@@ -16,9 +16,10 @@ class BarkPlaybackCard extends StatefulWidget {
   final SoundController soundController;
   final Animation<double> animation;
   final Function deleteCallback;
+  final Color color;
   BarkPlaybackCard(
       this.index, this.bark, this.barks, this.soundController, this.animation,
-      {this.deleteCallback});
+      {this.deleteCallback, this.color});
 
   @override
   _BarkPlaybackCardState createState() => _BarkPlaybackCardState();
@@ -105,23 +106,18 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
 
   Widget _getAudioButton() {
     if (_isLoading)
-      return IconButton(
-        onPressed: null,
-        icon: SpinKitWave(size: 10, color: Theme.of(context).primaryColor),
+      return SpinKitWave(size: 15, color: Theme.of(context).primaryColor);
+    else if (_isPlaying)
+      return Transform.scale(
+        scale: 2,
+        child: Icon(Icons.play_arrow,
+            color: Theme.of(context).primaryColor, size: 15),
       );
-    if (_isPlaying)
-      return IconButton(
-          color: Colors.blue,
-          onPressed: stopAll,
-          icon:
-              Icon(Icons.stop, color: Theme.of(context).errorColor, size: 30));
     else
-      return IconButton(
-        color: Colors.blue,
-        onPressed: startAll,
-        icon: Icon(Icons.play_arrow,
-            color: Theme.of(context).primaryColor, size: 30),
-      );
+      return Container(height: 15);
+    // else
+    //   return Icon(Icons.play_arrow,
+    //       color: Theme.of(context).primaryColor, size: 15);
   }
 
   @override
@@ -135,38 +131,52 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
       sizeFactor: widget.animation,
       child: Row(
         children: <Widget>[
+          IconButton(
+            icon: Icon(
+              isSelected
+                  ? Icons.check_box_outlined
+                  : Icons.check_box_outline_blank_rounded,
+              color: Theme.of(context).primaryColor,
+            ),
+            onPressed: selectBark,
+          ),
           // Playback button
-          _getAudioButton(),
           // Select bark button
           Expanded(
             child: RawMaterialButton(
-              onPressed: selectBark,
-              fillColor: isSelected ? Theme.of(context).primaryColor : null,
-              child: Column(
-                children: <Widget>[
-                  Center(
-                    child: RichText(
-                      text: TextSpan(
-                        children: <TextSpan>[
-                          // Title
-                          TextSpan(
-                            text: widget.bark.name,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: isSelected
-                                  ? Colors.white
-                                  : Theme.of(context).primaryColor,
-                              fontSize: 16,
-                            ),
+              onPressed: _isLoading
+                  ? null
+                  : _isPlaying
+                      ? stopAll
+                      : startAll,
+              fillColor: null,
+              child: Stack(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 5.0),
+                        child: Text(
+                          widget.bark.name,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).primaryColor,
+                            fontSize: 16,
                           ),
-                          // Subtitle
-                          TextSpan(
-                            text: " " + widget.bark.length,
-                            style: TextStyle(color: Colors.grey, fontSize: 10),
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 5.0),
+                        child: Text(
+                          widget.bark.length.toUpperCase(),
+                          style: TextStyle(color: widget.color, fontSize: 10),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Center(
+                    child: _getAudioButton(),
                   ),
                 ],
               ),

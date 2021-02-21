@@ -44,6 +44,16 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
     }
   }
 
+  Color get _currentBarkColor {
+    if (currentActivity.isTwo) {
+      return Colors.orange[800];
+    } else if (currentActivity.isThree) {
+      return Colors.pink;
+    } else if (currentActivity.isFour) {
+      return Colors.green;
+    }
+  }
+
   getBarksOfCurrentLength({bool stock = false, bool fx = false}) {
     if (currentActivity.isTwo) {
       return barks.barksOfLength("short", stock: stock, fx: fx);
@@ -139,6 +149,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
           soundController,
           animation,
           deleteCallback: deleteBark,
+          color: _currentBarkColor,
         ),
       );
   }
@@ -169,8 +180,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
           print("INSIDE.");
           return CustomDialog(
             header: "Pick barks for ${cards.current.songFormula.name}",
-            bodyText:
-                "This first SHORT bark should be one clear sound!",
+            bodyText: "This first SHORT bark should be one clear sound!",
             primaryFunction: (BuildContext modalContext) {
               Navigator.of(modalContext).pop();
             },
@@ -190,6 +200,26 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
         });
   }
 
+  Widget titleWidget() {
+    return RichText(
+      text: TextSpan(children: [
+        TextSpan(
+          text: "SELECT ",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Theme.of(context).primaryColor),
+        ),
+        TextSpan(
+          text: _currentBarkLength,
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: _currentBarkColor),
+        ),
+        TextSpan(
+          text: " BARK",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Theme.of(context).primaryColor),
+        ),
+      ]),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     barks = Provider.of<Barks>(context);
     soundController = Provider.of<SoundController>(context);
@@ -207,7 +237,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         InterfaceTitleNav(
-          "PICK $_currentBarkLength BARK",
+          titleWidget: titleWidget(),
           skipCallback: skipLogic(),
           backCallback: currentActivity.setPreviousSubStep,
         ),

@@ -535,7 +535,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
 
     return Column(
       children: <Widget>[
-        InterfaceTitleNav("CHOOSE FRAME",
+        InterfaceTitleNav(title: "CHOOSE FRAME",
             backCallback: backCallback, skipCallback: skipCallback),
         // Divider(
         //   color: Theme.of(context).primaryColor,
