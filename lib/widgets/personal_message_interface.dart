@@ -242,10 +242,19 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface> {
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: SizedBox(
-                height: 60,
+                height: 72,
                 width: 150,
                 child: !_canAddMessage()
-                    ? Center()
+                    ? Text(
+                        cards.current.hasASong
+                            ? "RECORD A HUMAN-VOICE INTRODUCTION TO YOUR SONG."
+                            : "RECORD YOUR HUMAN-VOICE AUDIO GREETING.",
+                        style: TextStyle(
+                          fontSize: 17,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        textAlign: TextAlign.center,
+                      )
                     : GestureDetector(
                         onTap: _handleCombineAndContinue,
                         child: Waggle(
@@ -255,7 +264,7 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface> {
                                 shape: BoxShape.rectangle,
                                 color: Theme.of(context).primaryColor),
                             child: Padding(
-                              padding: const EdgeInsets.only(top: 12.0),
+                              padding: const EdgeInsets.only(top: 16.0),
                               child: Text(
                                 "ADD MESSAGE\nAND CONTINUE",
                                 textAlign: TextAlign.center,
@@ -394,33 +403,44 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface> {
             ),
           ),
         ),
-        Visibility(
-          visible: _hasShifted,
-          maintainSize: true,
-          maintainAnimation: true,
-          maintainState: true,
-          child: Center(
-            child: RawMaterialButton(
-              onPressed: _resetSliders,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: Text(
-                  "reset sliders",
-                  style: TextStyle(
-                      color: Theme.of(context).primaryColor,
-                      fontWeight: FontWeight.bold),
+        message.exists
+            ? Visibility(
+                visible: _hasShifted,
+                maintainSize: true,
+                maintainAnimation: true,
+                maintainState: true,
+                child: Center(
+                  child: RawMaterialButton(
+                    onPressed: _resetSliders,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: Text(
+                        "reset sliders",
+                        style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      side: BorderSide(
+                          color: Theme.of(context).primaryColor, width: 3),
+                    ),
+                    elevation: 5,
+                    // padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 2),
+                  ),
                 ),
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30.0),
-                side:
-                    BorderSide(color: Theme.of(context).primaryColor, width: 3),
-              ),
-              elevation: 5,
-              // padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 2),
-            ),
-          ),
-        )
+              )
+            : Padding(
+              padding: const EdgeInsets.only(bottom: 5.0),
+              child: Text(
+                  "MESSAGE CANNOT\nEXCEED 25-SECONDS",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Theme.of(context).accentColor,
+                  ),
+                ),
+            )
       ],
     );
   }

@@ -225,11 +225,14 @@ class BarkRecorderState extends State<BarkRecorder> {
                             ],
                           ),
                         ),
-                        Text(
-                          "OR",
-                          style: TextStyle(
-                              fontSize: 25,
-                              color: Theme.of(context).accentColor),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 25.0),
+                          child: Text(
+                            "OR",
+                            style: TextStyle(
+                                fontSize: 30,
+                                color: Theme.of(context).accentColor),
+                          ),
                         ),
                         // Record Audio
                         SizedBox(
