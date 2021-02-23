@@ -2,8 +2,8 @@ import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/widgets/custom_dialog.dart';
+import 'package:K9_Karaoke/widgets/playback_card.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import '../providers/sound_controller.dart';
 import '../providers/barks.dart';
@@ -27,31 +27,31 @@ class BarkPlaybackCard extends StatefulWidget {
 
 class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
   ImageController imageController;
-  bool _isPlaying = false;
-  bool _isLoading = false;
+  bool isPlaying = false;
+  bool isLoading = false;
   String tempName;
   KaraokeCards cards;
   CurrentActivity currentActivity;
 
   void stopAll() {
-    if (_isPlaying) {
-      setState(() => _isPlaying = false);
+    if (isPlaying) {
+      setState(() => isPlaying = false);
       imageController.stopAnimation();
       widget.soundController.stopPlayer();
     }
   }
 
   Future<void> play() async {
-    setState(() => _isPlaying = true);
+    setState(() => isPlaying = true);
     widget.soundController
         .startPlayer(widget.bark.filePath, stopCallback: stopAll);
     imageController.mouthTrackSound(filePath: widget.bark.amplitudesPath);
   }
 
   Future<void> download() async {
-    setState(() => _isLoading = true);
+    setState(() => isLoading = true);
     await widget.bark.reDownload();
-    setState(() => _isLoading = false);
+    setState(() => isLoading = false);
   }
 
   void startAll() async {
@@ -70,9 +70,9 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
     print("bark id: ${widget.bark.filePath}");
   }
 
-  void deleteBark() async {
+  void deleteBark(con) async {
     await showDialog<Null>(
-      context: context,
+      context: con,
       builder: (ctx) => CustomDialog(
         header: "Delete Bark?",
         bodyText: 'Are you sure you want to delete ${widget.bark.name}?',
@@ -104,107 +104,26 @@ class _BarkPlaybackCardState extends State<BarkPlaybackCard> {
     Future.delayed(Duration(milliseconds: 500), currentActivity.setNextSubStep);
   }
 
-  Widget _getAudioButton() {
-    if (_isLoading)
-      return SpinKitWave(size: 15, color: Theme.of(context).primaryColor);
-    else if (_isPlaying)
-      return Transform.scale(
-        scale: 2,
-        child: Icon(Icons.play_arrow,
-            color: Theme.of(context).primaryColor, size: 15),
-      );
-    else
-      return Container(height: 15);
-    // else
-    //   return Icon(Icons.play_arrow,
-    //       color: Theme.of(context).primaryColor, size: 15);
-  }
-
   @override
   Widget build(BuildContext context) {
     cards ??= Provider.of<KaraokeCards>(context, listen: false);
     currentActivity ??= Provider.of<CurrentActivity>(context, listen: false);
-    bool isSelected = cards.current.hasBark(widget.bark);
     imageController ??= Provider.of<ImageController>(context, listen: false);
 
     return SizeTransition(
       sizeFactor: widget.animation,
-      child: Row(
-        children: <Widget>[
-          IconButton(
-            icon: Icon(
-              isSelected
-                  ? Icons.check_box_outlined
-                  : Icons.check_box_outline_blank_rounded,
-              color: Theme.of(context).primaryColor,
-            ),
-            onPressed: selectBark,
-          ),
-          // Playback button
-          // Select bark button
-          Expanded(
-            child: RawMaterialButton(
-              onPressed: _isLoading
-                  ? null
-                  : _isPlaying
-                      ? stopAll
-                      : startAll,
-              fillColor: null,
-              child: Stack(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(left: 5.0),
-                        child: Text(
-                          widget.bark.name,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).primaryColor,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 5.0),
-                        child: Text(
-                          widget.bark.length.toUpperCase(),
-                          style: TextStyle(color: widget.color, fontSize: 10),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Center(
-                    child: _getAudioButton(),
-                  ),
-                ],
-              ),
-
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(40.0),
-                side:
-                    BorderSide(color: Theme.of(context).primaryColor, width: 3),
-              ),
-              elevation: 2.0,
-              // fillColor: Theme.of(context).primaryColor,
-              // padding:
-              //     const EdgeInsets.symmetric(vertical: 0, horizontal: 22.0),
-            ),
-          ),
-          // Menu button
-          if (!widget.bark.isStock)
-            IconButton(
-              onPressed: deleteBark,
-              icon: Icon(Icons.more_vert,
-                  color: Theme.of(context).primaryColor, size: 30),
-            ),
-          if (widget.bark.isStock)
-            Padding(
-              padding: EdgeInsets.only(left: 20),
-            )
-        ],
-      ),
+      child: PlaybackCard(
+          barkLength: widget.bark.length,
+          color: widget.color,
+          delete: () => deleteBark(context),
+          canDelete: !widget.bark.isStock,
+          isSelected: cards.current.hasBark(widget.bark),
+          select: selectBark,
+          name: widget.bark.name,
+          isLoading: isLoading,
+          startAll: startAll,
+          stopAll: stopAll,
+          isPlaying: isPlaying),
     );
   }
 }

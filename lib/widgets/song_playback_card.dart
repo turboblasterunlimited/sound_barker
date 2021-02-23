@@ -2,8 +2,8 @@ import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/widgets/custom_dialog.dart';
+import 'package:K9_Karaoke/widgets/playback_card.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import '../providers/sound_controller.dart';
 import '../providers/songs.dart';
@@ -25,23 +25,23 @@ class SongPlaybackCard extends StatefulWidget {
 
 class _SongPlaybackCardState extends State<SongPlaybackCard> {
   ImageController imageController;
-  bool _isPlaying = false;
-  bool _isLoading = false;
+  bool isPlaying = false;
+  bool isLoading = false;
   String tempName;
   CurrentActivity currentActivity;
   KaraokeCards cards;
 
   void stopAll() {
-    if (_isPlaying) {
+    if (isPlaying) {
       widget.soundController.stopPlayer();
       imageController.stopAnimation();
-      setState(() => _isPlaying = false);
+      setState(() => isPlaying = false);
     }
   }
 
-  void deleteSong() async {
+  void deleteSong(con) async {
     await showDialog<Null>(
-      context: context,
+      context: con,
       builder: (ctx) => CustomDialog(
         header: 'Delete Song?',
         bodyText: 'Are you sure you want to delete ${widget.song.getName}?',
@@ -95,16 +95,16 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
   }
 
   Future<void> play() async {
-    setState(() => _isPlaying = true);
+    setState(() => isPlaying = true);
     widget.soundController
         .startPlayer(widget.song.filePath, stopCallback: stopAll);
     imageController.mouthTrackSound(filePath: widget.song.amplitudesPath);
   }
 
   Future<void> download() async {
-    setState(() => _isLoading = true);
+    setState(() => isLoading = true);
     await widget.song.reDownload();
-    setState(() => _isLoading = false);
+    setState(() => isLoading = false);
   }
 
   void startAll() async {
@@ -125,26 +125,6 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
     print("bark id: ${widget.song.fileId}");
   }
 
-  Widget _getAudioButton() {
-    if (_isLoading)
-      return IconButton(
-        onPressed: null,
-        icon: SpinKitWave(size: 10, color: Theme.of(context).primaryColor),
-      );
-    if (_isPlaying)
-      return IconButton(
-          color: Colors.blue,
-          onPressed: stopAll,
-          icon:
-              Icon(Icons.stop, color: Theme.of(context).errorColor, size: 30));
-    else
-      return IconButton(
-          color: Colors.blue,
-          onPressed: startAll,
-          icon: Icon(Icons.play_arrow,
-              color: Theme.of(context).primaryColor, size: 30));
-  }
-
   @override
   Widget build(BuildContext context) {
     cards ??= Provider.of<KaraokeCards>(context, listen: false);
@@ -154,51 +134,16 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
 
     return SizeTransition(
       sizeFactor: widget.animation,
-      child: Row(
-        children: <Widget>[
-          // Playback button
-          _getAudioButton(),
-          // Select song button
-          Expanded(
-            child: RawMaterialButton(
-              fillColor: isSelected ? Theme.of(context).primaryColor : null,
-              onPressed: selectSong,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                child: Center(
-                  child: Text(
-                    widget.song.songFamily,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: isSelected
-                          ? Colors.white
-                          : Theme.of(context).primaryColor,
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-              ),
-
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(40.0),
-                side:
-                    BorderSide(color: Theme.of(context).primaryColor, width: 3),
-              ),
-              elevation: 2.0,
-              // fillColor: Theme.of(context).primaryColor,
-              // padding:
-              //     const EdgeInsets.symmetric(vertical: 0, horizontal: 22.0),
-            ),
-          ),
-          // Menu button
-          IconButton(
-            onPressed: deleteSong,
-            icon: Icon(Icons.more_vert,
-                color: Theme.of(context).primaryColor, size: 30),
-          ),
-        ],
-      ),
+      child: PlaybackCard(
+          canDelete: true,
+          delete: () => deleteSong(context),
+          isSelected: isSelected,
+          select: selectSong,
+          name: widget.song.songFamily,
+          isLoading: isLoading,
+          startAll: startAll,
+          stopAll: stopAll,
+          isPlaying: isPlaying),
     );
   }
 }

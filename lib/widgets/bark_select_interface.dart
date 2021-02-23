@@ -205,15 +205,24 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
       text: TextSpan(children: [
         TextSpan(
           text: "SELECT ",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Theme.of(context).primaryColor),
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: Theme.of(context).primaryColor),
         ),
         TextSpan(
           text: _currentBarkLength,
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: _currentBarkColor),
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: _currentBarkColor),
         ),
         TextSpan(
           text: " BARK",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Theme.of(context).primaryColor),
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: Theme.of(context).primaryColor),
         ),
       ]),
     );
@@ -370,7 +379,11 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
             ),
           ],
         ),
-        Padding(padding: EdgeInsets.only(top: 5)),
+        // Padding(padding: EdgeInsets.only(top: 5)),
+        Text(
+          "Select",
+          textAlign: TextAlign.left,
+        ),
         SizedBox(
           height: MediaQuery.of(context).size.height / 2.2,
           child: _showBarks(),

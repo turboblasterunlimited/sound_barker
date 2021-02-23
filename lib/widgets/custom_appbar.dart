@@ -65,7 +65,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
 
   getLogoWidth() {
     var width = (screenWidth / 4.5) - notificationPadding;
-    return width > 100 ? 100 : width;
+    // return width > 100 ? 100 : width;
+    return width;
   }
 
   @override

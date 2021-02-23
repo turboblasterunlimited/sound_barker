@@ -86,7 +86,7 @@ class _PictureCardState extends State<PictureCard>
             print("it's done:");
             return _imageWidget();
           } else if (snapshot.hasError) {
-            FittedBox(
+            return FittedBox(
               fit: BoxFit.cover,
               child: Icon(
                 LineAwesomeIcons.exclamation_circle,
@@ -132,6 +132,7 @@ class _PictureCardState extends State<PictureCard>
                         PopupMenuButton(
                           onSelected: imageActions,
                           child: RawMaterialButton(
+                            onPressed: null,
                             child: Icon(
                               Icons.more_vert,
                               color: Colors.black38,
