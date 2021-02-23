@@ -35,17 +35,23 @@ class PlaybackCard extends StatefulWidget {
 class _PlaybackCardState extends State<PlaybackCard> {
   Widget getAudioButton() {
     if (widget.isLoading)
-      return SpinKitWave(size: 15, color: Theme.of(context).primaryColor);
+      return Transform.scale(
+          scale: 3,
+          child: SpinKitWave(size: 15, color: Theme.of(context).primaryColor));
     else if (widget.isPlaying)
       return Transform.scale(
         scale: 3,
         child: Icon(Icons.stop, color: Theme.of(context).errorColor, size: 15),
       );
     else
-      return Transform.scale(
-        scale: 3,
-        child: Icon(Icons.stop, color: Theme.of(context).errorColor, size: 15),
+      return Container(
+        height: 15,
       );
+    // return Transform.scale(
+    //   scale: 3,
+    //   child: Icon(Icons.play_arrow_outlined,
+    //       color: Theme.of(context).primaryColor, size: 15),
+    // );
   }
 
   @override
@@ -103,7 +109,7 @@ class _PlaybackCardState extends State<PlaybackCard> {
                 ),
                 Center(
                   child: Opacity(
-                    opacity: .5,
+                    opacity: .3,
                     child: getAudioButton(),
                   ),
                 ),

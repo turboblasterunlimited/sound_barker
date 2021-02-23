@@ -380,9 +380,19 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
           ],
         ),
         // Padding(padding: EdgeInsets.only(top: 5)),
-        Text(
-          "Select",
-          textAlign: TextAlign.left,
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 1.0),
+            child: Text(
+              "SELECT",
+              style: TextStyle(
+                color: Colors.blue,
+                decoration: TextDecoration.underline,
+              ),
+              textAlign: TextAlign.left,
+            ),
+          ),
         ),
         SizedBox(
           height: MediaQuery.of(context).size.height / 2.2,

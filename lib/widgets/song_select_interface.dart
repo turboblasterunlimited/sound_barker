@@ -186,7 +186,20 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
             ),
           ],
         ),
-        Padding(padding: EdgeInsets.only(top: 14)),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 1.0),
+            child: Text(
+              "SELECT",
+              style: TextStyle(
+                color: Colors.blue,
+                decoration: TextDecoration.underline,
+              ),
+              textAlign: TextAlign.left,
+            ),
+          ),
+        ),
         SizedBox(
           height: MediaQuery.of(context).size.height / 3,
           child: showMySongs
