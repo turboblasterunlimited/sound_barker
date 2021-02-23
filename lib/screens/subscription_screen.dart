@@ -26,7 +26,12 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   }
 
   String getSubscriptionType(Package package) {
-    return capitalize(user.getSubscriptionName()) + " Subscription";
+    return capitalize(getSubscriptionName(package)) + " Subscription";
+  }
+
+  // monthly OR yearly
+  String getSubscriptionName(package) {
+    return package.packageType.toString().split('.').last;
   }
 
   String capitalize(String string) {
