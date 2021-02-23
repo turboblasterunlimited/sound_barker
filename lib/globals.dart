@@ -21,8 +21,16 @@ const Map<String, dynamic> defaultFaceCoordinates = {
   "headLeft": [-0.3, 0.0],
 };
 
-const defaultMouthColor = [0.14901960784313725, 0.10196078431372549, 0.11372549019607843];
-const defaultLipColor = [0.2196078431372549, 0.023529411764705882, 0.023529411764705882];
+const defaultMouthColor = [
+  0.14901960784313725,
+  0.10196078431372549,
+  0.11372549019607843
+];
+const defaultLipColor = [
+  0.2196078431372549,
+  0.023529411764705882,
+  0.023529411764705882
+];
 const defaultLipThickness = 0.2;
 
 Map<String, String> displayNames = {
@@ -82,6 +90,21 @@ Map<String, List<String>> get frameFileNames {
       'thinking-of-you-1.png',
       'thinking-of-you-2.png',
       'i-love-you.png',
+      'hooray.png',
+      'im-sorry-1.png',
+      'im-sorry-2.png',
+      'im-sorry-3.png',
+      'im-sorry-4.png',
+      'look-what-i-did.png',
+      'good-luck.png',
+      'hows-it-going-.png',
+      'I-like-you.png',
+      'i-miss-you-2.png',
+      'i-miss-you.png',
+      'thinking-of-you-3.png',
+      'whats-up-.png',
+      'you-got-this.png',
+      "You're-OK!.png",
     ],
     "Christmas": [
       "christmas-package.png",
