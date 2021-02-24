@@ -194,7 +194,8 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
                     child: decorationImage(),
                   ),
                 ),
-                if (user.subscribed)
+                // if (user.subscribed)
+                if (true)
                   Positioned(
                     right: -25,
                     top: -5,

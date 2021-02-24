@@ -173,9 +173,10 @@ class RestAPI {
         data: audioBody,
       );
     } catch (e) {
-      print("create card audio error: ${e.message}");
+      print("create card audio error: ${e}");
       _handleAssetError(response, e);
     }
+    print("done creating card audio");
   }
 
   static Future createCard(KaraokeCard card, {songId}) async {

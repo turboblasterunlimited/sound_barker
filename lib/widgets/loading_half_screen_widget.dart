@@ -3,8 +3,9 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class LoadingHalfScreenWidget extends StatefulWidget {
   String message;
+  double size;
 
-  LoadingHalfScreenWidget(this.message);
+  LoadingHalfScreenWidget(this.message, [this.size]);
   @override
   _LoadingHalfScreenWidget createState() => _LoadingHalfScreenWidget();
 }
@@ -20,7 +21,7 @@ class _LoadingHalfScreenWidget extends State<LoadingHalfScreenWidget> {
         children: <Widget>[
           SpinKitWave(
             color: Colors.blue,
-            size: 100,
+            size: widget.size == null ? 100 : widget.size,
           ),
           Padding(
             padding: const EdgeInsets.only(top: 25.0),

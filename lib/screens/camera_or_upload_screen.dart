@@ -128,13 +128,13 @@ class CameraOrUploadScreen extends StatelessWidget {
             ),
             child: Column(
               children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.translucent,
-                    onTap: () {
-                      Navigator.of(context).pop();
-                    },
+                GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
                     child: Row(children: <Widget>[
                       Icon(LineAwesomeIcons.angle_left),
                       Text('Back'),

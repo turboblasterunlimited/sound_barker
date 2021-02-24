@@ -52,7 +52,7 @@ class Songs with ChangeNotifier {
 
   String getSongFamily(String id) {
     int i = creatableSongs.all
-        .indexWhere((creatable) => creatable.ids.indexOf(int.parse(id)) != -1);
+        .indexWhere((CreatableSong creatable) => creatable.ids.indexOf(int.parse(id)) != -1);
     return creatableSongs.all[i].fullName;
   }
 

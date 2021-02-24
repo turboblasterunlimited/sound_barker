@@ -11,6 +11,7 @@ import 'package:K9_Karaoke/screens/account_screen.dart';
 import 'package:K9_Karaoke/screens/authentication_screen.dart';
 import 'package:K9_Karaoke/screens/camera_or_upload_screen.dart';
 import 'package:K9_Karaoke/screens/check_authentication_screen.dart';
+import 'package:K9_Karaoke/screens/envelope_screen.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/screens/my_cards.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
@@ -163,6 +164,7 @@ class MyApp extends StatelessWidget {
             RetrieveDataScreen.routeName: (ctx) => RetrieveDataScreen(),
             AuthenticationScreen.routeName: (ctx) => AuthenticationScreen(),
             SupportScreen.routeName: (ctx) => SupportScreen(),
+            EnvelopeScreen.routeName: (ctx) => EnvelopeScreen(),
           }),
     );
   }
