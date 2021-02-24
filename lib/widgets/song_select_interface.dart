@@ -91,7 +91,7 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         InterfaceTitleNav(
-            title: "CHOOSE SONG",
+            title: "SELECT SONG",
             skipCallback: _skipCallback,
             backCallback: _backCallback),
         Row(
