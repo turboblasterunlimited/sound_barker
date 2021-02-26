@@ -49,35 +49,26 @@ class Pictures with ChangeNotifier {
     stockPictures.forEach((picture) => picture.delete());
   }
 
-  static String toTuple(List list) {
-    print("Calling convert to tuple: $list");
-    var string = json.encode(list);
-    var naked = string.substring(1, string.length - 1);
-    print("naked: $naked");
-    return "(" + naked + ")";
-  }
+  // static String toTuple(List list) {
+  //   print("Calling convert to tuple: $list");
+  //   var string = json.encode(list);
+  //   var naked = string.substring(1, string.length - 1);
+  //   print("naked: $naked");
+  //   return "(" + naked + ")";
+  // }
 
-  List fromTuple(String tuple) {
-    print("Calling convert from tuple: $tuple");
-    var naked = tuple.substring(1, tuple.length - 1);
-    print("naked: $naked");
-    return jsonDecode("[" + naked + "]");
-  }
+  // List fromTuple(String tuple) {
+  //   print("Calling convert from tuple: $tuple");
+  //   var naked = tuple.substring(1, tuple.length - 1);
+  //   print("naked: $naked");
+  //   return jsonDecode("[" + naked + "]");
+  // }
 
   Future retrieveAll() async {
     List response = await RestAPI.retrieveAllImages();
-    print("pictures: $response");
     response.forEach((serverImage) async {
       if (serverImage["hidden"] == 1) return;
       if (serverImage["uuid"] == null) return;
-
-      var serverLipColor = serverImage["lip_color"] == null
-          ? defaultLipColor
-          : fromTuple(serverImage["lip_color"]);
-          
-      var serverMouthColor = serverImage["mouth_color"] == null
-          ? defaultMouthColor
-          : fromTuple(serverImage["mouth_color"]);
 
       Picture pic = Picture(
         isStock: serverImage["is_stock"] == 1 ? true : false,
@@ -85,11 +76,12 @@ class Pictures with ChangeNotifier {
         fileUrl: serverImage["bucket_fp"],
         fileId: serverImage["uuid"],
         coordinates: jsonDecode(serverImage["coordinates_json"].toString()),
-        mouthColor: serverMouthColor,
-        lipColor: serverLipColor,
+        mouthColor: jsonDecode(serverImage["mouth_color"].toString()) ?? defaultMouthColor,
+        lipColor: jsonDecode(serverImage["lip_color"].toString()) ?? defaultLipColor,
         lipThickness: serverImage["lip_thickness"] ?? defaultLipThickness,
         created: DateTime.parse(serverImage["created"]),
       );
+
       pic.isStock ? stockPictures.add(pic) : add(pic);
     });
     all.sort((pic1, pic2) {
@@ -108,6 +100,8 @@ class Pictures with ChangeNotifier {
       var dean = stockPictures.removeAt(deanIndex);
       stockPictures.insert(3, dean);
     }
+    print("Stock: $stockPictures");
+    print("Users Pics: ${all[0]}");
   }
 
   Future downloadAllImagesFromBucket([List<Picture> images]) async {

@@ -289,8 +289,8 @@ class RestAPI {
     Map body = {
       'name': image.name,
       'coordinates_json': json.encode(image.coordinates),
-      'mouth_color': Pictures.toTuple(image.mouthColor),
-      'lip_color': Pictures.toTuple(image.lipColor),
+      'mouth_color': json.encode(image.mouthColor),
+      'lip_color': json.encode(image.lipColor),
       'lip_thickness': image.lipThickness,
     };
     print("Image update body: $body");
@@ -313,8 +313,8 @@ class RestAPI {
     Map body = {
       'uuid': image.fileId,
       'name': image.name,
-      'mouth_color': Pictures.toTuple(image.mouthColor),
-      'lip_color': Pictures.toTuple(image.lipColor),
+      'mouth_color': image.mouthColor,
+      'lip_color': image.lipColor,
       'lip_thickness': image.lipThickness,
       'bucket_fp': image.fileUrl,
     };
@@ -357,7 +357,7 @@ class RestAPI {
     try {
       response = await HttpController.dioGet(url);
     } catch (e) {
-      print("Get all decoration images response body: ${response?.data}");
+      // print("Get all decoration images response body: ${response?.data}");
       _handleAssetError(response, e);
     }
     return response?.data;
@@ -369,7 +369,7 @@ class RestAPI {
     try {
       response = await HttpController.dioGet(url);
     } catch (e) {
-      print("Get all card audio response body: ${response?.data}");
+      // print("Get all card audio response body: ${response?.data}");
       _handleAssetError(response, e);
     }
     return response?.data;
@@ -381,7 +381,7 @@ class RestAPI {
     try {
       response = await HttpController.dioGet(url);
     } catch (e) {
-      print("Get all Songs response body: ${response?.data}");
+      // print("Get all Songs response body: ${response?.data}");
       _handleAssetError(response, e);
     }
     return response?.data;
@@ -393,8 +393,8 @@ class RestAPI {
     try {
       response = await HttpController.dioGet(url);
     } catch (e) {
-      print(
-          "Get all Cards response body: ${response?.data.map((card) => card["hidden"])}");
+      // print(
+      // "Get all Cards response body: ${response?.data.map((card) => card["hidden"])}");
       _handleAssetError(response, e);
     }
     return response?.data;
@@ -421,9 +421,10 @@ class RestAPI {
       response = await HttpController.dioGet(url);
     } catch (e) {
       print("retrieveAllImages error $e");
-      print("Get all Images response body: ${response?.data}");
       _handleAssetError(response, e);
     }
+    // print("Get all Images response body: ${response?.data}");
+
     return response?.data;
   }
 
@@ -434,7 +435,7 @@ class RestAPI {
     try {
       response = await HttpController.dioGet(url);
     } catch (e) {
-      print("Get all Creatable Songs response body: ${response?.data}");
+      // print("Get all Creatable Songs response body: ${response?.data}");
       _handleAssetError(response, e);
     }
     return response?.data;
@@ -447,7 +448,7 @@ class RestAPI {
     try {
       response = await HttpController.dioGet(url);
     } catch (e) {
-      print("Get all Barks response body: ${response?.data}");
+      // print("Get all Barks response body: ${response?.data}");
       _handleAssetError(response, e);
     }
     return response?.data;
