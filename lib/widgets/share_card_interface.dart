@@ -18,12 +18,9 @@ import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:K9_Karaoke/widgets/loading_half_screen_widget.dart';
 import 'package:K9_Karaoke/widgets/subscribe_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
-import 'package:share/share.dart';
 import 'package:uuid/uuid.dart';
-import 'package:flutter/services.dart';
 
 class ShareCardInterface extends StatefulWidget {
   @override
@@ -39,6 +36,13 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   CurrentActivity currentActivity;
   String loadingMessage;
   String saveAndSendButtonText = "Save & Send";
+
+  @override
+  void dispose() {
+    soundController.stopPlayer();
+    imageController.stopAnimation();
+    super.dispose();
+  }
 
   Future<void> _captureArtwork() async {
     if (cards.current.decorationImage != null) return;
@@ -100,7 +104,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     );
   }
 
-  handleSaveAndSend () async {
+  void handleSaveAndSend () async {
     // if (!user.subscribed && !cards.currentIsFirst) return _subscribeDialog();
     if (cards.current.uuid == null) await createBaseCard();
     Navigator.of(context).pushNamed(EnvelopeScreen.routeName);

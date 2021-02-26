@@ -194,66 +194,64 @@ class _ShareScreenState extends State<ShareScreen> {
                             ),
                           ],
                         )
-                        // Without envelope
+                      // Without envelope
                       : Center(),
-
-                      // BUTTONS
-                      Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            RawMaterialButton(
-                              onPressed: loadingMessage != null
-                                  ? null
-                                  : () => _shareToClipboard(ctx),
-                              // constraints:
-                              //     BoxConstraints(minWidth: 52.0, minHeight: 30.0),
-                              child: Text(
-                                "Copy Link",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Theme.of(context).accentColor,
-                                  fontSize: 15,
-                                ),
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(40.0),
-                                side: BorderSide(
-                                    color: Theme.of(context).accentColor,
-                                    width: 3),
-                              ),
-                              elevation: 2.0,
-                              fillColor: null,
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 5,
-                                horizontal: 15,
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.all(5),
-                            ),
-                            RawMaterialButton(
-                              onPressed: loadingMessage != null
-                                  ? null
-                                  : () async {
-                                      _handleUploadAndShare(ctx);
-                                    },
-                              child: Text(
-                                "Share",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 30,
-                                ),
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30.0),
-                              ),
-                              elevation: 2.0,
-                              fillColor: Theme.of(ctx).primaryColor,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 40.0, vertical: 20),
-                            ),
-                          ],
-                        ),
+              // BUTTONS
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  RawMaterialButton(
+                    onPressed: loadingMessage != null
+                        ? null
+                        : () async {
+                            _handleUploadAndShare(ctx);
+                          },
+                    child: Text(
+                      "Share",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 30,
+                      ),
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                    elevation: 2.0,
+                    fillColor: Theme.of(ctx).primaryColor,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 40.0, vertical: 20),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(5),
+                  ),
+                  RawMaterialButton(
+                    onPressed: loadingMessage != null
+                        ? null
+                        : () => _shareToClipboard(ctx),
+                    // constraints:
+                    //     BoxConstraints(minWidth: 52.0, minHeight: 30.0),
+                    child: Text(
+                      "Copy Link",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).accentColor,
+                        fontSize: 15,
+                      ),
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(40.0),
+                      side: BorderSide(
+                          color: Theme.of(context).accentColor, width: 3),
+                    ),
+                    elevation: 2.0,
+                    fillColor: null,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 5,
+                      horizontal: 15,
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         );
