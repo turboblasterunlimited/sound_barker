@@ -168,7 +168,7 @@ class _ShareScreenState extends State<ShareScreen> {
                                   cardMessage = message;
                                 },
                                 onSubmitted: (_) async {
-                                  await _handleUploadAndShare(ctx);
+                                  messageNode.unfocus();
                                 },
                                 style: TextStyle(
                                     fontSize: 15.0, color: Colors.black),
