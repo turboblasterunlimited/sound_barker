@@ -2,14 +2,15 @@ import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
+import 'package:provider/provider.dart';
 
 import '../providers/pictures.dart';
 
 class PhotoNameInput extends StatefulWidget {
-  final Picture picture;
+  Picture picture;
   final Function updateNameCallback;
 
-  PhotoNameInput(this.picture, this.updateNameCallback);
+  PhotoNameInput(this.updateNameCallback, [this.picture]);
 
   @override
   _PhotoNameInputState createState() => _PhotoNameInputState();
@@ -43,6 +44,8 @@ class _PhotoNameInputState extends State<PhotoNameInput> {
   @override
   Widget build(BuildContext context) {
     maxTextWidth = MediaQuery.of(context).size.width / 2;
+    cards = Provider.of<KaraokeCards>(context);
+    widget.picture ??= cards.current.picture;
 
     return widget.picture == null
         ? Center()

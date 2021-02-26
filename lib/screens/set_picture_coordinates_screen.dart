@@ -305,7 +305,7 @@ class _SetPictureCoordinatesScreenState
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomPadding: false,
       appBar: CustomAppBar(
-        nameInput: PhotoNameInput(widget.newPicture, handleNameChange),
+        nameInput: PhotoNameInput(handleNameChange, widget.newPicture),
       ),
       body: Container(
         // appbar offset

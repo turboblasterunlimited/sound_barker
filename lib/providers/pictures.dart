@@ -100,8 +100,6 @@ class Pictures with ChangeNotifier {
       var dean = stockPictures.removeAt(deanIndex);
       stockPictures.insert(3, dean);
     }
-    print("Stock: $stockPictures");
-    print("Users Pics: ${all[0]}");
   }
 
   Future downloadAllImagesFromBucket([List<Picture> images]) async {

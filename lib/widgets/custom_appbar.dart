@@ -60,7 +60,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
     else if (widget.isMenu || widget.noName || cards?.current == null)
       return Spacer();
     else
-      return PhotoNameInput(cards.current.picture, cards.setCurrentName);
+      return PhotoNameInput(cards.setCurrentName);
   }
 
   getLogoWidth() {
