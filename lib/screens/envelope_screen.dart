@@ -20,21 +20,16 @@ class EnvelopeScreen extends StatelessWidget {
   }
 
   Widget _positionedImage(image, card) {
-    return Positioned.fill(
-      child: (card.decorationImage != null &&
-              card.decorationImage.hasFrameDimension)
-          ? LayoutBuilder(
-              builder: (_, constraints) {
-                return Padding(
-                    padding: EdgeInsets.only(
-                      top: constraints.biggest.height * 72 / 778,
-                      bottom: constraints.biggest.height * 194 / 778,
-                    ),
-                    child: image);
-              },
-            )
-          : image,
-    );
+    return Positioned.fill(child: LayoutBuilder(
+      builder: (_, constraints) {
+        return Padding(
+            padding: EdgeInsets.only(
+              top: constraints.biggest.height * 72 / 778,
+              bottom: constraints.biggest.height * 194 / 778,
+            ),
+            child: image);
+      },
+    ));
   }
 
   @override
@@ -130,10 +125,11 @@ class EnvelopeScreen extends StatelessWidget {
                             ),
                             card,
                           ),
-                          if (card.decorationImage != null)
-                            Image.file(
-                              File(card.decorationImage.filePath),
-                            ),
+                          card.decorationImage != null
+                              ? Image.file(
+                                  File(card.decorationImage.filePath),
+                                )
+                              : Container(height: 200, width: 200)
                         ],
                       ),
                     ),
