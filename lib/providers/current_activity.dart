@@ -17,14 +17,23 @@ enum CardCreationSubSteps {
   seven,
 }
 
+// Currently this is just to detect whether the menu 
+// screen can be popped to reveal the main screen.
 enum Activities {
   cardCreation,
+}
+
+enum CardType {
+  newSong,
+  oldSong,
+  justMessage,
 }
 
 class CurrentActivity with ChangeNotifier {
   Activities current;
   CardCreationSteps cardCreationStep;
   CardCreationSubSteps cardCreationSubStep;
+  CardType cardType;
 
   // Activities
   bool get isCreateCard {
