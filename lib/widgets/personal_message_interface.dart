@@ -3,6 +3,7 @@ import 'package:K9_Karaoke/classes/card_message.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
+import 'package:K9_Karaoke/screens/cart_type_screen.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
 import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
@@ -142,6 +143,8 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface> {
       currentActivity.setPreviousSubStep();
     else
       currentActivity.setCardCreationStep(CardCreationSteps.song);
+    if (currentActivity.cardType == CardType.justMessage)
+      Navigator.pushNamed(context, CardTypeScreen.routeName);
   }
 
   void skipCallback() async {

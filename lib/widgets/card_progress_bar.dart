@@ -1,6 +1,7 @@
 import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
+import 'package:K9_Karaoke/screens/cart_type_screen.dart';
 import 'package:K9_Karaoke/screens/main_screen.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/screens/set_picture_coordinates_screen.dart';
@@ -62,6 +63,7 @@ class CardProgressBar extends StatelessWidget {
       currentActivity.setCardCreationStep(CardCreationSteps.song);
       // This is in case SetCoordinatesScreen is on the stack.
       Navigator.of(context).popUntil(ModalRoute.withName(MainScreen.routeName));
+      Navigator.of(context).pushNamed(CardTypeScreen.routeName);
     }
 
     void navigateToSpeak() {
@@ -83,60 +85,62 @@ class CardProgressBar extends StatelessWidget {
       Navigator.of(context).popUntil(ModalRoute.withName(MainScreen.routeName));
     }
 
-    return card == null ? Center() : Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        ProgressButton(
-            buttonWidth: buttonWidth,
-            offSetX: 13.333,
-            stepIcon: CustomIcons.snap_quick,
-            buttonClip: FirstButtonClipper(),
-            outlinePainter: FirstOutlinePainter(
-                currentActivity.isSnap ? Colors.blue : primaryColor),
-            stepIsCompleted: card.hasPicture,
-            isCurrentStep: currentActivity.isSnap,
-            navigateHere: navigateToSnap,
-            canNavigate: true),
+    return card == null
+        ? Center()
+        : Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              ProgressButton(
+                  buttonWidth: buttonWidth,
+                  offSetX: 13.333,
+                  stepIcon: CustomIcons.snap_quick,
+                  buttonClip: FirstButtonClipper(),
+                  outlinePainter: FirstOutlinePainter(
+                      currentActivity.isSnap ? Colors.blue : primaryColor),
+                  stepIsCompleted: card.hasPicture,
+                  isCurrentStep: currentActivity.isSnap,
+                  navigateHere: navigateToSnap,
+                  canNavigate: true),
 
-        ProgressButton(
-            buttonWidth: buttonWidth,
-            offSetX: 5,
-            stepIcon: CustomIcons.song_quick,
-            buttonClip: MiddleButtonClipper(),
-            outlinePainter: MiddleOutlinePainter(
-                currentActivity.isSong ? Colors.blue : primaryColor),
-            stepIsCompleted: card.hasASong || card.hasASongFormula,
-            isCurrentStep: currentActivity.isSong,
-            navigateHere: navigateToSong,
-            canNavigate: card.hasPicture),
+              ProgressButton(
+                  buttonWidth: buttonWidth,
+                  offSetX: 5,
+                  stepIcon: CustomIcons.song_quick,
+                  buttonClip: MiddleButtonClipper(),
+                  outlinePainter: MiddleOutlinePainter(
+                      currentActivity.isSong ? Colors.blue : primaryColor),
+                  stepIsCompleted: card.hasASong || card.hasASongFormula,
+                  isCurrentStep: currentActivity.isSong,
+                  navigateHere: navigateToSong,
+                  canNavigate: card.hasPicture),
 
-        // Can click only if creating a new song
-        ProgressButton(
-            buttonWidth: buttonWidth,
-            offSetX: -5,
-            stepIcon: CustomIcons.speak_quick,
-            buttonClip: MiddleButtonClipper(),
-            outlinePainter: MiddleOutlinePainter(
-                currentActivity.isSpeak ? Colors.blue : primaryColor),
-            stepIsCompleted: card.hasMessage,
-            isCurrentStep: currentActivity.isSpeak,
-            navigateHere: navigateToSpeak,
-            // canNavigate: card.hasASongFormula || card.hasASong),
-            canNavigate: card.hasPicture),
+              // Can click only if creating a new song
+              ProgressButton(
+                  buttonWidth: buttonWidth,
+                  offSetX: -5,
+                  stepIcon: CustomIcons.speak_quick,
+                  buttonClip: MiddleButtonClipper(),
+                  outlinePainter: MiddleOutlinePainter(
+                      currentActivity.isSpeak ? Colors.blue : primaryColor),
+                  stepIsCompleted: card.hasMessage,
+                  isCurrentStep: currentActivity.isSpeak,
+                  navigateHere: navigateToSpeak,
+                  // canNavigate: card.hasASongFormula || card.hasASong),
+                  canNavigate: card.hasPicture),
 
-        ProgressButton(
-            buttonWidth: buttonWidth,
-            offSetX: -13.333,
-            stepIcon: CustomIcons.style_quick,
-            buttonClip: LastButtonClipper(),
-            outlinePainter: LastOutlinePainter(
-                currentActivity.isStyle ? Colors.blue : primaryColor),
-            stepIsCompleted: _hasDecoration,
-            isCurrentStep: currentActivity.isStyle,
-            navigateHere: navigateToStyle,
-            canNavigate: card.hasAudio),
-      ],
-    );
+              ProgressButton(
+                  buttonWidth: buttonWidth,
+                  offSetX: -13.333,
+                  stepIcon: CustomIcons.style_quick,
+                  buttonClip: LastButtonClipper(),
+                  outlinePainter: LastOutlinePainter(
+                      currentActivity.isStyle ? Colors.blue : primaryColor),
+                  stepIsCompleted: _hasDecoration,
+                  isCurrentStep: currentActivity.isStyle,
+                  navigateHere: navigateToStyle,
+                  canNavigate: card.hasAudio),
+            ],
+          );
   }
 }
 
@@ -276,7 +280,7 @@ class ProgressButton extends StatelessWidget {
   final Function navigateHere;
   final bool canNavigate;
   final double buttonWidth;
-  
+
   ProgressButton(
       {this.offSetX,
       this.stepIcon,

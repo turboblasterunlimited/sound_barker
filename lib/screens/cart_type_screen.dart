@@ -1,17 +1,35 @@
-import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
-import 'package:K9_Karaoke/widgets/custom_appbar.dart';
+import 'package:K9_Karaoke/screens/main_screen.dart';
+import 'package:K9_Karaoke/screens/photo_library_screen.dart';
+import 'package:K9_Karaoke/screens/set_picture_coordinates_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 
 class CardTypeScreen extends StatelessWidget {
   static const routeName = 'card-type-screen';
+  KaraokeCard card;
+  CurrentActivity currentActivity;
+
+  backCallback(context) {
+    currentActivity.setCardCreationStep(CardCreationSteps.snap);
+    if (card.picture.isStock)
+      Navigator.of(context).pushReplacementNamed(PhotoLibraryScreen.routeName);
+    else
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) =>
+              SetPictureCoordinatesScreen(card.picture, editing: true),
+        ),
+      );
+    if (!card.picture.isStock) Navigator.of(context).pop();
+  }
 
   Widget build(BuildContext context) {
-    CurrentActivity currentActivity =
-        Provider.of<CurrentActivity>(context, listen: false);
+    print("Building CardTypeScreen");
+    currentActivity = Provider.of<CurrentActivity>(context, listen: false);
+    card = Provider.of<KaraokeCards>(context, listen: false).current;
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -30,7 +48,7 @@ class CardTypeScreen extends StatelessWidget {
           children: <Widget>[
             GestureDetector(
               behavior: HitTestBehavior.translucent,
-              onTap: () => {Navigator.of(context).pop()},
+              onTap: () => backCallback(context),
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
                 child: Row(
@@ -105,7 +123,7 @@ class CardTypeScreen extends StatelessWidget {
                           constraints:
                               BoxConstraints(maxWidth: 150, maxHeight: 45),
                           onPressed: () {
-                            currentActivity.cardType = CardType.newSong;
+                            currentActivity.setNewSong();
                             Navigator.of(context).pop();
                           },
                           child: Row(
@@ -164,7 +182,7 @@ class CardTypeScreen extends StatelessWidget {
                           constraints:
                               BoxConstraints(maxWidth: 150, maxHeight: 45),
                           onPressed: () {
-                            currentActivity.cardType = CardType.oldSong;
+                            currentActivity.setOldSong();
                             Navigator.of(context).pop();
                           },
                           child: Row(
@@ -223,7 +241,12 @@ class CardTypeScreen extends StatelessWidget {
                           constraints:
                               BoxConstraints(maxWidth: 150, maxHeight: 45),
                           onPressed: () {
-                            currentActivity.cardType = CardType.justMessage;
+                            currentActivity.setJustMessage();
+                            currentActivity
+                                .setCardCreationStep(CardCreationSteps.speak);
+                            currentActivity
+                                .setCardCreationSubStep(CardCreationSubSteps.seven);
+
                             Navigator.of(context).pop();
                           },
                           child: Row(
@@ -258,7 +281,7 @@ class CardTypeScreen extends StatelessWidget {
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),

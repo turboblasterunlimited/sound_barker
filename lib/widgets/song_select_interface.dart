@@ -27,7 +27,6 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
   Songs songs;
   KaraokeCards cards;
   CurrentActivity currentActivity;
-  bool showMySongs = false;
   CreatableSongs creatableSongs;
   KaraokeCard card;
   bool firstBuild = true;
@@ -56,199 +55,99 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
   }
 
   void _backCallback() {
-    if (card.picture.isStock)
-      Navigator.of(context).pushNamed(PhotoLibraryScreen.routeName);
-    else
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) =>
-              SetPictureCoordinatesScreen(card.picture, editing: true),
-        ),
-      );
-    if (!card.picture.isStock)
-      currentActivity.setCardCreationStep(CardCreationSteps.snap);
-  }
-
-  void _handleMySongsButton() {
-    setState(() {
-      showMySongs = true;
-    });
-  }
-
-  void _handleNewSongButton() {
-    setState(() {
-      showMySongs = false;
-    });
+    currentActivity.cardTypeNull();
+    Navigator.of(context).pushNamed(CardTypeScreen.routeName);
   }
 
   Widget build(BuildContext context) {
+    print("building song select interface");
     songs = Provider.of<Songs>(context);
     final soundController = Provider.of<SoundController>(context);
     cards = Provider.of<KaraokeCards>(context, listen: false);
     currentActivity = Provider.of<CurrentActivity>(context);
     creatableSongs = Provider.of<CreatableSongs>(context, listen: false);
     card = cards.current;
-    // Select Card type screen if none is selected
+    // goto Card type screen if no card type is selected, then come back.
     if (firstBuild && currentActivity.cardType == null) {
+      print("TESTTESTTESTTESTTESTTESTTESTETSTETSTESTSELFJ!!!!!!!");
       setState(() => firstBuild = false);
-      Navigator.of(context).pushNamed(CardTypeScreen.routeName);
+      Future.delayed(
+        Duration(seconds: 0),
+        () => Navigator.of(context).pushNamed(CardTypeScreen.routeName),
+      );
     }
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        InterfaceTitleNav(
-            title: "SELECT SONG",
-            skipCallback: _skipCallback,
-            backCallback: _backCallback),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Spacer(),
-            Stack(
-              overflow: Overflow.visible,
-              children: [
-                RawMaterialButton(
-                  onPressed: _handleNewSongButton,
-                  child: Text("New Song",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: showMySongs
-                            ? Theme.of(context).primaryColor
-                            : Colors.white,
-                        fontSize: 15,
-                      )),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(40.0),
-                    side: BorderSide(
-                        color: Theme.of(context).primaryColor, width: 3),
-                  ),
-                  fillColor:
-                      showMySongs ? null : Theme.of(context).primaryColor,
-                  elevation: 2.0,
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 18),
-                ),
-                if (showMySongs && songs.all.isEmpty)
-                  AnimatedBuilder(
-                    animation: animationController,
-                    builder: (BuildContext context, Widget child) {
-                      return Positioned(
-                        bottom: tween.value,
-                        left: 0,
-                        right: 0,
-                        child: Icon(Icons.arrow_upward,
-                            size: 50, color: Theme.of(context).primaryColor),
-                      );
-                    },
-                  ),
-              ],
-            ),
-            Padding(padding: EdgeInsets.only(left: 16)),
-            RawMaterialButton(
-              onPressed: _handleMySongsButton,
-              child: Text(
-                "My Songs",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: showMySongs
-                        ? Colors.white
-                        : Theme.of(context).primaryColor,
-                    fontSize: 15),
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(40.0),
-                side:
-                    BorderSide(color: Theme.of(context).primaryColor, width: 3),
-              ),
-              elevation: 2.0,
-              fillColor: showMySongs ? Theme.of(context).primaryColor : null,
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 18),
-            ),
-            Padding(padding: EdgeInsets.only(left: 16)),
-            Spacer(),
-            Transform.translate(
-              offset: Offset(-10, -10),
-              child: GestureDetector(
-                onTap: _skipCallback,
-                child: Column(
-                  children: [
-                    Transform.rotate(
-                      angle: -math.pi / -12.0,
-                      child: Icon(
-                        Icons.arrow_upward,
-                        size: 20,
-                        color: Theme.of(context).accentColor,
-                      ),
+    return currentActivity.cardType == null
+        ? Center()
+        : Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              InterfaceTitleNav(
+                  title: "SELECT SONG",
+                  skipCallback: _skipCallback,
+                  backCallback: _backCallback),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 1.0),
+                  child: Text(
+                    "SELECT",
+                    style: TextStyle(
+                      color: Colors.blue,
+                      decoration: TextDecoration.underline,
                     ),
-                    Text(
-                      "No Song",
-                      style: TextStyle(
-                        color: Theme.of(context).accentColor,
-                      ),
-                    ),
-                  ],
+                    textAlign: TextAlign.left,
+                  ),
                 ),
               ),
-            ),
-          ],
-        ),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Padding(
-            padding: const EdgeInsets.only(left: 1.0),
-            child: Text(
-              "SELECT",
-              style: TextStyle(
-                color: Colors.blue,
-                decoration: TextDecoration.underline,
+              SizedBox(
+                height: MediaQuery.of(context).size.height / 3,
+                child: currentActivity.cardType == CardType.oldSong
+                    ? songs.all.isEmpty
+                        // NO SONG MESSAGE
+                        ? Align(
+                            alignment: Alignment.topCenter,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 50.0),
+                              child: Text(
+                                "You have no songs.\nCreate a New Song.",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                              ),
+                            ),
+                          )
+
+                        // SELECT OLD SONG
+                        : AnimatedList(
+                            key: _listKey,
+                            initialItemCount: songs.all.length,
+                            padding: const EdgeInsets.all(0),
+                            itemBuilder:
+                                (ctx, i, Animation<double> animation) =>
+                                    SongPlaybackCard(
+                              i,
+                              songs.all[i],
+                              songs,
+                              soundController,
+                              animation,
+                            ),
+                          )
+
+                    // CREATE NEW SONG
+                    : ListView.builder(
+                        padding: const EdgeInsets.only(right: 10),
+                        itemCount: creatableSongs.all.length,
+                        itemBuilder: (ctx, i) => CreatableSongCard(
+                            creatableSongs.all[i],
+                            soundController,
+                            cards,
+                            currentActivity),
+                      ),
               ),
-              textAlign: TextAlign.left,
-            ),
-          ),
-        ),
-        SizedBox(
-          height: MediaQuery.of(context).size.height / 3,
-          child: showMySongs
-              ? songs.all.isEmpty
-                  ? Align(
-                      alignment: Alignment.topCenter,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 50.0),
-                        child: Text(
-                          "You have no songs.\nCreate a New Song.",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        ),
-                      ),
-                    )
-                  : AnimatedList(
-                      key: _listKey,
-                      initialItemCount: songs.all.length,
-                      padding: const EdgeInsets.all(0),
-                      itemBuilder: (ctx, i, Animation<double> animation) =>
-                          SongPlaybackCard(
-                        i,
-                        songs.all[i],
-                        songs,
-                        soundController,
-                        animation,
-                      ),
-                    )
-              : ListView.builder(
-                  padding: const EdgeInsets.only(right: 10),
-                  itemCount: creatableSongs.all.length,
-                  itemBuilder: (ctx, i) => CreatableSongCard(
-                      creatableSongs.all[i],
-                      soundController,
-                      cards,
-                      currentActivity),
-                ),
-        ),
-      ],
-    );
+            ],
+          );
   }
 }

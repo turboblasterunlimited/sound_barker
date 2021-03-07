@@ -40,7 +40,7 @@ class _PlaybackCardState extends State<PlaybackCard> {
           child: SpinKitWave(size: 15, color: Theme.of(context).primaryColor));
     else if (widget.isPlaying)
       return Transform.scale(
-        scale: 3,
+        scale: 4,
         child: Icon(Icons.stop, color: Theme.of(context).errorColor, size: 15),
       );
     else
@@ -108,10 +108,7 @@ class _PlaybackCardState extends State<PlaybackCard> {
                   ],
                 ),
                 Center(
-                  child: Opacity(
-                    opacity: .3,
-                    child: getAudioButton(),
-                  ),
+                  child: getAudioButton(),
                 ),
               ],
             ),
