@@ -6,7 +6,7 @@ class CreatableSongs with ChangeNotifier {
 
   void sort() {
     print("sorting creatables");
-    all.sort((a, b) => a.displayOrder.compareTo(b.displayOrder));
+    all.sort((a, b) => a.fullName.compareTo(b.fullName));
     print("done sorting");
   }
 

@@ -105,7 +105,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   }
 
   void handleSaveAndSend () async {
-    // if (!user.subscribed && !cards.currentIsFirst) return _subscribeDialog();
+    if (!user.subscribed && !cards.currentIsFirst) return _subscribeDialog();
     if (cards.current.uuid == null) await createBaseCard();
     Navigator.of(context).pushNamed(EnvelopeScreen.routeName);
   }
