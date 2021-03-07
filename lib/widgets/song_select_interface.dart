@@ -1,6 +1,7 @@
 import 'package:K9_Karaoke/providers/creatable_songs.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
+import 'package:K9_Karaoke/screens/cart_type_screen.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/screens/set_picture_coordinates_screen.dart';
 import 'package:K9_Karaoke/widgets/creatable_song_card.dart';
@@ -29,6 +30,7 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
   bool showMySongs = false;
   CreatableSongs creatableSongs;
   KaraokeCard card;
+  bool firstBuild = true;
 
   @override
   void initState() {
@@ -83,9 +85,14 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
     songs = Provider.of<Songs>(context);
     final soundController = Provider.of<SoundController>(context);
     cards = Provider.of<KaraokeCards>(context, listen: false);
-    currentActivity = Provider.of<CurrentActivity>(context, listen: false);
+    currentActivity = Provider.of<CurrentActivity>(context);
     creatableSongs = Provider.of<CreatableSongs>(context, listen: false);
     card = cards.current;
+    // Select Card type screen if none is selected
+    if (firstBuild && currentActivity.cardType == null) {
+      setState(() => firstBuild = false);
+      Navigator.of(context).pushNamed(CardTypeScreen.routeName);
+    }
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,

@@ -10,15 +10,15 @@ class CardTypeScreen extends StatelessWidget {
   static const routeName = 'card-type-screen';
 
   Widget build(BuildContext context) {
-    CurrentActivity currentActivity = Provider.of<CurrentActivity>(context, listen: false);
+    CurrentActivity currentActivity =
+        Provider.of<CurrentActivity>(context, listen: false);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomPadding: false,
-      appBar: CustomAppBar(noName: true),
       body: Container(
         // appbar offset
-        padding: EdgeInsets.only(top: 80),
+        padding: EdgeInsets.only(top: 20),
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage("assets/backgrounds/create_background.png"),
@@ -44,82 +44,220 @@ class CardTypeScreen extends StatelessWidget {
             ),
             Stack(
               children: [
-                Positioned(right: 20, top: 5, child: Icon(Icons.mail_outline)),
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Center(
-                    child: Text(
-                      "Choose Type Of\nGreeting Card",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontSize: 20,
-                      ),
-                    ),
-                  ),
+                Positioned(
+                  right: 20,
+                  top: 5,
+                  child: Icon(Icons.mail_outline, size: 40, color: Colors.grey),
                 ),
-              ],
-            ),
-            Divider(
-              color: Colors.grey[300],
-              thickness: 2,
-            ),
-            Column(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Theme.of(context).primaryColor,
-                      ),
-                      borderRadius: BorderRadius.all(Radius.circular(20))),
+                Center(
                   child: Column(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text("CARD WITH NEW SONG",
-                            textAlign: TextAlign.center),
+                      Text(
+                        "Choose Type Of\nGreeting Card",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 22,
+                        ),
                       ),
-                      RawMaterialButton(
-                        onPressed: () {
-                          currentActivity.cardType = CardType.newSong;
-                          Navigator.of(context).pop();
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              CustomIcons.music_library,
-                              color: Colors.white,
-                            ),
-                            Text(
-                              "GO",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                              ),
-                            ),
-                          ],
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                        ),
-                        elevation: 2.0,
-                        fillColor: Theme.of(context).primaryColor,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 40.0, vertical: 2),
+                      Text(
+                        "Now that you have your dog ready,\nselect what type of card you want.",
+                        style: TextStyle(color: Theme.of(context).primaryColor),
                       ),
                     ],
                   ),
                 ),
-                Text(
-                  "USE A SONG YOU\NALREADY MADE",
-                  textAlign: TextAlign.center,
-                ),
-                Text(
-                  "JUST VOICE MESSAGE\NNO SONG",
-                  textAlign: TextAlign.center,
-                ),
               ],
+            ),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 5, horizontal: 30.0),
+              child: Divider(
+                color: Colors.grey[300],
+                thickness: 3,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 200,
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Theme.of(context).primaryColor,
+                          width: 3,
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(20))),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 12.0),
+                          child: Text("CARD WITH NEW SONG",
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Theme.of(context).primaryColor),
+                              textAlign: TextAlign.center),
+                        ),
+                        RawMaterialButton(
+                          constraints:
+                              BoxConstraints(maxWidth: 150, maxHeight: 45),
+                          onPressed: () {
+                            currentActivity.cardType = CardType.newSong;
+                            Navigator.of(context).pop();
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    bottom: 5.0, right: 8.0),
+                                child: Icon(
+                                  LineAwesomeIcons.music,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Text(
+                                "GO",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ],
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          elevation: 2.0,
+                          fillColor: Theme.of(context).primaryColor,
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(5),
+                  ),
+                  Container(
+                    width: 200,
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Theme.of(context).primaryColor,
+                          width: 3,
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(20))),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 12.0),
+                          child: Text("USE A SONG YOU\nALREADY MADE",
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Theme.of(context).primaryColor),
+                              textAlign: TextAlign.center),
+                        ),
+                        RawMaterialButton(
+                          constraints:
+                              BoxConstraints(maxWidth: 150, maxHeight: 45),
+                          onPressed: () {
+                            currentActivity.cardType = CardType.oldSong;
+                            Navigator.of(context).pop();
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    bottom: 5.0, right: 8.0),
+                                child: Icon(
+                                  LineAwesomeIcons.plus,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Text(
+                                "GO",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ],
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          elevation: 2.0,
+                          fillColor: Theme.of(context).primaryColor,
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(5),
+                  ),
+                  Container(
+                    width: 200,
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Theme.of(context).primaryColor,
+                          width: 3,
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(20))),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 12.0),
+                          child: Text("JUST VOICE MESSAGE\nNO SONG",
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Theme.of(context).primaryColor),
+                              textAlign: TextAlign.center),
+                        ),
+                        RawMaterialButton(
+                          constraints:
+                              BoxConstraints(maxWidth: 150, maxHeight: 45),
+                          onPressed: () {
+                            currentActivity.cardType = CardType.justMessage;
+                            Navigator.of(context).pop();
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    bottom: 5.0, right: 8.0),
+                                child: Icon(
+                                  LineAwesomeIcons.microphone,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Text(
+                                "GO",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ],
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          elevation: 2.0,
+                          fillColor: Theme.of(context).primaryColor,
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             )
           ],
         ),
