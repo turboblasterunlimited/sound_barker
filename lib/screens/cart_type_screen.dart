@@ -1,8 +1,8 @@
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
-import 'package:K9_Karaoke/screens/main_screen.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/screens/set_picture_coordinates_screen.dart';
+import 'package:K9_Karaoke/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
@@ -33,7 +33,8 @@ class CardTypeScreen extends StatelessWidget {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false,
+      appBar: CustomAppBar(noName: true),
       body: Container(
         // appbar offset
         padding: EdgeInsets.only(top: 20),
@@ -244,8 +245,8 @@ class CardTypeScreen extends StatelessWidget {
                             currentActivity.setJustMessage();
                             currentActivity
                                 .setCardCreationStep(CardCreationSteps.speak);
-                            currentActivity
-                                .setCardCreationSubStep(CardCreationSubSteps.seven);
+                            currentActivity.setCardCreationSubStep(
+                                CardCreationSubSteps.seven);
 
                             Navigator.of(context).pop();
                           },

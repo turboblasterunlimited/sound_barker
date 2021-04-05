@@ -253,7 +253,7 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface> {
                             ? "RECORD A HUMAN-VOICE INTRODUCTION TO YOUR SONG."
                             : "RECORD YOUR HUMAN-VOICE AUDIO GREETING.",
                         style: TextStyle(
-                          fontSize: 17,
+                          fontSize: 14, // was 17
                           color: Theme.of(context).primaryColor,
                         ),
                         textAlign: TextAlign.center,

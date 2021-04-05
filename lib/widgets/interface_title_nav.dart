@@ -23,6 +23,10 @@ class _InterfaceTitleNavState extends State<InterfaceTitleNav> {
   @override
   Widget build(BuildContext context) {
     double screenSize = MediaQuery.of(context).size.width;
+    /**
+     * JMF: Removing condition screenSize > 400, makes assumption
+     * about title lengths.
+     */
     widget.titleSize = screenSize > 400 ? 25 : widget.titleSize;
 
     return Stack(

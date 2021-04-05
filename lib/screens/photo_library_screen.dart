@@ -20,12 +20,10 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
   Pictures pictures;
   KaraokeCards cards;
 
-  List<Widget> _pictureGridTiles(List<Picture> pics,
-      [usersDisplayedPictures]) {
+  List<Widget> _pictureGridTiles(List<Picture> pics, [usersDisplayedPictures]) {
     List<Widget> widgets = [];
     pics.forEach((picture) {
-      widgets.add(PictureCard(
-          picture, pictures, usersDisplayedPictures,
+      widgets.add(PictureCard(picture, pictures, usersDisplayedPictures,
           key: UniqueKey()));
     });
     return widgets;
@@ -104,7 +102,7 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
     cards = Provider.of<KaraokeCards>(context, listen: false);
     return Scaffold(
       extendBodyBehindAppBar: true,
-      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false,
       appBar: CustomAppBar(noName: true),
       body: Container(
         // appbar offset

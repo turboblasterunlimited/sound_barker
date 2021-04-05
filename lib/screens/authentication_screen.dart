@@ -283,7 +283,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
           ? UserAgreement(acceptAgreement)
           : Scaffold(
               key: _scaffoldKey,
-              resizeToAvoidBottomPadding: false,
+              resizeToAvoidBottomInset: false,
               extendBodyBehindAppBar: true,
               appBar: null,
               body: Container(

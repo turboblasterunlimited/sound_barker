@@ -379,8 +379,11 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
             ),
           ],
         ),
+        /**
+         * JMF 3/29/2021: Commented out replaced by following code
+         */
         // Padding(padding: EdgeInsets.only(top: 5)),
-        Align(
+        /*Align(
           alignment: Alignment.centerLeft,
           child: Padding(
             padding: const EdgeInsets.only(left: 1.0),
@@ -393,7 +396,38 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
               textAlign: TextAlign.left,
             ),
           ),
-        ),
+        )*/
+        /**
+         * JMF 3/29/2021: Added header row
+         */
+        Row(children: <Widget>[
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 1.0),
+              child: Text(
+                "SELECT",
+                style: TextStyle(
+                  color: Colors.blue,
+                  decoration: TextDecoration.underline,
+                ),
+                textAlign: TextAlign.left,
+              ),
+            ),
+          ),
+          Expanded(
+              flex: 1,
+              child: Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    "LISTEN TO BARK",
+                    style: TextStyle(
+                      color: Colors.blue,
+                      decoration: TextDecoration.underline,
+                    ),
+                    textAlign: TextAlign.center,
+                  ))),
+        ]),
         SizedBox(
           height: MediaQuery.of(context).size.height / 2.2,
           child: _showBarks(),

@@ -86,20 +86,37 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
                   title: "SELECT SONG",
                   skipCallback: _skipCallback,
                   backCallback: _backCallback),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 1.0),
-                  child: Text(
-                    "SELECT",
-                    style: TextStyle(
-                      color: Colors.blue,
-                      decoration: TextDecoration.underline,
+              /**
+         * JMF 3/29/2021: Added header row
+         */
+              Row(children: <Widget>[
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 1.0),
+                    child: Text(
+                      "SELECT",
+                      style: TextStyle(
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline,
+                      ),
+                      textAlign: TextAlign.left,
                     ),
-                    textAlign: TextAlign.left,
                   ),
                 ),
-              ),
+                Expanded(
+                    flex: 1,
+                    child: Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          "LISTEN TO BACKING TRACK",
+                          style: TextStyle(
+                            color: Colors.blue,
+                            decoration: TextDecoration.underline,
+                          ),
+                          textAlign: TextAlign.center,
+                        ))),
+              ]),
               SizedBox(
                 height: MediaQuery.of(context).size.height / 3,
                 child: currentActivity.cardType == CardType.oldSong

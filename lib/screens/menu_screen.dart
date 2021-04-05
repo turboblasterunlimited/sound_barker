@@ -42,7 +42,7 @@ class _MenuState extends State<MenuScreen> {
         Provider.of<KaraokeCardDecorationController>(context, listen: false);
 
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false,
       extendBodyBehindAppBar: true,
       appBar: CustomAppBar(isMenu: true, isMainMenu: true),
       body: Container(

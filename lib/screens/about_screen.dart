@@ -8,7 +8,7 @@ class AboutScreen extends StatelessWidget {
   static const routeName = 'about-screen';
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false,
       extendBodyBehindAppBar: true,
       appBar: CustomAppBar(isMenu: true, pageTitle: "About"),
       body: Container(
@@ -37,7 +37,8 @@ class AboutScreen extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  Navigator.of(context).pushNamed(PrivacyPolicyScreen.routeName);
+                  Navigator.of(context)
+                      .pushNamed(PrivacyPolicyScreen.routeName);
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),

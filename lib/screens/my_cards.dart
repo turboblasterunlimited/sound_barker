@@ -69,7 +69,7 @@ class _MyCardsScreenState extends State<MyCardsScreen> {
         Provider.of<KaraokeCardDecorationController>(context, listen: false);
     return Scaffold(
       extendBodyBehindAppBar: true,
-      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false,
       appBar: CustomAppBar(noName: true),
       body: Container(
         // appbar offset

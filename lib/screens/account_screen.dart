@@ -127,7 +127,7 @@ class _AccountState extends State<AccountScreen> {
 
     return Scaffold(
       key: _scaffoldKey,
-      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false,
       extendBodyBehindAppBar: true,
       appBar: CustomAppBar(isMenu: true, pageTitle: "Account"),
       body: Container(
