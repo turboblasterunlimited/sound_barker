@@ -64,8 +64,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     return null;
   }
 
-
-
   @override
   void initState() {
     print("INITING MAIN SCREEN");
@@ -283,6 +281,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                               Positioned.fill(
                                 child: Center(
                                   child: RawMaterialButton(
+                                    onPressed: () {},
                                     elevation: 2.0,
                                     fillColor: Theme.of(context).primaryColor,
                                     child: Icon(

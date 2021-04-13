@@ -35,6 +35,8 @@ import 'package:K9_Karaoke/providers/active_wave_streamer.dart';
 import 'package:K9_Karaoke/services/http_controller.dart';
 import './screens/main_screen.dart';
 
+import './screens/info_screen.dart';
+
 import './providers/pictures.dart';
 import './providers/barks.dart';
 import './providers/songs.dart';
@@ -72,7 +74,7 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  Map<int, Color> color = {
+  final Map<int, Color> color = {
     50: Color.fromRGBO(136, 14, 79, .1),
     100: Color.fromRGBO(136, 14, 79, .2),
     200: Color.fromRGBO(136, 14, 79, .3),
@@ -153,6 +155,7 @@ class MyApp extends StatelessWidget {
           ),
           home: CheckAuthenticationScreen(),
           routes: {
+            InfoScreen.routeName: (ctx) => InfoScreen(),
             SubscriptionScreen.routeName: (ctx) => SubscriptionScreen(),
             AboutScreen.routeName: (ctx) => AboutScreen(),
             PrivacyPolicyScreen.routeName: (ctx) => PrivacyPolicyScreen(),

@@ -3,6 +3,7 @@ import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_card_decoration_controller.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/screens/about_screen.dart';
+import 'package:K9_Karaoke/screens/info_screen.dart';
 import 'package:K9_Karaoke/screens/account_screen.dart';
 import 'package:K9_Karaoke/screens/my_cards.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
@@ -104,6 +105,17 @@ class _MenuState extends State<MenuScreen> {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text("About",
+                      style: TextStyle(
+                          fontSize: 40, color: Theme.of(context).primaryColor)),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pushNamed(InfoScreen.routeName);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("How To Use",
                       style: TextStyle(
                           fontSize: 40, color: Theme.of(context).primaryColor)),
                 ),

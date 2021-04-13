@@ -2,6 +2,7 @@ import 'package:K9_Karaoke/screens/privacy_policy_screen.dart';
 import 'package:K9_Karaoke/screens/support_screen.dart';
 import 'package:K9_Karaoke/screens/terms_of_use_screen.dart';
 import 'package:K9_Karaoke/widgets/custom_appbar.dart';
+import 'package:K9_Karaoke/widgets/about.dart';
 import 'package:flutter/material.dart';
 
 class AboutScreen extends StatelessWidget {
@@ -24,6 +25,7 @@ class AboutScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
+              About(),
               GestureDetector(
                 onTap: () {
                   Navigator.of(context).pushNamed(TermsOfUseScreen.routeName);
