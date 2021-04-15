@@ -63,7 +63,7 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
     widget.cards.setCurrentSongFormula(widget.creatableSong);
 
     Future.delayed(
-      Duration(milliseconds: 500),
+      Duration(milliseconds: 1500),
       () => widget.currentActivity.setCardCreationStep(CardCreationSteps.speak),
     );
   }

@@ -34,7 +34,7 @@ class AboutScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: Text("Terms Of Use",
                       style: TextStyle(
-                          fontSize: 40, color: Theme.of(context).primaryColor)),
+                          fontSize: 25, color: Theme.of(context).primaryColor)),
                 ),
               ),
               GestureDetector(
@@ -46,7 +46,7 @@ class AboutScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: Text("Privacy Policy",
                       style: TextStyle(
-                          fontSize: 40, color: Theme.of(context).primaryColor)),
+                          fontSize: 25, color: Theme.of(context).primaryColor)),
                 ),
               ),
               GestureDetector(
@@ -57,7 +57,7 @@ class AboutScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: Text("Support",
                       style: TextStyle(
-                          fontSize: 40, color: Theme.of(context).primaryColor)),
+                          fontSize: 25, color: Theme.of(context).primaryColor)),
                 ),
               ),
             ],

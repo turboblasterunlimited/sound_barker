@@ -280,16 +280,22 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                             if (showPlayButton)
                               Positioned.fill(
                                 child: Center(
-                                  child: RawMaterialButton(
-                                    onPressed: () {},
-                                    elevation: 2.0,
-                                    fillColor: Theme.of(context).primaryColor,
+                                  child: Container(
+                                    margin: EdgeInsets.all(3),
+                                    padding: EdgeInsets.all(1),
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context).primaryColor,
+                                        borderRadius:
+                                            BorderRadius.circular(100),
+                                        border: Border.all(
+                                            width: .1,
+                                            color: Theme.of(context)
+                                                .primaryColor)),
                                     child: Icon(
                                       Icons.play_arrow,
                                       size: 60,
                                       color: Colors.white,
                                     ),
-                                    shape: CircleBorder(),
                                   ),
                                 ),
                               )

@@ -181,8 +181,11 @@ class BarkRecorderState extends State<BarkRecorder> {
       child: Column(
         // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          InterfaceTitleNav(title: 'CAPTURE BARKS\nBY USING EITHER...',
-              backCallback: _backCallback, skipCallback: _skipCallback),
+          InterfaceTitleNav(
+              title: 'CAPTURE BARKS\nUSING EITHER...',
+              titleSize: 20,
+              backCallback: _backCallback,
+              skipCallback: _skipCallback),
           _loading
               ? LoadingHalfScreenWidget("Processing Barks...")
               : Column(

@@ -61,7 +61,7 @@ class _PlaybackCardState extends State<PlaybackCard> {
         IconButton(
           icon: Icon(
             widget.isSelected
-                ? Icons.check_box_outlined
+                ? Icons.music_note
                 : Icons.check_box_outline_blank_rounded,
             color: Theme.of(context).primaryColor,
           ),

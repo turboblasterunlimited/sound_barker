@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 
 class Info extends StatelessWidget {
   final italic =
-      TextStyle(fontStyle: FontStyle.italic, color: Colors.black, fontSize: 13);
+      TextStyle(fontStyle: FontStyle.italic, color: Colors.black, fontSize: 20);
   final title =
       TextStyle(fontWeight: FontWeight.w800, color: Colors.black, fontSize: 22);
   final bold =
-      TextStyle(fontWeight: FontWeight.w800, color: Colors.black, fontSize: 15);
+      TextStyle(fontWeight: FontWeight.w800, color: Colors.black, fontSize: 22);
   final reg =
-      TextStyle(color: Colors.black, fontWeight: FontWeight.w400, fontSize: 13);
+      TextStyle(color: Colors.black, fontWeight: FontWeight.w400, fontSize: 20);
   final link = TextStyle(
       decoration: TextDecoration.underline,
       color: Colors.blue,
       fontWeight: FontWeight.w400,
-      fontSize: 13);
+      fontSize: 20);
 
   final text = '''
 1. Click on NEW CARD\n
