@@ -22,6 +22,14 @@ class RestAPI {
     return response;
   }
 
+  static _handleServerError(response, e) {
+    print("Error: $e");
+    if (response == null) return noInternetResponse;
+    response?.data["success"] = false;
+    response?.data["error"] = e.message;
+    return response;
+  }
+
   static _handleAssetError(response, e) {
     if (response == null) return noInternetResponse;
   }
@@ -38,6 +46,36 @@ class RestAPI {
     return response?.data;
   }
 
+  static Future<dynamic> userForgotPassword(userId) async {
+    Map data = {"user_id": userId};
+    var response;
+    try {
+      response = await HttpController.dioPost(
+        'https://$serverURL/temp-password',
+        data: data,
+      );
+    } catch (e) {
+      return _handleServerError(response, e);
+    }
+    print("manual sign up response: $response");
+    return response?.data;
+  }
+
+  static Future<dynamic> userChangePassword(oldPassword, newPassword) async {
+    Map data = {"old_password": oldPassword, "new_password": newPassword};
+    var response;
+    try {
+      response = await HttpController.dioPost(
+        'https://$serverURL/change-password',
+        data: data,
+      );
+    } catch (e) {
+      return _handleServerError(response, e);
+    }
+    print("change password response: $response");
+    return response?.data;
+  }
+
   static Future<dynamic> userManualSignUp(email, password) async {
     Map data = {"email": email.toLowerCase(), "password": password};
     var response;
@@ -49,7 +87,7 @@ class RestAPI {
     } catch (e) {
       return _handleAccountError(response, e);
     }
-    print("manual sign up response: $response");
+    print("user manual signup response: $response");
     return response?.data;
   }
 
