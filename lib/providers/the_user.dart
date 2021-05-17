@@ -71,7 +71,7 @@ class TheUser with ChangeNotifier {
     return activePackage;
   }
 
-    // monthly OR yearly
+  // monthly OR yearly
   String getSubscriptionName() {
     return getActivePackage()?.packageType.toString().split('.').last;
   }
@@ -79,7 +79,8 @@ class TheUser with ChangeNotifier {
   List<Package> getInactivePackages() {
     print("Getting inactive packages");
     Package activePackage = getActivePackage();
-    List<Package> remainingPackages = availablePackages.toList();
+    List<Package> remainingPackages =
+        availablePackages != null ? availablePackages.toList() : null;
     print("packages: $remainingPackages");
     print("active packages: $activePackage");
 
