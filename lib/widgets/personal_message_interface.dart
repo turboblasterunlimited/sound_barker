@@ -181,6 +181,9 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface> {
     await cards.current.combineMessageAndSong();
     setState(() => _isLoading = false);
     currentActivity.setCardCreationStep(CardCreationSteps.style);
+    if (currentActivity.cardType == CardType.justMessage) {
+      currentActivity.setCardCreationSubStep(CardCreationSubSteps.three);
+    }
   }
 
   @override
@@ -245,8 +248,8 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface> {
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: SizedBox(
-                height: 72,
-                width: 150,
+                height: 100,
+                width: 175,
                 child: !_canAddMessage()
                     ? Text(
                         cards.current.hasASong

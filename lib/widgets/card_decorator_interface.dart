@@ -129,7 +129,12 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
 
   void skipCallback() {
     print("next substep");
-    currentActivity.setNextSubStep();
+    if (currentActivity.cardType == CardType.justMessage) {
+      currentActivity.setCardCreationStep(CardCreationSteps.speak);
+      currentActivity.setCardCreationSubStep(CardCreationSubSteps.seven);
+    } else {
+      currentActivity.setNextSubStep();
+    }
   }
 
   @override
@@ -320,7 +325,8 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(left: 8.0, bottom: 5.0),
+                            padding:
+                                const EdgeInsets.only(left: 8.0, bottom: 5.0),
                             child: Icon(CustomIcons.undo,
                                 color: Theme.of(context).primaryColor,
                                 size: iconButtonSize),
@@ -380,7 +386,14 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                       minWidth: 50,
                       onPressed: () {
                         decorationController.startDrawing();
-                        currentActivity.setNextSubStep();
+                        if (currentActivity.cardType == CardType.justMessage) {
+                          currentActivity
+                              .setCardCreationStep(CardCreationSteps.speak);
+                          currentActivity.setCardCreationSubStep(
+                              CardCreationSubSteps.seven);
+                        } else {
+                          currentActivity.setNextSubStep();
+                        }
                       },
                       child: Icon(
                         Icons.check,

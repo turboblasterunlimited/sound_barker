@@ -30,7 +30,7 @@ class _ShareScreenState extends State<ShareScreen> {
   KaraokeCard card;
   String loadingMessage;
 
-  void _handleShare() async {
+  void _handleShare(ctx) async {
     await Share.share(
         "K-9 Karaoke Card\n\n$cardMessage\n\n$shareLink\n\nCreated with K-9 Karaoke.",
         subject: "K-9 Karaoke");
@@ -38,13 +38,15 @@ class _ShareScreenState extends State<ShareScreen> {
     final snackBar = SnackBar(
       content: Text('Done Sharing!'),
     );
-    Navigator.of(context).popUntil(ModalRoute.withName(MainScreen.routeName));
-    Scaffold.of(context).showSnackBar(snackBar);
+    Navigator.of(ctx).popUntil(ModalRoute.withName(MainScreen.routeName));
+    Scaffold.of(ctx).showSnackBar(snackBar);
+    // Navigator.of(context).popUntil(ModalRoute.withName(MainScreen.routeName));
+    // Scaffold.of(context).showSnackBar(snackBar);
   }
 
   Future<void> _handleUploadAndShare(ctx) async {
     await _handleUploadFinishedCard(ctx);
-    _handleShare();
+    _handleShare(ctx);
   }
 
   _handleUploadFinishedCard(ctx) async {

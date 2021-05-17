@@ -46,17 +46,18 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   }
 
   void skipCallback() {
-    if (cards.current.decorationImage != null) {
-      cards.current.shouldDeleteOldDecoration = false;
-      Future.delayed(
-          Duration(milliseconds: 200),
-          () => currentActivity
-              .setCardCreationSubStep(CardCreationSubSteps.three));
-    } else {
-      currentActivity.setNextSubStep();
-      Future.delayed(
-          Duration(milliseconds: 500), () => setFrame(noFrame: true));
-    }
+    Future.delayed(Duration(microseconds: 200), submitFrameChoice);
+    // if (cards.current.decorationImage != null) {
+    //   cards.current.shouldDeleteOldDecoration = false;
+    //   Future.delayed(
+    //       Duration(milliseconds: 200),
+    //       () => currentActivity
+    //           .setCardCreationSubStep(CardCreationSubSteps.three));
+    // } else {
+    //   currentActivity.setNextSubStep();
+    //   Future.delayed(
+    //       Duration(milliseconds: 500), () => setFrame(noFrame: true));
+    // }
   }
 
   // Text string and Map Keys must match.
@@ -459,15 +460,20 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
         !cards.current.shouldDeleteOldDecoration;
   }
 
+  void submitFrameChoice() {
+    if (_keepingCardDecorationImage) {
+      currentActivity.setCardCreationSubStep(CardCreationSubSteps.three);
+    } else {
+      currentActivity.setNextSubStep();
+    }
+  }
+
   Widget submitButton() {
     return Center(
       child: MaterialButton(
         height: 20,
         minWidth: 50,
-        onPressed: _keepingCardDecorationImage
-            ? () => currentActivity
-                .setCardCreationSubStep(CardCreationSubSteps.three)
-            : currentActivity.setNextSubStep,
+        onPressed: submitFrameChoice,
         child: Icon(
           Icons.check,
           color: Colors.white,
@@ -535,8 +541,10 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
 
     return Column(
       children: <Widget>[
-        InterfaceTitleNav(title: "CHOOSE FRAME",
-            backCallback: backCallback, skipCallback: skipCallback),
+        InterfaceTitleNav(
+            title: "CHOOSE FRAME",
+            backCallback: backCallback,
+            skipCallback: skipCallback),
         // Divider(
         //   color: Theme.of(context).primaryColor,
         //   thickness: 3,

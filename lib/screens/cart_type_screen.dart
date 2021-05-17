@@ -243,11 +243,12 @@ class CardTypeScreen extends StatelessWidget {
                               BoxConstraints(maxWidth: 150, maxHeight: 45),
                           onPressed: () {
                             currentActivity.setJustMessage();
+                            // currentActivity
+                            //     .setCardCreationStep(CardCreationSteps.speak);
+                            // currentActivity.setCardCreationSubStep(
+                            //     CardCreationSubSteps.seven);
                             currentActivity
-                                .setCardCreationStep(CardCreationSteps.speak);
-                            currentActivity.setCardCreationSubStep(
-                                CardCreationSubSteps.seven);
-
+                                .setCardCreationStep(CardCreationSteps.style);
                             Navigator.of(context).pop();
                           },
                           child: Row(
