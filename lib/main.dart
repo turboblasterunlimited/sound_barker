@@ -11,6 +11,7 @@ import 'package:K9_Karaoke/screens/account_screen.dart';
 import 'package:K9_Karaoke/screens/authentication_screen.dart';
 import 'package:K9_Karaoke/screens/camera_or_upload_screen.dart';
 import 'package:K9_Karaoke/screens/cart_type_screen.dart';
+import 'package:K9_Karaoke/screens/change_password_screen.dart';
 import 'package:K9_Karaoke/screens/check_authentication_screen.dart';
 import 'package:K9_Karaoke/screens/envelope_screen.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
@@ -172,6 +173,7 @@ class MyApp extends StatelessWidget {
             EnvelopeScreen.routeName: (ctx) => EnvelopeScreen(),
             ShareScreen.routeName: (ctx) => ShareScreen(),
             CardTypeScreen.routeName: (ctx) => CardTypeScreen(),
+            ChangePasswordScreen.routeName: (ctx) => ChangePasswordScreen(),
           }),
     );
   }
