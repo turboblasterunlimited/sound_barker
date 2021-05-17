@@ -220,10 +220,10 @@ class BarkRecorderState extends State<BarkRecorder> {
                                 padding: const EdgeInsets.all(20.0),
                               ),
                               Padding(padding: EdgeInsets.only(top: 16)),
-                              Text("UPLOAD AUDIO\nFROM VIDEO",
+                              Text("LOAD AUDIO\nFROM VIDEO",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                      fontSize: 16,
+                                      fontSize: 14,
                                       color: Theme.of(context).primaryColor))
                             ],
                           ),
@@ -274,7 +274,7 @@ class BarkRecorderState extends State<BarkRecorder> {
                                       ? "RECORDING...\nTAP TO STOP"
                                       : "RECORD AUDIO",
                                   style: TextStyle(
-                                      fontSize: 16,
+                                      fontSize: 14,
                                       color: Theme.of(context).errorColor))
                             ],
                           ),
