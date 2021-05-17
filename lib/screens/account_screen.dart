@@ -14,6 +14,8 @@ import 'package:flutter/material.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 
+import 'change_password_screen.dart';
+
 class AccountScreen extends StatefulWidget {
   static const routeName = 'account-screen';
 
@@ -28,6 +30,8 @@ class _AccountState extends State<AccountScreen> {
   Songs songs;
   Barks barks;
   Pictures pictures;
+
+  final fontSize = 32.0;
 
   void _removeData() {
     cards.removeAll();
@@ -149,7 +153,8 @@ class _AccountState extends State<AccountScreen> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text("Logout",
                       style: TextStyle(
-                          fontSize: 40, color: Theme.of(context).primaryColor)),
+                          fontSize: fontSize,
+                          color: Theme.of(context).primaryColor)),
                 ),
               ),
               GestureDetector(
@@ -160,7 +165,23 @@ class _AccountState extends State<AccountScreen> {
                   child: Text(
                     "Subscription",
                     style: TextStyle(
-                        fontSize: 40, color: Theme.of(context).primaryColor),
+                        fontSize: fontSize,
+                        color: Theme.of(context).primaryColor),
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context)
+                      .pushNamed(ChangePasswordScreen.routeName);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "Change Password",
+                    style: TextStyle(
+                        fontSize: fontSize,
+                        color: Theme.of(context).primaryColor),
                   ),
                 ),
               ),
@@ -171,7 +192,8 @@ class _AccountState extends State<AccountScreen> {
                   child: Text(
                     "Delete Account",
                     style: TextStyle(
-                        fontSize: 40, color: Theme.of(context).primaryColor),
+                        fontSize: fontSize,
+                        color: Theme.of(context).primaryColor),
                   ),
                 ),
               ),
