@@ -1,7 +1,17 @@
+// Protocol (use http for local network)
+// LOCAL
+// const String proto = "http";
+const String proto = "https";
+
 // DEV
 const String serverIP = '165.227.178.14';
 const String serverURL = 'thedogbarksthesong.ml';
 const String bucketName = 'song_barker_sequences';
+
+// JMF
+// const String serverIP = 'http://10.0.0.187:3000/';
+// const String serverURL = 'http://10.0.0.187:3000';
+// const String bucketName = 'song_barker_sequences';
 
 // PROD
 // const String serverIP = '68.183.113.8';
