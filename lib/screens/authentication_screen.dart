@@ -41,6 +41,117 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   bool _showAgreement = false;
   bool _agreementAccepted = false;
 
+// added jmf -- forgot password state
+  TextEditingController _textFieldController = TextEditingController();
+  String forgotPasswordEmail;
+  String valueText;
+
+  void _displayResetPasswordInstructions(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (ctx) {
+          return CustomDialog(
+            header: 'Verify email address',
+            bodyText:
+                'Reset email sent to $forgotPasswordEmail.\n\nGo to your inbox and click the link to reset password.',
+            primaryFunction: (BuildContext modalContext) async {
+              var response = await _handleManualSignIn(success: () {
+                Navigator.of(modalContext).pop();
+                SystemChrome.setEnabledSystemUIOverlays([]);
+              });
+            },
+            primaryButtonText: "Sign In",
+            secondaryButtonText: "Cancel",
+            iconPrimary: Icon(
+              CustomIcons.modal_mailbox,
+              size: 42,
+              color: Colors.grey[300],
+            ),
+            iconSecondary: Icon(
+              CustomIcons.modal_paws_topleft,
+              size: 42,
+              color: Colors.grey[300],
+            ),
+            isYesNo: true,
+          );
+        });
+  }
+
+  Future<void> _displayForgotPasswordDialog(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Recover Password'),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(32.0))),
+            content: Container(
+              height: 150,
+              child: Stack(
+                children: <Widget>[
+                  TextField(
+                    onChanged: (value) {
+                      setState(() {
+                        valueText = value;
+                      });
+                    },
+                    controller: _textFieldController,
+                    decoration:
+                        InputDecoration(hintText: "Email you signed up with"),
+                  ),
+                  Positioned(
+                    bottom: 20,
+                    left: 20,
+                    child: Icon(
+                      CustomIcons.modal_paws_topleft,
+                      size: 42,
+                      color: Colors.grey[300],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                color: Colors.red,
+                textColor: Colors.white,
+                child: Text('CANCEL'),
+                onPressed: () {
+                  setState(() {
+                    Navigator.pop(context);
+                  });
+                },
+              ),
+              FlatButton(
+                color: Colors.blue,
+                textColor: Colors.white,
+                child: Text('OK'),
+                onPressed: () {
+                  setState(() {
+                    forgotPasswordEmail = valueText;
+                    Navigator.pop(context);
+                  });
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  void _handleForgotPassword() async {
+    print("_handleForgotPassword");
+    await _displayForgotPasswordDialog(context);
+    print("email: " + forgotPasswordEmail);
+    if (forgotPasswordEmail.isNotEmpty) {
+      Map result = await RestAPI.userForgotPassword(forgotPasswordEmail);
+      print("\n\n\n\n");
+      print(result['success']);
+      _displayResetPasswordInstructions(context);
+    } else {
+      print("Null email for forgot password");
+    }
+  }
+
   Future<void> acceptAgreement(bool isAccepted) async {
     setState(() {
       _showAgreement = false;
@@ -413,6 +524,23 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                     ),
                                   ),
                                 ],
+                              ),
+                              Container(
+                                height: 50,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: FlatButton(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 5, horizontal: 10),
+                                    child: Text("Forgot Password",
+                                        style: TextStyle(fontSize: 14)),
+                                    color: Theme.of(context).primaryColor,
+                                    onPressed: _handleForgotPassword,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(22.0),
+                                    ),
+                                  ),
+                                ),
                               ),
                               Container(
                                 width: 200,
