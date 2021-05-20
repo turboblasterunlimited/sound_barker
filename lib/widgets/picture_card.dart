@@ -15,9 +15,7 @@ class PictureCard extends StatefulWidget {
   final Pictures pictures;
   final List<Widget> displayList;
 
-  PictureCard(
-      this.picture, this.pictures, this.displayList,
-      {Key key})
+  PictureCard(this.picture, this.pictures, this.displayList, {Key key})
       : super(key: key);
 
   @override

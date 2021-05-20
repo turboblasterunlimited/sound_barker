@@ -105,15 +105,22 @@ class _CustomAppBarState extends State<CustomAppBar> {
                     visible: showActionIcon,
                     child: IconButton(
                       icon: Icon(
-                        widget.isMainMenu
-                            ? CustomIcons.hambooger_close
-                            : LineAwesomeIcons.arrow_circle_left,
+                        CustomIcons.hambooger,
                         color: Colors.black,
-                        size: 35,
+                        size: 30,
                       ),
+                      // IconButton(
+                      //   icon: Icon(
+                      //     widget.isMainMenu
+                      //         ? CustomIcons.hambooger_close
+                      //         : LineAwesomeIcons.arrow_circle_left,
+                      //     color: Colors.black,
+                      //     size: 35,
+                      //   ),
                       onPressed: () {
                         SystemChrome.setEnabledSystemUIOverlays([]);
-                        Navigator.of(context).pop();
+                        Navigator.of(context).pushNamed(MenuScreen.routeName);
+                        //Navigator.of(context).pop();
                       },
                     ),
                   )

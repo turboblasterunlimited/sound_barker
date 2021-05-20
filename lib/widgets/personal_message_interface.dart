@@ -245,8 +245,8 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface> {
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: SizedBox(
-                height: 72,
-                width: 150,
+                height: 100,
+                width: 175,
                 child: !_canAddMessage()
                     ? Text(
                         cards.current.hasASong
