@@ -65,7 +65,7 @@ class CardTypeScreen extends StatelessWidget {
               children: [
                 Positioned(
                   right: 20,
-                  top: 5,
+                  top: 30,
                   child: Icon(Icons.mail_outline, size: 40, color: Colors.grey),
                 ),
                 Center(
