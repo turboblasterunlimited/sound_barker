@@ -39,9 +39,13 @@ class _PlaybackCardState extends State<PlaybackCard> {
           scale: 3,
           child: SpinKitWave(size: 15, color: Theme.of(context).primaryColor));
     else if (widget.isPlaying)
-      return Transform.scale(
-        scale: 4,
-        child: Icon(Icons.stop, color: Theme.of(context).errorColor, size: 15),
+      return Transform.translate(
+        child: Transform.scale(
+          scale: 5,
+          child:
+              Icon(Icons.stop, color: Theme.of(context).errorColor, size: 15),
+        ),
+        offset: const Offset(0, 1.5),
       );
     else
       return Container(
@@ -92,7 +96,10 @@ class _PlaybackCardState extends State<PlaybackCard> {
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Theme.of(context).primaryColor,
+                          color: widget.isPlaying
+                              ? Colors.grey
+                              : Theme.of(context).primaryColor,
+                          //color: Colors.amber,
                           fontSize: 16,
                         ),
                       ),
