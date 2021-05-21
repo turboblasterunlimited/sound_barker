@@ -65,6 +65,16 @@ class _MouthInterfaceState extends State<MouthInterface> {
     super.dispose();
   }
 
+  List<int> interpolate(double sliderVal) {
+    List<int> result = [0, 0, 0];
+    Color color = Color.lerp(
+        Colors.black, Color.fromRGBO(145, 101, 110, 1.0), sliderVal / 3.0);
+    result[0] = color.red;
+    result[1] = color.green;
+    result[2] = color.blue;
+    return result;
+  }
+
   List<double> colorToDecimal(List<int> currentColor) {
     List<double> result = [0.0, 0.0, 0.0];
     currentColor.asMap().forEach((i, val) {
@@ -166,17 +176,9 @@ class _MouthInterfaceState extends State<MouthInterface> {
                   onChanged: (double sliderVal) {
                     setState(() {
                       mouthColorSliderValue = sliderVal;
-                      sliderMouthTone.asMap().forEach((i, value) {
-                        double adjustedVal;
-                        if (sliderVal > 2) {
-                          adjustedVal = sliderVal - 2;
-                        } else if (sliderVal > 1) {
-                          adjustedVal = sliderVal - 1;
-                        } else if (sliderVal >= 0) {
-                          adjustedVal = sliderVal;
-                        }
-                        currentMouthColor[i] = (value * adjustedVal).round();
-                      });
+
+                      // jmf -- changed to use interpolate
+                      currentMouthColor = interpolate(sliderVal);
                     });
                     imageController
                         .setMouthColor(colorToDecimal(currentMouthColor));
@@ -269,19 +271,9 @@ class _MouthInterfaceState extends State<MouthInterface> {
                         ? (double sliderVal) {
                             setState(() {
                               lipColorSliderValue = sliderVal;
-                              sliderLipTone.asMap().forEach((i, value) {
-                                double adjustedVal;
-                                if (sliderVal > 2) {
-                                  adjustedVal = sliderVal - 2;
-                                } else if (sliderVal > 1) {
-                                  adjustedVal = sliderVal - 1;
-                                } else if (sliderVal >= 0) {
-                                  adjustedVal = sliderVal;
-                                }
-                                currentLipColor[i] =
-                                    (value * adjustedVal).round();
-                              });
+                              currentLipColor = interpolate(sliderVal);
                             });
+
                             imageController
                                 .setLipColor(colorToDecimal(currentLipColor));
                           }
