@@ -10,11 +10,13 @@ import 'package:K9_Karaoke/screens/subscription_screen.dart';
 import 'package:K9_Karaoke/widgets/custom_appbar.dart';
 import 'package:K9_Karaoke/widgets/custom_dialog.dart';
 import 'package:K9_Karaoke/widgets/error_dialog.dart';
+import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 
 import 'change_password_screen.dart';
+import 'menu_screen.dart';
 
 class AccountScreen extends StatefulWidget {
   static const routeName = 'account-screen';
@@ -133,9 +135,9 @@ class _AccountState extends State<AccountScreen> {
       key: _scaffoldKey,
       resizeToAvoidBottomInset: false,
       extendBodyBehindAppBar: true,
-      appBar: CustomAppBar(isMenu: true, pageTitle: "Account"),
+      appBar: CustomAppBar(isMenu: true, noName: true),
       body: Container(
-        padding: EdgeInsets.only(top: 60),
+        padding: EdgeInsets.only(top: 0),
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage("assets/backgrounds/menu_background.png"),
@@ -144,9 +146,18 @@ class _AccountState extends State<AccountScreen> {
         ),
         child: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(top: 100, bottom: 10),
+                child: InterfaceTitleNav(
+                  title: "ACCOUNT",
+                  titleSize: 22,
+                  backCallback: () => Navigator.of(context)
+                      .popAndPushNamed(MenuScreen.routeName),
+                ),
+              ),
               GestureDetector(
                 onTap: () => _handleLogout(),
                 child: Padding(

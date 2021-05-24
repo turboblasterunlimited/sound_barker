@@ -73,7 +73,8 @@ When done with the recipient’s name and typed message press Share to send it v
           borderRadius: BorderRadius.circular(16),
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 8),
-            color: Colors.white,
+            // color: Colors.white,
+            color: Color.fromRGBO(255, 255, 255, 0.3),
             child: ListView(
               shrinkWrap: true,
               children: [
