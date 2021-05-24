@@ -1,7 +1,8 @@
 import 'dart:io';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:K9_Karaoke/providers/sound_controller.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+//import 'package:carousel_slider/carousel_slider.dart';
+import 'package:K9_Karaoke/carousel_slider/carousel_slider.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart' as PATH;
 
@@ -535,8 +536,10 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
 
     return Column(
       children: <Widget>[
-        InterfaceTitleNav(title: "CHOOSE FRAME",
-            backCallback: backCallback, skipCallback: skipCallback),
+        InterfaceTitleNav(
+            title: "CHOOSE FRAME",
+            backCallback: backCallback,
+            skipCallback: skipCallback),
         // Divider(
         //   color: Theme.of(context).primaryColor,
         //   thickness: 3,
