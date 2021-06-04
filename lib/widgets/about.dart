@@ -23,7 +23,7 @@ The first K-9 Karaoke greeting card is free.  After that then please subscribe t
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.only(right: 16.0, left: 16.0, bottom: 16),
+        padding: const EdgeInsets.only(right: 16.0, left: 16.0, bottom: 4),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(16),
           child: Container(

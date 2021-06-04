@@ -182,10 +182,10 @@ class BarkRecorderState extends State<BarkRecorder> {
         // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           InterfaceTitleNav(
-              title: 'CAPTURE BARKS\nUSING EITHER...',
-              titleSize: 20,
-              backCallback: _backCallback,
-              skipCallback: _skipCallback),
+            title: 'CAPTURE BARKS\nUSING EITHER...',
+            titleSize: 20,
+            backCallback: _backCallback,
+          ),
           _loading
               ? LoadingHalfScreenWidget("Processing Barks...")
               : Column(
@@ -200,7 +200,7 @@ class BarkRecorderState extends State<BarkRecorder> {
                         // Video Upload
                         SizedBox(
                           height: 130,
-                          width: 135,
+                          width: 80,
                           child: Column(
                             children: <Widget>[
                               RawMaterialButton(
@@ -211,20 +211,20 @@ class BarkRecorderState extends State<BarkRecorder> {
                                     : _handleUploadVideoButton,
                                 child: Icon(
                                   Icons.movie,
-                                  size: 30,
+                                  size: 20,
                                   color: Colors.white,
                                 ),
                                 shape: CircleBorder(),
                                 elevation: 2.0,
                                 fillColor: Theme.of(context).primaryColor,
-                                padding: const EdgeInsets.all(20.0),
+                                padding: const EdgeInsets.all(10.0),
                               ),
                               Padding(padding: EdgeInsets.only(top: 16)),
                               Text("LOAD AUDIO\nFROM VIDEO",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontSize: 14,
-                                      color: Theme.of(context).primaryColor))
+                                      color: Theme.of(context).primaryColor)),
                             ],
                           ),
                         ),
@@ -233,7 +233,7 @@ class BarkRecorderState extends State<BarkRecorder> {
                           child: Text(
                             "OR",
                             style: TextStyle(
-                              fontSize: 25,
+                              fontSize: 15,
                               color: Theme.of(context).accentColor,
                             ),
                           ),
@@ -241,7 +241,7 @@ class BarkRecorderState extends State<BarkRecorder> {
                         // Record Audio
                         SizedBox(
                           height: 130,
-                          width: 145,
+                          width: 80,
                           child: Column(
                             children: <Widget>[
                               RawMaterialButton(
@@ -252,13 +252,13 @@ class BarkRecorderState extends State<BarkRecorder> {
                                 child: _loading
                                     ? SpinKitWave(
                                         color: Colors.white,
-                                        size: 20,
+                                        size: 15,
                                       )
                                     : Icon(
                                         _isRecording
                                             ? Icons.stop
                                             : Icons.fiber_manual_record,
-                                        size: 30,
+                                        size: 20,
                                         color: Colors.white,
                                       ),
                                 shape: _isRecording
@@ -266,7 +266,7 @@ class BarkRecorderState extends State<BarkRecorder> {
                                     : CircleBorder(),
                                 elevation: 2.0,
                                 fillColor: Theme.of(context).errorColor,
-                                padding: const EdgeInsets.all(20.0),
+                                padding: const EdgeInsets.all(10.0),
                               ),
                               Padding(padding: EdgeInsets.only(top: 16)),
                               Text(
@@ -275,27 +275,63 @@ class BarkRecorderState extends State<BarkRecorder> {
                                       : "RECORD AUDIO",
                                   style: TextStyle(
                                       fontSize: 14,
-                                      color: Theme.of(context).errorColor))
+                                      color: Theme.of(context).errorColor)),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 35.0),
+                          child: Text(
+                            "OR",
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Theme.of(context).accentColor,
+                            ),
+                          ),
+                        ),
+                        // Record Audio
+                        SizedBox(
+                          height: 130,
+                          width: 80,
+                          child: Column(
+                            children: <Widget>[
+                              RawMaterialButton(
+                                onPressed: _skipCallback,
+                                child: Icon(
+                                  Icons.contactless,
+                                  size: 20,
+                                  color: Colors.white,
+                                ),
+                                shape: CircleBorder(),
+                                elevation: 2.0,
+                                fillColor: Theme.of(context).primaryColor,
+                                padding: const EdgeInsets.all(10.0),
+                              ),
+                              Padding(padding: EdgeInsets.only(top: 16)),
+                              Text("STOCK BARKS AND EFFECTS",
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      color: Theme.of(context).errorColor)),
                             ],
                           ),
                         ),
                       ],
                     ),
                     // ADD BARKS BUTTON
-                    if (barks.tempRawBark == null)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20.0),
-                        child: Center(
-                          child: Text(
-                            "Press 'Skip' to use Stock Barks and FX\nor barks you may have already recorded.",
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontStyle: FontStyle.italic,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
+                    // if (barks.tempRawBark == null)
+                    //   Padding(
+                    //     padding: const EdgeInsets.only(top: 20.0),
+                    //     child: Center(
+                    //       child: Text(
+                    //         "Press 'Skip' to use Stock Barks and FX\nor barks you may have already recorded.",
+                    //         style: TextStyle(
+                    //           color: Colors.grey,
+                    //           fontStyle: FontStyle.italic,
+                    //         ),
+                    //         textAlign: TextAlign.center,
+                    //       ),
+                    //     ),
+                    //   ),
                     if (barks.tempRawBark != null && !_isRecording)
                       GestureDetector(
                         onTap: _handleCropBarksAndContinue,
