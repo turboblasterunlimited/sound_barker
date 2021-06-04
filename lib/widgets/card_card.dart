@@ -195,7 +195,7 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
                   ),
                 ),
                 if (user.subscribed)
-                // if (true)
+                  // if (true)
                   Positioned(
                     right: -25,
                     top: -5,
@@ -204,6 +204,7 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
                         PopupMenuButton(
                           onSelected: imageActions,
                           child: RawMaterialButton(
+                            onPressed: null,
                             child: Icon(
                               Icons.more_vert,
                               color: Colors.black38,
