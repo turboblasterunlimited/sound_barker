@@ -241,7 +241,7 @@ class BarkRecorderState extends State<BarkRecorder> {
                         // Record Audio
                         SizedBox(
                           height: 130,
-                          width: 80,
+                          width: 120,
                           child: Column(
                             children: <Widget>[
                               RawMaterialButton(
