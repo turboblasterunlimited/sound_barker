@@ -21,13 +21,21 @@ K-9 Karaoke is an app for making greeting cards in which your dog sings/barks so
 The first K-9 Karaoke greeting card is free.  After that then please subscribe to either a monthly or yearly account for unlimited use.   ''';
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+    var screenSize = "Your screen is " +
+        (screenWidth).round().toString() +
+        " by " +
+        (screenHeight).round().toString() +
+        ".\n\n";
+
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.only(right: 16.0, left: 16.0, bottom: 4),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(16),
           child: Container(
-            height: 500,
+            height: 400,
             padding: EdgeInsets.symmetric(horizontal: 8),
             color: Color.fromRGBO(255, 255, 255, 0.3),
             child: ListView(
@@ -37,6 +45,7 @@ The first K-9 Karaoke greeting card is free.  After that then please subscribe t
                   text: TextSpan(
                     style: DefaultTextStyle.of(context).style,
                     children: <TextSpan>[
+                      TextSpan(text: screenSize, style: reg),
                       TextSpan(text: text, style: reg),
                       TextSpan(text: '\n\n', style: reg),
                     ],
