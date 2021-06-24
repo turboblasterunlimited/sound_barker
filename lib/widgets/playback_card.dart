@@ -43,9 +43,9 @@ class _PlaybackCardState extends State<PlaybackCard> {
         child: Transform.scale(
           scale: 5,
           child:
-              Icon(Icons.stop, color: Theme.of(context).errorColor, size: 15),
+              Icon(Icons.stop, color: Theme.of(context).errorColor, size: 10),
         ),
-        offset: const Offset(0, 1.5),
+        offset: const Offset(0, 4),
       );
     else
       return Container(
@@ -62,15 +62,26 @@ class _PlaybackCardState extends State<PlaybackCard> {
   Widget build(BuildContext context) {
     return Row(
       children: <Widget>[
-        IconButton(
-          icon: Icon(
-            widget.isSelected
-                ? Icons.music_note
-                : Icons.check_box_outline_blank_rounded,
-            color: Theme.of(context).primaryColor,
+        Column(children: <Widget>[
+          IconButton(
+            padding: const EdgeInsets.all(0.0),
+            icon: widget.isSelected
+                ? Icon(Icons.music_note)
+                : ImageIcon(
+                    AssetImage("assets/images/Circle.png"),
+                    color: Theme.of(context).primaryColor,
+                  ),
+            iconSize: 36,
+            onPressed: widget.select,
           ),
-          onPressed: widget.select,
-        ),
+        ]),
+        // IconButton(
+        //   icon: widget.isSelected
+        //       ? Icons.music_note
+        //       : Image.asset('assets/images/Circle.png'),
+        //   iconSize: 24,
+        //   onPressed: widget.select,
+        // ),
         // Playback button
         // Select bark button
         Expanded(

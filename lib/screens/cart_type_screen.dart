@@ -28,6 +28,9 @@ class CardTypeScreen extends StatelessWidget {
 
   Widget build(BuildContext context) {
     print("Building CardTypeScreen");
+
+    double textSize = 14;
+
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
     card = Provider.of<KaraokeCards>(context, listen: false).current;
 
@@ -116,7 +119,7 @@ class CardTypeScreen extends StatelessWidget {
                           padding: const EdgeInsets.only(bottom: 12.0),
                           child: Text("CARD WITH NEW SONG",
                               style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: textSize,
                                   color: Theme.of(context).primaryColor),
                               textAlign: TextAlign.center),
                         ),
@@ -142,7 +145,7 @@ class CardTypeScreen extends StatelessWidget {
                                 "GO",
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 16,
+                                  fontSize: textSize,
                                 ),
                               ),
                             ],
@@ -173,9 +176,9 @@ class CardTypeScreen extends StatelessWidget {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(bottom: 12.0),
-                          child: Text("USE A SONG YOU\nALREADY MADE",
+                          child: Text("USE SONG \nALREADY MADE",
                               style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: textSize,
                                   color: Theme.of(context).primaryColor),
                               textAlign: TextAlign.center),
                         ),
@@ -201,7 +204,7 @@ class CardTypeScreen extends StatelessWidget {
                                 "GO",
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 16,
+                                  fontSize: textSize,
                                 ),
                               ),
                             ],
@@ -234,7 +237,7 @@ class CardTypeScreen extends StatelessWidget {
                           padding: const EdgeInsets.only(bottom: 12.0),
                           child: Text("JUST VOICE MESSAGE\nNO SONG",
                               style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: textSize,
                                   color: Theme.of(context).primaryColor),
                               textAlign: TextAlign.center),
                         ),
@@ -265,7 +268,7 @@ class CardTypeScreen extends StatelessWidget {
                                 "GO",
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 16,
+                                  fontSize: textSize,
                                 ),
                               ),
                             ],

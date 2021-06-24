@@ -195,6 +195,7 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface> {
     return Column(
       children: <Widget>[
         InterfaceTitleNav(
+            titleSize: cards.current.hasASong ? 16 : 18,
             title: cards.current.hasASong ? "PRE-SONG MESSAGE" : "CARD MESSAGE",
             backCallback: backCallback,
             skipCallback: skipCallback),
@@ -234,7 +235,7 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface> {
                     ),
                     Padding(padding: EdgeInsets.only(top: 5)),
                     Text(
-                      _isRecording ? "RECORDING...  \nTAP TO STOP" : "RECORD",
+                      _isRecording ? "RECORDING,  \nTAP TO STOP" : "RECORD",
                       style: TextStyle(
                           fontSize: 14, color: Theme.of(context).errorColor),
                     )

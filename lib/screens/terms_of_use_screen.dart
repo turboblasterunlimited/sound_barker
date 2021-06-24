@@ -1,4 +1,6 @@
+import 'package:K9_Karaoke/screens/about_screen.dart';
 import 'package:K9_Karaoke/widgets/custom_appbar.dart';
+import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:K9_Karaoke/widgets/terms_of_use.dart';
 import 'package:flutter/material.dart';
 
@@ -10,9 +12,11 @@ class TermsOfUseScreen extends StatelessWidget {
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomInset: false,
-      appBar: CustomAppBar(isMenu: true, pageTitle: "Terms of Use"),
+      appBar: CustomAppBar(
+          isMenu: false, /*pageTitle: "Terms of Use"*/ noName: true),
       // Background image
       body: Container(
+        padding: EdgeInsets.only(top: 60),
         height: MediaQuery.of(context).size.height,
         decoration: BoxDecoration(
           image: DecorationImage(
@@ -22,7 +26,15 @@ class TermsOfUseScreen extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Padding(padding: EdgeInsets.only(top: 75)),
+            Padding(
+              padding: EdgeInsets.only(top: 0, bottom: 10),
+              child: InterfaceTitleNav(
+                title: "TERMS OF USE",
+                titleSize: 22,
+                backCallback: () => Navigator.of(context)
+                    .popAndPushNamed(AboutScreen.routeName),
+              ),
+            ),
             TermsOfUse(),
           ],
         ),

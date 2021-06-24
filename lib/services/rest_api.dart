@@ -47,11 +47,13 @@ class RestAPI {
   }
 
   static Future<dynamic> userForgotPassword(userId) async {
-    Map data = {"user_id": userId};
+    Map data = {"email": userId};
     var response;
+    var url = 'https://$serverURL/request-reset-password';
+    print("forgot password: " + url);
     try {
       response = await HttpController.dioPost(
-        'https://$serverURL/temp-password',
+        url,
         data: data,
       );
     } catch (e) {

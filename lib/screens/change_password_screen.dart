@@ -2,11 +2,13 @@ import 'dart:async';
 import 'dart:io' show Platform;
 import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/the_user.dart';
+import 'package:K9_Karaoke/screens/account_screen.dart';
 import 'package:K9_Karaoke/screens/retrieve_data_screen.dart';
 import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:K9_Karaoke/widgets/custom_appbar.dart';
 import 'package:K9_Karaoke/widgets/custom_dialog.dart';
 import 'package:K9_Karaoke/widgets/error_dialog.dart';
+import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:K9_Karaoke/widgets/user_agreement.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,6 +23,8 @@ import 'package:K9_Karaoke/services/http_controller.dart';
 import 'package:provider/provider.dart';
 import '../services/authenticate_user.dart';
 import 'package:K9_Karaoke/globals.dart';
+
+import 'menu_screen.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   static const routeName = 'change-password-screen';
@@ -131,8 +135,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         key: _scaffoldKey,
         resizeToAvoidBottomInset: false,
         extendBodyBehindAppBar: true,
-        appBar: CustomAppBar(isMenu: false, pageTitle: "Change Password"),
+        appBar: CustomAppBar(isMenu: false, noName: true),
         body: Container(
+          padding: EdgeInsets.only(top: 60),
           decoration: BoxDecoration(
             image: DecorationImage(
               image: AssetImage("assets/backgrounds/menu_background.png"),
@@ -146,26 +151,19 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               child: Stack(
                 alignment: Alignment.topCenter,
                 children: <Widget>[
-                  // Positioned(
-                  //   left: 0,
-                  //   right: 0,
-                  //   top: 20,
-                  //   child: Padding(
-                  //     padding: EdgeInsets.only(
-                  //       left: iconPadding,
-                  //       right: iconPadding,
-                  //       top: iconPaddingTop,
-                  //     ),
-                  //     child: SvgPicture.asset(
-                  //       "assets/logos/K9_logotype.svg",
-                  //       // width: 100,
-                  //     ),
-                  //   ),
-                  // ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 20.0),
+                    padding: EdgeInsets.only(top: 20, bottom: 0),
+                    child: InterfaceTitleNav(
+                      title: "     CHANGE PASSWORD",
+                      titleSize: 20,
+                      backCallback: () => Navigator.of(context)
+                          .popAndPushNamed(AccountScreen.routeName),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 100.0),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
                         ConstrainedBox(
                           constraints: BoxConstraints(maxWidth: 400),

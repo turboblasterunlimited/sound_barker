@@ -182,8 +182,8 @@ class BarkRecorderState extends State<BarkRecorder> {
         // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           InterfaceTitleNav(
-            title: 'CAPTURE BARKS\nUSING EITHER...',
-            titleSize: 20,
+            title: 'CAPTURE BARKS\nUSING ...',
+            titleSize: 16,
             backCallback: _backCallback,
           ),
           _loading
@@ -220,7 +220,7 @@ class BarkRecorderState extends State<BarkRecorder> {
                                 padding: const EdgeInsets.all(10.0),
                               ),
                               Padding(padding: EdgeInsets.only(top: 16)),
-                              Text("LOAD AUDIO\nFROM VIDEO",
+                              Text("AUDIO FROM VIDEO",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontSize: 14,
@@ -272,7 +272,7 @@ class BarkRecorderState extends State<BarkRecorder> {
                               Text(
                                   _isRecording
                                       ? "RECORDING...\nTAP TO STOP"
-                                      : "RECORD AUDIO",
+                                      : "RECORD\nAUDIO",
                                   style: TextStyle(
                                       fontSize: 14,
                                       color: Theme.of(context).errorColor)),
@@ -292,26 +292,41 @@ class BarkRecorderState extends State<BarkRecorder> {
                         // Record Audio
                         SizedBox(
                           height: 130,
-                          width: 80,
+                          width: 75,
                           child: Column(
                             children: <Widget>[
+                              // IconButton(
+                              //   padding: const EdgeInsets.all(0.0),
+                              //   icon: ImageIcon(
+                              //     AssetImage("assets/images/BarksAndFX.png"),
+                              //     color: Theme.of(context).primaryColor,
+                              //   ),
+                              //   iconSize: 20,
+                              //   onPressed: _skipCallback,
+                              // ),
                               RawMaterialButton(
                                 onPressed: _skipCallback,
-                                child: Icon(
-                                  Icons.contactless,
-                                  size: 20,
-                                  color: Colors.white,
+                                child: Image.asset(
+                                  "assets/images/BarksAndFX.png",
+                                  height: 20,
+                                  width: 20,
+                                  fit: BoxFit.fitWidth,
                                 ),
+                                // Icon(
+                                //   Icons.contactless,
+                                //   size: 20,
+                                //   color: Colors.white,
+                                // ),
                                 shape: CircleBorder(),
                                 elevation: 2.0,
                                 fillColor: Theme.of(context).primaryColor,
                                 padding: const EdgeInsets.all(10.0),
                               ),
                               Padding(padding: EdgeInsets.only(top: 16)),
-                              Text("STOCK BARKS AND EFFECTS",
+                              Text("STOCK BARKS\nAND FX",
                                   style: TextStyle(
                                       fontSize: 14,
-                                      color: Theme.of(context).errorColor)),
+                                      color: Theme.of(context).primaryColor)),
                             ],
                           ),
                         ),

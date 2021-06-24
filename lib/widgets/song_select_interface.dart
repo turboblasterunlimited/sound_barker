@@ -95,10 +95,10 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
                   child: Padding(
                     padding: const EdgeInsets.only(left: 1.0),
                     child: Text(
-                      "SELECT",
+                      "    ",
                       style: TextStyle(
                         color: Colors.blue,
-                        decoration: TextDecoration.underline,
+                        // decoration: TextDecoration.underline,
                       ),
                       textAlign: TextAlign.left,
                     ),
@@ -111,8 +111,8 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
                         child: Text(
                           "LISTEN TO BACKING TRACK",
                           style: TextStyle(
-                            color: Colors.blue,
-                            decoration: TextDecoration.underline,
+                            color: Theme.of(context).primaryColor,
+                            // decoration: TextDecoration.underline,
                           ),
                           textAlign: TextAlign.center,
                         ))),

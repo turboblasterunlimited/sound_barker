@@ -401,20 +401,20 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
          * JMF 3/29/2021: Added header row
          */
         Row(children: <Widget>[
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 1.0),
-              child: Text(
-                "SELECT",
-                style: TextStyle(
-                  color: Colors.blue,
-                  decoration: TextDecoration.underline,
-                ),
-                textAlign: TextAlign.left,
-              ),
-            ),
-          ),
+          // Align(
+          //   alignment: Alignment.centerLeft,
+          //   child: Padding(
+          //     padding: const EdgeInsets.only(left: 1.0),
+          //     child: Text(
+          //       "SELECT",
+          //       style: TextStyle(
+          //         color: Colors.blue,
+          //         // decoration: TextDecoration.underline,
+          //       ),
+          //       textAlign: TextAlign.left,
+          //     ),
+          //   ),
+          // ),
           Expanded(
               flex: 1,
               child: Align(
@@ -422,8 +422,8 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
                   child: Text(
                     "LISTEN TO BARK",
                     style: TextStyle(
-                      color: Colors.blue,
-                      decoration: TextDecoration.underline,
+                      color: Theme.of(context).primaryColor,
+                      // decoration: TextDecoration.underline,
                     ),
                     textAlign: TextAlign.center,
                   ))),
