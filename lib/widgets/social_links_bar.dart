@@ -26,16 +26,16 @@ Widget socialLinksBar(BuildContext context) {
         ),
         padding: const EdgeInsets.all(10.0),
       ),
-      RawMaterialButton(
-        onPressed: null,
-        child: Image.asset(
-          "assets/logos/Twitter social icons - rounded square - blue.png",
-          height: 40,
-          width: 40,
-          fit: BoxFit.fitWidth,
-        ),
-        padding: const EdgeInsets.all(10.0),
-      ),
+      // RawMaterialButton(
+      //   onPressed: null,
+      //   child: Image.asset(
+      //     "assets/logos/Twitter social icons - rounded square - blue.png",
+      //     height: 40,
+      //     width: 40,
+      //     fit: BoxFit.fitWidth,
+      //   ),
+      //   padding: const EdgeInsets.all(10.0),
+      // ),
     ],
   );
 }
