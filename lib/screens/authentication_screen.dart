@@ -388,17 +388,20 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     double height = MediaQuery.of(ctx).size.height;
     double iconPadding = height > 1000 ? 100 : height / 15;
     double iconPaddingTop = height > 1000 ? 130 : 0;
+    const largeScreenLogoOffset = 330.0;
+    const normalScreenLogoOffset = 200.0;
 
     return SafeArea(
       child: _showAgreement
           ? UserAgreement(acceptAgreement)
           : Scaffold(
               key: _scaffoldKey,
-              resizeToAvoidBottomInset: false,
+              resizeToAvoidBottomInset: true,
               extendBodyBehindAppBar: true,
               appBar: null,
               body: SingleChildScrollView(
                 child: Container(
+                  height: height,
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       image:
@@ -430,146 +433,154 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(top: 180.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                ConstrainedBox(
-                                  constraints: BoxConstraints(maxWidth: 400),
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 30, right: 30, bottom: 15),
-                                    child: TextField(
-                                      onChanged: (emailValue) {
-                                        setState(() {
-                                          email = emailValue;
-                                        });
-                                      },
-                                      onSubmitted: (_) {
-                                        passwordFocusNode.requestFocus();
-                                      },
-                                      decoration: InputDecoration(
-                                        filled: true,
-                                        fillColor: Colors.white,
-                                        border: OutlineInputBorder(),
-                                        labelText: 'Email',
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                ConstrainedBox(
-                                  constraints: BoxConstraints(maxWidth: 400),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 30.0),
-                                    child: TextField(
-                                      obscureText: obscurePassword,
-                                      focusNode: passwordFocusNode,
-                                      onChanged: (passwordValue) {
-                                        setState(
-                                            () => password = passwordValue);
-                                      },
-                                      onSubmitted: (_) {
-                                        FocusScope.of(context).unfocus();
-                                        SystemChrome.setEnabledSystemUIOverlays(
-                                            []);
-                                      },
-                                      decoration: InputDecoration(
-                                        filled: true,
-                                        fillColor: Colors.white,
-                                        border: OutlineInputBorder(),
-                                        labelText: 'Password',
-                                        suffixIcon: GestureDetector(
-                                          onTap: () => setState(() =>
-                                              obscurePassword =
-                                                  !obscurePassword),
-                                          child: Icon(obscurePassword
-                                              ? LineAwesomeIcons.eye_slash
-                                              : LineAwesomeIcons.eye),
+                            padding: height > 1000
+                                ? const EdgeInsets.only(
+                                    top: largeScreenLogoOffset)
+                                : const EdgeInsets.only(
+                                    top: normalScreenLogoOffset),
+                            child: SingleChildScrollView(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  ConstrainedBox(
+                                    constraints: BoxConstraints(maxWidth: 400),
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 30, right: 30, bottom: 15),
+                                      child: TextField(
+                                        onChanged: (emailValue) {
+                                          setState(() {
+                                            email = emailValue;
+                                          });
+                                        },
+                                        onSubmitted: (_) {
+                                          passwordFocusNode.requestFocus();
+                                        },
+                                        decoration: InputDecoration(
+                                          filled: true,
+                                          fillColor: Colors.white,
+                                          border: OutlineInputBorder(),
+                                          labelText: 'Email',
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                ButtonBar(
-                                  alignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Padding(
+                                  ConstrainedBox(
+                                    constraints: BoxConstraints(
+                                        maxWidth: 400, maxHeight: 100),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 30.0),
+                                      child: TextField(
+                                        obscureText: obscurePassword,
+                                        focusNode: passwordFocusNode,
+                                        onChanged: (passwordValue) {
+                                          setState(
+                                              () => password = passwordValue);
+                                        },
+                                        onSubmitted: (_) {
+                                          FocusScope.of(context).unfocus();
+                                          SystemChrome
+                                              .setEnabledSystemUIOverlays([]);
+                                        },
+                                        decoration: InputDecoration(
+                                          filled: true,
+                                          fillColor: Colors.white,
+                                          border: OutlineInputBorder(),
+                                          labelText: 'Password',
+                                          suffixIcon: GestureDetector(
+                                            onTap: () => setState(() =>
+                                                obscurePassword =
+                                                    !obscurePassword),
+                                            child: Icon(obscurePassword
+                                                ? LineAwesomeIcons.eye_slash
+                                                : LineAwesomeIcons.eye),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  ButtonBar(
+                                    alignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: FlatButton(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 10, horizontal: 20),
+                                          child: Text("Sign Up",
+                                              style: TextStyle(fontSize: 20)),
+                                          color: Theme.of(context).primaryColor,
+                                          onPressed: _handleSignUp(
+                                            _handleManualSignUp,
+                                            manualSignUp: true,
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(22.0),
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: FlatButton(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 10, horizontal: 20),
+                                          child: Text("Sign In",
+                                              style: TextStyle(fontSize: 20)),
+                                          color: Theme.of(context).primaryColor,
+                                          onPressed: _handleSignInButton,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(22.0),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Container(
+                                    height: 50,
+                                    child: Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: FlatButton(
                                         padding: EdgeInsets.symmetric(
-                                            vertical: 10, horizontal: 20),
-                                        child: Text("Sign Up",
-                                            style: TextStyle(fontSize: 20)),
+                                            vertical: 5, horizontal: 10),
+                                        child: Text("Forgot Password",
+                                            style: TextStyle(fontSize: 14)),
                                         color: Theme.of(context).primaryColor,
-                                        onPressed: _handleSignUp(
-                                          _handleManualSignUp,
-                                          manualSignUp: true,
-                                        ),
+                                        onPressed: _handleForgotPassword,
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(22.0),
                                         ),
                                       ),
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: FlatButton(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 10, horizontal: 20),
-                                        child: Text("Sign In",
-                                            style: TextStyle(fontSize: 20)),
-                                        color: Theme.of(context).primaryColor,
-                                        onPressed: _handleSignInButton,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(22.0),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Container(
-                                  height: 50,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: FlatButton(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 5, horizontal: 10),
-                                      child: Text("Forgot Password",
-                                          style: TextStyle(fontSize: 14)),
-                                      color: Theme.of(context).primaryColor,
-                                      onPressed: _handleForgotPassword,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(22.0),
-                                      ),
+                                  ),
+                                  Container(
+                                    width: 200,
+                                    padding:
+                                        EdgeInsets.only(top: 10, bottom: 15),
+                                    child: Divider(
+                                      color: Colors.black,
+                                      thickness: 2,
                                     ),
                                   ),
-                                ),
-                                Container(
-                                  width: 200,
-                                  padding: EdgeInsets.only(top: 10, bottom: 15),
-                                  child: Divider(
-                                    color: Colors.black,
-                                    thickness: 2,
+                                  Center(
+                                    child: GoogleSignInButton(
+                                      text: "Continue with Google",
+                                      onPressed: _handleSignUp(
+                                          _handleGoogleAuthentication),
+                                    ),
                                   ),
-                                ),
-                                Center(
-                                  child: GoogleSignInButton(
-                                    text: "Continue with Google",
-                                    onPressed: _handleSignUp(
-                                        _handleGoogleAuthentication),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 15.0),
+                                    child: FacebookSignInButton(
+                                      onPressed: _handleSignUp(
+                                          _handleFacebookAuthentication),
+                                    ),
                                   ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 15.0),
-                                  child: FacebookSignInButton(
-                                    onPressed: _handleSignUp(
-                                        _handleFacebookAuthentication),
-                                  ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           )
                         ],

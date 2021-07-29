@@ -8,6 +8,7 @@ import 'package:K9_Karaoke/screens/account_screen.dart';
 import 'package:K9_Karaoke/screens/my_cards.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/widgets/custom_appbar.dart';
+import 'package:K9_Karaoke/widgets/social_links_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
@@ -130,33 +131,56 @@ class _MenuState extends State<MenuScreen> {
                   endIndent: 20,
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: IconButton(
-                        icon: Icon(LineAwesomeIcons.facebook,
-                            size: 40, color: Theme.of(context).primaryColor),
-                        onPressed: null),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: IconButton(
-                        icon: Icon(LineAwesomeIcons.instagram,
-                            size: 40, color: Theme.of(context).primaryColor),
-                        onPressed: null),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: IconButton(
-                        icon: Icon(LineAwesomeIcons.twitter,
-                            size: 40, color: Theme.of(context).primaryColor),
-                        onPressed: null),
-                  ),
-                ],
-              ),
+              socialLinksBar(context),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   crossAxisAlignment: CrossAxisAlignment.center,
+              //   children: <Widget>[
+
+              //     RawMaterialButton(
+              //       onPressed: null,
+              //       child: Image.asset(
+              //         "assets/logos/facebook256.png",
+              //         height: 40,
+              //         width: 40,
+              //         fit: BoxFit.fitWidth,
+              //       ),
+              //       padding: const EdgeInsets.all(10.0),
+              //     ),
+              //     RawMaterialButton(
+              //       onPressed: null,
+              //       child: Image.asset(
+              //         "assets/logos/Instagram_AppIcon_Aug2017.png",
+              //         height: 40,
+              //         width: 40,
+              //         fit: BoxFit.fitWidth,
+              //       ),
+              //       padding: const EdgeInsets.all(10.0),
+              //     ),
+              //     // -- old icon buttons
+              //     // Padding(
+              //     //   padding: const EdgeInsets.all(8.0),
+              //     //   child: IconButton(
+              //     //       icon: Icon(LineAwesomeIcons.facebook,
+              //     //           size: 40, color: Theme.of(context).primaryColor),
+              //     //       onPressed: null),
+              //     // ),
+              //     // Padding(
+              //     //   padding: const EdgeInsets.all(8.0),
+              //     //   child: IconButton(
+              //     //       icon: Icon(LineAwesomeIcons.instagram,
+              //     //           size: 40, color: Theme.of(context).primaryColor),
+              //     //       onPressed: null),
+              //     // ),
+              //     // Padding(
+              //     //   padding: const EdgeInsets.all(8.0),
+              //     //   child: IconButton(
+              //     //       icon: Icon(LineAwesomeIcons.twitter,
+              //     //           size: 40, color: Theme.of(context).primaryColor),
+              //     //       onPressed: null),
+              //     // ),
+              //   ],
+              // ),
             ],
           ),
         ),

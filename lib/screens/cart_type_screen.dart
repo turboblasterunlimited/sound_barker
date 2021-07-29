@@ -3,9 +3,12 @@ import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/screens/set_picture_coordinates_screen.dart';
 import 'package:K9_Karaoke/widgets/custom_appbar.dart';
+import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
+
+import 'menu_screen.dart';
 
 class CardTypeScreen extends StatelessWidget {
   static const routeName = 'card-type-screen';
@@ -40,7 +43,7 @@ class CardTypeScreen extends StatelessWidget {
       appBar: CustomAppBar(noName: true),
       body: Container(
         // appbar offset
-        padding: EdgeInsets.only(top: 20),
+        padding: EdgeInsets.only(top: 70),
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage("assets/backgrounds/create_background.png"),
@@ -50,6 +53,15 @@ class CardTypeScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
+            // Padding(
+            //   padding: EdgeInsets.only(top: 0, bottom: 10),
+            //   child: InterfaceTitleNav(
+            //     title: "Choose Type Of\nGreeting Card",
+            //     titleSize: 20,
+            //     backCallback: () =>
+            //         Navigator.of(context).popAndPushNamed(MenuScreen.routeName),
+            //   ),
+            // ),
             GestureDetector(
               behavior: HitTestBehavior.translucent,
               onTap: () => backCallback(context),
@@ -58,8 +70,23 @@ class CardTypeScreen extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Icon(LineAwesomeIcons.angle_left),
-                    Text('Back'),
+                    Icon(LineAwesomeIcons.angle_left,
+                        color: Theme.of(context).primaryColor),
+                    Text(
+                      'Back',
+                      style: TextStyle(color: Theme.of(context).primaryColor),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 40),
+                      child: Text(
+                        "Choose Type Of\nGreeting Card",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 20,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -74,14 +101,6 @@ class CardTypeScreen extends StatelessWidget {
                 Center(
                   child: Column(
                     children: [
-                      Text(
-                        "Choose Type Of\nGreeting Card",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 22,
-                        ),
-                      ),
                       Text(
                         "Now that you have your dog ready,\nselect what type of card you want.",
                         style: TextStyle(color: Theme.of(context).primaryColor),

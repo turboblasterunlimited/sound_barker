@@ -99,8 +99,11 @@ class _ShareScreenState extends State<ShareScreen> {
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Row(children: <Widget>[
-                    Icon(LineAwesomeIcons.angle_left),
-                    Text('Back'),
+                    Icon(LineAwesomeIcons.angle_left,
+                        color: Theme.of(context).primaryColor),
+                    Text('Back',
+                        style:
+                            TextStyle(color: Theme.of(context).primaryColor)),
                   ]),
                 ),
               ),

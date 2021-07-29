@@ -11,6 +11,7 @@ import 'package:K9_Karaoke/widgets/custom_appbar.dart';
 import 'package:K9_Karaoke/widgets/custom_dialog.dart';
 import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
+import 'package:K9_Karaoke/widgets/social_links_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
@@ -218,33 +219,34 @@ class _AccountState extends State<AccountScreen> {
                   endIndent: 20,
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: IconButton(
-                        icon: Icon(LineAwesomeIcons.facebook,
-                            size: 40, color: Theme.of(context).primaryColor),
-                        onPressed: null),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: IconButton(
-                        icon: Icon(LineAwesomeIcons.instagram,
-                            size: 40, color: Theme.of(context).primaryColor),
-                        onPressed: null),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: IconButton(
-                        icon: Icon(LineAwesomeIcons.twitter,
-                            size: 40, color: Theme.of(context).primaryColor),
-                        onPressed: null),
-                  ),
-                ],
-              ),
+              socialLinksBar(context),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   crossAxisAlignment: CrossAxisAlignment.center,
+              //   children: <Widget>[
+              //     Padding(
+              //       padding: const EdgeInsets.all(8.0),
+              //       child: IconButton(
+              //           icon: Icon(LineAwesomeIcons.facebook,
+              //               size: 40, color: Theme.of(context).primaryColor),
+              //           onPressed: null),
+              //     ),
+              //     Padding(
+              //       padding: const EdgeInsets.all(8.0),
+              //       child: IconButton(
+              //           icon: Icon(LineAwesomeIcons.instagram,
+              //               size: 40, color: Theme.of(context).primaryColor),
+              //           onPressed: null),
+              //     ),
+              //     Padding(
+              //       padding: const EdgeInsets.all(8.0),
+              //       child: IconButton(
+              //           icon: Icon(LineAwesomeIcons.twitter,
+              //               size: 40, color: Theme.of(context).primaryColor),
+              //           onPressed: null),
+              //     ),
+              //   ],
+              // ),
             ],
           ),
         ),

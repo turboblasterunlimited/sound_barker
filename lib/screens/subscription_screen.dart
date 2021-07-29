@@ -3,10 +3,14 @@ import 'package:K9_Karaoke/providers/the_user.dart';
 import 'package:K9_Karaoke/screens/main_screen.dart';
 import 'package:K9_Karaoke/widgets/custom_appbar.dart';
 import 'package:K9_Karaoke/widgets/error_dialog.dart';
+import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:K9_Karaoke/widgets/loading_half_screen_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
+
+import 'account_screen.dart';
+import 'menu_screen.dart';
 
 class SubscriptionScreen extends StatefulWidget {
   static const routeName = 'subscription-screen';
@@ -87,7 +91,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomInset: false,
-      appBar: CustomAppBar(isMenu: true, pageTitle: "Subscription"),
+      appBar: CustomAppBar(noName: true),
       // Background image
       body: Container(
         height: MediaQuery.of(context).size.height,
@@ -108,6 +112,15 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Padding(padding: EdgeInsets.only(top: 75)),
+                          Padding(
+                            padding: EdgeInsets.only(top: 0, bottom: 10),
+                            child: InterfaceTitleNav(
+                              title: "SUBSCRIPTION ",
+                              titleSize: 20,
+                              backCallback: () => Navigator.of(context)
+                                  .popAndPushNamed(AccountScreen.routeName),
+                            ),
+                          ),
                           Center(
                             child: Text(
                               "YOUR SUBSCRIPTION IS",
