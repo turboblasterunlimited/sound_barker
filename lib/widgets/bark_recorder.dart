@@ -229,7 +229,7 @@ class BarkRecorderState extends State<BarkRecorder> {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 35.0),
+                          padding: const EdgeInsets.only(bottom: 80.0),
                           child: Text(
                             "OR",
                             style: TextStyle(
@@ -280,7 +280,7 @@ class BarkRecorderState extends State<BarkRecorder> {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 35.0),
+                          padding: const EdgeInsets.only(bottom: 80.0),
                           child: Text(
                             "OR",
                             style: TextStyle(
