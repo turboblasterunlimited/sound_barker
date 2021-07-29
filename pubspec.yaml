@@ -19,7 +19,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_ffmpeg: ^0.3.0
+  flutter_ffmpeg: 0.4.0
   # flutter_sound_lite: ^5.0.1
   # flutter_sound: ^6.1.4
   sounds: ^1.0.0-beta.13
