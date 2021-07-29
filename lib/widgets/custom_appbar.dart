@@ -37,7 +37,9 @@ class _CustomAppBarState extends State<CustomAppBar> {
   TheUser currentUser;
   var notificationPadding;
   var screenWidth;
+  var screenHeight;
   var logoWidth;
+  var logoHeight;
   bool showActionIcon;
 
   Widget _getMiddleSpace() {
@@ -65,8 +67,9 @@ class _CustomAppBarState extends State<CustomAppBar> {
 
   getLogoWidth() {
     var width = (screenWidth / 4.5) - notificationPadding;
-    // return width > 100 ? 100 : width;
-    return width;
+
+    return width > 100.0 ? 100.0 : width;
+    //return width;
   }
 
   @override
@@ -75,6 +78,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
     currentUser ??= Provider.of<TheUser>(context);
     notificationPadding ??= MediaQuery.of(context).padding.top;
     screenWidth ??= MediaQuery.of(context).size.width;
+    screenHeight ??= MediaQuery.of(context).size.height;
     logoWidth ??= getLogoWidth();
     showActionIcon ??=
         currentUser.email != null && (cards.hasPicture || !widget.isMainMenu);

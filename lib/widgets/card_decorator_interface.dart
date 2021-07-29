@@ -174,10 +174,11 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                     behavior: HitTestBehavior.opaque,
                     onTap: backCallback,
                     child: Row(children: <Widget>[
-                      Icon(LineAwesomeIcons.angle_left, color: Colors.grey),
+                      Icon(LineAwesomeIcons.angle_left,
+                          color: Theme.of(context).primaryColor),
                       Text(
                         'Back',
-                        style: TextStyle(color: Theme.of(context).accentColor),
+                        style: TextStyle(color: Theme.of(context).primaryColor),
                       ),
                     ]),
                   ),
@@ -257,9 +258,10 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                     child: Row(children: <Widget>[
                       Text(
                         'Skip',
-                        style: TextStyle(color: Theme.of(context).accentColor),
+                        style: TextStyle(color: Theme.of(context).primaryColor),
                       ),
-                      Icon(LineAwesomeIcons.angle_right, color: Colors.grey),
+                      Icon(LineAwesomeIcons.angle_right,
+                          color: Theme.of(context).primaryColor),
                     ]),
                   ),
                 ],
@@ -320,7 +322,8 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(left: 8.0, bottom: 5.0),
+                            padding:
+                                const EdgeInsets.only(left: 8.0, bottom: 5.0),
                             child: Icon(CustomIcons.undo,
                                 color: Theme.of(context).primaryColor,
                                 size: iconButtonSize),

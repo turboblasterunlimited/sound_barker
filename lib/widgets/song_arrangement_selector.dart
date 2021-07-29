@@ -48,13 +48,15 @@ class _SongArrangementSelector extends State<SongArrangementSelector> {
     songs = Provider.of<Songs>(context, listen: false);
 
     return SizedBox(
-      height: 300,
+      height: 465,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          InterfaceTitleNav(title: "CHOOSE STYLE",
-              titleSize: 20, backCallback: currentActivity.setPreviousSubStep),
+          InterfaceTitleNav(
+              title: "CHOOSE STYLE",
+              titleSize: 20,
+              backCallback: currentActivity.setPreviousSubStep),
           _isLoading
               ? LoadingHalfScreenWidget("Creating Song...")
               : SizedBox(

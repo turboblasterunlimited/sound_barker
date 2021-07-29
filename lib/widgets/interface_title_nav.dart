@@ -40,8 +40,10 @@ class _InterfaceTitleNavState extends State<InterfaceTitleNav> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Icon(LineAwesomeIcons.angle_left),
-                  Text('Back'),
+                  Icon(LineAwesomeIcons.angle_left,
+                      color: Theme.of(context).primaryColor),
+                  Text('Back',
+                      style: TextStyle(color: Theme.of(context).primaryColor)),
                 ],
               ),
             ),
@@ -69,8 +71,11 @@ class _InterfaceTitleNavState extends State<InterfaceTitleNav> {
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
                 child: Row(
                   children: <Widget>[
-                    Text('Skip'),
-                    Icon(LineAwesomeIcons.angle_right),
+                    Text('Skip',
+                        style:
+                            TextStyle(color: Theme.of(context).primaryColor)),
+                    Icon(LineAwesomeIcons.angle_right,
+                        color: Theme.of(context).primaryColor),
                   ],
                 ),
               ),
