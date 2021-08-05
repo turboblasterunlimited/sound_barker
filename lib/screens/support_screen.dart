@@ -10,11 +10,14 @@ class SupportScreen extends StatelessWidget {
 
   final Uri emailUri = Uri(
       scheme: 'mailto',
-      path: 'Support@TurboBlasterUnlimited.com',
+      path: 'support@turboblasterunlimited.com',
       queryParameters: {'subject': 'Help'});
 
   @override
   Widget build(BuildContext context) {
+    final ButtonStyle style =
+        ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomInset: false,
@@ -40,17 +43,27 @@ class SupportScreen extends StatelessWidget {
                     .popAndPushNamed(AboutScreen.routeName),
               ),
             ),
+            // Center(
+            //   child: Text("Email Us!",
+            //       style: TextStyle(
+            //           color: Theme.of(context).primaryColor, fontSize: 20)),
+            // ),
             Expanded(
               child: Center(
-                child: GestureDetector(
-                  onTap: () => {launch(emailUri.toString())},
-                  child: Text(
-                    "Email us!\n\nSupport@TurboBlasterUnlimited.com",
-                    style: TextStyle(
-                        fontSize: 20, color: Theme.of(context).primaryColor),
-                    textAlign: TextAlign.center,
-                  ),
+                child: ElevatedButton(
+                  style: style,
+                  onPressed: () => {launch(emailUri.toString())},
+                  child: const Text('Email Us!'),
                 ),
+                // child: GestureDetector(
+                //   onTap: () => {launch(emailUri.toString())},
+                //   child: Text(
+                //     "Email us!\n\nsupport@turboblasterunlimited.com",
+                //     style: TextStyle(
+                //         fontSize: 20, color: Theme.of(context).primaryColor),
+                //     textAlign: TextAlign.center,
+                //   ),
+                // ),
               ),
             ),
           ],
