@@ -177,11 +177,20 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     return currentActivity.isStyle && currentActivity.isTwo;
   }
 
+  bool get isLargeHeightChooseStyleBeforeRender {
+    return currentActivity.isSpeak && currentActivity.isFive;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (firstBuild) _runOnce();
 
     print("Building main screen");
+
+    // jmf diagnostics
+    print(currentActivity.cardCreationStep.toString());
+    print(currentActivity.cardCreationSubStep.toString());
+
     screenWidth ??= MediaQuery.of(context).size.width;
     frameToScreenWidth ??= screenWidth / 656;
     framePadding ??= frameToScreenWidth * 72;

@@ -388,7 +388,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     double height = MediaQuery.of(ctx).size.height;
     double iconPadding = height > 1000 ? 100 : height / 15;
     double iconPaddingTop = height > 1000 ? 130 : 0;
-    const largeScreenLogoOffset = 330.0;
+    const largeScreenLogoOffset = 430.0;
     const normalScreenLogoOffset = 200.0;
 
     return SafeArea(
