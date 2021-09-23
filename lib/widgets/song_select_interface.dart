@@ -77,6 +77,34 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
       );
     }
 
+    // factored out animated list so it can be sorted
+    var animatedList = AnimatedList(
+      key: _listKey,
+      initialItemCount: songs.all.length,
+      padding: const EdgeInsets.all(0),
+      itemBuilder: (ctx, i, Animation<double> animation) => SongPlaybackCard(
+        i,
+        songs.all[i],
+        songs,
+        soundController,
+        animation,
+      ),
+    );
+
+    // factored listview so it can be sorted.
+    var listView = ListView.builder(
+      padding: const EdgeInsets.only(right: 10),
+      itemCount: creatableSongs.all.length,
+      itemBuilder: (ctx, i) => CreatableSongCard(
+          creatableSongs.all[i], soundController, cards, currentActivity),
+    );
+
+    // jmf - 9/23/2021: hack to make 99 Bottles of Beer last
+    if (creatableSongs.all[0].name == "99 Bottles of Beer") {
+      var s = creatableSongs.all.removeAt(0);
+      creatableSongs.all.add(s);
+    }
+
     return currentActivity.cardType == null
         ? Center()
         : Column(
@@ -138,31 +166,10 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
                           )
 
                         // SELECT OLD SONG
-                        : AnimatedList(
-                            key: _listKey,
-                            initialItemCount: songs.all.length,
-                            padding: const EdgeInsets.all(0),
-                            itemBuilder:
-                                (ctx, i, Animation<double> animation) =>
-                                    SongPlaybackCard(
-                              i,
-                              songs.all[i],
-                              songs,
-                              soundController,
-                              animation,
-                            ),
-                          )
+                        : animatedList
 
                     // CREATE NEW SONG
-                    : ListView.builder(
-                        padding: const EdgeInsets.only(right: 10),
-                        itemCount: creatableSongs.all.length,
-                        itemBuilder: (ctx, i) => CreatableSongCard(
-                            creatableSongs.all[i],
-                            soundController,
-                            cards,
-                            currentActivity),
-                      ),
+                    : listView,
               ),
             ],
           );
