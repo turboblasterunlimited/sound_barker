@@ -15,7 +15,7 @@ import 'package:K9_Karaoke/providers/sound_controller.dart';
 import 'package:K9_Karaoke/services/gcloud.dart';
 import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
-import 'package:K9_Karaoke/widgets/loading_half_screen_widget.dart';
+import 'package:K9_Karaoke/widgets/loading_quarter_screen_widget.dart';
 import 'package:K9_Karaoke/widgets/subscribe_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -64,6 +64,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     await RestAPI.createCardDecorationImage(cards.current.decorationImage);
   }
 
+  // ignore: missing_return
   Future<KaraokeCard> createBaseCard() async {
     try {
       if (!cards.current.noFrameOrDecoration) {
@@ -104,8 +105,8 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     );
   }
 
-  void handleSaveAndSend () async {
-    if (!user.subscribed && !cards.currentIsFirst) return _subscribeDialog();
+  void handleSaveAndSend() async {
+//    if (!user.subscribed && !cards.currentIsFirst) return _subscribeDialog();
     if (cards.current.uuid == null) await createBaseCard();
     Navigator.of(context).pushNamed(EnvelopeScreen.routeName);
   }
@@ -126,7 +127,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
       // shares height with decorator interface to maintain art canvas art alignment.
       height: 130,
       child: loadingMessage != null
-          ? LoadingHalfScreenWidget(loadingMessage, 25)
+          ? LoadingQuarterScreenWidget(loadingMessage, 25)
           : Column(
               children: [
                 InterfaceTitleNav(
