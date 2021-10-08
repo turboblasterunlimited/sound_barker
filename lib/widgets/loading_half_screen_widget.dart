@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class LoadingHalfScreenWidget extends StatefulWidget {
-  String message;
-  double size;
+  final String message;
+  final double size;
 
   LoadingHalfScreenWidget(this.message, [this.size]);
   @override
@@ -12,7 +12,6 @@ class LoadingHalfScreenWidget extends StatefulWidget {
 
 class _LoadingHalfScreenWidget extends State<LoadingHalfScreenWidget> {
   Widget build(BuildContext context) {
-
     // Must be child of COLUMN or ROW widget and parent of COLUMN or ROW must have fixed height.
     return Expanded(
       child: Column(
