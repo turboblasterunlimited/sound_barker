@@ -51,21 +51,6 @@ class EnvelopeScreen extends StatelessWidget {
         ),
         child: Column(
           children: [
-            GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onTap: () {
-                Navigator.of(context).pop();
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Row(children: <Widget>[
-                  Icon(LineAwesomeIcons.angle_left,
-                      color: Theme.of(context).primaryColor),
-                  Text('Back',
-                      style: TextStyle(color: Theme.of(context).primaryColor)),
-                ]),
-              ),
-            ),
             Padding(
               padding: EdgeInsets.all(10),
             ),
