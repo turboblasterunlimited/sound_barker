@@ -209,7 +209,7 @@ class _MouthInterfaceState extends State<MouthInterface> {
           children: [
             Align(
               alignment: Alignment.topCenter,
-              child: Text("Lip Thickness"),
+              child: Text("Lower Lip Width"),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -250,7 +250,7 @@ class _MouthInterfaceState extends State<MouthInterface> {
             children: [
               Align(
                 alignment: Alignment.topCenter,
-                child: Text("Lip Color"),
+                child: Text("Lower Lip Color"),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
