@@ -107,8 +107,46 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
 
   void handleSaveAndSend() async {
 //    if (!user.subscribed && !cards.currentIsFirst) return _subscribeDialog();
-    if (cards.current.uuid == null) await createBaseCard();
-    Navigator.of(context).pushNamed(EnvelopeScreen.routeName);
+// jmf -- 18Oct2021
+    // if (cards.current.uuid == null) await createBaseCard();
+    // Navigator.of(context).pushNamed(EnvelopeScreen.routeName);
+    _warnThenSaveAndSend();
+  }
+
+  void _warnThenSaveAndSend() async {
+    if (cards.current.uuid != null) {
+      Navigator.of(context).pushNamed(EnvelopeScreen.routeName);
+    } else {
+      return showDialog(
+          context: context,
+          builder: (BuildContext ctx) {
+            return CustomDialog(
+              header: "Are you sure you're done?",
+              bodyText: "You can no longer edit your card after this step!",
+              primaryFunction: (BuildContext modalContext) async {
+                print("Editing done");
+                await createBaseCard();
+                Navigator.of(modalContext)
+                    .popAndPushNamed(EnvelopeScreen.routeName);
+              },
+              secondaryFunction: (BuildContext modalContext) async {
+                print("Editing continues");
+                Navigator.of(modalContext).pop();
+              },
+              iconPrimary: Icon(
+                CustomIcons.modal_logout,
+                size: 42,
+                color: Colors.grey[300],
+              ),
+              iconSecondary: Icon(
+                CustomIcons.modal_paws_topleft,
+                size: 42,
+                color: Colors.grey[300],
+              ),
+              isYesNo: true,
+            );
+          });
+    }
   }
 
   @override
@@ -147,7 +185,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                           RawMaterialButton(
                             // IF USER IS NOT SUBSCRIBED AND OUT OF FREE CARDS,
                             // USER IS PREVENTED FROM SAVING/SENDING AND PROMPTED TO SUBSCRIBE.
-                            onPressed: handleSaveAndSend,
+                            onPressed: _warnThenSaveAndSend,
                             child: Text(
                               cards.current.isSaved
                                   ? "Send Again"
