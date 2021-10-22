@@ -351,7 +351,8 @@ class _SetPictureCoordinatesScreenState
                   // Coordinate points are modified here
                   canvasCoordinates[grabPointName] = touchedXY;
                   // Move mouthLeft and mouthRight with mouth
-                  if (grabPointName == "mouth") moveMouthLeftRight();
+                  // comment to move each point separately.
+                  //if (grabPointName == "mouth") moveMouthLeftRight();
                 });
               },
               onPanEnd: (details) async {
