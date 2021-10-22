@@ -207,21 +207,21 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
           text: "SELECT ",
           style: TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 16,
+              fontSize: 12,
               color: Theme.of(context).primaryColor),
         ),
         TextSpan(
           text: _currentBarkLength,
           style: TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 16,
+              fontSize: 12,
               color: _currentBarkColor),
         ),
         TextSpan(
           text: " BARK",
           style: TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 16,
+              fontSize: 12,
               color: Theme.of(context).primaryColor),
         ),
       ]),
