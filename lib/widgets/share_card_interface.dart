@@ -106,7 +106,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   }
 
   void handleSaveAndSend() async {
-//    if (!user.subscribed && !cards.currentIsFirst) return _subscribeDialog();
+    if (!user.subscribed && !cards.currentIsFirst) return _subscribeDialog();
 // jmf -- 18Oct2021
     // if (cards.current.uuid == null) await createBaseCard();
     // Navigator.of(context).pushNamed(EnvelopeScreen.routeName);
@@ -185,7 +185,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                           RawMaterialButton(
                             // IF USER IS NOT SUBSCRIBED AND OUT OF FREE CARDS,
                             // USER IS PREVENTED FROM SAVING/SENDING AND PROMPTED TO SUBSCRIBE.
-                            onPressed: _warnThenSaveAndSend,
+                            onPressed: handleSaveAndSend,
                             child: Text(
                               cards.current.isSaved
                                   ? "Send Again"
