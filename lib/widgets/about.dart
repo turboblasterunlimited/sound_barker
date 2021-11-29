@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../globals.dart';
+
 class About extends StatelessWidget {
   final italic =
       TextStyle(fontStyle: FontStyle.italic, color: Colors.black, fontSize: 20);
@@ -31,6 +33,8 @@ The first K-9 Karaoke greeting card is free.  After that then please subscribe t
         (screenHeight).round().toString() +
         ".\n\n";
 
+    var server = "Your are connected to " + serverURL.toString() + ".\n\n";
+
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.only(right: 16.0, left: 16.0, bottom: 4),
@@ -48,6 +52,7 @@ The first K-9 Karaoke greeting card is free.  After that then please subscribe t
                     style: DefaultTextStyle.of(context).style,
                     children: <TextSpan>[
                       TextSpan(text: screenSize, style: reg),
+                      TextSpan(text: server, style: reg),
                       TextSpan(text: text, style: reg),
                       TextSpan(text: '\n\n', style: reg),
                     ],
