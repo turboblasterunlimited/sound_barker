@@ -33,7 +33,7 @@ The first K-9 Karaoke greeting card is free.  After that then please subscribe t
         (screenHeight).round().toString() +
         ".\n\n";
 
-    var server = "Your are connected to " + serverURL.toString() + ".\n\n";
+    var server = "You are connected to " + serverURL.toString() + ".\n\n";
 
     return SingleChildScrollView(
       child: Padding(
