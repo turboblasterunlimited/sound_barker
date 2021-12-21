@@ -97,7 +97,9 @@ class _ShareScreenState extends State<ShareScreen> {
                   Navigator.of(ctx).pop();
                 },
                 child: Padding(
-                  padding: const EdgeInsets.all(20.0),
+                  // jmf abuts top of iPhones +10, need more off the top!
+                  // padding: const EdgeInsets.all(20.0),
+                  padding: const EdgeInsets.fromLTRB(20, 70, 20, 20),
                   child: Row(children: <Widget>[
                     Icon(LineAwesomeIcons.angle_left,
                         color: Theme.of(context).primaryColor),

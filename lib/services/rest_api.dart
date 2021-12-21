@@ -366,8 +366,9 @@ class RestAPI {
         url,
         data: body,
       );
+      print("Create image success.");
     } catch (e) {
-      print("Create Image response body: ${response?.data}");
+      print("Create Image failure: " + e.toString());
       _handleAssetError(response, e);
     }
     print("Create Image response body: ${response?.data}");

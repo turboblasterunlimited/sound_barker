@@ -309,7 +309,7 @@ class _SetPictureCoordinatesScreenState
       ),
       body: Container(
         // appbar offset
-        padding: EdgeInsets.only(top: 80),
+        padding: EdgeInsets.only(top: 130),
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage("assets/backgrounds/create_background.png"),

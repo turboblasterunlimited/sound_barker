@@ -43,7 +43,7 @@ class CardTypeScreen extends StatelessWidget {
       appBar: CustomAppBar(noName: true),
       body: Container(
         // appbar offset
-        padding: EdgeInsets.only(top: 70),
+        padding: EdgeInsets.only(top: 90),
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage("assets/backgrounds/create_background.png"),
@@ -66,7 +66,7 @@ class CardTypeScreen extends StatelessWidget {
               behavior: HitTestBehavior.translucent,
               onTap: () => backCallback(context),
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+                padding: const EdgeInsets.fromLTRB(10, 20, 10, 10),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
@@ -77,7 +77,7 @@ class CardTypeScreen extends StatelessWidget {
                       style: TextStyle(color: Theme.of(context).primaryColor),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(left: 40),
+                      padding: EdgeInsets.only(top: 20, left: 40),
                       child: Text(
                         "Choose Type Of\nGreeting Card",
                         textAlign: TextAlign.center,

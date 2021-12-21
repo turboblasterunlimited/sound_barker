@@ -28,10 +28,8 @@ class _LoadingScreenWidgetState extends State<LoadingScreenWidget> {
             right: 0,
             top: 0,
             child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: SvgPicture.asset(
-                "assets/logos/K9_logotype.svg",
-              ),
+              padding: const EdgeInsets.fromLTRB(15.0, 35.0, 15.0, 15.0),
+              child: SvgPicture.asset("assets/logos/k-9K-TM.svg", width: 200),
             ),
           ),
           Column(

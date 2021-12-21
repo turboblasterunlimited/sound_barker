@@ -35,7 +35,7 @@ class SupportScreen extends StatelessWidget {
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.only(top: 0, bottom: 10),
+              padding: EdgeInsets.only(top: 70, bottom: 10),
               child: InterfaceTitleNav(
                 title: "SUPPORT",
                 titleSize: 22,

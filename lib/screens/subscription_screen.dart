@@ -111,7 +111,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                     ? Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Padding(padding: EdgeInsets.only(top: 75)),
+                          Padding(padding: EdgeInsets.only(top: 125)),
                           Padding(
                             padding: EdgeInsets.only(top: 0, bottom: 10),
                             child: InterfaceTitleNav(

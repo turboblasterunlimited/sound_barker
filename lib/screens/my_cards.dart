@@ -83,7 +83,7 @@ class _MyCardsScreenState extends State<MyCardsScreen> {
         child: Column(
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.only(top: 20, bottom: 10),
+              padding: EdgeInsets.only(top: 60, bottom: 10),
               child: InterfaceTitleNav(
                 title: "YOUR CARDS",
                 titleSize: 22,

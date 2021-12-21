@@ -37,6 +37,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   KaraokeCards cards;
   SoundController soundController;
   double screenWidth;
+  double screenHeight;
   // frame width in pixels / screenWidth in pixels
   double frameToScreenWidth;
   // Xs the frame padding in pixels
@@ -191,6 +192,17 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     print(currentActivity.cardCreationStep.toString());
     print(currentActivity.cardCreationSubStep.toString());
 
+    // jmf adjust spacing between appbar and webview
+    screenHeight ??= MediaQuery.of(context).size.height;
+    const pad0 = 80.0;
+    const pad1 = 130.0;
+    const dPad = 50.0;
+    const height0 = 667.0;
+    const height1 = 926.0;
+    const dHeight = 926.0 - 667.0;
+    var r = (screenHeight - height0) / dHeight;
+    var padTop = r * dPad + pad0;
+
     screenWidth ??= MediaQuery.of(context).size.width;
     frameToScreenWidth ??= screenWidth / 656;
     framePadding ??= frameToScreenWidth * 72;
@@ -220,7 +232,10 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
           children: <Widget>[
             // portrait, progress bar, interface, spinner
             Padding(
-              padding: const EdgeInsets.only(top: 55.0),
+              padding: EdgeInsets.only(top: padTop),
+              // padding: isStyleScreen
+              //     ? const EdgeInsets.only(top: 150)
+              //     : const EdgeInsets.only(top: 120),
               child: Column(
                 children: <Widget>[
                   // frame and portrait

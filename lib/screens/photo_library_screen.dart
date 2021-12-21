@@ -106,7 +106,7 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
       appBar: CustomAppBar(noName: true),
       body: Container(
         // appbar offset
-        padding: EdgeInsets.only(top: 80),
+        padding: EdgeInsets.only(top: 50),
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage("assets/backgrounds/create_background.png"),
@@ -116,7 +116,7 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
         child: Column(
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.only(top: 20),
+              padding: EdgeInsets.only(top: 80),
               child: InterfaceTitleNav(
                 title: "CHOOSE PHOTO",
                 titleSize: 20,

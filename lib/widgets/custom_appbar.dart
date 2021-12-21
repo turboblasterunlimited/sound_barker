@@ -22,7 +22,9 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
       this.isMainMenu = false,
       this.nameInput,
       this.pageTitle})
-      : preferredSize = Size.fromHeight(kToolbarHeight),
+      // jmf -- changed to make tool bar bigger
+//      : preferredSize = Size.fromHeight(kToolbarHeight),
+      : preferredSize = Size.fromHeight(80),
         super(key: key);
 
   @override
@@ -40,6 +42,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
   var screenHeight;
   var logoWidth;
   var logoHeight;
+  var logoTopOffset;
   bool showActionIcon;
 
   Widget _getMiddleSpace() {
@@ -66,10 +69,10 @@ class _CustomAppBarState extends State<CustomAppBar> {
   }
 
   getLogoWidth() {
-    var width = (screenWidth / 4.5) - notificationPadding;
+    var width = (screenWidth / 3) - logoTopOffset;
 
     return width > 100.0 ? 100.0 : width;
-    //return width;
+//    return width;
   }
 
   @override
@@ -79,7 +82,10 @@ class _CustomAppBarState extends State<CustomAppBar> {
     notificationPadding ??= MediaQuery.of(context).padding.top;
     screenWidth ??= MediaQuery.of(context).size.width;
     screenHeight ??= MediaQuery.of(context).size.height;
+    logoTopOffset = 10.0;
     logoWidth ??= getLogoWidth();
+    //logoWidth = 40.0;
+    //logoHeight = 20.0;
     showActionIcon ??=
         currentUser.email != null && (cards.hasPicture || !widget.isMainMenu);
 
@@ -87,16 +93,17 @@ class _CustomAppBarState extends State<CustomAppBar> {
       backgroundColor: Colors.transparent,
       elevation: 0,
       automaticallyImplyLeading: false, // Don't show the leading button
-      toolbarHeight: 80 - notificationPadding,
+      //toolbarHeight: 80 - notificationPadding,
+      toolbarHeight: 120.0,
       titleSpacing: 0,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Container(
-            padding: EdgeInsets.only(left: 10),
-            child: SvgPicture.asset("assets/logos/K9_logotype.svg",
-                width: logoWidth),
+            padding: EdgeInsets.only(top: logoTopOffset, left: 10),
+            child:
+                SvgPicture.asset("assets/logos/k-9K-TM.svg", width: logoWidth),
           ),
           _getMiddleSpace(),
           Padding(

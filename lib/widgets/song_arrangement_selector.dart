@@ -48,7 +48,7 @@ class _SongArrangementSelector extends State<SongArrangementSelector> {
     songs = Provider.of<Songs>(context, listen: false);
 
     return SizedBox(
-      height: 465,
+      height: 363,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,

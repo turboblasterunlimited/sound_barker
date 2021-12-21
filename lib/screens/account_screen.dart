@@ -151,7 +151,7 @@ class _AccountState extends State<AccountScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Padding(
-                padding: EdgeInsets.only(top: 100, bottom: 10),
+                padding: EdgeInsets.only(top: 130, bottom: 10),
                 child: InterfaceTitleNav(
                   title: "ACCOUNT",
                   titleSize: 22,
