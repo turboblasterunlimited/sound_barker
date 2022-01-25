@@ -9,13 +9,20 @@ import 'package:K9_Karaoke/widgets/custom_appbar.dart';
 import 'package:K9_Karaoke/widgets/custom_dialog.dart';
 import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import 'package:flutter/material.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:image_picker/image_picker.dart';
-import 'package:line_awesome_icons/line_awesome_icons.dart';
+
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'package:permission_handler/permission_handler.dart';
 
 class CameraOrUploadScreen extends StatelessWidget {
   static const routeName = 'camera_or_upload_screen';
-  static BuildContext con;
+  static late BuildContext con;
+
+  // JMF 28/12/2021: added because static access no longer available
+  // in ImagePicker 6.2.2
+  final ImagePicker _picker = ImagePicker();
 
   Future<void> _cropAndNavigate(newPicture, context) async {
     bool cropped = await cropImage(
@@ -55,12 +62,14 @@ class CameraOrUploadScreen extends StatelessWidget {
 
     final newPicture = Picture();
     newPicture.filePath = "$myAppStoragePath/${newPicture.fileId}.jpg";
-
-    final pickedFile = await ImagePicker().getImage(source: source);
+    var pickedFile = await _picker.pickImage(source: source);
+    // .pickImage(
+    //     {source: source, maxWidth: null, maxHeight: null, imageQuality: 100});
+    // ignore: unnecessary_null_comparison
     if (pickedFile == null) return;
     final bytes = await pickedFile.readAsBytes();
 
-    File(newPicture.filePath).writeAsBytesSync(
+    File(newPicture.filePath!).writeAsBytesSync(
         bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
     await _cropAndNavigate(newPicture, con);
   }
@@ -136,7 +145,7 @@ class CameraOrUploadScreen extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: Row(children: <Widget>[
-                      Icon(LineAwesomeIcons.angle_left,
+                      Icon(FontAwesomeIcons.angleLeft,
                           color: Theme.of(context).primaryColor),
                       Text('Back',
                           style:

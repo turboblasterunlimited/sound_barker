@@ -4,92 +4,69 @@ PODS:
   - connectivity (0.0.1):
     - Flutter
     - Reachability
-  - device_info (0.0.1):
-    - Flutter
-  - FBSDKCoreKit (5.15.1):
-    - FBSDKCoreKit/Basics (= 5.15.1)
-    - FBSDKCoreKit/Core (= 5.15.1)
-  - FBSDKCoreKit/Basics (5.15.1)
-  - FBSDKCoreKit/Core (5.15.1):
-    - FBSDKCoreKit/Basics
-  - FBSDKLoginKit (5.15.1):
-    - FBSDKLoginKit/Login (= 5.15.1)
-  - FBSDKLoginKit/Login (5.15.1):
-    - FBSDKCoreKit (~> 5.0)
   - Flutter (1.0.0)
-  - flutter_facebook_login (0.0.1):
-    - FBSDKCoreKit (~> 5.5)
-    - FBSDKLoginKit (~> 5.5)
-    - Flutter
-  - flutter_ffmpeg (0.3.0):
-    - Flutter
-    - flutter_ffmpeg/https (= 0.3.0)
-  - flutter_ffmpeg/https (0.3.0):
-    - Flutter
-    - mobile-ffmpeg-https (= 4.4)
   - flutter_keyboard_visibility (0.0.1):
     - Flutter
+  - flutter_sound (8.4.2):
+    - Flutter
+    - flutter_sound_core (= 8.4.2)
+    - mobile-ffmpeg-audio (= 4.4.LTS)
+  - flutter_sound_core (8.4.2)
   - fluttertoast (0.0.2):
     - Flutter
-  - image_cropper (0.0.3):
+  - image_cropper (0.0.4):
     - Flutter
-    - TOCropViewController (~> 2.5.4)
+    - TOCropViewController (~> 2.6.0)
   - image_picker (0.0.1):
     - Flutter
-  - mobile-ffmpeg-https (4.4)
-  - path_provider (0.0.1):
+  - mobile-ffmpeg-audio (4.4.LTS)
+  - path_provider_ios (0.0.1):
     - Flutter
-  - "permission_handler (5.0.1+1)":
+  - "permission_handler (5.1.0+2)":
     - Flutter
-  - Purchases (3.7.5):
-    - PurchasesCoreSwift (= 3.7.5)
-  - purchases_flutter (1.4.3):
+  - Purchases (3.13.1):
+    - PurchasesCoreSwift (= 3.13.1)
+  - purchases_flutter (3.8.0):
     - Flutter
-    - PurchasesHybridCommon (= 1.4.5)
-  - PurchasesCoreSwift (3.7.5)
-  - PurchasesHybridCommon (1.4.5):
-    - Purchases (= 3.7.5)
+    - PurchasesHybridCommon (= 1.11.1)
+  - PurchasesCoreSwift (3.13.1)
+  - PurchasesHybridCommon (1.11.1):
+    - Purchases (= 3.13.1)
   - Reachability (3.2)
   - share (0.0.1):
     - Flutter
-  - shared_preferences (0.0.1):
-    - Flutter
-  - sounds (0.0.1):
+  - shared_preferences_ios (0.0.1):
     - Flutter
   - storage_path (0.0.1):
     - Flutter
-  - TOCropViewController (2.5.5)
-  - url_launcher (0.0.1):
+  - TOCropViewController (2.6.0)
+  - url_launcher_ios (0.0.1):
     - Flutter
-  - webview_flutter (0.0.1):
+  - webview_flutter_wkwebview (0.0.1):
     - Flutter
 
 DEPENDENCIES:
   - airplane_mode_detection (from `.symlinks/plugins/airplane_mode_detection/ios`)
   - connectivity (from `.symlinks/plugins/connectivity/ios`)
-  - device_info (from `.symlinks/plugins/device_info/ios`)
   - Flutter (from `Flutter`)
-  - flutter_facebook_login (from `.symlinks/plugins/flutter_facebook_login/ios`)
-  - flutter_ffmpeg (from `.symlinks/plugins/flutter_ffmpeg/ios`)
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
+  - flutter_sound (from `.symlinks/plugins/flutter_sound/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - image_cropper (from `.symlinks/plugins/image_cropper/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
-  - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
   - purchases_flutter (from `.symlinks/plugins/purchases_flutter/ios`)
   - share (from `.symlinks/plugins/share/ios`)
-  - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
-  - sounds (from `.symlinks/plugins/sounds/ios`)
+  - shared_preferences_ios (from `.symlinks/plugins/shared_preferences_ios/ios`)
   - storage_path (from `.symlinks/plugins/storage_path/ios`)
-  - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
-  - webview_flutter (from `.symlinks/plugins/webview_flutter/ios`)
+  - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
+  - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
 
 SPEC REPOS:
   trunk:
-    - FBSDKCoreKit
-    - FBSDKLoginKit
-    - mobile-ffmpeg-https
+    - flutter_sound_core
+    - mobile-ffmpeg-audio
     - Purchases
     - PurchasesCoreSwift
     - PurchasesHybridCommon
@@ -101,70 +78,60 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/airplane_mode_detection/ios"
   connectivity:
     :path: ".symlinks/plugins/connectivity/ios"
-  device_info:
-    :path: ".symlinks/plugins/device_info/ios"
   Flutter:
     :path: Flutter
-  flutter_facebook_login:
-    :path: ".symlinks/plugins/flutter_facebook_login/ios"
-  flutter_ffmpeg:
-    :path: ".symlinks/plugins/flutter_ffmpeg/ios"
   flutter_keyboard_visibility:
     :path: ".symlinks/plugins/flutter_keyboard_visibility/ios"
+  flutter_sound:
+    :path: ".symlinks/plugins/flutter_sound/ios"
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
   image_cropper:
     :path: ".symlinks/plugins/image_cropper/ios"
   image_picker:
     :path: ".symlinks/plugins/image_picker/ios"
-  path_provider:
-    :path: ".symlinks/plugins/path_provider/ios"
+  path_provider_ios:
+    :path: ".symlinks/plugins/path_provider_ios/ios"
   permission_handler:
     :path: ".symlinks/plugins/permission_handler/ios"
   purchases_flutter:
     :path: ".symlinks/plugins/purchases_flutter/ios"
   share:
     :path: ".symlinks/plugins/share/ios"
-  shared_preferences:
-    :path: ".symlinks/plugins/shared_preferences/ios"
-  sounds:
-    :path: ".symlinks/plugins/sounds/ios"
+  shared_preferences_ios:
+    :path: ".symlinks/plugins/shared_preferences_ios/ios"
   storage_path:
     :path: ".symlinks/plugins/storage_path/ios"
-  url_launcher:
-    :path: ".symlinks/plugins/url_launcher/ios"
-  webview_flutter:
-    :path: ".symlinks/plugins/webview_flutter/ios"
+  url_launcher_ios:
+    :path: ".symlinks/plugins/url_launcher_ios/ios"
+  webview_flutter_wkwebview:
+    :path: ".symlinks/plugins/webview_flutter_wkwebview/ios"
 
 SPEC CHECKSUMS:
   airplane_mode_detection: f38e13bc7a6d5d1ff7d8b87c93060625bf89e394
   connectivity: c4130b2985d4ef6fd26f9702e886bd5260681467
-  device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
-  FBSDKCoreKit: 1d5acf7c9d7a2f92bb1a242dc60cae5b7adb91df
-  FBSDKLoginKit: f1ea8026a58b52d30c9f2e6a58ca7d813619fb83
-  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
-  flutter_facebook_login: cfb5659f686b1c575ef205c6b6fd20db9679d3c4
-  flutter_ffmpeg: 657ce8a1502c3d25bf34efc58b380b248836f772
+  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
+  flutter_sound: db1364f901b96c17e00101c831994487186afdf4
+  flutter_sound_core: 55a1665e7ef8cdb95ab9dd06581c746dd9c96e48
   fluttertoast: b644586ef3b16f67fae9a1f8754cef6b2d6b634b
-  image_cropper: c8f9b4157933c7bb965a66d1c5e6c8fd408c6eb4
-  image_picker: 9c3312491f862b28d21ecd8fdf0ee14e601b3f09
-  mobile-ffmpeg-https: 311fc4a8f671cf36d1d6b8f421e8246b790978d9
-  path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
-  permission_handler: eac8e15b4a1a3fba55b761d19f3f4e6b005d15b6
-  Purchases: 7ebce9418bc16732c3c3bb4b6ff7e7e397de024e
-  purchases_flutter: 63ee1ca7b56bc2b4a75bfe15e9ee230ed98987ab
-  PurchasesCoreSwift: 50636e307c1ab76c7a7894a87d042665f2fe0be9
-  PurchasesHybridCommon: b1dd1c5125ccf99b9e62b5974d0e5145895e8b87
+  image_cropper: f1668dd8d2cad2d357955caad15a40547856edcb
+  image_picker: 9aa50e1d8cdacdbed739e925b7eea16d014367e6
+  mobile-ffmpeg-audio: 1e0a053f8a6de57114e50ff48b3a85ff1c60f902
+  path_provider_ios: 7d7ce634493af4477d156294792024ec3485acd5
+  permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
+  Purchases: 2693d6444609de044ab25fcda9561bef038f24da
+  purchases_flutter: 214d452aaf860496aeee822487eafcdd962fab33
+  PurchasesCoreSwift: ca55f9ef671f89abed133775dd9e53f55007828d
+  PurchasesHybridCommon: a0313de4f31fbaf137518b2686ccdca4c91dd2b4
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   share: 0b2c3e82132f5888bccca3351c504d0003b3b410
-  shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
-  sounds: 8931411efc6013ed55ffec79513cfdff67090e83
+  shared_preferences_ios: aef470a42dc4675a1cdd50e3158b42e3d1232b32
   storage_path: 01f784dd58721c942550f38ead993d6d6a87189a
-  TOCropViewController: da59f531f8ac8a94ef6d6c0fc34009350f9e8bfe
-  url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
-  webview_flutter: d2b4d6c66968ad042ad94cbb791f5b72b4678a96
+  TOCropViewController: 3105367e808b7d3d886a74ff59bf4804e7d3ab38
+  url_launcher_ios: 02f1989d4e14e998335b02b67a7590fa34f971af
+  webview_flutter_wkwebview: 005fbd90c888a42c5690919a1527ecc6649e1162
 
-PODFILE CHECKSUM: d507b1ddff1f993484ea8125eb9101ecca5c36fb
+PODFILE CHECKSUM: 62c5c07b801197e1caf180da0633e272c8194fd1
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.11.2

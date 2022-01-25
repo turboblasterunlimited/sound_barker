@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/the_user.dart';
 import 'package:K9_Karaoke/screens/envelope_screen.dart';
@@ -11,7 +9,7 @@ import 'package:K9_Karaoke/providers/card_decoration_image.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_card_decoration_controller.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
-import 'package:K9_Karaoke/providers/sound_controller.dart';
+import 'package:K9_Karaoke/providers/flutter_sound_controller.dart';
 import 'package:K9_Karaoke/services/gcloud.dart';
 import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
@@ -28,46 +26,46 @@ class ShareCardInterface extends StatefulWidget {
 }
 
 class _ShareCardInterfaceState extends State<ShareCardInterface> {
-  SoundController soundController;
-  ImageController imageController;
-  KaraokeCards cards;
-  TheUser user;
-  KaraokeCardDecorationController cardDecorator;
-  CurrentActivity currentActivity;
-  String loadingMessage;
+  FlutterSoundController? soundController;
+  ImageController? imageController;
+  KaraokeCards? cards;
+  TheUser? user;
+  late KaraokeCardDecorationController cardDecorator;
+  late CurrentActivity currentActivity;
+  String? loadingMessage;
   String saveAndSendButtonText = "Save & Send";
 
   @override
   void dispose() {
-    soundController.stopPlayer();
-    imageController.stopAnimation();
+    soundController!.stopPlayer();
+    imageController!.stopAnimation();
     super.dispose();
   }
 
   Future<void> _captureArtwork() async {
-    if (cards.current.decorationImage != null) return;
+    if (cards!.current!.decorationImage != null) return;
     final decorationImage = CardDecorationImage();
-    decorationImage.filePath = await cardDecorator.cardPainter
-        .capturePNG(decorationImage.fileId, cards.current.framePath);
-    cards.current.setDecorationImage(decorationImage);
+    decorationImage.filePath = await cardDecorator.cardPainter!
+        .capturePNG(decorationImage.fileId!, cards!.current!.framePath);
+    cards!.current!.setDecorationImage(decorationImage);
   }
 
   Future<void> _handleAudio() async {
-    cards.current.audio.bucketFp =
-        await Gcloud.upload(cards.current.audio.filePath, "card_audios");
-    await RestAPI.createCardAudio(cards.current.audio);
+    cards!.current!.audio!.bucketFp =
+        await Gcloud.upload(cards!.current!.audio!.filePath!, "card_audios");
+    await RestAPI.createCardAudio(cards!.current!.audio);
   }
 
   Future<void> uploadDecorationImage() async {
-    cards.current.decorationImage.bucketFp = await Gcloud.upload(
-        cards.current.decorationImage.filePath, "decoration_images");
-    await RestAPI.createCardDecorationImage(cards.current.decorationImage);
+    cards!.current!.decorationImage!.bucketFp = await Gcloud.upload(
+        cards!.current!.decorationImage!.filePath!, "decoration_images");
+    await RestAPI.createCardDecorationImage(cards!.current!.decorationImage!);
   }
 
   // ignore: missing_return
-  Future<KaraokeCard> createBaseCard() async {
+  Future<void> createBaseCard() async {
     try {
-      if (!cards.current.noFrameOrDecoration) {
+      if (!cards!.current!.noFrameOrDecoration) {
         setState(() => loadingMessage = "saving artwork...");
         await _captureArtwork();
         await uploadDecorationImage();
@@ -76,21 +74,21 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
       await _handleAudio();
       print("After handle audio");
       setState(() => loadingMessage = "creating link...");
-      cards.current.uuid = Uuid().v4();
-      cards.addCurrent();
-      await RestAPI.createCard(cards.current);
+      cards!.current!.uuid = Uuid().v4();
+      cards!.addCurrent();
+      await RestAPI.createCard(cards!.current!);
       loadingMessage = null;
     } catch (e) {
-      cards.current.uuid = null;
+      cards!.current!.uuid = null;
       showError(context, e.toString());
     }
   }
 
   void _backCallback() {
-    if (cards.current.isSaved)
+    if (cards!.current!.isSaved)
       return null;
     else
-      return cards.current.isUsingDecorationImage
+      return cards!.current!.isUsingDecorationImage
           ? currentActivity.setCardCreationSubStep(CardCreationSubSteps.one)
           : currentActivity.setPreviousSubStep();
   }
@@ -106,7 +104,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   }
 
   void handleSaveAndSend() async {
-    if (!user.subscribed && !cards.currentIsFirst) return _subscribeDialog();
+    if (!user!.subscribed && !cards!.currentIsFirst) return _subscribeDialog();
 // jmf -- 18Oct2021
     // if (cards.current.uuid == null) await createBaseCard();
     // Navigator.of(context).pushNamed(EnvelopeScreen.routeName);
@@ -114,7 +112,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   }
 
   void _warnThenSaveAndSend() async {
-    if (cards.current.uuid != null) {
+    if (cards!.current!.uuid != null) {
       Navigator.of(context).pushNamed(EnvelopeScreen.routeName);
     } else {
       return showDialog(
@@ -152,7 +150,8 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   @override
   Widget build(BuildContext context) {
     print("building share interface");
-    soundController ??= Provider.of<SoundController>(context, listen: false);
+    soundController ??=
+        Provider.of<FlutterSoundController>(context, listen: false);
     imageController ??= Provider.of<ImageController>(context, listen: false);
     cards ??= Provider.of<KaraokeCards>(context, listen: true);
     user ??= Provider.of<TheUser>(context, listen: false);
@@ -165,13 +164,15 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
       // shares height with decorator interface to maintain art canvas art alignment.
       height: 130,
       child: loadingMessage != null
-          ? LoadingQuarterScreenWidget(loadingMessage, 25)
+          ? LoadingQuarterScreenWidget(loadingMessage!, 25)
           : Column(
               children: [
                 InterfaceTitleNav(
-                    title: cards.current.isSaved ? "Share Again?" : "ALL DONE!",
+                    title:
+                        cards!.current!.isSaved ? "Share Again?" : "ALL DONE!",
                     // Can't go back and edit if saved.
-                    backCallback: cards.current.isSaved ? null : _backCallback),
+                    backCallback:
+                        cards!.current!.isSaved ? null : _backCallback),
                 Container(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -187,7 +188,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                             // USER IS PREVENTED FROM SAVING/SENDING AND PROMPTED TO SUBSCRIBE.
                             onPressed: handleSaveAndSend,
                             child: Text(
-                              cards.current.isSaved
+                              cards!.current!.isSaved
                                   ? "Send Again"
                                   : "Save & Send",
                               style: TextStyle(color: Colors.white),
@@ -203,10 +204,10 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                           Padding(
                             padding: EdgeInsets.only(left: 10),
                           ),
-                          if (cards.current.isSaved)
+                          if (cards!.current!.isSaved)
                             RawMaterialButton(
                               onPressed: () {
-                                cards.newCurrent();
+                                cards!.newCurrent();
                                 cardDecorator.reset();
                                 currentActivity.setCardCreationStep(
                                     CardCreationSteps.snap);

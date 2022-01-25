@@ -7,14 +7,16 @@ import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import 'package:K9_Karaoke/widgets/loading_half_screen_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:line_awesome_icons/line_awesome_icons.dart';
+
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'package:provider/provider.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:share/share.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class ShareScreen extends StatefulWidget {
   static const routeName = 'share-screen';
-  final bool withEnvelope;
+  final bool? withEnvelope;
 
   ShareScreen({this.withEnvelope});
 
@@ -26,9 +28,9 @@ class _ShareScreenState extends State<ShareScreen> {
   final messageNode = FocusNode();
   String recipientName = "You";
   String cardMessage = "";
-  String shareLink;
-  KaraokeCard card;
-  String loadingMessage;
+  late String shareLink;
+  late KaraokeCard card;
+  String? loadingMessage;
 
   void _handleShare(ctx) async {
     await Share.share(
@@ -52,14 +54,14 @@ class _ShareScreenState extends State<ShareScreen> {
   _handleUploadFinishedCard(ctx) async {
     try {
       var result = await RestAPI.createFinishedCard(
-          card.uuid, recipientName, widget.withEnvelope);
+          card.uuid!, recipientName, widget.withEnvelope);
       setState(() {
         loadingMessage = null;
         shareLink = result["url"];
       });
     } catch (e) {
       print("finished card upload Error: $e");
-      showError(ctx, e);
+      showError(ctx, e.toString());
     }
   }
 
@@ -74,7 +76,7 @@ class _ShareScreenState extends State<ShareScreen> {
 
   @override
   Widget build(BuildContext context) {
-    card = Provider.of<KaraokeCards>(context, listen: false).current;
+    card = Provider.of<KaraokeCards>(context, listen: false).current!;
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomInset: false,
@@ -101,7 +103,7 @@ class _ShareScreenState extends State<ShareScreen> {
                   // padding: const EdgeInsets.all(20.0),
                   padding: const EdgeInsets.fromLTRB(20, 70, 20, 20),
                   child: Row(children: <Widget>[
-                    Icon(LineAwesomeIcons.angle_left,
+                    Icon(FontAwesomeIcons.angleLeft,
                         color: Theme.of(context).primaryColor),
                     Text('Back',
                         style:
@@ -137,8 +139,8 @@ class _ShareScreenState extends State<ShareScreen> {
                 thickness: 2,
               ),
               loadingMessage != null
-                  ? LoadingHalfScreenWidget(loadingMessage)
-                  : widget.withEnvelope
+                  ? LoadingHalfScreenWidget(loadingMessage!)
+                  : widget.withEnvelope!
                       ? Column(
                           children: [
                             Padding(

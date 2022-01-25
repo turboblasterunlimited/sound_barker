@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
-import 'package:K9_Karaoke/providers/sound_controller.dart';
+import 'package:K9_Karaoke/providers/flutter_sound_controller.dart';
 import 'package:K9_Karaoke/providers/the_user.dart';
 import 'package:K9_Karaoke/widgets/custom_appbar.dart';
 import 'package:K9_Karaoke/widgets/interface_switcher.dart';
@@ -28,38 +28,44 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
-  TheUser user;
-  Barks barks;
-  Songs songs;
-  Pictures pictures;
-  ImageController imageController;
-  CurrentActivity currentActivity;
-  KaraokeCards cards;
-  SoundController soundController;
-  double screenWidth;
-  double screenHeight;
+  TheUser? user;
+  Barks? barks;
+  Songs? songs;
+  Pictures? pictures;
+  ImageController? imageController;
+  CurrentActivity? currentActivity;
+  KaraokeCards? cards;
+  FlutterSoundController? soundController;
+  double? screenWidth;
+  double? screenHeight;
   // frame width in pixels / screenWidth in pixels
-  double frameToScreenWidth;
+  double? frameToScreenWidth;
   // Xs the frame padding in pixels
-  double framePadding;
+  double? framePadding;
   final textController = TextEditingController();
-  List _playbackFiles;
+  List? _playbackFiles;
   bool firstBuild = true;
   bool isPlaying = false;
 
-  List _getPlaybackFiles() {
+  List? _getPlaybackFiles() {
     if (_canPlayAudio) {
       print("_canPlayAudio");
-      return [cards.current.audio.filePath, cards.current.audio.amplitudes];
+      return [
+        cards!.current!.audio!.filePath,
+        cards!.current!.audio!.amplitudes
+      ];
     } else if (_canPlayRawBark) {
       print("_canPlayRawBark");
-      return [barks.tempRawBark.filePath, barks.tempRawBarkAmplitudes];
+      return [barks!.tempRawBark!.filePath, barks!.tempRawBarkAmplitudes];
     } else if (_canPlaySong) {
       print("_canPlaySong");
-      return [cards.current.song.filePath, cards.current.song.amplitudesPath];
+      return [
+        cards!.current!.song!.filePath,
+        cards!.current!.song!.amplitudesPath
+      ];
     } else if (_canPlayMessage) {
       print("_canPlayMessage");
-      return [cards.current.message.path, cards.current.message.amps];
+      return [cards!.current!.message.path, cards!.current!.message.amps];
     } else
       print("can't play");
     return null;
@@ -70,8 +76,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     print("INITING MAIN SCREEN");
     super.initState();
     SystemChrome.setEnabledSystemUIOverlays([]);
-    KeyboardVisibility.onChange.listen((bool visible) {
-      print('Keyboard visibility update. Is visible: ${visible}');
+    KeyboardVisibilityController().onChange.listen((bool visible) {
+      print('Keyboard visibility update. Is visible: $visible');
       if (!visible) SystemChrome.setEnabledSystemUIOverlays([]);
     });
   }
@@ -89,18 +95,18 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     songs = Provider.of<Songs>(context, listen: false);
     pictures = Provider.of<Pictures>(context, listen: true);
     imageController = Provider.of<ImageController>(context);
-    soundController = Provider.of<SoundController>(context);
+    soundController = Provider.of<FlutterSoundController>(context);
     currentActivity = Provider.of<CurrentActivity>(context);
     cards = Provider.of<KaraokeCards>(context, listen: true);
-    currentActivity.addListener(() {
+    currentActivity!.addListener(() {
       stopAll();
     });
   }
 
   void stopAll() {
     if (isPlaying) {
-      imageController.stopAnimation();
-      soundController.stopPlayer();
+      imageController!.stopAnimation();
+      soundController!.stopPlayer();
       setState(() => isPlaying = false);
     }
   }
@@ -109,40 +115,40 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     print("start all");
     setState(() => isPlaying = true);
     // Only songs have a .csv amplitude file, barks, messages and card/combined audio have a List of amplitudes in memory.
-    soundController.startPlayer(_playbackFiles[0], stopCallback: stopAll);
+    soundController!.startPlayer(_playbackFiles![0], stopCallback: stopAll);
     !_canPlayAudio && _canPlaySong
-        ? imageController.mouthTrackSound(filePath: _playbackFiles[1])
-        : imageController.mouthTrackSound(amplitudes: _playbackFiles[1]);
+        ? imageController!.mouthTrackSound(filePath: _playbackFiles![1])
+        : imageController!.mouthTrackSound(amplitudes: _playbackFiles![1]);
   }
 
   bool get _canPlayRawBark {
-    return currentActivity.isSpeak &&
-        currentActivity.isOne &&
-        barks.tempRawBark != null;
+    return currentActivity!.isSpeak &&
+        currentActivity!.isOne &&
+        barks!.tempRawBark != null;
   }
 
   bool get _canPlaySong {
-    return (currentActivity.isStyle &&
-            currentActivity.isOne &&
-            cards.current.onlySong()) ||
-        (currentActivity.isSpeak &&
-            currentActivity.isSix &&
-            cards.current.hasASong);
+    return (currentActivity!.isStyle &&
+            currentActivity!.isOne &&
+            cards!.current!.onlySong()) ||
+        (currentActivity!.isSpeak &&
+            currentActivity!.isSix &&
+            cards!.current!.hasASong);
   }
 
   bool get _canPlayMessage {
-    return (currentActivity.isStyle &&
-            currentActivity.isOne &&
-            cards.current.onlyMessage()) ||
-        (currentActivity.isSpeak &&
-            currentActivity.isSeven &&
-            (cards.current.message.exists));
+    return (currentActivity!.isStyle &&
+            currentActivity!.isOne &&
+            cards!.current!.onlyMessage()) ||
+        (currentActivity!.isSpeak &&
+            currentActivity!.isSeven &&
+            (cards!.current!.message.exists));
   }
 
   bool get _canPlayAudio {
-    return currentActivity.isStyle &&
-        (currentActivity.isOne || currentActivity.isThree) &&
-        (cards.current.audio.exists);
+    return currentActivity!.isStyle &&
+        (currentActivity!.isOne || currentActivity!.isThree) &&
+        (cards!.current!.audio!.exists);
   }
 
   void _handleTapPuppet() {
@@ -155,31 +161,31 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   }
 
   bool get _showDecorationCanvas {
-    return currentActivity.isStyle &&
-        (currentActivity.isTwo ||
-            currentActivity.isThree && cards.current.hasDecoration);
+    return currentActivity!.isStyle &&
+        (currentActivity!.isTwo ||
+            currentActivity!.isThree && cards!.current!.hasDecoration);
   }
 
   bool get showFrame {
-    return currentActivity.isStyle && cards.hasFrame;
+    return currentActivity!.isStyle && cards!.hasFrame;
   }
 
   bool get _showDecorationImage {
-    return currentActivity.isStyle &&
-        cards.current.decorationImage != null &&
-        !cards.current.shouldDeleteOldDecoration;
+    return currentActivity!.isStyle &&
+        cards!.current!.decorationImage != null &&
+        !cards!.current!.shouldDeleteOldDecoration;
   }
 
   bool get _useFramePadding {
-    return currentActivity.isStyle && cards.current.hasFrameDimension;
+    return currentActivity!.isStyle && cards!.current!.hasFrameDimension;
   }
 
   bool get isDecorationScreen {
-    return currentActivity.isStyle && currentActivity.isTwo;
+    return currentActivity!.isStyle && currentActivity!.isTwo;
   }
 
   bool get isLargeHeightChooseStyleBeforeRender {
-    return currentActivity.isSpeak && currentActivity.isFive;
+    return currentActivity!.isSpeak && currentActivity!.isFive;
   }
 
   @override
@@ -189,8 +195,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     print("Building main screen");
 
     // jmf diagnostics
-    print(currentActivity.cardCreationStep.toString());
-    print(currentActivity.cardCreationSubStep.toString());
+    print(currentActivity!.cardCreationStep.toString());
+    print(currentActivity!.cardCreationSubStep.toString());
 
     // jmf adjust spacing between appbar and webview
     screenHeight ??= MediaQuery.of(context).size.height;
@@ -200,17 +206,17 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     const height0 = 667.0;
     const height1 = 926.0;
     const dHeight = 926.0 - 667.0;
-    var r = (screenHeight - height0) / dHeight;
+    var r = (screenHeight! - height0) / dHeight;
     var padTop = r * dPad + pad0;
 
     screenWidth ??= MediaQuery.of(context).size.width;
-    frameToScreenWidth ??= screenWidth / 656;
-    framePadding ??= frameToScreenWidth * 72;
-    textController.text = cards.currentName;
+    frameToScreenWidth ??= screenWidth! / 656;
+    framePadding ??= frameToScreenWidth! * 72;
+    textController.text = cards != null ? cards!.currentName : "";
     _playbackFiles = _getPlaybackFiles();
 
     bool everythingReady() {
-      return imageController.isReady;
+      return imageController!.isReady;
     }
 
     return Scaffold(
@@ -270,25 +276,27 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                               AspectRatio(
                                 aspectRatio: 656 / 778,
                                 child: FittedBox(
-                                  child: Image.asset(cards.current.framePath),
+                                  child:
+                                      Image.asset(cards!.current!.framePath!),
                                 ),
                               ),
                             if (_showDecorationImage)
                               AspectRatio(
-                                aspectRatio: cards.current.decorationImage
+                                aspectRatio: cards!.current!.decorationImage!
                                         .hasFrameDimension
                                     ? 656 / 778
                                     : 1,
                                 child: Image.file(
-                                  File(cards.current.decorationImage.filePath),
+                                  File(cards!
+                                      .current!.decorationImage!.filePath!),
                                 ),
                               ),
                             if (_showDecorationCanvas && !_showDecorationImage)
                               IgnorePointer(
-                                ignoring: currentActivity.isThree,
+                                ignoring: currentActivity!.isThree,
                                 child: AspectRatio(
                                   aspectRatio:
-                                      cards.current.hasFrame ? 656 / 778 : 1,
+                                      cards!.current!.hasFrame ? 656 / 778 : 1,
                                   child: LayoutBuilder(
                                       builder: (context, constraints) {
                                     return Align(
@@ -328,11 +336,11 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                       ),
                     ),
                   ),
-                  if (cards.current != null &&
+                  if (cards!.current != null &&
                       !isDecorationScreen &&
-                      !cards.current.isSaved)
+                      !cards!.current!.isSaved)
                     CardProgressBar(),
-                  if (cards.current != null)
+                  if (cards!.current != null)
                     Padding(
                       padding:
                           EdgeInsets.only(top: isDecorationScreen ? 0 : 10.0),

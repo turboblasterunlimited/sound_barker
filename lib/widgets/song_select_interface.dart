@@ -2,15 +2,12 @@ import 'package:K9_Karaoke/providers/creatable_songs.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/screens/cart_type_screen.dart';
-import 'package:K9_Karaoke/screens/photo_library_screen.dart';
-import 'package:K9_Karaoke/screens/set_picture_coordinates_screen.dart';
 import 'package:K9_Karaoke/widgets/creatable_song_card.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'dart:math' as math;
 
-import '../providers/sound_controller.dart';
+import '../providers/flutter_sound_controller.dart';
 import 'package:K9_Karaoke/widgets/song_playback_card.dart';
 import '../providers/songs.dart';
 
@@ -21,14 +18,14 @@ class SongSelectInterface extends StatefulWidget {
 
 class _SongSelectInterfaceState extends State<SongSelectInterface>
     with SingleTickerProviderStateMixin {
-  AnimationController animationController;
+  AnimationController? animationController;
   var tween;
   final _listKey = GlobalKey<AnimatedListState>();
-  Songs songs;
-  KaraokeCards cards;
-  CurrentActivity currentActivity;
-  CreatableSongs creatableSongs;
-  KaraokeCard card;
+  Songs? songs;
+  KaraokeCards? cards;
+  CurrentActivity? currentActivity;
+  CreatableSongs? creatableSongs;
+  KaraokeCard? card;
   bool firstBuild = true;
 
   @override
@@ -39,36 +36,36 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
       duration: Duration(seconds: 1),
     )..repeat(reverse: true);
 
-    tween = Tween(begin: -60.0, end: -40.0).animate(animationController);
+    tween = Tween(begin: -60.0, end: -40.0).animate(animationController!);
   }
 
   @override
   void dispose() {
-    animationController.dispose();
+    animationController!.dispose();
     super.dispose();
   }
 
   void _skipCallback() {
-    card.noSongNoFormula();
-    currentActivity.setCardCreationStep(
+    card!.noSongNoFormula();
+    currentActivity!.setCardCreationStep(
         CardCreationSteps.speak, CardCreationSubSteps.seven);
   }
 
   void _backCallback() {
-    currentActivity.cardTypeNull();
+    currentActivity!.cardTypeNull();
     Navigator.of(context).pushNamed(CardTypeScreen.routeName);
   }
 
   Widget build(BuildContext context) {
     print("building song select interface");
     songs = Provider.of<Songs>(context);
-    final soundController = Provider.of<SoundController>(context);
+    final soundController = Provider.of<FlutterSoundController>(context);
     cards = Provider.of<KaraokeCards>(context, listen: false);
     currentActivity = Provider.of<CurrentActivity>(context);
     creatableSongs = Provider.of<CreatableSongs>(context, listen: false);
-    card = cards.current;
+    card = cards!.current;
     // goto Card type screen if no card type is selected, then come back.
-    if (firstBuild && currentActivity.cardType == null) {
+    if (firstBuild && currentActivity!.cardType == null) {
       print("TESTTESTTESTTESTTESTTESTTESTETSTETSTESTSELFJ!!!!!!!");
       setState(() => firstBuild = false);
       Future.delayed(
@@ -80,12 +77,12 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
     // factored out animated list so it can be sorted
     var animatedList = AnimatedList(
       key: _listKey,
-      initialItemCount: songs.all.length,
+      initialItemCount: songs!.all.length,
       padding: const EdgeInsets.all(0),
       itemBuilder: (ctx, i, Animation<double> animation) => SongPlaybackCard(
         i,
-        songs.all[i],
-        songs,
+        songs!.all[i],
+        songs!,
         soundController,
         animation,
       ),
@@ -94,18 +91,20 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
     // factored listview so it can be sorted.
     var listView = ListView.builder(
       padding: const EdgeInsets.only(right: 10),
-      itemCount: creatableSongs.all.length,
+      itemCount: creatableSongs!.all.length,
       itemBuilder: (ctx, i) => CreatableSongCard(
-          creatableSongs.all[i], soundController, cards, currentActivity),
+          creatableSongs!.all[i], soundController, cards!, currentActivity!),
     );
 
     // jmf - 9/23/2021: hack to make 99 Bottles of Beer last
-    if (creatableSongs.all[0].name == "99 Bottles of Beer") {
-      var s = creatableSongs.all.removeAt(0);
-      creatableSongs.all.add(s);
+    if (creatableSongs != null && creatableSongs!.all.length > 0) {
+      if (creatableSongs!.all[0].name == "99 Bottles of Beer") {
+        var s = creatableSongs!.all.removeAt(0);
+        creatableSongs!.all.add(s);
+      }
     }
 
-    return currentActivity.cardType == null
+    return currentActivity!.cardType == null
         ? Center()
         : Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -147,8 +146,8 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
               ]),
               SizedBox(
                 height: MediaQuery.of(context).size.height / 3,
-                child: currentActivity.cardType == CardType.oldSong
-                    ? songs.all.isEmpty
+                child: currentActivity!.cardType == CardType.oldSong
+                    ? songs!.all.isEmpty
                         // NO SONG MESSAGE
                         ? Align(
                             alignment: Alignment.topCenter,

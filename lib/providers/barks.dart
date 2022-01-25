@@ -13,8 +13,8 @@ import 'asset.dart';
 class Barks with ChangeNotifier {
   List<Bark> all = [];
   List<Bark> stockBarks = [];
-  Bark tempRawBark;
-  List tempRawBarkAmplitudes;
+  Bark? tempRawBark;
+  List? tempRawBarkAmplitudes;
 
   void removeAll() {
     all = [];
@@ -25,7 +25,7 @@ class Barks with ChangeNotifier {
     print("Raw check: ${rawBark.filePath}");
     tempRawBark = rawBark;
     tempRawBarkAmplitudes =
-        await AmplitudeExtractor.getAmplitudes(tempRawBark.filePath);
+        await AmplitudeExtractor.getAmplitudes(tempRawBark!.filePath);
     notifyListeners();
   }
 
@@ -51,12 +51,12 @@ class Barks with ChangeNotifier {
     } else if (stock == true) {
       print("test: stock");
       return List.from(barks.where((Bark bark) {
-        return bark.length == length && bark.isStock && bark.type == "bark";
+        return bark.length == length && bark.isStock! && bark.type == "bark";
       }));
     } else {
       print("test: mybarks");
       return List.from(barks.where((Bark bark) {
-        return bark.length == length && !bark.isStock;
+        return bark.length == length && !bark.isStock!;
       }));
     }
   }
@@ -76,20 +76,20 @@ class Barks with ChangeNotifier {
       bark.isStock ? addStockBark(bark) : addBark(bark);
     });
     all.sort((bark1, bark2) {
-      return bark1.created.compareTo(bark2.created);
+      return bark1.created!.compareTo(bark2.created!);
     });
     stockBarks.sort((bark1, bark2) {
-      return bark1.name.compareTo(bark2.name);
+      return bark1.name!.compareTo(bark2.name!);
     });
   }
 
   // downloads the files either from all barks in memory or just the barks passed.
-  Future downloadAllBarksFromBucket([List barks]) async {
+  Future downloadAllBarksFromBucket([List? barks]) async {
     print("downloading all barks");
     barks ??= all;
     int barkCount = barks.length;
     for (var i = 0; i < barkCount; i++) {
-      String filePathBase = myAppStoragePath + '/' + barks[i].fileId;
+      String filePathBase = myAppStoragePath! + '/' + barks[i].fileId;
 
       // set filePaths in advance
       barks[i].filePath = filePathBase + '.aac';
@@ -111,7 +111,7 @@ class Barks with ChangeNotifier {
   }
 
   void remove(Bark barkToDelete) {
-    if (barkToDelete.isStock)
+    if (barkToDelete.isStock!)
       return print("can't delete stock bark"); // should throw error
     barkToDelete.deleteFromServer();
     all.remove(barkToDelete);
@@ -126,22 +126,28 @@ class Barks with ChangeNotifier {
 
   void deleteTempRawBark() {
     if (tempRawBark == null) return;
-    if (File(tempRawBark.filePath).existsSync())
-      File(tempRawBark.filePath).deleteSync();
+    if (File(tempRawBark!.filePath!).existsSync())
+      File(tempRawBark!.filePath!).deleteSync();
     tempRawBark = null;
     tempRawBarkAmplitudes = null;
   }
 
-  Future<List> uploadRawBarkAndRetrieveCroppedBarks(imageId) async {
-    await Gcloud.uploadRawBark(tempRawBark.fileId, tempRawBark.filePath);
-    List responseBody = await RestAPI.splitRawBark(tempRawBark.fileId, imageId);
-    List newBarks = await parseCroppedBarks(responseBody);
-    await downloadAllBarksFromBucket(newBarks);
-    int length = newBarks.length;
-    for (var i = 0; i < length; i++) {
-      addBark(newBarks[i]);
+  Future<void> uploadRawBarkAndRetrieveCroppedBarks(imageId) async {
+    try {
+      print("Raw barks: " + tempRawBark!.filePath.toString());
+      await Gcloud.uploadRawBark(tempRawBark!.fileId, tempRawBark!.filePath);
+      List responseBody =
+          await RestAPI.splitRawBark(tempRawBark!.fileId, imageId);
+      List newBarks = await parseCroppedBarks(responseBody);
+      await downloadAllBarksFromBucket(newBarks);
+      int length = newBarks.length;
+      for (var i = 0; i < length; i++) {
+        addBark(newBarks[i]);
+      }
+      deleteTempRawBark();
+    } catch (e) {
+      print(e.toString());
     }
-    deleteTempRawBark();
   }
 
   String _lengthAdjective(double seconds) {
@@ -178,16 +184,16 @@ class Barks with ChangeNotifier {
 }
 
 class Bark extends Asset {
-  String name;
-  String fileUrl;
+  String? name;
+  String? fileUrl;
   // filePath is initially used for file upload from temp directory. Later (for cropped barks) it can be used for playback.
-  String filePath;
-  String fileId;
-  DateTime created;
-  String amplitudesPath;
-  String length;
-  bool isStock;
-  String type;
+  String? filePath;
+  String? fileId;
+  DateTime? created;
+  String? amplitudesPath;
+  String? length;
+  bool? isStock;
+  String? type;
 
   Bark({
     this.name,
@@ -215,12 +221,12 @@ class Bark extends Asset {
 
   String get getName {
     if (name == "" || name == null) return "Unnamed";
-    return name;
+    return name!;
   }
 
   void deleteFiles() {
-    if (File(filePath).existsSync()) File(filePath).deleteSync();
-    if (File(amplitudesPath).existsSync()) File(amplitudesPath).deleteSync();
+    if (File(filePath!).existsSync()) File(filePath!).deleteSync();
+    if (File(amplitudesPath!).existsSync()) File(amplitudesPath!).deleteSync();
   }
 
   Future<void> reDownload() async {
@@ -231,7 +237,7 @@ class Bark extends Asset {
 
   Future<void> retrieve() async {
     await download();
-    if (!File(amplitudesPath).existsSync()) {
+    if (!File(amplitudesPath!).existsSync()) {
       await AmplitudeExtractor.createAmplitudeFile(filePath, filePathBase);
     }
   }

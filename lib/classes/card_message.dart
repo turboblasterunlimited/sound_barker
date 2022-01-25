@@ -3,10 +3,10 @@ import 'dart:io';
 class CardMessage {
   String filePath;
   String alteredFilePath;
-  List amplitudes;
-  List alteredAmplitudes;
-  Function notifyCardChanges;
-  String bucketFp;
+  List? amplitudes;
+  List? alteredAmplitudes;
+  Function? notifyCardChanges;
+  String? bucketFp;
   CardMessage({
     this.filePath = "",
     this.alteredFilePath = "",
@@ -18,7 +18,7 @@ class CardMessage {
     return amps != null;
   }
 
-  String get path {
+  String? get path {
     if (File(alteredFilePath).existsSync())
       return alteredFilePath;
     else if (File(filePath).existsSync())
@@ -27,7 +27,7 @@ class CardMessage {
       return null;
   }
 
-  List get amps {
+  List? get amps {
     if (alteredAmplitudes != null)
       return alteredAmplitudes;
     else if (amplitudes != null)
@@ -38,7 +38,7 @@ class CardMessage {
 
   void setFilePath(newFilePath) {
     filePath = newFilePath;
-    notifyCardChanges();
+    notifyCardChanges!();
   }
 
   void deleteEverything() {

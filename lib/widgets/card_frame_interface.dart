@@ -1,7 +1,8 @@
 import 'dart:io';
 import 'package:K9_Karaoke/providers/image_controller.dart';
-import 'package:K9_Karaoke/providers/sound_controller.dart';
+import 'package:K9_Karaoke/providers/flutter_sound_controller.dart';
 //import 'package:carousel_slider/carousel_slider.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:K9_Karaoke/carousel_slider/carousel_slider.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart' as PATH;
@@ -19,42 +20,42 @@ class CardFrameInterface extends StatefulWidget {
 }
 
 class _CardFrameInterfaceState extends State<CardFrameInterface> {
-  KaraokeCards cards;
-  CurrentActivity currentActivity;
+  KaraokeCards? cards;
+  CurrentActivity? currentActivity;
   String selectedFrame = "";
   int _currentFrameCategoryIndex = 0;
-  ImageController imageController;
-  SoundController soundController;
-  List<Widget> currentFrameCategories;
+  ImageController? imageController;
+  FlutterSoundController? soundController;
+  List<Widget>? currentFrameCategories;
   final _carouselController = CarouselController();
   final _scrollController = ScrollController();
-  double _listItemWidth;
+  double? _listItemWidth;
   bool userManipulatingCategory = false;
   bool firstBuild = true;
   Map<String, List<String>> frameFiles = frameFileNames;
-  double halfScreenWidth;
+  late double halfScreenWidth;
 
   @override
   void dispose() {
-    imageController.stopAnimation();
-    soundController.stopPlayer();
+    imageController!.stopAnimation();
+    soundController!.stopPlayer();
     super.dispose();
   }
 
   void backCallback() {
-    currentActivity.setCardCreationStep(CardCreationSteps.speak);
-    currentActivity.setCardCreationSubStep(CardCreationSubSteps.seven);
+    currentActivity!.setCardCreationStep(CardCreationSteps.speak);
+    currentActivity!.setCardCreationSubStep(CardCreationSubSteps.seven);
   }
 
   void skipCallback() {
-    if (cards.current.decorationImage != null) {
-      cards.current.shouldDeleteOldDecoration = false;
+    if (cards!.current!.decorationImage != null) {
+      cards!.current!.shouldDeleteOldDecoration = false;
       Future.delayed(
           Duration(milliseconds: 200),
-          () => currentActivity
+          () => currentActivity!
               .setCardCreationSubStep(CardCreationSubSteps.three));
     } else {
-      currentActivity.setNextSubStep();
+      currentActivity!.setNextSubStep();
       Future.delayed(
           Duration(milliseconds: 500), () => setFrame(noFrame: true));
     }
@@ -80,17 +81,17 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   }
 
   setFrame(
-      {String fileName, bool noFrame = false, bool decorationImage = false}) {
+      {String? fileName, bool noFrame = false, bool decorationImage = false}) {
     print("setting frame");
     if (fileName != null) {
       setState(() => selectedFrame = fileName);
-      cards.setFrame(fileName);
+      cards!.setFrame(fileName);
     } else if (noFrame) {
       setState(() => selectedFrame = "");
-      cards.setFrame(null);
+      cards!.setFrame(null);
     } else if (decorationImage) {
       setState(() => selectedFrame = "existing-art");
-      cards.setFrame(null, cards.current.decorationImage.hasFrameDimension);
+      cards!.setFrame(null, cards!.current!.decorationImage!.hasFrameDimension);
     }
   }
 
@@ -100,7 +101,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     return GestureDetector(
       onTap: () {
         setFrame(fileName: fileName);
-        cards.current.setShouldDeleteOldDecortionImage();
+        cards!.current!.setShouldDeleteOldDecortionImage();
         SystemChrome.setEnabledSystemUIOverlays([]);
       },
       child: Container(
@@ -123,7 +124,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
                       bottom: constraints.biggest.height * 194 / 778,
                     ),
                     child: Image.file(
-                      File(cards.current.picture.filePath),
+                      File(cards!.current!.picture!.filePath!),
                     ),
                   );
                 },
@@ -166,7 +167,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       onTap: () {
         setFrame(noFrame: true);
         SystemChrome.setEnabledSystemUIOverlays([]);
-        cards.current.setShouldDeleteOldDecortionImage();
+        cards!.current!.setShouldDeleteOldDecortionImage();
       },
       child: Container(
         decoration:
@@ -176,7 +177,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
             alignment: AlignmentDirectional.center,
             children: [
               Image.file(
-                File(cards.current.picture.filePath),
+                File(cards!.current!.picture!.filePath!),
               ),
               _frameLabel("No Frame"),
             ],
@@ -202,7 +203,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   }
 
   Widget decorationImageSelectable(image) {
-    return cards.current.decorationImage.hasFrameDimension
+    return cards!.current!.decorationImage!.hasFrameDimension
         ? LayoutBuilder(
             builder: (context, constraints) {
               return Padding(
@@ -220,7 +221,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     return GestureDetector(
       onTap: () {
         setFrame(decorationImage: true);
-        cards.current.shouldDeleteOldDecoration = false;
+        cards!.current!.shouldDeleteOldDecoration = false;
         SystemChrome.setEnabledSystemUIOverlays([]);
       },
       child: Container(
@@ -232,10 +233,10 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
             alignment: AlignmentDirectional.center,
             children: [
               decorationImageSelectable(
-                Image.file(File(cards.current.picture.filePath)),
+                Image.file(File(cards!.current!.picture!.filePath!)),
               ),
               Image.file(
-                File(cards.current.decorationImage.filePath),
+                File(cards!.current!.decorationImage!.filePath!),
               ),
               _frameLabel("Current Art")
             ],
@@ -246,25 +247,25 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   }
 
   void _resetSizes(List<Widget> categories) {
-    for (var i = 0; i < currentFrameCategories.length; i++) {
-      currentFrameCategories[i] = categories[i];
+    for (var i = 0; i < currentFrameCategories!.length; i++) {
+      currentFrameCategories![i] = categories[i];
     }
   }
 
-  void _handleCategoryChange(int frameCategoryIndex,
-      {int frameIndex, bool centerFrame = false}) {
+  void _handleCategoryChange(int? frameCategoryIndex,
+      {int? frameIndex, bool centerFrame = false}) {
     var categories = getFrameCategories();
     frameCategoryIndex ??= 0;
     print("frameCategoryIndex: $frameCategoryIndex");
     var selectedCategoryWidget = categories[frameCategoryIndex] as Text;
-    String label = selectedCategoryWidget.data;
+    String label = selectedCategoryWidget.data!;
     Future.delayed(
       Duration(milliseconds: 100),
       () => setState(
         () {
-          _currentFrameCategoryIndex = frameCategoryIndex;
+          _currentFrameCategoryIndex = frameCategoryIndex!;
           _resetSizes(categories);
-          currentFrameCategories[frameCategoryIndex] = Row(
+          currentFrameCategories![frameCategoryIndex] = Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
@@ -278,9 +279,9 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     );
     // category is selected (vs frame scrolling)
     if (frameIndex != null) {
-      double offset = halfScreenWidth - _listItemWidth / 2;
+      double offset = halfScreenWidth - _listItemWidth! / 2;
       _scrollController.jumpTo(
-          frameIndex * (_listItemWidth + 5) - (centerFrame ? offset : 0));
+          frameIndex * (_listItemWidth! + 5) - (centerFrame ? offset : 0));
     }
   }
 
@@ -297,7 +298,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
           padding: const EdgeInsets.only(bottom: 5.0),
           child: CarouselSlider(
             carouselController: _carouselController,
-            items: currentFrameCategories,
+            items: currentFrameCategories!,
             options: CarouselOptions(
               enlargeCenterPage: true,
               onPageChanged: (index, CarouselPageChangedReason reason) {
@@ -375,6 +376,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       frameCount += _frameCategoryCounts[categoryIndex];
       if (frameCount > frameIndex) return categoryIndex;
     }
+    return -1;
   }
 
   int categoryIndexToFrameIndex(int selectedCategoryIndex) {
@@ -385,11 +387,12 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
       if (categoryIndex == selectedCategoryIndex) return frameCount;
       frameCount += _frameCategoryCounts[categoryIndex];
     }
+    return frameCount;
   }
 
   int _pixelsToFrameIndex(double pixels) {
     // rendered item width + list padding
-    var itemWidth = _listItemWidth + 5;
+    var itemWidth = _listItemWidth! + 5;
     return (pixels / itemWidth % _framesCount).round();
   }
 
@@ -400,7 +403,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   }
 
   // prevents animating through all categories between first and last categories on the carousel
-  void animateToPage(int frameCategoryIndex) {
+  void animateToPage(int? frameCategoryIndex) {
     if (frameCategoryIndex == null) return;
     // transitioning from last category to first category
     if (_currentFrameCategoryIndex == _categoriesCount - 1 &&
@@ -428,7 +431,7 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
               animateToPage(frameCategoryIndex);
               _handleCategoryChange(frameCategoryIndex);
             }
-            return null;
+            return false;
           },
           child: CustomScrollView(
             scrollDirection: Axis.horizontal,
@@ -456,8 +459,8 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   }
 
   bool get _keepingCardDecorationImage {
-    return cards.current.decorationImage != null &&
-        !cards.current.shouldDeleteOldDecoration;
+    return cards!.current!.decorationImage != null &&
+        !cards!.current!.shouldDeleteOldDecoration;
   }
 
   Widget submitButton() {
@@ -466,9 +469,9 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
         height: 20,
         minWidth: 50,
         onPressed: _keepingCardDecorationImage
-            ? () => currentActivity
+            ? () => currentActivity!
                 .setCardCreationSubStep(CardCreationSubSteps.three)
-            : currentActivity.setNextSubStep,
+            : currentActivity!.setNextSubStep,
         child: Icon(
           Icons.check,
           color: Colors.white,
@@ -489,12 +492,12 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
   }
 
   void initialNavigateToSelectedFrame() {
-    if (!cards.current.hasFrame) return;
+    if (!cards!.current!.hasFrame) return;
     int frameIndex = _getFrameIndex(selectedFrame);
     print("frameIndex $frameIndex");
 
     print("_listItemWidth: $_listItemWidth");
-    double pixels = frameIndex * _listItemWidth + 5.0;
+    double pixels = frameIndex * _listItemWidth! + 5.0;
     print("pixels $pixels");
     int categoryIndex = pixelsToCategoryIndex(pixels);
     print("category index: $categoryIndex");
@@ -508,16 +511,16 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
 
   void _setFrameAndCategorySelection() {
     print("setframe and category selction");
-    if (cards.current.isUsingDecorationImage)
+    if (cards!.current!.isUsingDecorationImage)
       selectedFrame = "existing-art";
-    else if (cards.current.framePath != null) {
-      selectedFrame = PATH.basename(cards.current.framePath);
+    else if (cards!.current!.framePath != null) {
+      selectedFrame = PATH.basename(cards!.current!.framePath!);
     }
   }
 
   void _insertIfExistingArtFrame() {
-    if (cards.current.decorationImage != null)
-      frameFiles["Birthday"].insert(1, "existing-art");
+    if (cards!.current!.decorationImage != null)
+      frameFiles["Birthday"]!.insert(1, "existing-art");
   }
 
   @override
@@ -525,7 +528,8 @@ class _CardFrameInterfaceState extends State<CardFrameInterface> {
     cards ??= Provider.of<KaraokeCards>(context, listen: false);
     currentActivity ??= Provider.of<CurrentActivity>(context, listen: false);
     imageController ??= Provider.of<ImageController>(context, listen: false);
-    soundController ??= Provider.of<SoundController>(context, listen: false);
+    soundController ??=
+        Provider.of<FlutterSoundController>(context, listen: false);
     if (currentFrameCategories == null) {
       currentFrameCategories = getFrameCategories();
       _handleCategoryChange(0);

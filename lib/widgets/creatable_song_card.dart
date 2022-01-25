@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/error_dialog.dart';
-import '../providers/sound_controller.dart';
+import '../providers/flutter_sound_controller.dart';
 
 class CreatableSongCard extends StatefulWidget {
   final CreatableSong creatableSong;
-  final SoundController soundController;
+  final FlutterSoundController soundController;
   final KaraokeCards cards;
   final CurrentActivity currentActivity;
 
@@ -23,7 +23,7 @@ class CreatableSongCard extends StatefulWidget {
 
 class _CreatableSongCardState extends State<CreatableSongCard> {
   bool isPlaying = false;
-  KaraokeCards cards;
+  late KaraokeCards cards;
   bool isLoading = false;
 
   @override
@@ -32,7 +32,7 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
     super.dispose();
   }
 
-  Function stopPlayerCallBack() {
+  VoidCallback stopPlayerCallBack() {
     return () {
       widget.soundController.stopPlayer();
       if (mounted) setState(() => isPlaying = false);
@@ -46,7 +46,7 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
           "https://storage.googleapis.com/song_barker_sequences/" +
               widget.creatableSong.backingTrackUrl,
           stopCallback: stopPlayerCallBack(),
-          url: true);
+          mediaType: Media.webfile);
       Future.delayed(Duration(milliseconds: 50), () {
         setState(() {
           isLoading = false;
@@ -54,7 +54,7 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
         });
       });
     } catch (e) {
-      showError(context, e);
+      showError(context, e.toString());
     }
   }
 
@@ -79,7 +79,7 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
 
     return PlaybackCard(
         canDelete: false,
-        isSelected: cards.current.songFormula == widget.creatableSong,
+        isSelected: cards.current!.songFormula == widget.creatableSong,
         select: selectSongFormula,
         name: widget.creatableSong.fullName,
         isLoading: isLoading,

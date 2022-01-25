@@ -7,10 +7,11 @@ import 'package:K9_Karaoke/widgets/bark_playback_card.dart';
 import 'package:K9_Karaoke/widgets/custom_dialog.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:flutter/material.dart';
-import 'package:line_awesome_icons/line_awesome_icons.dart';
+
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/sound_controller.dart';
+import '../providers/flutter_sound_controller.dart';
 
 class BarkSelectInterface extends StatefulWidget {
   @override
@@ -26,13 +27,13 @@ enum BarkTypes {
 class _BarkSelectInterfaceState extends State<BarkSelectInterface>
     with SingleTickerProviderStateMixin {
   BarkTypes currentBarks = BarkTypes.myBarks;
-  CurrentActivity currentActivity;
-  Barks barks;
-  List<Bark> displayedBarks;
+  late CurrentActivity currentActivity;
+  late Barks barks;
+  List<Bark>? displayedBarks;
   final _listKey = GlobalKey<AnimatedListState>();
-  SoundController soundController;
+  late FlutterSoundController soundController;
   bool _isFirstLoad = true;
-  KaraokeCards cards;
+  KaraokeCards? cards;
 
   String get _currentBarkLength {
     if (currentActivity.isTwo) {
@@ -41,16 +42,22 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
       return "MEDIUM";
     } else if (currentActivity.isFour) {
       return "FINALE";
+    } else {
+      print("Null bark length, should never get here.");
+      return "";
     }
   }
 
   Color get _currentBarkColor {
     if (currentActivity.isTwo) {
-      return Colors.orange[800];
+      return Colors.orange[800]!;
     } else if (currentActivity.isThree) {
       return Colors.pink;
     } else if (currentActivity.isFour) {
       return Colors.green;
+    } else {
+      print("Null color, should never get here.");
+      return Colors.black;
     }
   }
 
@@ -65,17 +72,17 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
   }
 
   updateDisplayedBarks({bool stock = false, bool fx = false}) {
-    List newBarks = getBarksOfCurrentLength(stock: stock, fx: fx);
+    List? newBarks = getBarksOfCurrentLength(stock: stock, fx: fx);
     if (newBarks == null) return;
     List toRemove = [];
     // remove barks
-    displayedBarks.asMap().forEach((i, bark) {
+    displayedBarks!.asMap().forEach((i, bark) {
       if (newBarks.indexOf(bark) == -1) toRemove.add(i);
     });
 
     toRemove.reversed.forEach((i) {
-      Bark removedBark = displayedBarks[i];
-      displayedBarks.remove(removedBark);
+      Bark removedBark = displayedBarks![i];
+      displayedBarks!.remove(removedBark);
       _listKey.currentState?.removeItem(
         i,
         (context, animation) =>
@@ -84,8 +91,8 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
     });
 
     newBarks.reversed.forEach((newBark) {
-      if (displayedBarks.indexOf(newBark) == -1) {
-        displayedBarks.insert(0, newBark);
+      if (displayedBarks!.indexOf(newBark) == -1) {
+        displayedBarks!.insert(0, newBark);
         _listKey.currentState?.insertItem(0);
       }
     });
@@ -102,9 +109,9 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
     }
   }
 
-  deleteBark(Bark bark, num displayInt) {
-    displayedBarks.removeAt(displayInt);
-    _listKey.currentState.removeItem(
+  deleteBark(Bark bark, int displayInt) {
+    displayedBarks!.removeAt(displayInt);
+    _listKey.currentState!.removeItem(
       displayInt,
       (context, animation) => BarkPlaybackCard(
         displayInt,
@@ -119,7 +126,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
   }
 
   bool _noDisplayedBarks() {
-    return currentBarks == BarkTypes.myBarks && displayedBarks.length == 0;
+    return currentBarks == BarkTypes.myBarks && displayedBarks!.length == 0;
   }
 
   Widget _showBarks() {
@@ -141,10 +148,10 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
     else
       return AnimatedList(
         key: _listKey,
-        initialItemCount: displayedBarks.length,
+        initialItemCount: displayedBarks!.length,
         itemBuilder: (ctx, i, animation) => BarkPlaybackCard(
           i,
-          displayedBarks[i],
+          displayedBarks![i],
           barks,
           soundController,
           animation,
@@ -155,18 +162,18 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
   }
 
   bool get _canSkipShort {
-    return currentActivity.isTwo && cards.current.shortBark != null;
+    return currentActivity.isTwo && cards!.current!.shortBark != null;
   }
 
   bool get _canSkipMedium {
-    return currentActivity.isThree && cards.current.mediumBark != null;
+    return currentActivity.isThree && cards!.current!.mediumBark != null;
   }
 
   bool get _canSkipLong {
-    return currentActivity.isFour && cards.current.longBark != null;
+    return currentActivity.isFour && cards!.current!.longBark != null;
   }
 
-  Function skipLogic() {
+  Function? skipLogic() {
     if (_canSkipShort || _canSkipMedium || _canSkipLong)
       return currentActivity.setNextSubStep;
     else
@@ -179,13 +186,13 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
         builder: (BuildContext ctx) {
           print("INSIDE.");
           return CustomDialog(
-            header: "Pick barks for ${cards.current.songFormula.name}",
+            header: "Pick barks for ${cards!.current!.songFormula!.name}",
             bodyText: "This first SHORT bark should be one clear sound!",
             primaryFunction: (BuildContext modalContext) {
               Navigator.of(modalContext).pop();
             },
             iconPrimary: Icon(
-              LineAwesomeIcons.music,
+              FontAwesomeIcons.music,
               size: 42,
               color: Colors.grey[300],
             ),
@@ -231,14 +238,14 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
   @override
   Widget build(BuildContext context) {
     barks = Provider.of<Barks>(context);
-    soundController = Provider.of<SoundController>(context);
+    soundController = Provider.of<FlutterSoundController>(context);
     currentActivity = Provider.of<CurrentActivity>(context);
     cards = Provider.of<KaraokeCards>(context);
     _updateDisplayBarks();
 
     // Show Bark Length Info Modal
-    if (!cards.current.seenBarkLengthInfo) {
-      cards.current.setSeenBarkLengthInfo(true);
+    if (!cards!.current!.seenBarkLengthInfo) {
+      cards!.current!.setSeenBarkLengthInfo(true);
       Future.delayed(Duration.zero, () => barkLengthInfoDialog(context));
     }
 
@@ -323,7 +330,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
                             vertical: 8, horizontal: 18),
                       ),
                       if (currentBarks == BarkTypes.myBarks &&
-                          displayedBarks.length == 0)
+                          displayedBarks!.length == 0)
                         Positioned(
                           right: 28,
                           child: Bounce(
@@ -365,7 +372,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
                             vertical: 8, horizontal: 8),
                       ),
                       if (currentBarks == BarkTypes.myBarks &&
-                          displayedBarks.length == 0)
+                          displayedBarks!.length == 0)
                         Bounce(
                             icon: Icon(Icons.arrow_upward,
                                 size: 50,

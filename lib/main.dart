@@ -23,13 +23,12 @@ import 'package:K9_Karaoke/screens/share_screen.dart';
 import 'package:K9_Karaoke/screens/subscription_screen.dart';
 import 'package:K9_Karaoke/screens/support_screen.dart';
 import 'package:K9_Karaoke/screens/terms_of_use_screen.dart';
-import 'package:custom_paddle_slider_value_indicator_shape/custom_paddle_slider_value_indicator_shape.dart';
+import './providers/custom_paddle_slider_value_indicator_shape.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/karaoke_card_decoration_controller.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
-import 'package:flutter/rendering.dart';
 import 'package:sentry/sentry.dart';
 
 import 'package:K9_Karaoke/providers/active_wave_streamer.dart';
@@ -42,11 +41,11 @@ import './providers/pictures.dart';
 import './providers/barks.dart';
 import './providers/songs.dart';
 import './providers/image_controller.dart';
-import './providers/sound_controller.dart';
+import './providers/flutter_sound_controller.dart';
 
-final sentry = SentryClient(
+final sentry = SentryClient(SentryOptions(
     dsn:
-        "https://31ded6d00ce54b96b36f5606649333a1@o460285.ingest.sentry.io/5460225");
+        "https://31ded6d00ce54b96b36f5606649333a1@o460285.ingest.sentry.io/5460225"));
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -58,19 +57,13 @@ void main() async {
   runZonedGuarded(
     () => runApp(MyApp()),
     (error, stackTrace) async {
-      await sentry.captureException(
-        exception: error,
-        stackTrace: stackTrace,
-      );
+      await sentry.captureException(error, stackTrace: stackTrace);
     },
   );
 
   // Sentry
   FlutterError.onError = (details, {bool forceReport = false}) {
-    sentry.captureException(
-      exception: details.exception,
-      stackTrace: details.stack,
-    );
+    sentry.captureException(details.exception, stackTrace: details.stack);
   };
 }
 
@@ -105,7 +98,7 @@ class MyApp extends StatelessWidget {
           value: Pictures(),
         ),
         ChangeNotifierProvider.value(
-          value: SoundController(),
+          value: FlutterSoundController(),
         ),
         ChangeNotifierProvider.value(
           value: ActiveWaveStreamer(),

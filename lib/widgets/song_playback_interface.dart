@@ -1,13 +1,26 @@
 import 'package:K9_Karaoke/providers/current_activity.dart';
+import 'package:K9_Karaoke/providers/flutter_sound_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 // cardCreationSubStep.isSix
 class SongPlaybackInterface extends StatelessWidget {
+  late FlutterSoundController soundController;
+
+  void nextStep(func) {
+    if (soundController.isPlaying()) {
+      soundController.stopPlayer();
+      var isPlaying = soundController.isPlaying();
+      print("Is playing: " + isPlaying.toString());
+    }
+    func();
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentActivity =
         Provider.of<CurrentActivity>(context, listen: false);
+    soundController = Provider.of<FlutterSoundController>(context);
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -45,7 +58,7 @@ class SongPlaybackInterface extends StatelessWidget {
                   padding: EdgeInsets.all(10),
                 ),
                 RawMaterialButton(
-                  onPressed: currentActivity.setNextSubStep,
+                  onPressed: () => {nextStep(currentActivity.setNextSubStep)},
                   child: Icon(
                     Icons.check,
                     color: Colors.white,

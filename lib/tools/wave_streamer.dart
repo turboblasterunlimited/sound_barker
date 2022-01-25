@@ -1,14 +1,15 @@
+
 import 'dart:typed_data';
 import 'dart:io';
 import 'dart:async';
 
-StreamSubscription<double> performAudio(path, imageController,
-    [Function callBack]) {
+StreamSubscription<double>? performAudio(path, imageController,
+    [Function? callBack]) {
   if (File(path).exists() == null) {
     return null;
   }
   Stream<double> waveStreamer;
-  StreamSubscription<double> subscription;
+  StreamSubscription<double>? subscription;
   try {
     imageController.mouthOpen(0);
     waveStreamer = WaveStreamer(path).stream;

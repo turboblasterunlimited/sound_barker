@@ -16,7 +16,9 @@ import 'package:provider/provider.dart';
 class InterfaceSwitcher extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    KaraokeCard card = Provider.of<KaraokeCards>(context).current;
+    KaraokeCard? card = Provider.of<KaraokeCards>(context).current != null
+        ? Provider.of<KaraokeCards>(context).current
+        : null;
     CurrentActivity currentActivity = Provider.of<CurrentActivity>(context);
 
     Widget _handleSpeakWidget() {
@@ -32,7 +34,7 @@ class InterfaceSwitcher extends StatelessWidget {
         return BarkSelectInterface();
     }
 
-    Widget _handleStyleWidget() {
+    Widget? _handleStyleWidget() {
       if (currentActivity.isOne)
         return CardFrameInterface();
       else if (currentActivity.isTwo)
@@ -40,14 +42,14 @@ class InterfaceSwitcher extends StatelessWidget {
       else if (currentActivity.isThree) return ShareCardInterface();
     }
 
-    return (currentActivity.isSnap && card.hasPicture)
+    return (currentActivity.isSnap && card != null && card.hasPicture)
         ? MouthInterface()
         : (currentActivity.isSong)
             ? SongSelectInterface()
             : (currentActivity.isSpeak)
                 ? _handleSpeakWidget()
                 : (currentActivity.isStyle)
-                    ? _handleStyleWidget()
+                    ? _handleStyleWidget()!
                     : Center();
   }
 }

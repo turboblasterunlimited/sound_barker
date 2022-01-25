@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/screens/share_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 
 class EnvelopeScreen extends StatelessWidget {
@@ -108,13 +107,13 @@ class EnvelopeScreen extends StatelessWidget {
                         children: [
                           _positionedImage(
                             Image.file(
-                              File(card.picture.filePath),
+                              File(card!.picture!.filePath!),
                             ),
                             card,
                           ),
                           card.decorationImage != null
                               ? Image.file(
-                                  File(card.decorationImage.filePath),
+                                  File(card.decorationImage!.filePath!),
                                 )
                               : Container(height: 200, width: 200)
                         ],

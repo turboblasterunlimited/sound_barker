@@ -1,30 +1,16 @@
-import 'dart:async';
-import 'dart:io' show Platform;
 import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/the_user.dart';
 import 'package:K9_Karaoke/screens/account_screen.dart';
-import 'package:K9_Karaoke/screens/retrieve_data_screen.dart';
 import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:K9_Karaoke/widgets/custom_appbar.dart';
 import 'package:K9_Karaoke/widgets/custom_dialog.dart';
-import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
-import 'package:K9_Karaoke/widgets/user_agreement.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:line_awesome_icons/line_awesome_icons.dart';
-import 'package:openid_client/openid_client_io.dart';
-import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 
-import 'package:K9_Karaoke/services/http_controller.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'package:provider/provider.dart';
-import '../services/authenticate_user.dart';
-import 'package:K9_Karaoke/globals.dart';
-
-import 'menu_screen.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   static const routeName = 'change-password-screen';
@@ -33,13 +19,13 @@ class ChangePasswordScreen extends StatefulWidget {
 }
 
 class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
-  String codeDialog;
-  String valueText;
+  late String codeDialog;
+  late String valueText;
   TextEditingController _textFieldController = TextEditingController();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool signingIn = false;
-  FocusNode passwordFocusNode;
-  FocusNode currentPasswordFocusNode;
+  late FocusNode passwordFocusNode;
+  FocusNode? currentPasswordFocusNode;
   String currentPassword = "";
   String newPassword = "";
   String repeatPassword = "";
@@ -48,9 +34,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   String password = "";
 
   bool obscurePassword = true;
-  TheUser user;
-  Map userObj;
-  BuildContext c;
+  late TheUser user;
+  late Map userObj;
+  late BuildContext c;
 
   final double fontSize = 20;
 
@@ -191,8 +177,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                   onTap: () => setState(
                                       () => obscurePassword = !obscurePassword),
                                   child: Icon(obscurePassword
-                                      ? LineAwesomeIcons.eye_slash
-                                      : LineAwesomeIcons.eye),
+                                      ? FontAwesomeIcons.eyeSlash
+                                      : FontAwesomeIcons.eye),
                                 ),
                               ),
                             ),
@@ -224,8 +210,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                   onTap: () => setState(
                                       () => obscurePassword = !obscurePassword),
                                   child: Icon(obscurePassword
-                                      ? LineAwesomeIcons.eye_slash
-                                      : LineAwesomeIcons.eye),
+                                      ? FontAwesomeIcons.eyeSlash
+                                      : FontAwesomeIcons.eye),
                                 ),
                               ),
                             ),
@@ -255,8 +241,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                   onTap: () => setState(
                                       () => obscurePassword = !obscurePassword),
                                   child: Icon(obscurePassword
-                                      ? LineAwesomeIcons.eye_slash
-                                      : LineAwesomeIcons.eye),
+                                      ? FontAwesomeIcons.eyeSlash
+                                      : FontAwesomeIcons.eye),
                                 ),
                               ),
                             ),

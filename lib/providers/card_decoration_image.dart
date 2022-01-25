@@ -10,7 +10,7 @@ import 'package:uuid/uuid.dart';
 class CardDecorationImages with ChangeNotifier {
   List<CardDecorationImage> all = [];
 
-  CardDecorationImage findById(id) {
+  CardDecorationImage? findById(id) {
     var result;
     try {
       result = all.firstWhere((decoration) => decoration.fileId == id);
@@ -23,7 +23,7 @@ class CardDecorationImages with ChangeNotifier {
 
   Future<void> retrieveAll() async {
     var response = await RestAPI.retrieveAllDecorationImages();
-    String lastDecorationImage;
+    String? lastDecorationImage;
 
     response.forEach((imageData) {
       if (imageData["hidden"] == 1) return;
@@ -43,11 +43,11 @@ class CardDecorationImages with ChangeNotifier {
 
           if (File(filePath).existsSync()) return;
           try {
-            await Gcloud.downloadFromBucket(decoration.bucketFp, filePath);
+            await Gcloud.downloadFromBucket(decoration.bucketFp!, filePath);
           } catch (e) {
             // hack to get around bad bucket_fp
             print(e);
-            filePath = lastDecorationImage;
+            filePath = lastDecorationImage!;
           }
           lastDecorationImage = filePath;
         },
@@ -58,10 +58,10 @@ class CardDecorationImages with ChangeNotifier {
 }
 
 class CardDecorationImage {
-  String fileId;
-  String filePath;
-  String bucketFp;
-  bool frameDimension;
+  String? fileId;
+  String? filePath;
+  String? bucketFp;
+  bool? frameDimension;
 
   CardDecorationImage({
     this.filePath,
@@ -78,15 +78,15 @@ class CardDecorationImage {
 
   Future<void> delete() async {
     await RestAPI.deleteDecorationImage(fileId);
-    if (File(filePath).existsSync()) File(filePath).deleteSync();
+    if (File(filePath!).existsSync()) File(filePath!).deleteSync();
   }
 
   bool get hasFrameDimension {
     // 656 with frame. 512 without.
-    if (frameDimension != null) return frameDimension;
-    var bytes = File(filePath).readAsBytesSync();
-    IMG.Image image = IMG.decodeImage(bytes);
+    if (frameDimension != null) return frameDimension!;
+    var bytes = File(filePath!).readAsBytesSync();
+    IMG.Image image = IMG.decodeImage(bytes)!;
     frameDimension = image.width == 656;
-    return frameDimension;
+    return frameDimension!;
   }
 }

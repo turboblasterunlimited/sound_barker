@@ -4,14 +4,14 @@ import 'package:K9_Karaoke/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
 
 class SubscribeDialog extends StatelessWidget {
-  final String dialogText;
+  String? dialogText;
   SubscribeDialog([this.dialogText]);
   @override
   Widget build(BuildContext context) {
     return CustomDialog(
       header: "Subscribe!",
       bodyText: dialogText != null
-          ? dialogText
+          ? dialogText!
           : "You've reached your save & share limit for a free account. Subscribe to save and share more cards!",
       secondaryFunction: (BuildContext modalContext) {
         Navigator.of(modalContext).pop();

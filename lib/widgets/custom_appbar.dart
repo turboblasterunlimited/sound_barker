@@ -6,17 +6,16 @@ import 'package:K9_Karaoke/widgets/photo_name_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final bool noName;
   final bool isMenu;
   final bool isMainMenu;
-  final Widget nameInput;
-  final String pageTitle;
+  Widget? nameInput;
+  String? pageTitle;
   CustomAppBar(
-      {Key key,
+      {Key? key,
       this.noName = false,
       this.isMenu = false,
       this.isMainMenu = false,
@@ -35,26 +34,26 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _CustomAppBarState extends State<CustomAppBar> {
-  KaraokeCards cards;
-  TheUser currentUser;
+  KaraokeCards? cards;
+  TheUser? currentUser;
   var notificationPadding;
   var screenWidth;
   var screenHeight;
   var logoWidth;
   var logoHeight;
   var logoTopOffset;
-  bool showActionIcon;
+  bool? showActionIcon;
 
   Widget _getMiddleSpace() {
     if (widget.nameInput != null)
-      return widget.nameInput;
+      return widget.nameInput!;
     else if (widget.pageTitle != null)
       return Expanded(
         child: Row(
           children: [
             Spacer(),
             Text(
-              widget.pageTitle,
+              widget.pageTitle!,
               style: TextStyle(
                   fontSize: 22, color: Theme.of(context).primaryColor),
             ),
@@ -65,7 +64,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
     else if (widget.isMenu || widget.noName || cards?.current == null)
       return Spacer();
     else
-      return PhotoNameInput(cards.setCurrentName);
+      return PhotoNameInput(cards!.setCurrentName);
   }
 
   getLogoWidth() {
@@ -87,7 +86,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
     //logoWidth = 40.0;
     //logoHeight = 20.0;
     showActionIcon ??=
-        currentUser.email != null && (cards.hasPicture || !widget.isMainMenu);
+        currentUser!.email != null && (cards!.hasPicture || !widget.isMainMenu);
 
     return AppBar(
       backgroundColor: Colors.transparent,
@@ -113,7 +112,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                     maintainSize: true,
                     maintainState: true,
                     maintainAnimation: true,
-                    visible: showActionIcon,
+                    visible: showActionIcon!,
                     child: IconButton(
                       icon: Icon(
                         CustomIcons.hambooger,

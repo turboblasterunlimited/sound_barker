@@ -2,29 +2,29 @@ import 'package:flutter/material.dart';
 
 class CustomDialog extends StatefulWidget {
   final String header;
-  final double headerSize;
+  double? headerSize;
   final String bodyText;
-  final Widget body;
+  Widget? body;
   final String primaryButtonText;
   final Function primaryFunction;
   final String secondaryButtonText;
-  final Function secondaryFunction;
+  Function? secondaryFunction;
   final Icon iconPrimary;
   final Icon iconSecondary;
   final bool isYesNo;
   final bool oneButton;
 
   CustomDialog({
-    this.header,
+    required this.header,
     this.headerSize,
-    this.bodyText,
+    required this.bodyText,
     this.body,
     this.primaryButtonText = "YES",
-    @required this.primaryFunction,
+    required this.primaryFunction,
     this.secondaryButtonText = "NO",
     this.secondaryFunction,
-    @required this.iconPrimary,
-    @required this.iconSecondary,
+    required this.iconPrimary,
+    required this.iconSecondary,
     this.isYesNo = false,
     this.oneButton = false,
   });
@@ -77,7 +77,7 @@ class _CustomDialogState extends State<CustomDialog> {
                   child: widget.iconSecondary,
                 ),
                 widget.body != null
-                    ? widget.body
+                    ? widget.body!
                     : Padding(
                         padding: EdgeInsets.only(left: 30.0, right: 30.0),
                         child: TextField(
@@ -118,7 +118,7 @@ class _CustomDialogState extends State<CustomDialog> {
                         child: InkWell(
                           onTap: widget.secondaryFunction == null
                               ? () => Navigator.of(context).pop()
-                              : () => widget.secondaryFunction(context),
+                              : () => widget.secondaryFunction!(context),
                           child: Container(
                             padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
                             decoration: BoxDecoration(

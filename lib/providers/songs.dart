@@ -14,19 +14,19 @@ import '../tools/amplitude_extractor.dart';
 class Songs with ChangeNotifier {
   List<Song> all = [];
   // List<CreatableSong> creatableSongs;
-  CreatableSongs creatableSongs;
+  CreatableSongs? creatableSongs;
 
   void removeAll() {
     all = [];
-    creatableSongs.all = [];
+    creatableSongs!.all = [];
   }
 
   void setCreatableSongs(CreatableSongs creatables) {
     creatableSongs = creatables;
-    creatableSongs.sort();
+    creatableSongs!.sort();
   }
 
-  Song findById(String id) {
+  Song? findById(String id) {
     try {
       return all.firstWhere((test) => test.fileId == id);
     } catch (e) {
@@ -51,9 +51,9 @@ class Songs with ChangeNotifier {
   }
 
   String getSongFamily(String id) {
-    int i = creatableSongs.all
-        .indexWhere((CreatableSong creatable) => creatable.ids.indexOf(int.parse(id)) != -1);
-    return creatableSongs.all[i].fullName;
+    int i = creatableSongs!.all.indexWhere((CreatableSong creatable) =>
+        creatable.ids.indexOf(int.parse(id)) != -1);
+    return creatableSongs!.all[i].fullName;
   }
 
   // ALL SONGS THAT AREN'T HIDDEN UNLESS THEY ALREADY EXIST ON THE CLIENT
@@ -79,15 +79,15 @@ class Songs with ChangeNotifier {
 }
 
 class Song extends Asset {
-  String name;
-  String filePath;
-  String fileId;
-  String formulaId;
-  String backingTrackUrl;
-  DateTime created;
-  String amplitudesPath;
-  String songFamily; // fullName of creatableSong (name OR "$name ($style)")
-  String bucketFp;
+  String? name;
+  String? filePath;
+  String? fileId;
+  String? formulaId;
+  String? backingTrackUrl;
+  DateTime? created;
+  String? amplitudesPath;
+  String? songFamily; // fullName of creatableSong (name OR "$name ($style)")
+  String? bucketFp;
   Song(
       {this.bucketFp,
       this.filePath,
@@ -100,10 +100,10 @@ class Song extends Asset {
       this.songFamily});
 
   bool get exists {
-    return File(filePath).existsSync();
+    return File(filePath!).existsSync();
   }
 
-  String get getName {
+  String? get getName {
     if (name == "" || name == null) return "Unnamed";
     return name;
   }
@@ -136,15 +136,15 @@ class Song extends Asset {
     await _getMelodyAndGenerateAmplitudeFile(filePathBase);
     if (backingTrackUrl != null) {
       String backingTrackPath = filePathBase + "backing.aac";
-      await Gcloud.downloadFromBucket(backingTrackUrl, backingTrackPath);
+      await Gcloud.downloadFromBucket(backingTrackUrl!, backingTrackPath);
       await _mergeTracks(backingTrackPath, filePathBase);
     }
   }
 
   void deleteFiles() {
     if (!hasFile) return;
-    if (File(filePath).existsSync()) File(filePath).deleteSync();
-    if (File(amplitudesPath).existsSync()) File(amplitudesPath).deleteSync();
+    if (File(filePath!).existsSync()) File(filePath!).deleteSync();
+    if (File(amplitudesPath!).existsSync()) File(amplitudesPath!).deleteSync();
   }
 
   Future<void> reDownload() async {
@@ -165,7 +165,7 @@ class Song extends Asset {
 
   Future<void> _getMelodyAndGenerateAmplitudeFile(filePathBase) async {
     this.filePath =
-        await Gcloud.downloadFromBucket(bucketFp, filePathBase + '.aac');
+        await Gcloud.downloadFromBucket(bucketFp!, filePathBase + '.aac');
     this.amplitudesPath = await AmplitudeExtractor.createAmplitudeFile(
         this.filePath, filePathBase);
   }
@@ -175,7 +175,7 @@ class Song extends Asset {
     print("MERGING...");
     await FFMpeg.process.execute(
         "-i $backingTrackPath -i ${this.filePath} -filter_complex amix=inputs=2:duration=longest:dropout_transition=20 -ac 1 $tempMelodyFilePath");
-    File(tempMelodyFilePath).renameSync(this.filePath);
+    File(tempMelodyFilePath).renameSync(this.filePath!);
     File(backingTrackPath).deleteSync();
   }
 }

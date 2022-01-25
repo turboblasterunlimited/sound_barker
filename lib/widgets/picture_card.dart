@@ -3,7 +3,8 @@ import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/screens/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:line_awesome_icons/line_awesome_icons.dart';
+
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'dart:io';
@@ -13,9 +14,9 @@ import '../providers/pictures.dart';
 class PictureCard extends StatefulWidget {
   final Picture picture;
   final Pictures pictures;
-  final List<Widget> displayList;
+  List<Widget>? displayList;
 
-  PictureCard(this.picture, this.pictures, this.displayList, {Key key})
+  PictureCard(this.picture, this.pictures, this.displayList, {required Key key})
       : super(key: key);
 
   @override
@@ -24,12 +25,12 @@ class PictureCard extends StatefulWidget {
 
 class _PictureCardState extends State<PictureCard>
     with TickerProviderStateMixin {
-  ImageController imageController;
-  AnimationController animationController;
-  Animation<double> animateScale;
+  late ImageController imageController;
+  late AnimationController animationController;
+  late Animation<double> animateScale;
 
-  KaraokeCards cards;
-  CurrentActivity currentActivity;
+  late KaraokeCards cards;
+  late CurrentActivity currentActivity;
 
   @override
   void initState() {
@@ -46,14 +47,14 @@ class _PictureCardState extends State<PictureCard>
   @override
   void dispose() {
     widget.picture.creationAnimation = false;
-    animationController?.dispose();
+    animationController.dispose();
     super.dispose();
   }
 
   void imageActions(String action) async {
     if (action == "DELETE") {
       await animationController.forward();
-      widget.displayList.remove(this);
+      widget.displayList?.remove(this);
       await widget.pictures.remove(widget.picture);
     }
   }
@@ -68,7 +69,7 @@ class _PictureCardState extends State<PictureCard>
 
   Widget _imageWidget() {
     return Image.file(
-      File(widget.picture.filePath),
+      File(widget.picture.filePath!),
       fit: BoxFit.cover,
     );
   }
@@ -87,7 +88,7 @@ class _PictureCardState extends State<PictureCard>
             return FittedBox(
               fit: BoxFit.cover,
               child: Icon(
-                LineAwesomeIcons.exclamation_circle,
+                FontAwesomeIcons.exclamationCircle,
                 color: Theme.of(context).errorColor,
                 size: 50,
               ),
@@ -124,7 +125,7 @@ class _PictureCardState extends State<PictureCard>
                   right: -25,
                   top: -5,
                   child: Visibility(
-                    visible: !widget.picture.isStock,
+                    visible: !widget.picture.isStock!,
                     child: Stack(
                       children: <Widget>[
                         PopupMenuButton(

@@ -9,17 +9,21 @@ import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import 'package:K9_Karaoke/widgets/user_agreement.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
+// ignore: import_of_legacy_library_into_null_safe
+// import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
+import 'package:auth_buttons/auth_buttons.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:line_awesome_icons/line_awesome_icons.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:openid_client/openid_client_io.dart';
-import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+//import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import '../providers/flutter_facebook_login.dart';
 
 import 'package:K9_Karaoke/services/http_controller.dart';
 import 'package:provider/provider.dart';
 import '../services/authenticate_user.dart';
 import 'package:K9_Karaoke/globals.dart';
+import 'package:email_validator/email_validator.dart';
 
 class AuthenticationScreen extends StatefulWidget {
   static const routeName = 'authentication-screen';
@@ -30,21 +34,23 @@ class AuthenticationScreen extends StatefulWidget {
 
 class _AuthenticationScreenState extends State<AuthenticationScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  late final VoidCallback
+      onPressed; // jmf - 22-12-21: changed to VoidCallback for null saftey changes
   bool signingIn = false;
-  FocusNode passwordFocusNode;
+  FocusNode? passwordFocusNode;
   String email = "";
   String password = "";
   bool obscurePassword = true;
-  TheUser user;
-  Map userObj;
-  BuildContext c;
+  TheUser? user;
+  Map? userObj;
+  BuildContext? c;
   bool _showAgreement = false;
   bool _agreementAccepted = false;
 
 // added jmf -- forgot password state
   TextEditingController _textFieldController = TextEditingController();
-  String forgotPasswordEmail;
-  String valueText;
+  String? forgotPasswordEmail;
+  String? valueText;
 
   void _displayResetPasswordInstructions(BuildContext context) async {
     return showDialog(
@@ -141,8 +147,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   void _handleForgotPassword() async {
     print("_handleForgotPassword");
     await _displayForgotPasswordDialog(context);
-    print("email: " + forgotPasswordEmail);
-    if (forgotPasswordEmail.isNotEmpty) {
+    print("email: " + forgotPasswordEmail!);
+    if (forgotPasswordEmail!.isNotEmpty) {
       Map result = await RestAPI.userForgotPassword(forgotPasswordEmail);
       print("\n\n\n\n");
       print(result['success']);
@@ -158,8 +164,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       _agreementAccepted = isAccepted;
     });
     if (isAccepted) {
-      await user.agreeToTerms();
-      await user.signIn(userObj);
+      await user!.agreeToTerms();
+      await user!.signIn(userObj!);
       Navigator.of(context).popAndPushNamed(RetrieveDataScreen.routeName);
     } else {
       print("agreement refused");
@@ -217,19 +223,19 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
 
   void _handleSignedIn() async {
     print("user email from handle signed in: $email");
-    _agreementAccepted = userObj["user_agreed_to_terms_v1"] == 1;
+    _agreementAccepted = userObj!["user_agreed_to_terms_v1"] == 1;
     if (!_agreementAccepted) {
       setState(() {
         _showAgreement = true;
       });
       SystemChrome.setEnabledSystemUIOverlays([]);
     } else {
-      user.signIn(userObj);
+      user!.signIn(userObj!);
       Navigator.of(context).popAndPushNamed(RetrieveDataScreen.routeName);
     }
   }
 
-  String get platform {
+  String? get platform {
     if (Platform.isAndroid) {
       return "android";
     } else if (Platform.isIOS) {
@@ -244,7 +250,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       print("the response data: $responseData");
       _handleSignedIn();
     } else {
-      showError(c, responseData["error"]);
+      showError(c!, responseData["error"]);
     }
   }
 
@@ -258,7 +264,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       );
       return response;
     } catch (e) {
-      showError(c, "");
+      showError(c!, "");
     }
   }
 
@@ -271,20 +277,21 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       switch (result.status) {
         case FacebookLoginStatus.loggedIn:
           responseData =
-              await _sendFacebookTokenToServer(result.accessToken.token);
+              await _sendFacebookTokenToServer(result.accessToken!.token);
           _handleSigninResponse(responseData?.data);
           break;
         case FacebookLoginStatus.cancelledByUser:
-          showError(c,
+          showError(c!,
               "To sign in with Facebook, accept Facebook's permission request");
           break;
         case FacebookLoginStatus.error:
-          showError(c, "Facebook credentials denied");
+          showError(c!, "Facebook credentials denied");
           break;
       }
     } catch (e) {
       // webview will inform user if no internet
     }
+    return true;
   }
 
   // ALL GOOGLE
@@ -293,9 +300,12 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       return "885484185769-05vl2rnlup9a9hdkrs78ao1jvmn1804t.apps.googleusercontent.com";
     } else if (Platform.isIOS) {
       return "885484185769-b78ks9n5vlka0enrl33p6hkmahhg5o7i.apps.googleusercontent.com";
+    } else {
+      return "";
     }
   }
 
+  // jmf - 12-22-21: Added exception handling for null id.
   Future<void> _handleGoogleAuthentication() async {
     // setState(() => signingIn = true);
     var token;
@@ -304,32 +314,36 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
 
     // hardcoded for google right now.
     var issuer = Issuer.google;
-    clientId = getGoogleClientID();
     try {
+      clientId = getGoogleClientID();
+      if (clientId.isEmpty) {
+        throw new Exception("No Google ClientId");
+      }
       token =
           await authenticate(issuer, clientId, ['email', 'openid', 'profile']);
       response = await HttpController.dioPost(
-        'https://$serverURL/openid-token/${platform}',
+        'https://$serverURL/openid-token/$platform',
         data: token,
       );
       _handleSigninResponse(response?.data);
     } catch (e) {
+      print("Exception caught by K9: " + e.toString());
       showError(
-        c,
+        c!,
       );
     }
   }
 
   Future _handleManualSignUp() async {
     FocusScope.of(context).unfocus();
-    BuildContext loadingContext;
+    late BuildContext loadingContext;
     _showLoadingModal((ctx) => loadingContext = ctx);
     Map response = await RestAPI.userManualSignUp(email, password);
     var userObj = response["user"];
     print("USER OBJECT: $userObj");
     Navigator.of(loadingContext).pop();
     if (!response["success"])
-      showError(c, response["error"]);
+      showError(c!, response["error"]);
     else if (response["account_already_exists"] == true) {
       await _handleManualSignIn();
     } else {
@@ -338,13 +352,33 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     }
   }
 
-  Future<dynamic> _handleManualSignIn({Function success}) async {
+  Future _handleResendConfirmationEmail() async {
+    FocusScope.of(context).unfocus();
+    late BuildContext loadingContext;
+    _showLoadingModal((ctx) => loadingContext = ctx);
+    Map response = await RestAPI.userResendConfirmationEmail(email);
+    var userObj = response["user"];
+    print("USER OBJECT: $userObj");
+    Navigator.of(loadingContext).pop();
+    if (!response["success"])
+      showError(c!, response["error"]);
+    else if (response["account_already_exists"] == true) {
+      await _handleManualSignIn();
+    } else {
+      print("Server response: $response");
+      _showVerifyEmail();
+    }
+  }
+
+  Future<dynamic> _handleManualSignIn({Function? success}) async {
     var response = await RestAPI.userManualSignIn(email, password);
     print("Response check: $response");
     if (!response["success"]) {
-      showError(c, response["error"]);
+      showError(c!, response["error"]);
     } else {
-      success?.call();
+      if (success != null) {
+        success.call();
+      }
       _handleSigninResponse(response);
     }
   }
@@ -352,20 +386,38 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   Future<void> _handleSignInButton() async {
     FocusScope.of(context).unfocus();
     if (invalidInput)
-      return showError(c, "Please enter a valid email and password");
+      return showError(c!, "Please enter a valid email and password");
     _handleManualSignIn();
   }
 
   bool get invalidInput {
-    return (email.length < 6 || password.length == 0);
+    return (!isValidEmail || password.length == 0);
+//    return (email.length < 6 || password.length == 0);
   }
 
-  Function _handleSignUp(Function signUpFunction, {bool manualSignUp = false}) {
+  // jmf - 24-1-22: check for invalid input
+  bool get isValidEmail {
+    return EmailValidator.validate(email.toLowerCase());
+  }
+
+  // jmf - 22-12-21: changed to VoidCallback for null saftey changes
+  VoidCallback _handleSignUp(Function signUpFunction,
+      {bool manualSignUp = false}) {
     return () async {
       if (manualSignUp && invalidInput) {
-        showError(c, "Please enter a valid email and password");
+        showError(c!, "Please enter a valid email and password");
       } else
         signUpFunction();
+    };
+  }
+
+  VoidCallback _handResendButton(Function sendReconfirmationFunction,
+      {bool manualSignUp = false}) {
+    return () async {
+      if (!isValidEmail) {
+        showError(c!, "Please enter a valid email");
+      } else
+        sendReconfirmationFunction();
     };
   }
 
@@ -378,7 +430,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
 
   @override
   void dispose() {
-    passwordFocusNode.dispose();
+    passwordFocusNode!.dispose();
     super.dispose();
   }
 
@@ -454,7 +506,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                           });
                                         },
                                         onSubmitted: (_) {
-                                          passwordFocusNode.requestFocus();
+                                          passwordFocusNode!.requestFocus();
                                         },
                                         decoration: InputDecoration(
                                           filled: true,
@@ -493,8 +545,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                                 obscurePassword =
                                                     !obscurePassword),
                                             child: Icon(obscurePassword
-                                                ? LineAwesomeIcons.eye_slash
-                                                : LineAwesomeIcons.eye),
+                                                ? FontAwesomeIcons.eyeSlash
+                                                : FontAwesomeIcons.eye),
                                           ),
                                         ),
                                       ),
@@ -538,24 +590,43 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                       ),
                                     ],
                                   ),
-                                  Container(
-                                    height: 50,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: FlatButton(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 5, horizontal: 10),
-                                        child: Text("Forgot Password",
-                                            style: TextStyle(fontSize: 14)),
-                                        color: Theme.of(context).primaryColor,
-                                        onPressed: _handleForgotPassword,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(22.0),
+                                  ButtonBar(
+                                      alignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: FlatButton(
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 5, horizontal: 10),
+                                            child: Text("Forgot Password",
+                                                style: TextStyle(fontSize: 14)),
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            onPressed: _handleForgotPassword,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(22.0),
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                  ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: FlatButton(
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 5, horizontal: 10),
+                                            child: Text("Resend Confirm Email",
+                                                style: TextStyle(fontSize: 14)),
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            onPressed: _handResendButton(
+                                                _handleResendConfirmationEmail),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(22.0),
+                                            ),
+                                          ),
+                                        ),
+                                      ]),
                                   Container(
                                     width: 200,
                                     padding:
@@ -566,7 +637,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                     ),
                                   ),
                                   Center(
-                                    child: GoogleSignInButton(
+                                    child: GoogleAuthButton(
                                       text: "Continue with Google",
                                       onPressed: _handleSignUp(
                                           _handleGoogleAuthentication),
@@ -574,7 +645,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(top: 15.0),
-                                    child: FacebookSignInButton(
+                                    child: FacebookAuthButton(
                                       onPressed: _handleSignUp(
                                           _handleFacebookAuthentication),
                                     ),
@@ -592,4 +663,6 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
             ),
     );
   }
+
+  void signUpFunction() {}
 }

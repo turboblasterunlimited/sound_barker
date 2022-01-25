@@ -15,16 +15,16 @@ class SongArrangementSelector extends StatefulWidget {
 }
 
 class _SongArrangementSelector extends State<SongArrangementSelector> {
-  KaraokeCards cards;
+  KaraokeCards? cards;
   var songFormula;
-  Songs songs;
-  CurrentActivity currentActivity;
+  Songs? songs;
+  CurrentActivity? currentActivity;
   bool _isLoading = false;
 
   void _createSong(int songFormulaId) async {
     setState(() => _isLoading = true);
     var songData =
-        await RestAPI.createSong(cards.current.barkIds, songFormulaId);
+        await RestAPI.createSong(cards!.current!.barkIds, songFormulaId);
     if (songData["error"] != null) {
       setState(() => _isLoading = false);
       showError(context, songData["error"]);
@@ -34,16 +34,16 @@ class _SongArrangementSelector extends State<SongArrangementSelector> {
     await song.setSongData(songData);
     await song.downloadAndCombineSong();
     print("ADDING SONG");
-    songs.addSong(song);
-    cards.setCurrentSong(song);
-    currentActivity.setNextSubStep();
+    songs!.addSong(song);
+    cards!.setCurrentSong(song);
+    currentActivity!.setNextSubStep();
     setState(() => _isLoading = false);
   }
 
   @override
   Widget build(BuildContext context) {
     cards = Provider.of<KaraokeCards>(context, listen: false);
-    songFormula = cards.current.songFormula;
+    songFormula = cards!.current!.songFormula;
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
     songs = Provider.of<Songs>(context, listen: false);
 
@@ -56,7 +56,7 @@ class _SongArrangementSelector extends State<SongArrangementSelector> {
           InterfaceTitleNav(
               title: "CHOOSE STYLE",
               titleSize: 20,
-              backCallback: currentActivity.setPreviousSubStep),
+              backCallback: currentActivity!.setPreviousSubStep),
           _isLoading
               ? LoadingHalfScreenWidget("Creating Song...")
               : SizedBox(

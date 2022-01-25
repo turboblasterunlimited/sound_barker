@@ -35,34 +35,34 @@ class CardAudios with ChangeNotifier {
       // print("file length: ${File(filePath).lengthSync()}");
 
       if (!File(filePath).existsSync())
-        await Gcloud.downloadFromBucket(audio.bucketFp, filePath);
+        await Gcloud.downloadFromBucket(audio.bucketFp!, filePath);
     }));
     notifyListeners();
   }
 }
 
 class CardAudio {
-  String fileId;
-  String filePath;
-  String bucketFp;
-  List amplitudes;
+  String? fileId;
+  String? filePath;
+  String? bucketFp;
+  List? amplitudes;
 
   CardAudio({this.filePath, this.bucketFp, this.amplitudes, this.fileId}) {
     this.fileId ??= Uuid().v4();
   }
 
   bool get exists {
-    return filePath != null && File(filePath).existsSync();
+    return filePath != null && File(filePath!).existsSync();
   }
 
   void deleteFile() {
-    if (File(filePath).existsSync()) File(filePath).deleteSync();
+    if (File(filePath!).existsSync()) File(filePath!).deleteSync();
   }
 
   Future<void> delete() async {
     print("Deleting old card audio");
     try {
-      if (bucketFp != null) await RestAPI.deleteCardAudio(fileId);
+      if (bucketFp != null) await RestAPI.deleteCardAudio(fileId!);
       deleteFile();
       amplitudes = null;
       filePath = null;

@@ -1,11 +1,12 @@
-
-import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
-import 'package:flutter_ffmpeg/log_level.dart';
+import 'package:flutter_sound/flutter_sound.dart';
+import 'package:logger/logger.dart';
 
 class FFMpeg {
-  static final FlutterFFmpegConfig config = FlutterFFmpegConfig();
-  static final FlutterFFmpeg process = FlutterFFmpeg();
-  static final FlutterFFprobe probe = FlutterFFprobe();
-
-  static final logLevel = config.setLogLevel(LogLevel.AV_LOG_QUIET);
+  static Logger logger = Logger(level: Level.debug);
+  static final logLevel = Level.debug;
+  static final FlutterSoundFFmpegConfig config =
+      FlutterSoundFFmpegConfig(logger);
+  //FlutterFFmpegConfig();
+  static final FlutterSoundFFmpeg process = FlutterSoundFFmpeg();
+  static final FlutterSoundFFprobe probe = FlutterSoundFFprobe();
 }

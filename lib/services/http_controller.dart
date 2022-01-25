@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:airplane_mode_detection/airplane_mode_detection.dart';
+import '../providers/airplane_mode_detection.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
@@ -9,7 +9,7 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:K9_Karaoke/tools/app_storage_path.dart';
 
 class HttpController {
-  static Dio dio;
+  static late Dio dio;
   static dynamic cookieJar;
   HttpController() {
     BaseOptions options = BaseOptions(
@@ -18,7 +18,8 @@ class HttpController {
       receiveTimeout: 12000,
     );
     dio = Dio(options);
-    cookieJar = PersistCookieJar(dir: myAppStoragePath + "/.cookies/");
+    var tempPath = myAppStoragePath! + "/.cookies/";
+    cookieJar = PersistCookieJar(storage: FileStorage(tempPath));
     HttpController.dio.interceptors
         .add(CookieManager(HttpController.cookieJar));
     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
@@ -65,6 +66,7 @@ class HttpController {
   }
 
   static Future<Response> dioPut(String endpoint, {data, options}) async {
-    return _catchErrors(() async => await dio.put(endpoint, data: data, options: options));
+    return _catchErrors(
+        () async => await dio.put(endpoint, data: data, options: options));
   }
 }

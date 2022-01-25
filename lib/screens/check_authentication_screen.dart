@@ -23,10 +23,10 @@ class CheckAuthenticationScreen extends StatefulWidget {
 
 class _CheckAuthenticationScreenState extends State<CheckAuthenticationScreen> {
   bool firstBuild = true;
-  TheUser user;
-  Map userObj;
+  TheUser? user;
+  late Map userObj;
   bool noInternet = false;
-  BuildContext c;
+  late BuildContext c;
 
   // This is the same for authentication screen
   bool _agreementAccepted = false;
@@ -41,7 +41,7 @@ class _CheckAuthenticationScreenState extends State<CheckAuthenticationScreen> {
       });
       SystemChrome.setEnabledSystemUIOverlays([]);
     } else {
-      await user.signIn(userObj);
+      await user?.signIn(userObj);
       print("navigating to retrieve data");
       Navigator.of(context)
           .pushReplacement(FadeRoute(page: RetrieveDataScreen()));
@@ -54,8 +54,8 @@ class _CheckAuthenticationScreenState extends State<CheckAuthenticationScreen> {
       _agreementAccepted = isAccepted;
     });
     if (isAccepted) {
-      await user.agreeToTerms();
-      await user.signIn(userObj);
+      await user?.agreeToTerms();
+      await user?.signIn(userObj);
       Navigator.of(context)
           .pushReplacement(FadeRoute(page: RetrieveDataScreen()));
     } else {
@@ -88,7 +88,14 @@ class _CheckAuthenticationScreenState extends State<CheckAuthenticationScreen> {
 
   void signedInOrGotoAuthScreen() async {
     Map response = await checkIfSignedIn();
-    setState(() => userObj = response['user_obj']);
+
+    // jmf - 29Dec2021: Added since this can be null and userObject must not be
+    // set to null (it is late final)
+    var tempUserObj = response['user_obj'];
+    if (tempUserObj != null) {
+      setState(() => userObj = response['user_obj']);
+    }
+
     print("response is....: $response");
     if (response["error"] != null) {
       _handleNoInternet(response["error"]);

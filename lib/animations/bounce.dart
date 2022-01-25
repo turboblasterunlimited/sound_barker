@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class Bounce extends StatefulWidget {
-  final Icon icon;
-  final double begin;
-  final double end;
+  final Icon? icon;
+  final double? begin;
+  final double? end;
 
   Bounce({this.icon, this.begin, this.end});
 
@@ -12,7 +12,7 @@ class Bounce extends StatefulWidget {
 }
 
 class _BounceState extends State<Bounce> with SingleTickerProviderStateMixin {
-  AnimationController animationController;
+  late AnimationController animationController;
   var tween;
 
   @override
@@ -36,7 +36,7 @@ class _BounceState extends State<Bounce> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return AnimatedBuilder(
         animation: animationController,
-        builder: (BuildContext context, Widget child) {
+        builder: (BuildContext context, Widget? child) {
           return Transform.translate(
             offset: Offset(0, tween.value),
             child: widget.icon,

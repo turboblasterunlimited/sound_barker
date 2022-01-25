@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:K9_Karaoke/globals.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:dio/dio.dart';
 import 'package:path/path.dart';
 import '../services/http_controller.dart';
@@ -37,7 +38,7 @@ class Gcloud {
   }
 
   static Future<String> upload(String filePath, String directory,
-      [String clientFilePath]) async {
+      [String? clientFilePath]) async {
     var fileName = basename(filePath);
     final contentType =
         fileName.split(".")[1] == 'aac' ? 'audio/mpeg' : 'image/jpeg';
@@ -71,7 +72,7 @@ class Gcloud {
     print(
         "Full Download path: https://storage.googleapis.com/$bucketName/$bucketFp");
 
-    Response response;
+    Response? response;
     try {
       response = await HttpController.dioGet(
         "https://storage.googleapis.com/$bucketName/$bucketFp",
@@ -89,7 +90,7 @@ class Gcloud {
       await raf.close();
     } catch (e) {
       print("Google Cloud bucket download error: $e");
-      print("response: $response");
+      print("response: $response!");
       print("bucket name: $bucketName");
       print("bucket fp: $bucketFp");
 

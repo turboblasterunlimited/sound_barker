@@ -1,11 +1,10 @@
 import 'dart:async';
-import 'dart:collection';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:io';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:csv/csv.dart';
 import 'package:K9_Karaoke/tools/ffmpeg.dart';
-import 'package:path_provider/path_provider.dart';
 
 class AmplitudeExtractor {
   // static final queue = Queue();
@@ -83,8 +82,6 @@ class AmplitudeExtractor {
   //   Stream()
   // }
 
-
-
   static Future<String> createAmplitudeFile(filePath, [filePathBase]) async {
     filePathBase ??= filePath.substring(0, filePath.length - 4);
     final amplitudes = await getAmplitudes(filePath, filePathBase);
@@ -96,10 +93,10 @@ class AmplitudeExtractor {
 
   static Future<List> getAmplitudes(filePath, [filePathBase]) async {
     filePathBase ??= filePath.substring(0, filePath.length - 4);
-    if (File("${filePathBase}.wav").existsSync())
-      File("${filePathBase}.wav").deleteSync();
-    await FFMpeg.process
-        .execute("-hide_banner -loglevel panic -i $filePath -ac 1 $filePathBase.wav");
+    if (File("$filePathBase.wav").existsSync())
+      File("$filePathBase.wav").deleteSync();
+    await FFMpeg.process.execute(
+        "-hide_banner -loglevel panic -i $filePath -ac 1 $filePathBase.wav");
 
     // ONLY ANDROID:
     // _createAccessibleWavFile(filePathBase);

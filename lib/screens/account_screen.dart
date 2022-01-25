@@ -13,7 +13,6 @@ import 'package:K9_Karaoke/widgets/error_dialog.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:K9_Karaoke/widgets/social_links_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 
 import 'change_password_screen.dart';
@@ -27,27 +26,27 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _AccountState extends State<AccountScreen> {
-  TheUser user;
+  TheUser? user;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  KaraokeCards cards;
-  Songs songs;
-  Barks barks;
-  Pictures pictures;
+  KaraokeCards? cards;
+  Songs? songs;
+  Barks? barks;
+  Pictures? pictures;
 
   final fontSize = 32.0;
 
   void _removeData() {
-    cards.removeAll();
-    pictures.removeAll();
-    barks.removeAll();
-    songs.removeAll();
+    cards!.removeAll();
+    pictures!.removeAll();
+    barks!.removeAll();
+    songs!.removeAll();
   }
 
   void _deleteFiles() {
-    cards.deleteAll();
-    pictures.deleteAll();
-    barks.deleteAll();
-    songs.deleteAll();
+    cards!.deleteAll();
+    pictures!.deleteAll();
+    barks!.deleteAll();
+    songs!.deleteAll();
   }
 
   void _handleDeleteAccount() async {
@@ -62,7 +61,7 @@ class _AccountState extends State<AccountScreen> {
               Navigator.of(modalContext).pop();
             },
             secondaryFunction: (BuildContext modalContext) async {
-              var response = await user.delete();
+              var response = await user!.delete();
               if (response["success"]) {
                 _deleteFiles();
                 removeDataAndNavToAuth(modalContext);
@@ -99,11 +98,11 @@ class _AccountState extends State<AccountScreen> {
         context: context,
         builder: (BuildContext ctx) {
           return CustomDialog(
-            header: "Logout from ${user.email}?",
+            header: "Logout from ${user!.email}?",
             bodyText:
                 "You don't have to logout to exit the app.\n\nYou will have to login again to use K-9 Karaoke.",
             primaryFunction: (BuildContext modalContext) async {
-              var response = await user.logout();
+              var response = await user!.logout();
               if (response["success"]) {
                 removeDataAndNavToAuth(modalContext);
               } else {

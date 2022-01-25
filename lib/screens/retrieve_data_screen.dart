@@ -21,13 +21,13 @@ class RetrieveDataScreen extends StatefulWidget {
 }
 
 class _RetrieveDataScreenState extends State<RetrieveDataScreen> {
-  Barks barks;
-  Songs songs;
-  Pictures pictures;
-  CreatableSongs creatableSongs;
-  CardAudios cardAudios;
-  CardDecorationImages decorationImages;
-  KaraokeCards cards;
+  late Barks barks;
+  late Songs songs;
+  late Pictures pictures;
+  late CreatableSongs creatableSongs;
+  late CardAudios cardAudios;
+  late CardDecorationImages decorationImages;
+  late KaraokeCards cards;
   bool firstBuild = true;
 
   Future<void> downloadDataAndNavigate() async {
@@ -44,7 +44,8 @@ class _RetrieveDataScreenState extends State<RetrieveDataScreen> {
     await cards.retrieveAll(pictures, cardAudios, songs, decorationImages);
     cards.sort();
 
-    Navigator.of(context).pushReplacement(FadeRoute(page: MainScreen(), routeName: MainScreen.routeName));
+    Navigator.of(context).pushReplacement(
+        FadeRoute(page: MainScreen(), routeName: MainScreen.routeName));
     Navigator.of(context).push(FadeRoute(page: MenuScreen()));
   }
 

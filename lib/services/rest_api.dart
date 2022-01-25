@@ -93,6 +93,21 @@ class RestAPI {
     return response?.data;
   }
 
+  static Future<dynamic> userResendConfirmationEmail(email) async {
+    Map data = {"email": email.toLowerCase()};
+    var response;
+    try {
+      response = await HttpController.dioPost(
+        'https://$serverURL/resend-confirm',
+        data: data,
+      );
+    } catch (e) {
+      return _handleAccountError(response, e);
+    }
+    print("user manual signup response: $response");
+    return response?.data;
+  }
+
   static Future<dynamic> userManualSignIn(email, password) async {
     Map data = {"email": email?.toLowerCase(), "password": password};
     var response;
@@ -142,7 +157,7 @@ class RestAPI {
         imageUrl,
       );
     } catch (e) {
-      print("delete decoration image request error message: ${e.message}");
+      print("delete decoration image request error message: ${e.toString()}");
       _handleAssetError(response, e);
     }
   }
@@ -156,7 +171,7 @@ class RestAPI {
         imageUrl,
       );
     } catch (e) {
-      print("delete card audio request error message: ${e.message}");
+      print("delete card audio request error message: ${e.toString()}");
       _handleAssetError(response, e);
     }
   }
@@ -172,7 +187,7 @@ class RestAPI {
         data: cardBody,
       );
     } catch (e) {
-      print("update card picture error: ${e.message}");
+      print("update card picture error: ${e.toString()}");
       _handleAssetError(response, e);
     }
     return response?.data;
@@ -194,7 +209,7 @@ class RestAPI {
         data: imageBody,
       );
     } catch (e) {
-      print("create decoration image: ${e.message}");
+      print("create decoration image: ${e.toString()}");
       _handleAssetError(response, e);
     }
   }
@@ -213,7 +228,7 @@ class RestAPI {
         data: audioBody,
       );
     } catch (e) {
-      print("create card audio error: ${e}");
+      print("create card audio error: $e");
       _handleAssetError(response, e);
     }
     print("done creating card audio");
@@ -223,12 +238,12 @@ class RestAPI {
     var response;
     final cardBody = {
       'uuid': card.uuid,
-      'card_audio_id': card.audio.fileId,
+      'card_audio_id': card.audio!.fileId,
       'song_id': card.song?.fileId,
-      "image_id": card.picture.fileId,
+      "image_id": card.picture!.fileId,
       'decoration_image_id': card.decorationImage?.fileId,
       'animation_json':
-          '{"mouth_positions": ${card.audio.amplitudes.toString()}}',
+          '{"mouth_positions": ${card.audio!.amplitudes.toString()}}',
     };
     final cardUrl = 'https://$serverURL/greeting_card';
     print("card request body: $cardBody");
@@ -238,7 +253,7 @@ class RestAPI {
         data: cardBody,
       );
     } catch (e) {
-      print("create greeting card error: ${e.message}");
+      print("create greeting card error: ${e.toString()}");
       return {"error": e};
     }
     print("create greeting card body: ${response?.data}");
@@ -261,7 +276,7 @@ class RestAPI {
         data: cardBody,
       );
     } catch (e) {
-      print("create card key error: ${e.message}");
+      print("create card key error: ${e.toString()}");
       return {"error": e};
     }
     print("create card key body: ${response?.data}");
@@ -557,10 +572,10 @@ class RestAPI {
         data: body,
       );
     } catch (e) {
-      print("Split RAw bark error message: ${e.message}");
+      print("Split RAw bark error message: ${e.toString()}");
       _handleAssetError(response, e);
     }
-    print("split bark server response body content: ${response}");
+    print("split bark server response body content: $response");
     return response?.data;
   }
 }

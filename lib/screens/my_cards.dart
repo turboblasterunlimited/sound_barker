@@ -19,10 +19,10 @@ class MyCardsScreen extends StatefulWidget {
 }
 
 class _MyCardsScreenState extends State<MyCardsScreen> {
-  KaraokeCards cards;
-  CurrentActivity currentActivity;
-  KaraokeCardDecorationController cardDecorator;
-  TheUser user;
+  late KaraokeCards cards;
+  late CurrentActivity currentActivity;
+  late KaraokeCardDecorationController cardDecorator;
+  late TheUser user;
 
   List<Widget> _cardGridTiles() {
     user.subscribed;

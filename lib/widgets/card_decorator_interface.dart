@@ -1,12 +1,14 @@
 import 'package:K9_Karaoke/components/triangular_slider_track_shape.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
-import 'package:K9_Karaoke/providers/sound_controller.dart';
+import 'package:K9_Karaoke/providers/flutter_sound_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/karaoke_card_decoration_controller.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
-import 'package:line_awesome_icons/line_awesome_icons.dart';
+
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import '../icons/custom_icons.dart';
 
 class CardDecoratorInterface extends StatefulWidget {
@@ -15,13 +17,13 @@ class CardDecoratorInterface extends StatefulWidget {
 }
 
 class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
-  SoundController soundController;
-  KaraokeCardDecorationController decorationController;
-  ImageController imageController;
-  CurrentActivity currentActivity;
-  KaraokeCards cards;
-  FocusNode focusNode;
-  double canvasLength;
+  FlutterSoundController? soundController;
+  KaraokeCardDecorationController? decorationController;
+  ImageController? imageController;
+  CurrentActivity? currentActivity;
+  KaraokeCards? cards;
+  late FocusNode focusNode;
+  double? canvasLength;
   final textController = TextEditingController();
 
   @override
@@ -33,27 +35,27 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
   @override
   void dispose() {
     stopPlayback();
-    cards.current.decoration.removeEmptyTypings();
+    cards!.current!.decoration.removeEmptyTypings();
     focusNode.dispose();
     super.dispose();
   }
 
   void stopPlayback() {
-    imageController.stopAnimation();
-    soundController.stopPlayer();
+    imageController!.stopAnimation();
+    soundController!.stopPlayer();
   }
 
   void _handleUndo() {
     focusNode.unfocus();
-    decorationController.undoLast();
-    if (decorationController.isTyping)
+    decorationController!.undoLast();
+    if (decorationController!.isTyping)
       setState(() {
         textController.clear();
       });
   }
 
   void _handleReset() {
-    decorationController.reset();
+    decorationController!.reset();
     setState(() {
       textController.clear();
     });
@@ -95,14 +97,14 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
         .map(
           (color) => GestureDetector(
             onTap: () {
-              decorationController.setColor(color);
+              decorationController!.setColor(color!);
             },
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 5.0),
               child: Container(
                 height: 30,
                 width: 28,
-                decoration: decorationController.color == color
+                decoration: decorationController!.color == color
                     ? BoxDecoration(
                         color: color,
                         borderRadius: BorderRadius.all(Radius.circular(15)),
@@ -124,25 +126,26 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
   double iconButtonSize = 30;
 
   void backCallback() {
-    currentActivity.setPreviousSubStep();
+    currentActivity!.setPreviousSubStep();
   }
 
   void skipCallback() {
     print("next substep");
-    currentActivity.setNextSubStep();
+    currentActivity!.setNextSubStep();
   }
 
   @override
   Widget build(BuildContext context) {
-    soundController ??= Provider.of<SoundController>(context);
+    soundController ??= Provider.of<FlutterSoundController>(context);
     imageController ??= Provider.of<ImageController>(context, listen: false);
     decorationController ??=
         Provider.of<KaraokeCardDecorationController>(context);
     canvasLength ??= MediaQuery.of(context).size.width;
     cards ??= Provider.of<KaraokeCards>(context);
     currentActivity ??= Provider.of<CurrentActivity>(context);
-    decorationController.setDecoration(cards.current.decoration, canvasLength);
-    decorationController.setTextController(textController, focusNode);
+    decorationController!
+        .setDecoration(cards!.current!.decoration, canvasLength!);
+    decorationController!.setTextController(textController, focusNode);
 
     return Container(
       height: 174,
@@ -159,7 +162,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
               focusNode: focusNode,
               onChanged: (text) {
                 print("Text: $text");
-                decorationController.updateText(text);
+                decorationController!.updateText(text);
               },
               onSubmitted: (_) {},
             ),
@@ -174,7 +177,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                     behavior: HitTestBehavior.opaque,
                     onTap: backCallback,
                     child: Row(children: <Widget>[
-                      Icon(LineAwesomeIcons.angle_left,
+                      Icon(FontAwesomeIcons.angleLeft,
                           color: Theme.of(context).primaryColor),
                       Text(
                         'Back',
@@ -188,7 +191,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                     child: RawMaterialButton(
                       onPressed: () {
                         focusNode.unfocus();
-                        decorationController.startDrawing();
+                        decorationController!.startDrawing();
                       },
                       // constraints:
                       //     BoxConstraints(minWidth: 52.0, minHeight: 30.0),
@@ -196,7 +199,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                         "Draw",
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: decorationController.isDrawing
+                            color: decorationController!.isDrawing
                                 ? Colors.white
                                 : Theme.of(context).primaryColor,
                             fontSize: 15),
@@ -207,7 +210,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                             color: Theme.of(context).primaryColor, width: 3),
                       ),
                       elevation: 2.0,
-                      fillColor: decorationController.isDrawing
+                      fillColor: decorationController!.isDrawing
                           ? Theme.of(context).primaryColor
                           : null,
                       padding: const EdgeInsets.symmetric(
@@ -224,7 +227,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                       onPressed: () {
                         focusNode.unfocus();
                         focusNode.requestFocus();
-                        decorationController.startTyping();
+                        decorationController!.startTyping();
                       },
                       // constraints:
                       //     BoxConstraints(minWidth: 52.0, minHeight: 30.0),
@@ -232,7 +235,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                         "Type",
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: decorationController.isTyping
+                            color: decorationController!.isTyping
                                 ? Colors.white
                                 : Theme.of(context).primaryColor,
                             fontSize: 15),
@@ -243,7 +246,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                             color: Theme.of(context).primaryColor, width: 3),
                       ),
                       elevation: 2.0,
-                      fillColor: decorationController.isTyping
+                      fillColor: decorationController!.isTyping
                           ? Theme.of(context).primaryColor
                           : null,
                       padding: const EdgeInsets.symmetric(
@@ -260,7 +263,7 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                         'Skip',
                         style: TextStyle(color: Theme.of(context).primaryColor),
                       ),
-                      Icon(LineAwesomeIcons.angle_right,
+                      Icon(FontAwesomeIcons.angleRight,
                           color: Theme.of(context).primaryColor),
                     ]),
                   ),
@@ -293,14 +296,14 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                               ),
                             ),
                             child: Slider(
-                              value: decorationController.size,
+                              value: decorationController!.size,
                               min: 8,
                               max: 40,
                               divisions: 32,
                               label:
-                                  decorationController.size.round().toString(),
+                                  decorationController!.size.round().toString(),
                               onChanged: (double sliderVal) {
-                                decorationController.setSize(sliderVal);
+                                decorationController!.setSize(sliderVal);
                               },
                             ),
                           ),
@@ -382,8 +385,8 @@ class _CardDecoratorInterfaceState extends State<CardDecoratorInterface> {
                       height: 15,
                       minWidth: 50,
                       onPressed: () {
-                        decorationController.startDrawing();
-                        currentActivity.setNextSubStep();
+                        decorationController!.startDrawing();
+                        currentActivity!.setNextSubStep();
                       },
                       child: Icon(
                         Icons.check,

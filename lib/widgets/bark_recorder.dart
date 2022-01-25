@@ -1,5 +1,6 @@
 import 'dart:async';
 
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:K9_Karaoke/animations/waggle.dart';
 import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
@@ -13,11 +14,12 @@ import 'package:K9_Karaoke/widgets/loading_half_screen_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/barks.dart';
-import '../providers/sound_controller.dart';
+import '../providers/flutter_sound_controller.dart';
 
 class BarkRecorder extends StatefulWidget {
   @override
@@ -25,16 +27,20 @@ class BarkRecorder extends StatefulWidget {
 }
 
 class BarkRecorderState extends State<BarkRecorder> {
-  KaraokeCards cards;
-  String filePath;
+  late KaraokeCards cards;
+  late String filePath;
   bool _isRecording = false;
-  SoundController soundController;
+  late FlutterSoundController soundController;
   double maxDuration = 1.0;
-  Timer _recordingTimer;
-  KaraokeCard card;
-  Barks barks;
-  CurrentActivity currentActivity;
+  Timer? _recordingTimer;
+  KaraokeCard? card;
+  late Barks barks;
+  late CurrentActivity currentActivity;
   bool _loading = false;
+
+  // JMF 28/12/2021: added because static access no longer available
+  // in ImagePicker 6.2.2
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void dispose() {
@@ -47,7 +53,8 @@ class BarkRecorderState extends State<BarkRecorder> {
     print("FilePath: $filePath");
     soundController.record(this.filePath);
     _recordingTimer = Timer(Duration(seconds: 10), () {
-      soundController.startPlayer("assets/sounds/bell.aac", asset: true);
+      soundController.startPlayer("assets/sounds/bell.aac",
+          mediaType: Media.asset);
       stopRecorder();
     });
     this.setState(() {
@@ -56,18 +63,23 @@ class BarkRecorderState extends State<BarkRecorder> {
   }
 
   void startRecorder() async {
+    var appDocDir = await getApplicationDocumentsDirectory();
+    String appDocPath = appDocDir.path;
     PermissionStatus status = await Permission.microphone.request();
     if (!status.isGranted) {
       showError(context, "Microphone permission not granted");
       return;
     }
-
-    await soundController.startPlayer("assets/sounds/beeoop.aac",
-        asset: true, stopCallback: _recordSound);
+    try {
+      await soundController.startPlayer("assets/sounds/beeoop.aac",
+          mediaType: Media.asset, stopCallback: _recordSound);
+    } catch (error) {
+      print(error.toString());
+    }
   }
 
   void stopRecorder() async {
-    _recordingTimer.cancel();
+    _recordingTimer!.cancel();
 
     setState(() {
       this._isRecording = false;
@@ -79,13 +91,13 @@ class BarkRecorderState extends State<BarkRecorder> {
 
   void addCroppedBarksToAllBarks(Barks barks, croppedBarks) async {
     setState(() => _loading = true);
-    await barks.uploadRawBarkAndRetrieveCroppedBarks(card.picture.fileId);
+    await barks.uploadRawBarkAndRetrieveCroppedBarks(card!.picture!.fileId);
     setState(() => _loading = false);
   }
 
   onStartRecorderPressed() {
     print("recorder pressed");
-    soundController.recorder.isRecording ? stopRecorder() : startRecorder();
+    soundController.isRecording() ? stopRecorder() : startRecorder();
   }
 
   void _backCallback() {
@@ -97,7 +109,7 @@ class BarkRecorderState extends State<BarkRecorder> {
   }
 
   bool _systemBusy() {
-    return _loading || soundController.player.isPlaying;
+    return _loading || soundController.isPlaying();
   }
 
   void _handleUploadVideoButton() async {
@@ -138,8 +150,8 @@ class BarkRecorderState extends State<BarkRecorder> {
       showError(context, "Gallary permission not granted");
       return;
     }
-    final pickedFile =
-        await ImagePicker().getVideo(source: ImageSource.gallery);
+    var pickedFile = await _picker.pickVideo(
+        source: ImageSource.gallery, preferredCameraDevice: CameraDevice.rear);
     if (pickedFile == null) return;
     barks.deleteTempRawBark();
     await FFMpeg.process.execute(
@@ -157,7 +169,7 @@ class BarkRecorderState extends State<BarkRecorder> {
     setState(() => _loading = true);
     try {
       await barks
-          .uploadRawBarkAndRetrieveCroppedBarks(cards.current.picture.fileId);
+          .uploadRawBarkAndRetrieveCroppedBarks(cards.current!.picture!.fileId);
     } catch (e) {
       print(e);
       showError(context, "Check internet connection and try again.");
@@ -171,7 +183,7 @@ class BarkRecorderState extends State<BarkRecorder> {
   @override
   Widget build(BuildContext context) {
     cards = Provider.of<KaraokeCards>(context);
-    soundController = Provider.of<SoundController>(context);
+    soundController = Provider.of<FlutterSoundController>(context);
     barks = Provider.of<Barks>(context, listen: false);
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
     filePath = '$myAppStoragePath/tempRaw.aac';
@@ -246,7 +258,7 @@ class BarkRecorderState extends State<BarkRecorder> {
                             children: <Widget>[
                               RawMaterialButton(
                                 onPressed:
-                                    _loading || soundController.player.isPlaying
+                                    _loading || soundController.isPlaying()
                                         ? null
                                         : onStartRecorderPressed,
                                 child: _loading

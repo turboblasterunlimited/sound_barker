@@ -30,10 +30,10 @@ enum CardType {
 }
 
 class CurrentActivity with ChangeNotifier {
-  Activities current;
-  CardCreationSteps cardCreationStep;
-  CardCreationSubSteps cardCreationSubStep;
-  CardType cardType;
+  Activities? current;
+  CardCreationSteps? cardCreationStep;
+  CardCreationSubSteps? cardCreationSubStep;
+  CardType? cardType;
 
   void cardTypeNull() {
     cardType = null;
@@ -107,7 +107,7 @@ class CurrentActivity with ChangeNotifier {
   }
 
   void setCardCreationStep(CardCreationSteps step,
-      [CardCreationSubSteps subStep]) {
+      [CardCreationSubSteps? subStep]) {
     cardCreationStep = step;
     subStep == null
         ? cardCreationSubStep = CardCreationSubSteps.one
@@ -122,12 +122,12 @@ class CurrentActivity with ChangeNotifier {
 
   void setPreviousSubStep() {
     setCardCreationSubStep(
-        CardCreationSubSteps.values[cardCreationSubStep.index - 1]);
+        CardCreationSubSteps.values[cardCreationSubStep!.index - 1]);
   }
 
   void setNextSubStep() {
     setCardCreationSubStep(
-        CardCreationSubSteps.values[cardCreationSubStep.index + 1]);
+        CardCreationSubSteps.values[cardCreationSubStep!.index + 1]);
   }
 
   void startCreateCard() {

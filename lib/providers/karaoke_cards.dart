@@ -21,7 +21,7 @@ class KaraokeCards with ChangeNotifier {
   // the base card without recipient name, envelope option, mini url.
   List<KaraokeCard> all = [];
   // This is what the user shares. Uses a Karaoke card as its base.
-  KaraokeCard current;
+  KaraokeCard? current;
 
   bool get currentIsFirst {
     if (all.isEmpty) return true;
@@ -34,7 +34,7 @@ class KaraokeCards with ChangeNotifier {
 
   void sort() {
     all.sort((card1, card2) {
-      return card1.created.compareTo(card2.created);
+      return card1.created!.compareTo(card2.created!);
     });
   }
 
@@ -43,7 +43,7 @@ class KaraokeCards with ChangeNotifier {
   }
 
   void addCurrent() {
-    all.add(current);
+    all.add(current!);
     notifyListeners();
   }
 
@@ -52,15 +52,15 @@ class KaraokeCards with ChangeNotifier {
   }
 
   void setFrame(newFrameFileName, [bool hasFrameDimensions = false]) {
-    current.setFrame(newFrameFileName, hasFrameDimensions);
+    current!.setFrame(newFrameFileName, hasFrameDimensions);
     notifyListeners();
   }
 
   Future<void> remove(KaraokeCard card) async {
     print("TODO: implement delete");
-    await RestAPI.deleteCardAudio(card.audio.fileId);
+    await RestAPI.deleteCardAudio(card.audio!.fileId!);
     if (card.decorationImage != null)
-      await RestAPI.deleteDecorationImage(card.decorationImage.fileId);
+      await RestAPI.deleteDecorationImage(card.decorationImage!.fileId);
     await RestAPI.deleteCard(card);
     all.remove(card);
     card.removeFiles();
@@ -85,7 +85,7 @@ class KaraokeCards with ChangeNotifier {
               decorations.findById(cardData["decoration_image_id"]),
         );
         card.audio = audios.findById(cardData["card_audio_id"]);
-        card.audio.amplitudes =
+        card.audio!.amplitudes =
             json.decode(cardData["animation_json"])["mouth_positions"];
         all.add(card);
       } catch (e) {
@@ -119,43 +119,43 @@ class KaraokeCards with ChangeNotifier {
   // }
 
   String get currentName {
-    return current?.picture?.name ?? "";
+    return current != null ? current!.picture?.name ?? "" : "";
   }
 
-  void setCurrentSongFormula(CreatableSong creatableSong) {
-    current.songFormula = creatableSong;
+  void setCurrentSongFormula(CreatableSong? creatableSong) {
+    current!.songFormula = creatableSong;
     notifyListeners();
   }
 
   void setCurrentName(String newName) {
-    current.picture.setName(newName);
+    current!.picture!.setName(newName);
     notifyListeners();
   }
 
-  void setCurrentSong(Song newSong) {
-    current.setSong(newSong);
-    current.markLastAudioForDelete();
+  void setCurrentSong(Song? newSong) {
+    current!.setSong(newSong);
+    current!.markLastAudioForDelete();
     notifyListeners();
   }
 
   void setCurrentShortBark(bark) {
-    current.shortBark = bark;
+    current!.shortBark = bark;
     notifyListeners();
   }
 
   void setCurrentMediumBark(bark) {
-    current.mediumBark = bark;
+    current!.mediumBark = bark;
     notifyListeners();
   }
 
   void setCurrentLongBark(bark) {
-    current.longBark = bark;
+    current!.longBark = bark;
     notifyListeners();
   }
 
   void setCurrentPicture(newPicture) {
-    current.picture = newPicture;
-    if (current.uuid != null) RestAPI.updateCardPicture(current);
+    current!.picture = newPicture;
+    if (current!.uuid != null) RestAPI.updateCardPicture(current);
     notifyListeners();
   }
 
@@ -170,39 +170,39 @@ class KaraokeCards with ChangeNotifier {
   }
 
   bool get hasFrame {
-    return current != null && current.hasFrame;
+    return current != null && current!.hasFrame;
   }
 
   bool get currentPictureIsStock {
-    return current.picture != null && current.picture.isStock;
+    return current!.picture != null && current!.picture!.isStock!;
   }
 
   bool get hasPicture {
-    return current != null && current.hasPicture;
+    return current != null && current!.hasPicture;
   }
 }
 
 class KaraokeCard with ChangeNotifier {
   // completed components used by server to playback card
-  String uuid;
-  Picture picture;
-  CardAudio audio;
-  CardDecorationImage decorationImage;
-  DateTime created;
+  String? uuid;
+  Picture? picture;
+  CardAudio? audio;
+  CardDecorationImage? decorationImage;
+  DateTime? created;
 
   // only used in app to create card components
   // This is a creatable song, which has two arrangments. One of the arrangement ids will get sent to the server with the bark ids to create an actual song.
-  CreatableSong songFormula;
+  CreatableSong? songFormula;
   // This is an actual song
-  Song song;
+  Song? song;
   final message = CardMessage();
-  Bark shortBark;
-  Bark mediumBark;
-  Bark longBark;
-  String framePath;
+  Bark? shortBark;
+  Bark? mediumBark;
+  Bark? longBark;
+  String? framePath;
   CardDecoration decoration = CardDecoration();
   bool shouldDeleteOldDecoration = false;
-  CardAudio oldCardAudio;
+  CardAudio? oldCardAudio;
   bool framelessIsSelected = false;
 
   bool seenBarkLengthInfo = false;
@@ -225,7 +225,6 @@ class KaraokeCard with ChangeNotifier {
     return uuid != null;
   }
 
-
   bool hasBark(bark) {
     return bark == shortBark || bark == mediumBark || bark == longBark;
   }
@@ -233,9 +232,10 @@ class KaraokeCard with ChangeNotifier {
   void removeFiles() {
     try {
       if (decorationImage != null &&
-          File(decorationImage.filePath).existsSync())
-        File(decorationImage.filePath).deleteSync();
-      if (File(audio.filePath).existsSync()) File(audio.filePath).deleteSync();
+          File(decorationImage!.filePath!).existsSync())
+        File(decorationImage!.filePath!).deleteSync();
+      if (File(audio!.filePath!).existsSync())
+        File(audio!.filePath!).deleteSync();
     } catch (e) {
       print(e);
     }
@@ -252,7 +252,7 @@ class KaraokeCard with ChangeNotifier {
   bool get hasFrameDimension {
     if (framelessIsSelected) return false;
     return hasFrame ||
-        (decorationImage != null && decorationImage.hasFrameDimension);
+        (decorationImage != null && decorationImage!.hasFrameDimension);
   }
 
   void setDecorationImage(decorationImage) {
@@ -269,17 +269,17 @@ class KaraokeCard with ChangeNotifier {
   }
 
   Future<void> deleteOldDecorationImage() async {
-    await decorationImage.delete();
+    await decorationImage!.delete();
     decorationImage = null;
   }
 
   void setShouldDeleteOldDecortionImage() {
-    if (decorationImage != null && decorationImage.exists)
+    if (decorationImage != null && decorationImage!.exists)
       shouldDeleteOldDecoration = true;
   }
 
   Future<void> deleteOldAudio() async {
-    await oldCardAudio.delete();
+    await oldCardAudio!.delete();
     oldCardAudio = null;
   }
 
@@ -292,40 +292,41 @@ class KaraokeCard with ChangeNotifier {
   }
 
   void markLastAudioForDelete() {
-    if (audio.exists) oldCardAudio = audio;
+    if (audio!.exists) oldCardAudio = audio;
   }
 
   Future<void> combineMessageAndSong() async {
     // if already have a combined audio file
     markLastAudioForDelete();
     audio = CardAudio();
-    audio.filePath = "$myAppStoragePath/${audio.fileId}.aac";
+    audio!.filePath = "$myAppStoragePath/${audio!.fileId}.aac";
 
     // Combine with song
     if (hasASong) {
       File tempFile = File("$myAppStoragePath/tempFile.wav");
       // concat and save card audio file
       await FFMpeg.process.execute(
-          '-i "concat:${message.path}|${song.filePath}" -ac 1 ${tempFile.path}');
-      await FFMpeg.process.execute('-i ${tempFile.path} ${audio.filePath}');
+          '-i "concat:${message.path}|${song!.filePath}" -ac 1 ${tempFile.path}');
+      await FFMpeg.process.execute('-i ${tempFile.path} ${audio!.filePath}');
       if (tempFile.existsSync()) tempFile.deleteSync();
       // concat and return amplitudes
       List<double> songAmplitudes =
-          await AmplitudeExtractor.fileToList(song.amplitudesPath);
-      audio.amplitudes = message.amps + songAmplitudes;
+          await AmplitudeExtractor.fileToList(song!.amplitudesPath!);
+      audio!.amplitudes = message.amps! + songAmplitudes;
     } else {
       // make card.message into card.audio
-      File(message.path).copySync(audio.filePath);
-      audio.amplitudes = message.amps;
+      File(message.path!).copySync(audio!.filePath!);
+      audio!.amplitudes = message.amps;
     }
   }
 
   Future<void> songToAudio() async {
     markLastAudioForDelete();
     audio = CardAudio();
-    audio.filePath = "$myAppStoragePath/${audio.fileId}.aac";
-    File(song.filePath).copySync(audio.filePath);
-    audio.amplitudes = await AmplitudeExtractor.fileToList(song.amplitudesPath);
+    audio!.filePath = "$myAppStoragePath/${audio!.fileId}.aac";
+    File(song!.filePath!).copySync(audio!.filePath!);
+    audio!.amplitudes =
+        await AmplitudeExtractor.fileToList(song!.amplitudesPath!);
     notifyListeners();
   }
 
@@ -334,11 +335,11 @@ class KaraokeCard with ChangeNotifier {
     notifyListeners();
   }
 
-  void setSong(Song newSong) {
+  void setSong(Song? newSong) {
     song = newSong;
     if (newSong == null) return;
     if (decorationImage == null && decoration.isEmpty) {
-      String selectedFrame = songFamilyToCardFileName[song.songFamily];
+      String selectedFrame = songFamilyToCardFileName[song!.songFamily]!;
       setFrame(selectedFrame, true);
       print("selectedFrame: $selectedFrame");
     }
@@ -363,7 +364,7 @@ class KaraokeCard with ChangeNotifier {
   List<String> get barkIds {
     mediumBark ??= shortBark;
     longBark ??= mediumBark;
-    return [shortBark.fileId, mediumBark.fileId, longBark.fileId];
+    return [shortBark!.fileId!, mediumBark!.fileId!, longBark!.fileId!];
   }
 
   bool get hasPicture {
@@ -387,7 +388,7 @@ class KaraokeCard with ChangeNotifier {
   }
 
   bool get hasAudio {
-    return audio.exists;
+    return audio!.exists;
   }
 
   bool get hasASongFormula {

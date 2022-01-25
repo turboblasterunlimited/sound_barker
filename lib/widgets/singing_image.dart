@@ -1,6 +1,7 @@
 import 'package:K9_Karaoke/globals.dart';
 import 'package:flutter/material.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -11,13 +12,13 @@ class SingingImage extends StatefulWidget {
 
 class _SingingImageState extends State<SingingImage>
     with AutomaticKeepAliveClientMixin {
-  WebViewController webviewController;
-  ImageController imageController;
+  late WebViewController webviewController;
+  ImageController? imageController;
 
   @override
   void dispose() {
     print("Disposing Random gestures");
-    imageController.randomGestureTimer?.cancel();
+    imageController!.randomGestureTimer?.cancel();
     super.dispose();
   }
 
@@ -40,7 +41,7 @@ class _SingingImageState extends State<SingingImage>
           },
           onPageFinished: (_) {
             print("WEB VIEW \"FINISHED\"");
-            imageController.mountController(webviewController);
+            imageController!.mountController(webviewController);
           },
           initialUrl: "https://$serverURL/puppet/app_puppet.html",
           javascriptMode: JavascriptMode.unrestricted,
@@ -52,21 +53,22 @@ class _SingingImageState extends State<SingingImage>
                   // print(message.message);
                   if (message.message ==
                       "[puppet.js postMessage] finished init") {
-                    imageController.makeInit();
+                    imageController!.makeInit();
                     print("Made ready");
                     if (imageController?.picture != null) {
                       print(
-                          "Creat dog from within singing image. picturename: ${imageController.picture.name}");
-                      await imageController.createDog(imageController.picture);
+                          "Creat dog from within singing image. picturename: ${imageController!.picture!.name}");
+                      await imageController!
+                          .createDog(imageController!.picture!);
                     }
                   }
                   if (message.message ==
                       "[puppet.js postMessage] create_puppet finished") {
                     print("create puppet finished");
-                    imageController.makeReady();
-                    await imageController.setFace();
-                    await imageController.setMouth();
-                    imageController.startRandomGesture();
+                    imageController!.makeReady();
+                    await imageController!.setFace();
+                    await imageController!.setMouth();
+                    imageController!.startRandomGesture();
                   }
                 },
               ),

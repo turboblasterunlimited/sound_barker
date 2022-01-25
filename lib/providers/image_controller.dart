@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:math';
 import 'package:K9_Karaoke/tools/amplitude_extractor.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:convert';
 import 'dart:io';
@@ -9,12 +11,12 @@ import 'dart:io';
 import '../providers/pictures.dart';
 
 class ImageController with ChangeNotifier {
-  WebViewController webViewController;
-  Picture picture;
+  WebViewController? webViewController;
+  Picture? picture;
   bool isInit = false;
   bool isReady = false;
-  Timer randomGestureTimer;
-  Timer mouthOpenAndClose;
+  Timer? randomGestureTimer;
+  Timer? mouthOpenAndClose;
   bool isPlaying = false;
 
   void setPicture(Picture pic) {
@@ -44,30 +46,42 @@ class ImageController with ChangeNotifier {
 
   void cancelMouthOpenAndClose() {
     if (mouthOpenAndClose != null) {
-      mouthOpenAndClose.cancel();
+      mouthOpenAndClose!.cancel();
       mouthOpenAndClose = null;
       stopAnimation();
     }
   }
 
   void stopAnimation() {
+    // if (!isPlaying) {
+    //   print("Warning: stopAnimation called when not playing");
+    //   return;
+    // }
     isPlaying = false;
-    // Pass false to keep headsway alive
-    this.webViewController.evaluateJavascript("stop_all_animations(false)");
+    try {
+      // Pass false to keep headsway alive
+      this.webViewController!.evaluateJavascript("stop_all_animations(false)");
+    } on PlatformException catch (err) {
+      print("PlatformException thrown in image_controller.stop_animation: " +
+          err.toString());
+    } catch (e) {
+      print("Exception thrown in image_controller.stop_animation: " +
+          e.toString());
+    }
   }
 
   // Probably Depricated
   void mouthOpen(width) {
-    webViewController.evaluateJavascript("mouth_open($width)");
+    webViewController!.evaluateJavascript("mouth_open($width)");
   }
 
-  Future<void> mouthTrackSound({String filePath, List amplitudes}) async {
+  Future<void> mouthTrackSound({String? filePath, List? amplitudes}) async {
     if (isPlaying) stopAnimation();
     if (filePath != null) {
       amplitudes = await AmplitudeExtractor.fileToList(filePath);
-      webViewController.evaluateJavascript("mouth_track_sound($amplitudes)");
+      webViewController!.evaluateJavascript("mouth_track_sound($amplitudes)");
     } else if (amplitudes != null) {
-      webViewController.evaluateJavascript("mouth_track_sound($amplitudes)");
+      webViewController!.evaluateJavascript("mouth_track_sound($amplitudes)");
     }
     isPlaying = true;
     notifyListeners();
@@ -78,9 +92,9 @@ class ImageController with ChangeNotifier {
     bool mouthOpen = true;
     mouthOpenAndClose = Timer.periodic(Duration(seconds: 1), (timer) {
       if (mouthOpen) {
-        webViewController.evaluateJavascript("mouth_to_pos(0, .8, 60)");
+        webViewController!.evaluateJavascript("mouth_to_pos(0, .8, 60)");
       } else {
-        webViewController.evaluateJavascript("mouth_to_pos(.8, 0, 60)");
+        webViewController!.evaluateJavascript("mouth_to_pos(.8, 0, 60)");
       }
       mouthOpen = !mouthOpen;
     });
@@ -100,32 +114,33 @@ class ImageController with ChangeNotifier {
 
       // Brow furrows
       if (rNum <= 4)
-        webViewController
+        webViewController!
             .evaluateJavascript("left_brow_raise($browGestureSettings)");
       if (rNum <= 6 && rNum > 2)
-        webViewController
+        webViewController!
             .evaluateJavascript("right_brow_raise($browGestureSettings)");
       if (rNum <= 9 && rNum > 6)
-        webViewController
+        webViewController!
             .evaluateJavascript("left_brow_furrow($browGestureSettings)");
       if (rNum <= 12 && rNum > 9)
-        webViewController
+        webViewController!
             .evaluateJavascript("right_brow_furrow($browGestureSettings)");
       // blinks and winks
       if (rNum % 2 == 0) {
-        webViewController.evaluateJavascript("left_blink_slow()");
-        webViewController.evaluateJavascript("right_blink_slow()");
+        webViewController!.evaluateJavascript("left_blink_slow()");
+        webViewController!.evaluateJavascript("right_blink_slow()");
       }
       if (rNum == 13)
-        webViewController.evaluateJavascript("left_blink_quick()");
+        webViewController!.evaluateJavascript("left_blink_quick()");
       if (rNum == 15)
-        webViewController.evaluateJavascript("right_blink_quick()");
-      if (rNum == 17) webViewController.evaluateJavascript("left_blink_slow()");
+        webViewController!.evaluateJavascript("right_blink_quick()");
+      if (rNum == 17)
+        webViewController!.evaluateJavascript("left_blink_slow()");
       if (rNum == 21)
-        webViewController.evaluateJavascript("right_blink_slow()");
+        webViewController!.evaluateJavascript("right_blink_slow()");
       if (rNum > 21 && rNum % 2 != 0) {
-        webViewController.evaluateJavascript("left_blink_quick()");
-        webViewController.evaluateJavascript("right_blink_quick()");
+        webViewController!.evaluateJavascript("left_blink_quick()");
+        webViewController!.evaluateJavascript("right_blink_quick()");
       }
     });
     return this.randomGestureTimer = timer;
@@ -144,7 +159,7 @@ class ImageController with ChangeNotifier {
     String base64ImageString = await _base64Image(picture);
     try {
       print("Trying to create dog.");
-      await webViewController
+      await webViewController!
           .evaluateJavascript("create_puppet('$base64ImageString')");
       print("Create dog succeeded.");
     } catch (e) {
@@ -162,25 +177,25 @@ class ImageController with ChangeNotifier {
   }
 
   Future<void> setFace() async {
-    var coordinates = picture.coordinates;
+    var coordinates = picture!.coordinates;
     print("setting face");
-    await webViewController.evaluateJavascript(
-        "set_position('rightEyePosition', ${coordinates['rightEye'][0]}, ${coordinates['rightEye'][1]})");
-    await webViewController.evaluateJavascript(
+    await webViewController!.evaluateJavascript(
+        "set_position('rightEyePosition', ${coordinates!['rightEye'][0]}, ${coordinates['rightEye'][1]})");
+    await webViewController!.evaluateJavascript(
         "set_position('leftEyePosition', ${coordinates['leftEye'][0]}, ${coordinates['leftEye'][1]})");
-    await webViewController.evaluateJavascript(
+    await webViewController!.evaluateJavascript(
         "set_position('mouthPosition', ${coordinates['mouth'][0]}, ${coordinates['mouth'][1]})");
-    await webViewController.evaluateJavascript(
+    await webViewController!.evaluateJavascript(
         "set_position('mouthRight', ${coordinates['mouthRight'][0]}, ${coordinates['mouthRight'][1]})");
-    await webViewController.evaluateJavascript(
+    await webViewController!.evaluateJavascript(
         "set_position('mouthLeft', ${coordinates['mouthLeft'][0]}, ${coordinates['mouthLeft'][1]})");
-    await webViewController.evaluateJavascript(
+    await webViewController!.evaluateJavascript(
         "set_position('headTop', ${coordinates['headTop'][0]}, ${coordinates['headTop'][1]})");
-    await webViewController.evaluateJavascript(
+    await webViewController!.evaluateJavascript(
         "set_position('headRight', ${coordinates['headRight'][0]}, ${coordinates['headRight'][1]})");
-    await webViewController.evaluateJavascript(
+    await webViewController!.evaluateJavascript(
         "set_position('headBottom', ${coordinates['headBottom'][0]}, ${coordinates['headBottom'][1]})");
-    await webViewController.evaluateJavascript(
+    await webViewController!.evaluateJavascript(
         "set_position('headLeft', ${coordinates['headLeft'][0]}, ${coordinates['headLeft'][1]})");
     print("done setting face");
   }
@@ -192,25 +207,25 @@ class ImageController with ChangeNotifier {
   }
 
   Future setMouthColor([rgb]) async {
-    rgb ??= picture.mouthColor;
+    rgb ??= picture!.mouthColor;
     print("Mouth color: $rgb");
-    await webViewController
+    await webViewController!
         .evaluateJavascript("mouth_color(${rgb[0]}, ${rgb[1]}, ${rgb[2]});");
     print("done setting mouth color");
   }
 
   Future setLipColor([rgb]) async {
-    rgb ??= picture.lipColor;
+    rgb ??= picture!.lipColor;
     print("Lower Lip Color: $rgb");
-    await webViewController
+    await webViewController!
         .evaluateJavascript("lips_color(${rgb[0]}, ${rgb[1]}, ${rgb[2]});");
     print("done setting lip color");
   }
 
-  Future setLipThickness([double thickness]) async {
-    thickness ??= picture.lipThickness;
+  Future setLipThickness([double? thickness]) async {
+    thickness ??= picture!.lipThickness;
     print("Lower Lip Width: $thickness");
-    await webViewController.evaluateJavascript("lips_thickness($thickness);");
+    await webViewController!.evaluateJavascript("lips_thickness($thickness);");
     print("done setting lip thickness");
   }
 }

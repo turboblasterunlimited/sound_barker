@@ -76,20 +76,22 @@ class Pictures with ChangeNotifier {
         fileUrl: serverImage["bucket_fp"],
         fileId: serverImage["uuid"],
         coordinates: jsonDecode(serverImage["coordinates_json"].toString()),
-        mouthColor: jsonDecode(serverImage["mouth_color"].toString()) ?? defaultMouthColor,
-        lipColor: jsonDecode(serverImage["lip_color"].toString()) ?? defaultLipColor,
+        mouthColor: jsonDecode(serverImage["mouth_color"].toString()) ??
+            defaultMouthColor,
+        lipColor:
+            jsonDecode(serverImage["lip_color"].toString()) ?? defaultLipColor,
         lipThickness: serverImage["lip_thickness"] ?? defaultLipThickness,
         created: DateTime.parse(serverImage["created"]),
       );
 
-      pic.isStock ? stockPictures.add(pic) : add(pic);
+      pic.isStock! ? stockPictures.add(pic) : add(pic);
     });
     all.sort((pic1, pic2) {
-      return pic1.created.compareTo(pic2.created);
+      return pic1.created!.compareTo(pic2.created!);
     });
 
     stockPictures.sort((pic1, pic2) {
-      return pic1.name.compareTo(pic2.name);
+      return pic1.name!.compareTo(pic2.name!);
     });
 
     // Put the dog "Dean" 4th
@@ -102,29 +104,30 @@ class Pictures with ChangeNotifier {
     }
   }
 
-  Future downloadAllImagesFromBucket([List<Picture> images]) async {
+  Future downloadAllImagesFromBucket([List<Picture>? images]) async {
     images ??= all;
     int imagesCount = images.length;
     for (var i = 0; i < imagesCount; i++) {
       images[i].inferFilePath();
-      if (!await File(images[i].filePath).exists())
-        await Gcloud.downloadFromBucket(images[i].fileUrl, images[i].filePath);
+      if (!await File(images[i].filePath!).exists())
+        await Gcloud.downloadFromBucket(
+            images[i].fileUrl!, images[i].filePath!);
     }
   }
 }
 
 class Picture extends Asset {
-  String name;
-  String fileUrl;
-  String filePath;
-  String fileId;
-  Map<String, dynamic> coordinates;
-  List mouthColor;
-  List lipColor;
-  double lipThickness;
-  bool creationAnimation;
-  DateTime created;
-  bool isStock;
+  String? name;
+  String? fileUrl;
+  String? filePath;
+  String? fileId;
+  Map<String, dynamic>? coordinates;
+  List? mouthColor;
+  List? lipColor;
+  double? lipThickness;
+  bool? creationAnimation;
+  DateTime? created;
+  bool? isStock;
 
   Picture({
     this.name,
@@ -154,12 +157,12 @@ class Picture extends Asset {
   }
 
   void inferFilePath() {
-    String fileName = fileId + '.jpg';
-    this.filePath = myAppStoragePath + '/' + fileName;
+    String fileName = fileId! + '.jpg';
+    this.filePath = myAppStoragePath! + '/' + fileName;
   }
 
   void delete() {
-    if (File(filePath).existsSync()) File(filePath).deleteSync();
+    if (File(filePath!).existsSync()) File(filePath!).deleteSync();
   }
 
   void setName(String newName) {
@@ -176,7 +179,7 @@ class Picture extends Asset {
   }
 
   Future<void> uploadPictureAndSaveToServer() async {
-    this.fileUrl = await Gcloud.upload(filePath, "images");
+    this.fileUrl = await Gcloud.upload(filePath!, "images");
     print("File url from uploadpictureandsavetoserver: $fileUrl");
     Map body = await RestAPI.createImage(this);
     created = DateTime.parse(body["created"]);

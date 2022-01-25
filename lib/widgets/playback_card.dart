@@ -3,30 +3,30 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class PlaybackCard extends StatefulWidget {
   final bool isSelected;
-  final Function select;
+  final VoidCallback select;
   final String name;
   final bool isLoading;
   final bool isPlaying;
-  final Function stopAll;
-  final Function startAll;
+  final VoidCallback stopAll;
+  final VoidCallback startAll;
   final bool canDelete;
   // Optional
-  final String barkLength;
-  final Color color;
-  final Function delete;
+  String? barkLength;
+  Color? color;
+  VoidCallback? delete;
 
   PlaybackCard(
       {this.delete,
       this.color,
       this.barkLength,
-      @required this.canDelete,
-      @required this.isSelected,
-      @required this.select,
-      @required this.name,
-      @required this.isLoading,
-      @required this.startAll,
-      @required this.stopAll,
-      @required this.isPlaying});
+      required this.canDelete,
+      required this.isSelected,
+      required this.select,
+      required this.name,
+      required this.isLoading,
+      required this.startAll,
+      required this.stopAll,
+      required this.isPlaying});
 
   @override
   _PlaybackCardState createState() => _PlaybackCardState();
@@ -92,7 +92,7 @@ class _PlaybackCardState extends State<PlaybackCard> {
           child: RawMaterialButton(
             onPressed: widget.isLoading
                 ? null
-                : widget.isPlaying
+                : _isPlaying()
                     ? widget.stopAll
                     : widget.startAll,
             fillColor: null,
@@ -123,7 +123,7 @@ class _PlaybackCardState extends State<PlaybackCard> {
                       Padding(
                         padding: const EdgeInsets.only(right: 5.0),
                         child: Text(
-                          widget.barkLength.toUpperCase(),
+                          widget.barkLength!.toUpperCase(),
                           style: TextStyle(color: widget.color, fontSize: 10),
                         ),
                       ),
@@ -158,5 +158,10 @@ class _PlaybackCardState extends State<PlaybackCard> {
           )
       ],
     );
+  }
+
+  bool _isPlaying() {
+    print(widget.isPlaying.toString());
+    return widget.isPlaying;
   }
 }

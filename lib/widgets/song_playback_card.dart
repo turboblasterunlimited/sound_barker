@@ -5,7 +5,7 @@ import 'package:K9_Karaoke/widgets/custom_dialog.dart';
 import 'package:K9_Karaoke/widgets/playback_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/sound_controller.dart';
+import '../providers/flutter_sound_controller.dart';
 import '../providers/songs.dart';
 import '../widgets/error_dialog.dart';
 import '../providers/image_controller.dart';
@@ -14,7 +14,7 @@ class SongPlaybackCard extends StatefulWidget {
   final int index;
   final Song song;
   final Songs songs;
-  final SoundController soundController;
+  final FlutterSoundController soundController;
   final Animation animation;
   SongPlaybackCard(
       this.index, this.song, this.songs, this.soundController, this.animation);
@@ -24,17 +24,17 @@ class SongPlaybackCard extends StatefulWidget {
 }
 
 class _SongPlaybackCardState extends State<SongPlaybackCard> {
-  ImageController imageController;
+  ImageController? imageController;
   bool isPlaying = false;
   bool isLoading = false;
-  String tempName;
-  CurrentActivity currentActivity;
-  KaraokeCards cards;
+  String? tempName;
+  CurrentActivity? currentActivity;
+  KaraokeCards? cards;
 
   void stopAll() {
     if (isPlaying) {
       widget.soundController.stopPlayer();
-      imageController.stopAnimation();
+      imageController!.stopAnimation();
       setState(() => isPlaying = false);
     }
   }
@@ -82,14 +82,14 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
 
   void selectSong() async {
     if (!widget.song.hasFile) await download();
-    cards.setCurrentSongFormula(null);
-    cards.setCurrentSong(widget.song);
+    cards!.setCurrentSongFormula(null);
+    cards!.setCurrentSong(widget.song);
     stopAll();
     Future.delayed(
       Duration(milliseconds: 500),
       () {
-        currentActivity.setCardCreationStep(CardCreationSteps.speak);
-        currentActivity.setCardCreationSubStep(CardCreationSubSteps.seven);
+        currentActivity!.setCardCreationStep(CardCreationSteps.speak);
+        currentActivity!.setCardCreationSubStep(CardCreationSubSteps.seven);
       },
     );
   }
@@ -97,8 +97,8 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
   Future<void> play() async {
     setState(() => isPlaying = true);
     widget.soundController
-        .startPlayer(widget.song.filePath, stopCallback: stopAll);
-    imageController.mouthTrackSound(filePath: widget.song.amplitudesPath);
+        .startPlayer(widget.song.filePath!, stopCallback: stopAll);
+    imageController!.mouthTrackSound(filePath: widget.song.amplitudesPath);
   }
 
   Future<void> download() async {
@@ -129,17 +129,17 @@ class _SongPlaybackCardState extends State<SongPlaybackCard> {
   Widget build(BuildContext context) {
     cards ??= Provider.of<KaraokeCards>(context, listen: false);
     currentActivity ??= Provider.of<CurrentActivity>(context, listen: false);
-    bool isSelected = cards.current.hasSong(widget.song);
+    bool isSelected = cards!.current!.hasSong(widget.song);
     imageController ??= Provider.of<ImageController>(context, listen: false);
 
     return SizeTransition(
-      sizeFactor: widget.animation,
+      sizeFactor: widget.animation as Animation<double>,
       child: PlaybackCard(
           canDelete: true,
           delete: () => deleteSong(context),
           isSelected: isSelected,
           select: selectSong,
-          name: widget.song.songFamily,
+          name: widget.song.songFamily!,
           isLoading: isLoading,
           startAll: startAll,
           stopAll: stopAll,

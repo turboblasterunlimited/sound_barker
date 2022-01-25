@@ -1,9 +1,11 @@
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:openid_client/openid_client_io.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 authenticate(Uri issuer, String clientId, List<String> scopes) async {
   // create the client
-  print("Authentication: issuer: $issuer, clientId: $clientId, scopes: $scopes");
+  print(
+      "Authentication: issuer: $issuer, clientId: $clientId, scopes: $scopes");
   var discoveredIssuer = await Issuer.discover(issuer);
   var client = new Client(discoveredIssuer, clientId);
 

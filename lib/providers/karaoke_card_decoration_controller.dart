@@ -12,24 +12,24 @@ class KaraokeCardDecorationController with ChangeNotifier {
   bool isTyping = false;
   Color color = Colors.black;
   double size = 20;
-  CardDecoration decoration;
-  CardPainter cardPainter;
-  double canvasLength;
+  CardDecoration? decoration;
+  CardPainter? cardPainter;
+  double? canvasLength;
   KaraokeCardDecorationController();
-  FocusNode focusNode;
-  TextEditingController textController;
+  FocusNode? focusNode;
+  TextEditingController? textController;
 
-  Timer caretBlinker;
+  Timer? caretBlinker;
   bool paintCarat = false;
 
   void newDrawing() {
-    decoration.drawings.add(Drawing(color, size));
+    decoration!.drawings.add(Drawing(color, size));
   }
 
   void updateTextField() {
-    textController.text = decoration.typings.last.textSpan.text;
-    textController.selection =
-        TextSelection.collapsed(offset: textController.text.length);
+    textController!.text = decoration!.typings.last.textSpan.text!;
+    textController!.selection =
+        TextSelection.collapsed(offset: textController!.text.length);
   }
 
   void updateSizeAndColor(typing) {
@@ -39,19 +39,19 @@ class KaraokeCardDecorationController with ChangeNotifier {
   }
 
   void clearTextField() {
-    textController.text = "";
+    textController!.text = "";
   }
 
   void reset() {
-    if (decoration == null || decoration.isEmpty) return;
-    decoration.drawings?.clear();
-    decoration.typings?.clear();
+    if (decoration == null || decoration!.isEmpty) return;
+    decoration!.drawings.clear();
+    decoration!.typings.clear();
     if (isTyping) addTyping();
     notifyListeners();
   }
 
   Offset get defaultTypingOffset {
-    var center = canvasLength / 2;
+    var center = canvasLength! / 2;
     return Offset(center, center);
   }
 
@@ -66,32 +66,32 @@ class KaraokeCardDecorationController with ChangeNotifier {
   }
 
   void updateLastTextSpan(newTextSpan) {
-    if (decoration.typings.isEmpty)
-      decoration.typings.add(Typing(newTextSpan, defaultTypingOffset));
+    if (decoration!.typings.isEmpty)
+      decoration!.typings.add(Typing(newTextSpan, defaultTypingOffset));
     else
-      decoration.typings.last.textSpan = newTextSpan;
+      decoration!.typings.last.textSpan = newTextSpan;
   }
 
   void undoLast() {
     if (isDrawing) {
-      if (decoration.drawings.isEmpty) return;
-      print("Drawing length: ${decoration.drawings.length}");
-      decoration.drawings.removeLast();
+      if (decoration!.drawings.isEmpty) return;
+      print("Drawing length: ${decoration!.drawings.length}");
+      decoration!.drawings.removeLast();
     }
     if (isTyping) {
-      if (decoration.typings.isEmpty) return;
-      if (decoration.typings.length == 1) {
-        decoration.typings.removeLast();
+      if (decoration!.typings.isEmpty) return;
+      if (decoration!.typings.length == 1) {
+        decoration!.typings.removeLast();
         addTyping();
       } else
-        decoration.typings.removeLast();
+        decoration!.typings.removeLast();
     }
     notifyListeners();
   }
 
   void cancelCaret() {
     paintCarat = false;
-    if (caretBlinker != null) caretBlinker.cancel();
+    if (caretBlinker != null) caretBlinker!.cancel();
   }
 
   void startDrawing() {
@@ -106,14 +106,14 @@ class KaraokeCardDecorationController with ChangeNotifier {
       text: "",
       style: TextStyle(color: color, fontSize: size),
     );
-    decoration.typings.add(Typing(
+    decoration!.typings.add(Typing(
       span,
       defaultTypingOffset,
     ));
   }
 
   void startTyping() {
-    if (decoration.typings.isEmpty) {
+    if (decoration!.typings.isEmpty) {
       addTyping();
     }
     print("call start typing");
@@ -143,9 +143,9 @@ class KaraokeCardDecorationController with ChangeNotifier {
     notifyListeners();
   }
 
-  void updateText([String newText]) {
+  void updateText([String? newText]) {
     if (!isTyping) return;
-    String text = newText ?? decoration.typings.last.textSpan.text;
+    String text = (newText ?? decoration!.typings.last.textSpan.text)!;
     final newTextSpan =
         TextSpan(text: text, style: TextStyle(color: color, fontSize: size));
     updateLastTextSpan(newTextSpan);

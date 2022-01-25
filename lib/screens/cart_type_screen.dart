@@ -3,30 +3,29 @@ import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/screens/set_picture_coordinates_screen.dart';
 import 'package:K9_Karaoke/widgets/custom_appbar.dart';
-import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:flutter/material.dart';
-import 'package:line_awesome_icons/line_awesome_icons.dart';
+
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
-import 'menu_screen.dart';
-
+// ignore: must_be_immutable
 class CardTypeScreen extends StatelessWidget {
   static const routeName = 'card-type-screen';
-  KaraokeCard card;
-  CurrentActivity currentActivity;
+  late KaraokeCard card;
+  late CurrentActivity currentActivity;
 
   backCallback(context) {
     currentActivity.setCardCreationStep(CardCreationSteps.snap);
-    if (card.picture.isStock)
+    if (card.picture!.isStock!)
       Navigator.of(context).pushReplacementNamed(PhotoLibraryScreen.routeName);
     else
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (context) =>
-              SetPictureCoordinatesScreen(card.picture, editing: true),
+              SetPictureCoordinatesScreen(card.picture!, editing: true),
         ),
       );
-    if (!card.picture.isStock) Navigator.of(context).pop();
+    if (!card.picture!.isStock!) Navigator.of(context).pop();
   }
 
   Widget build(BuildContext context) {
@@ -35,7 +34,7 @@ class CardTypeScreen extends StatelessWidget {
     double textSize = 14;
 
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
-    card = Provider.of<KaraokeCards>(context, listen: false).current;
+    card = Provider.of<KaraokeCards>(context, listen: false).current!;
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -70,7 +69,7 @@ class CardTypeScreen extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Icon(LineAwesomeIcons.angle_left,
+                    Icon(FontAwesomeIcons.angleLeft,
                         color: Theme.of(context).primaryColor),
                     Text(
                       'Back',
@@ -156,7 +155,7 @@ class CardTypeScreen extends StatelessWidget {
                                 padding: const EdgeInsets.only(
                                     bottom: 5.0, right: 8.0),
                                 child: Icon(
-                                  LineAwesomeIcons.music,
+                                  FontAwesomeIcons.music,
                                   color: Colors.white,
                                 ),
                               ),
@@ -215,7 +214,7 @@ class CardTypeScreen extends StatelessWidget {
                                 padding: const EdgeInsets.only(
                                     bottom: 5.0, right: 8.0),
                                 child: Icon(
-                                  LineAwesomeIcons.plus,
+                                  FontAwesomeIcons.plus,
                                   color: Colors.white,
                                 ),
                               ),
@@ -279,7 +278,7 @@ class CardTypeScreen extends StatelessWidget {
                                 padding: const EdgeInsets.only(
                                     bottom: 5.0, right: 8.0),
                                 child: Icon(
-                                  LineAwesomeIcons.microphone,
+                                  FontAwesomeIcons.microphone,
                                   color: Colors.white,
                                 ),
                               ),

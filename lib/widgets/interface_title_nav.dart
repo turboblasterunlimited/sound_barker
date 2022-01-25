@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:line_awesome_icons/line_awesome_icons.dart';
 
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+// ignore: must_be_immutable
 class InterfaceTitleNav extends StatefulWidget {
-  String title;
-  Widget titleWidget;
-  Function backCallback;
-  Function skipCallback;
-  double titleSize;
+  String? title;
+  Widget? titleWidget;
+  VoidCallback? backCallback;
+  Function? skipCallback;
+  double? titleSize;
 
   InterfaceTitleNav(
       {this.title,
@@ -40,7 +42,7 @@ class _InterfaceTitleNavState extends State<InterfaceTitleNav> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Icon(LineAwesomeIcons.angle_left,
+                  Icon(FontAwesomeIcons.angleLeft,
                       color: Theme.of(context).primaryColor),
                   Text('Back',
                       style: TextStyle(color: Theme.of(context).primaryColor)),
@@ -53,7 +55,7 @@ class _InterfaceTitleNavState extends State<InterfaceTitleNav> {
           child: widget.titleWidget != null
               ? widget.titleWidget
               : Text(
-                  widget.title,
+                  widget.title!,
                   style: TextStyle(
                       fontSize: widget.titleSize ?? 18,
                       color: Theme.of(context).primaryColor),
@@ -65,7 +67,7 @@ class _InterfaceTitleNavState extends State<InterfaceTitleNav> {
             child: GestureDetector(
               behavior: HitTestBehavior.translucent,
               onTap: () async {
-                await widget.skipCallback();
+                await widget.skipCallback!();
               },
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
@@ -74,7 +76,7 @@ class _InterfaceTitleNavState extends State<InterfaceTitleNav> {
                     Text('Skip',
                         style:
                             TextStyle(color: Theme.of(context).primaryColor)),
-                    Icon(LineAwesomeIcons.angle_right,
+                    Icon(FontAwesomeIcons.angleRight,
                         color: Theme.of(context).primaryColor),
                   ],
                 ),

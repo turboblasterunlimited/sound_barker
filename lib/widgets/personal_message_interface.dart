@@ -1,3 +1,4 @@
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:K9_Karaoke/animations/waggle.dart';
 import 'package:K9_Karaoke/classes/card_message.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
@@ -16,7 +17,7 @@ import 'package:K9_Karaoke/tools/amplitude_extractor.dart';
 import 'package:K9_Karaoke/tools/ffmpeg.dart';
 import 'dart:async';
 
-import '../providers/sound_controller.dart';
+import '../providers/flutter_sound_controller.dart';
 import '../tools/amplitude_extractor.dart';
 
 // cardCreationSubStep.seven
@@ -27,8 +28,9 @@ class PersonalMessageInterface extends StatefulWidget {
 }
 
 class PersonalMessageInterfaceState extends State<PersonalMessageInterface> {
-  StreamSubscription _recorderSubscription;
-  SoundController soundController;
+  // ignore: cancel_subscriptions
+  StreamSubscription? _recorderSubscription;
+  late FlutterSoundController soundController;
   bool _isRecording = false;
   bool _hasShifted = false;
   bool _isProcessingAudio = false;
@@ -37,11 +39,11 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface> {
   double speedChange = 1;
   double pitchChange = 1;
 
-  CurrentActivity currentActivity;
-  KaraokeCards cards;
-  CardMessage message;
-  ImageController imageController;
-  Timer _recordingTimer;
+  late CurrentActivity currentActivity;
+  late KaraokeCards cards;
+  CardMessage? message;
+  late ImageController imageController;
+  Timer? _recordingTimer;
 
   Map<String, String> effects = {
     'None': "",
@@ -68,10 +70,11 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface> {
   }
 
   void _recordSound() {
-    soundController.record(message.filePath);
+    soundController.record(message!.filePath);
     _recordingTimer = Timer(Duration(seconds: 25), () {
       stopRecorder();
-      soundController.startPlayer("assets/sounds/bell.aac", asset: true);
+      soundController.startPlayer("assets/sounds/bell.aac",
+          mediaType: Media.asset);
     });
     this.setState(() {
       this._isRecording = true;
@@ -88,14 +91,14 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface> {
       return;
     }
 
-    message.deleteEverything();
-    print("message filepath: ${message.filePath}");
+    message!.deleteEverything();
+    print("message filepath: ${message!.filePath}");
     await soundController.startPlayer("assets/sounds/beeoop.aac",
-        asset: true, stopCallback: _recordSound);
+        mediaType: Media.asset, stopCallback: _recordSound);
   }
 
   void stopRecorder() async {
-    _recordingTimer.cancel();
+    _recordingTimer?.cancel();
 
     setState(() {
       this._isRecording = false;
@@ -103,18 +106,18 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface> {
 
     await soundController.stopRecording();
     if (_recorderSubscription != null) {
-      _recorderSubscription.cancel();
+      _recorderSubscription!.cancel();
       _recorderSubscription = null;
     }
 
-    message.amplitudes =
-        await AmplitudeExtractor.getAmplitudes(message.filePath);
+    message!.amplitudes =
+        await AmplitudeExtractor.getAmplitudes(message!.filePath);
     cards.messageIsReady();
   }
 
   onStartRecorderPressed() {
     print("start recorder pressed.");
-    if (soundController.recorder.isRecording) return stopRecorder();
+    if (soundController.isRecording()) return stopRecorder();
     return startRecorder();
   }
 
@@ -122,24 +125,24 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface> {
     // Directory tempDir = await getTemporaryDirectory();
     // message.filePath = '${tempDir.path}/card_message.aac';
     // message.alteredFilePath = '${tempDir.path}/altered_card_message.aac';
-    message.filePath = '$myAppStoragePath/card_message.aac';
-    message.alteredFilePath = '$myAppStoragePath/altered_card_message.aac';
+    message!.filePath = '$myAppStoragePath/card_message.aac';
+    message!.alteredFilePath = '$myAppStoragePath/altered_card_message.aac';
   }
 
   Future<void> generateAlteredAudioFiles() async {
-    message.deleteAlteredFiles();
+    message!.deleteAlteredFiles();
 
     await FFMpeg.process.execute(
-        '-i ${message.filePath} -filter_complex "asetrate=44100*$pitchChange,aresample=44100,atempo=$speedChange${effects[selectedEffect]}" -vn ${message.alteredFilePath}');
-    message.alteredAmplitudes =
-        await AmplitudeExtractor.getAmplitudes(message.alteredFilePath);
+        '-i ${message!.filePath} -filter_complex "asetrate=44100*$pitchChange,aresample=44100,atempo=$speedChange${effects[selectedEffect]}" -vn ${message!.alteredFilePath}');
+    message!.alteredAmplitudes =
+        await AmplitudeExtractor.getAmplitudes(message!.alteredFilePath);
     setState(() => _isProcessingAudio = false);
     cards.messageIsReady();
     SystemChrome.setEnabledSystemUIOverlays([]);
   }
 
   void backCallback() {
-    if (cards.current.hasASongFormula)
+    if (cards.current!.hasASongFormula)
       currentActivity.setPreviousSubStep();
     else
       currentActivity.setCardCreationStep(CardCreationSteps.song);
@@ -151,11 +154,11 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface> {
     // first time creation: audio and oldCardAudio are null. If new song is selected: audio is set to oldCardAudio
     // if (cards.current.oldCardAudio == cards.current.audio &&
     //     cards.current.hasASong) {
-    if (cards.current.hasASong) {
-      await cards.current.songToAudio();
+    if (cards.current!.hasASong) {
+      await cards.current!.songToAudio();
       return currentActivity.setCardCreationStep(CardCreationSteps.style);
       // already created audio but going back through and just clicking skip without having changed the song
-    } else if (cards.current.hasAudio) {
+    } else if (cards.current!.hasAudio) {
       return currentActivity.setCardCreationStep(CardCreationSteps.style);
     } else {
       showError(context, "Need a song or a message or both!");
@@ -164,7 +167,7 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface> {
   }
 
   bool _canAddMessage() {
-    return message.exists && !_isRecording;
+    return message!.exists && !_isRecording;
   }
 
   void _resetSliders() {
@@ -173,30 +176,41 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface> {
       pitchChange = 1;
       effectSliderVal = 0.0;
     });
-    message.deleteAlteredFiles();
+    message!.deleteAlteredFiles();
   }
 
   void _handleCombineAndContinue() async {
     setState(() => _isLoading = true);
-    await cards.current.combineMessageAndSong();
+    await cards.current!.combineMessageAndSong();
     setState(() => _isLoading = false);
     currentActivity.setCardCreationStep(CardCreationSteps.style);
+  }
+
+  void isPlayingTest() {
+    var isPlaying = soundController.isPlaying();
+    print("Is playing: " + isPlaying.toString());
+    if (_isLoading || isPlaying) {
+      print("Can't record now...");
+    } else {
+      onStartRecorderPressed();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     imageController = Provider.of<ImageController>(context, listen: false);
-    soundController = Provider.of<SoundController>(context);
+    soundController = Provider.of<FlutterSoundController>(context);
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
     cards = Provider.of<KaraokeCards>(context, listen: false);
-    message = cards.current.message;
+    message = cards.current!.message;
     _createFilePaths();
 
     return Column(
       children: <Widget>[
         InterfaceTitleNav(
-            titleSize: cards.current.hasASong ? 16 : 18,
-            title: cards.current.hasASong ? "PRE-SONG MESSAGE" : "CARD MESSAGE",
+            titleSize: cards.current!.hasASong ? 16 : 18,
+            title:
+                cards.current!.hasASong ? "PRE-SONG MESSAGE" : "CARD MESSAGE",
             backCallback: backCallback,
             skipCallback: skipCallback),
         Row(
@@ -211,9 +225,7 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface> {
                 child: Column(
                   children: <Widget>[
                     RawMaterialButton(
-                      onPressed: _isLoading || soundController.player.isPlaying
-                          ? null
-                          : onStartRecorderPressed,
+                      onPressed: isPlayingTest,
                       child: _isLoading
                           ? SpinKitWave(
                               color: Colors.white,
@@ -250,7 +262,7 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface> {
                 width: 175,
                 child: !_canAddMessage()
                     ? Text(
-                        cards.current.hasASong
+                        cards.current!.hasASong
                             ? "RECORD A HUMAN-VOICE INTRODUCTION TO YOUR SONG."
                             : "RECORD YOUR HUMAN-VOICE AUDIO GREETING.",
                         style: TextStyle(
@@ -284,7 +296,7 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface> {
           ],
         ),
         Visibility(
-          visible: message.exists,
+          visible: message!.exists,
           maintainSize: true,
           maintainAnimation: true,
           maintainState: true,
@@ -382,7 +394,7 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface> {
                         inactiveColor: Colors.grey,
                         label: selectedEffect,
                         onChanged: _isProcessingAudio ||
-                                !message.exists ||
+                                !message!.exists ||
                                 _isRecording
                             ? null
                             : (value) async {
@@ -407,7 +419,7 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface> {
             ),
           ),
         ),
-        message.exists
+        message!.exists
             ? Visibility(
                 visible: _hasShifted,
                 maintainSize: true,

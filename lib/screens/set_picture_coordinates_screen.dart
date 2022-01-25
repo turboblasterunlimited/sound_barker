@@ -21,8 +21,8 @@ import '../providers/pictures.dart';
 import '../providers/image_controller.dart';
 import '../services/rest_api.dart';
 
-double canvasLength;
-double imageSizeDifference;
+double? canvasLength;
+double? imageSizeDifference;
 
 double magOffset = 80;
 int magImageSize = 550;
@@ -30,8 +30,8 @@ int magImageSize = 550;
 class SetPictureCoordinatesScreen extends StatefulWidget {
   Picture newPicture;
   bool editing;
-  bool isNamed;
-  bool coordinatesSet;
+  bool? isNamed;
+  bool? coordinatesSet;
 
   SetPictureCoordinatesScreen(this.newPicture, {this.editing = false}) {
     this.isNamed = editing ? true : false;
@@ -46,12 +46,12 @@ class SetPictureCoordinatesScreen extends StatefulWidget {
 class _SetPictureCoordinatesScreenState
     extends State<SetPictureCoordinatesScreen> {
   Map<String, List<double>> canvasCoordinates = {};
-  double middle;
-  IMG.Image imageData;
-  Uint8List imageDataBytes;
+  double? middle;
+  IMG.Image? imageData;
+  Uint8List? imageDataBytes;
   // Canvas pixels
   List<double> touchedXY = [0.0, 0.0];
-  ui.Image magnifiedImage;
+  ui.Image? magnifiedImage;
   // for moving all coordinates with mouth center.
   List<double> mouthStartingPosition = [0.0, 0.0];
   List<double> mouthLeftStartingPosition = [0.0, 0.0];
@@ -60,11 +60,11 @@ class _SetPictureCoordinatesScreenState
   Map<String, List<double>> grabPoint = {};
   String _instructionalText = "";
 
-  Pictures pictures;
-  ImageController imageController;
-  KaraokeCards cards;
-  KaraokeCard card;
-  CurrentActivity currentActivity;
+  Pictures? pictures;
+  ImageController? imageController;
+  KaraokeCards? cards;
+  KaraokeCard? card;
+  CurrentActivity? currentActivity;
   bool _isFirstBuild = true;
 
   String _getInstructionalText() {
@@ -73,7 +73,7 @@ class _SetPictureCoordinatesScreenState
 
   _puppetXtoCanvasX(x) {
     double offset = x * middle * 2;
-    return offset + middle;
+    return offset + middle!;
   }
 
   _puppetYtoCanvasY(y) {
@@ -82,11 +82,11 @@ class _SetPictureCoordinatesScreenState
       offset = offset.abs();
     else
       offset = 0 - offset;
-    return offset + middle;
+    return offset + middle!;
   }
 
   void setCanvasCoordinatesFromPicture() {
-    widget.newPicture.coordinates.forEach((key, xy) {
+    widget.newPicture.coordinates!.forEach((key, xy) {
       canvasCoordinates[key] = [
         _puppetXtoCanvasX(xy[0]),
         _puppetYtoCanvasY(xy[1])
@@ -112,21 +112,21 @@ class _SetPictureCoordinatesScreenState
   saveCanvasToPictureCoordinates() {
     _canvasXToPuppetX(x) {
       double centered = x - middle;
-      return centered / middle / 2;
+      return centered / middle! / 2;
     }
 
     _canvasYToPuppetY(y) {
-      double centered = y - middle;
+      double centered = y - middle!;
       if (centered < 0)
         centered = centered.abs();
       else
         centered = 0 - centered;
-      return centered / middle / 2;
+      return centered / middle! / 2;
     }
 
     setState(() {
       canvasCoordinates.forEach((String key, List xy) {
-        widget.newPicture.coordinates[key] = [
+        widget.newPicture.coordinates![key] = [
           _canvasXToPuppetX(xy[0]),
           _canvasYToPuppetY(xy[1])
         ];
@@ -147,33 +147,35 @@ class _SetPictureCoordinatesScreenState
   }
 
   void switchEyes() {
-    if (canvasCoordinates["rightEye"][0] < canvasCoordinates["leftEye"][0]) {
+    if (canvasCoordinates["rightEye"]![0] < canvasCoordinates["leftEye"]![0]) {
       var temp = canvasCoordinates["rightEye"];
       setState(() {
-        this.canvasCoordinates["rightEye"] = canvasCoordinates["leftEye"];
-        this.canvasCoordinates["leftEye"] = temp;
+        this.canvasCoordinates["rightEye"] = canvasCoordinates["leftEye"]!;
+        this.canvasCoordinates["leftEye"] = temp!;
       });
     }
   }
 
   moveMouthLeftRight() {
-    double deltaX = canvasCoordinates["mouth"][0] - mouthStartingPosition[0];
-    double deltaY = canvasCoordinates["mouth"][1] - mouthStartingPosition[1];
+    double deltaX = canvasCoordinates["mouth"]![0] - mouthStartingPosition[0];
+    double deltaY = canvasCoordinates["mouth"]![1] - mouthStartingPosition[1];
 
     setState(() {
-      canvasCoordinates["mouthLeft"][0] = mouthLeftStartingPosition[0] + deltaX;
-      canvasCoordinates["mouthLeft"][1] = mouthLeftStartingPosition[1] + deltaY;
+      canvasCoordinates["mouthLeft"]![0] =
+          mouthLeftStartingPosition[0] + deltaX;
+      canvasCoordinates["mouthLeft"]![1] =
+          mouthLeftStartingPosition[1] + deltaY;
 
-      canvasCoordinates["mouthRight"][0] =
+      canvasCoordinates["mouthRight"]![0] =
           mouthRightStartingPosition[0] + deltaX;
-      canvasCoordinates["mouthRight"][1] =
+      canvasCoordinates["mouthRight"]![1] =
           mouthRightStartingPosition[1] + deltaY;
     });
   }
 
   double magImageYCompensator() {
-    double posY = touchedXY[1] / canvasLength * imageSizeDifference;
-    posY -= imageSizeDifference - magOffset;
+    double posY = touchedXY[1] / canvasLength! * imageSizeDifference!;
+    posY -= imageSizeDifference! - magOffset;
     // Compensation logic, bumps magnified image below finger
     if (touchedXY[1] < magOffset) posY -= 200;
     return posY;
@@ -182,19 +184,19 @@ class _SetPictureCoordinatesScreenState
   void _submitPicture() async {
     print("Submitting picture");
     widget.newPicture.uploadPictureAndSaveToServer();
-    pictures.add(widget.newPicture);
-    cards.setCurrentPicture(widget.newPicture);
-    await imageController.createDog(widget.newPicture);
+    pictures!.add(widget.newPicture);
+    cards!.setCurrentPicture(widget.newPicture);
+    await imageController!.createDog(widget.newPicture);
   }
 
   void _submitEditedPicture() {
     RestAPI.updateImage(widget.newPicture);
-    imageController.setFace();
-    imageController.setMouthColor();
+    imageController!.setFace();
+    imageController!.setMouthColor();
   }
 
   Future<void> handleSubmitButton() async {
-    if (widget.editing || (widget.isNamed & widget.coordinatesSet)) {
+    if (widget.editing || (widget.isNamed! & widget.coordinatesSet!)) {
       saveCanvasToPictureCoordinates();
       widget.editing ? _submitEditedPicture() : _submitPicture();
       Navigator.popUntil(
@@ -207,7 +209,7 @@ class _SetPictureCoordinatesScreenState
   }
 
   bool get _isEditing {
-    return widget.editing || (widget.isNamed && widget.coordinatesSet);
+    return widget.editing || (widget.isNamed! && widget.coordinatesSet!);
   }
 
   void handleNameChange(name) {
@@ -221,7 +223,7 @@ class _SetPictureCoordinatesScreenState
     SystemChrome.restoreSystemUIOverlays();
   }
 
-  Function _backCallback() {
+  Function? _backCallback() {
     if (!widget.editing) widget.newPicture.delete();
     Navigator.popAndPushNamed(context, PhotoLibraryScreen.routeName);
   }
@@ -229,14 +231,15 @@ class _SetPictureCoordinatesScreenState
   _getImageData() {
     _isFirstBuild = false;
     canvasLength ??= MediaQuery.of(context).size.width;
-    middle ??= canvasLength / 2;
-    imageSizeDifference = magImageSize - canvasLength;
+    middle ??= canvasLength! / 2;
+    imageSizeDifference = magImageSize - canvasLength!;
     print("imageSizeDifference: $imageSizeDifference");
-    var bytes = File(widget.newPicture.filePath).readAsBytesSync();
+    var bytes = File(widget.newPicture.filePath!).readAsBytesSync();
     print("bytes count: ${bytes.length}");
     imageData = IMG.decodeImage(bytes);
     imageDataBytes =
-        IMG.encodePng(IMG.copyResize(imageData, width: magImageSize));
+        IMG.encodePng(IMG.copyResize(imageData!, width: magImageSize))
+            as Uint8List;
   }
 
   void correctMouthSide(mouthSide) {
@@ -260,7 +263,7 @@ class _SetPictureCoordinatesScreenState
 
   Offset _getOffset(String pointName) {
     final xY = getCoordinatesForCanvas()[pointName];
-    return Offset(xY[0], xY[1]);
+    return Offset(xY![0], xY[1]);
   }
 
   double _getDistance(Offset one, Offset two) {
@@ -274,14 +277,14 @@ class _SetPictureCoordinatesScreenState
     return _getDistance(first, comparand) < _getDistance(second, comparand);
   }
 
-  String _getClosestPoint(touchedXY) {
-    String closestPoint;
+  String? _getClosestPoint(touchedXY) {
+    String? closestPoint;
     getCoordinatesForCanvas().forEach((pointName, existingXY) {
       if (!_inProximity(existingXY, touchedXY))
         return;
       else if (closestPoint == null)
         closestPoint = pointName;
-      else if (_firstIsClosest(pointName, closestPoint, touchedXY))
+      else if (_firstIsClosest(pointName, closestPoint!, touchedXY))
         closestPoint = pointName;
     });
     return closestPoint;
@@ -294,7 +297,7 @@ class _SetPictureCoordinatesScreenState
     imageController = Provider.of<ImageController>(context, listen: false);
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
     cards = Provider.of<KaraokeCards>(context, listen: false);
-    card = cards.current;
+    card = cards!.current;
 
     SystemChrome.restoreSystemUIOverlays();
     if (_isFirstBuild) {
@@ -325,20 +328,20 @@ class _SetPictureCoordinatesScreenState
                   details.localPosition.dx,
                   details.localPosition.dy
                 ];
-                String pointName = _getClosestPoint(touchedXY);
+                String? pointName = _getClosestPoint(touchedXY);
                 if (pointName == null) return;
                 setState(() {
                   touchedXY = touchedXY;
                   grabbing = true;
-                  grabPoint[pointName] = canvasCoordinates[pointName];
+                  grabPoint[pointName] = canvasCoordinates[pointName]!;
                   widget.coordinatesSet = true;
                   print("IN PROXIMITY!!");
                   if (pointName == "mouth")
-                    mouthStartingPosition = grabPoint[pointName];
+                    mouthStartingPosition = grabPoint[pointName]!;
                   mouthLeftStartingPosition =
-                      List.from(canvasCoordinates["mouthLeft"]);
+                      List.from(canvasCoordinates["mouthLeft"]!);
                   mouthRightStartingPosition =
-                      List.from(canvasCoordinates["mouthRight"]);
+                      List.from(canvasCoordinates["mouthRight"]!);
                 });
               },
               onPanUpdate: (details) {
@@ -374,13 +377,13 @@ class _SetPictureCoordinatesScreenState
                       // possible issue
                       child: FittedBox(
                         fit: BoxFit.fill,
-                        child: Image.file(File(widget.newPicture.filePath),
+                        child: Image.file(File(widget.newPicture.filePath!),
                             width: 512, height: 512),
                       ),
                     ),
                     // Points and lines
                     Visibility(
-                      visible: widget.isNamed,
+                      visible: widget.isNamed!,
                       child: CustomPaint(
                         painter: CoordinatesPainter(getCoordinatesForCanvas(),
                             magnifiedImage, touchedXY),
@@ -389,7 +392,7 @@ class _SetPictureCoordinatesScreenState
                     ),
                     // Point labels
                     Visibility(
-                      visible: !grabbing && widget.isNamed,
+                      visible: !grabbing && widget.isNamed!,
                       child: CustomPaint(
                         painter: PointLabelsPainter(canvasCoordinates),
                         child: Container(),
@@ -403,13 +406,13 @@ class _SetPictureCoordinatesScreenState
                           Positioned(
                             left: 0 -
                                 (touchedXY[0] /
-                                    canvasLength *
-                                    imageSizeDifference),
+                                    canvasLength! *
+                                    imageSizeDifference!),
                             bottom: magImageYCompensator(),
                             child: ClipOval(
                                 clipper:
                                     MagnifiedImage(touchedXY[0], touchedXY[1]),
-                                child: Image.memory(imageDataBytes)),
+                                child: Image.memory(imageDataBytes!)),
                           ),
                           CustomPaint(
                             painter: MagnifyingTargetPainter(
@@ -667,7 +670,7 @@ class MagnifyingTargetPainter extends CustomPainter {
 
 class CoordinatesPainter extends CustomPainter {
   final coordinates;
-  final ui.Image magnifiedImage;
+  ui.Image? magnifiedImage;
   final touchedXY;
 
   CoordinatesPainter(this.coordinates, this.magnifiedImage, this.touchedXY)

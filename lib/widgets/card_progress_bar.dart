@@ -9,15 +9,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CardProgressBar extends StatelessWidget {
-  KaraokeCard card;
-  CurrentActivity currentActivity;
+  KaraokeCard? card;
+  late CurrentActivity currentActivity;
 
   bool cardPictureIsStock() {
-    return card.hasPicture ? !card.picture.isStock : false;
+    return card!.hasPicture ? !card!.picture!.isStock! : false;
   }
 
   bool get _hasDecoration {
-    return card.decorationImage != null || !card.decoration.isEmpty;
+    return card!.decorationImage != null || !card!.decoration.isEmpty;
   }
 
   @override
@@ -46,16 +46,16 @@ class CardProgressBar extends StatelessWidget {
     final primaryColor = Theme.of(context).primaryColor;
 
     void navigateToSnap() {
-      if (card.picture.isStock)
+      if (card!.picture!.isStock!)
         Navigator.of(context).pushNamed(PhotoLibraryScreen.routeName);
       else
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) =>
-                SetPictureCoordinatesScreen(card.picture, editing: true),
+                SetPictureCoordinatesScreen(card!.picture!, editing: true),
           ),
         );
-      if (!card.picture.isStock)
+      if (!card!.picture!.isStock!)
         currentActivity.setCardCreationStep(CardCreationSteps.snap);
     }
 
@@ -67,10 +67,10 @@ class CardProgressBar extends StatelessWidget {
     }
 
     void navigateToSpeak() {
-      if (card.hasASong) {
+      if (card!.hasASong) {
         currentActivity.setCardCreationStep(
             CardCreationSteps.speak, CardCreationSubSteps.seven);
-      } else if (card.hasASongFormula)
+      } else if (card!.hasASongFormula)
         currentActivity.setCardCreationStep(CardCreationSteps.speak);
       else
         currentActivity.setCardCreationStep(
@@ -97,7 +97,7 @@ class CardProgressBar extends StatelessWidget {
                   buttonClip: FirstButtonClipper(),
                   outlinePainter: FirstOutlinePainter(
                       currentActivity.isSnap ? Colors.blue : primaryColor),
-                  stepIsCompleted: card.hasPicture,
+                  stepIsCompleted: card!.hasPicture,
                   isCurrentStep: currentActivity.isSnap,
                   navigateHere: navigateToSnap,
                   canNavigate: true),
@@ -109,10 +109,10 @@ class CardProgressBar extends StatelessWidget {
                   buttonClip: MiddleButtonClipper(),
                   outlinePainter: MiddleOutlinePainter(
                       currentActivity.isSong ? Colors.blue : primaryColor),
-                  stepIsCompleted: card.hasASong || card.hasASongFormula,
+                  stepIsCompleted: card!.hasASong || card!.hasASongFormula,
                   isCurrentStep: currentActivity.isSong,
                   navigateHere: navigateToSong,
-                  canNavigate: card.hasPicture),
+                  canNavigate: card!.hasPicture),
 
               // Can click only if creating a new song
               ProgressButton(
@@ -122,11 +122,11 @@ class CardProgressBar extends StatelessWidget {
                   buttonClip: MiddleButtonClipper(),
                   outlinePainter: MiddleOutlinePainter(
                       currentActivity.isSpeak ? Colors.blue : primaryColor),
-                  stepIsCompleted: card.hasMessage,
+                  stepIsCompleted: card!.hasMessage,
                   isCurrentStep: currentActivity.isSpeak,
                   navigateHere: navigateToSpeak,
                   // canNavigate: card.hasASongFormula || card.hasASong),
-                  canNavigate: card.hasPicture),
+                  canNavigate: card!.hasPicture),
 
               ProgressButton(
                   buttonWidth: buttonWidth,
@@ -138,7 +138,7 @@ class CardProgressBar extends StatelessWidget {
                   stepIsCompleted: _hasDecoration,
                   isCurrentStep: currentActivity.isStyle,
                   navigateHere: navigateToStyle,
-                  canNavigate: card.hasAudio),
+                  canNavigate: card!.hasAudio),
             ],
           );
   }
@@ -273,24 +273,24 @@ class LastButtonClipper extends CustomClipper<Path> {
 class ProgressButton extends StatelessWidget {
   final double offSetX;
   final IconData stepIcon;
-  final CustomClipper buttonClip;
+  final CustomClipper<Path> buttonClip;
   final CustomPainter outlinePainter;
   final bool stepIsCompleted;
   final bool isCurrentStep;
-  final Function navigateHere;
+  VoidCallback? navigateHere;
   final bool canNavigate;
   final double buttonWidth;
 
   ProgressButton(
-      {this.offSetX,
-      this.stepIcon,
-      this.buttonClip,
-      this.outlinePainter,
-      this.stepIsCompleted,
-      this.isCurrentStep,
+      {required this.offSetX,
+      required this.stepIcon,
+      required this.buttonClip,
+      required this.outlinePainter,
+      required this.stepIsCompleted,
+      required this.isCurrentStep,
       this.navigateHere,
-      this.canNavigate,
-      this.buttonWidth});
+      required this.canNavigate,
+      required this.buttonWidth});
 
   @override
   Widget build(BuildContext context) {

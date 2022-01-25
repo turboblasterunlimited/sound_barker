@@ -24,9 +24,9 @@ const List<int> frameDimensions = [656, 778];
 const List<int> portraitDimensions = [512, 512];
 
 class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
-  KaraokeCardDecorationController decorationController;
-  KaraokeCards cards;
-  Typing selectedTyping;
+  late KaraokeCardDecorationController decorationController;
+  late KaraokeCards cards;
+  Typing? selectedTyping;
 
   void _handleAddNewDrawing(details) {
     if (decorationController.isDrawing)
@@ -35,7 +35,7 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
           decorationController.newDrawing();
           // print("in karaoke card: ${decorationController.decoration.drawings}");
           // print("Just drawings: $drawings");
-          drawings.last.offsets.add(
+          drawings!.last.offsets.add(
             _getOffset(details),
           );
         },
@@ -52,7 +52,7 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
   void _handleUpdateDrawing(details) {
     if (decorationController.isDrawing)
       setState(() {
-        drawings.last.offsets.add(
+        drawings!.last.offsets.add(
           _getOffset(details),
         );
       });
@@ -69,8 +69,8 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
   }
 
   void _putTypingOnTop() {
-    typings.remove(selectedTyping);
-    typings.add(selectedTyping);
+    typings!.remove(selectedTyping);
+    typings!.add(selectedTyping!);
   }
 
   bool _selectTyping(details) {
@@ -81,7 +81,7 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
 
     _putTypingOnTop();
 
-    if (typings.last.textSpan.text != "") {
+    if (typings!.last.textSpan.text != "") {
       decorationController.updateTextField();
       decorationController.updateSizeAndColor(selectedTyping);
     }
@@ -91,7 +91,7 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
   void getTyping(details) {
     var touchedOffset =
         Offset(details.localPosition.dx, details.localPosition.dy);
-    for (var typing in typings) {
+    for (var typing in typings!) {
       if (_inProximity(typing.offset, touchedOffset)) {
         selectedTyping = typing;
         return;
@@ -103,7 +103,7 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
 
   void _createNewTyping(details) {
     if (decorationController.isTyping) {
-      typings.add(
+      typings!.add(
         Typing(
           TextSpan(
             text: "",
@@ -120,7 +120,7 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
     if (!decorationController.isTyping) return;
     bool selected = _selectTyping(details);
     if (!selected) _createNewTyping(details);
-    decorationController.focusNode.requestFocus();
+    decorationController.focusNode!.requestFocus();
   }
 
   void _handleStartDragTyping(DragStartDetails details) {
@@ -135,18 +135,18 @@ class _CardDecoratorCanvasState extends State<CardDecoratorCanvas> {
     var touchedOffset =
         Offset(details.localPosition.dx, details.localPosition.dy);
 
-    setState(() => selectedTyping.offset = touchedOffset);
+    setState(() => selectedTyping!.offset = touchedOffset);
   }
 
   void _handleEndDragTyping() {
     setState(() => selectedTyping = null);
   }
 
-  List<Drawing> get drawings {
+  List<Drawing>? get drawings {
     return decorationController.decoration?.drawings;
   }
 
-  List<Typing> get typings {
+  List<Typing>? get typings {
     return decorationController.decoration?.typings;
   }
 
@@ -236,16 +236,16 @@ class CaretPainter extends CustomPainter {
 
     if (!decorationController.isTyping) return;
 
-    if (decorationController.decoration.typings.isEmpty)
+    if (decorationController.decoration!.typings.isEmpty)
       decorationController.addTyping();
 
-    Typing lastTyping = decorationController.decoration.typings.last;
+    Typing lastTyping = decorationController.decoration!.typings.last;
     var size = lastTyping.textSpan.text == ""
         ? decorationController.size
-        : lastTyping.textSpan.style.fontSize;
+        : lastTyping.textSpan.style!.fontSize;
     //paint drag thumb
     canvas.drawOval(
-        Rect.fromCenter(center: lastTyping.offset, width: size, height: size),
+        Rect.fromCenter(center: lastTyping.offset, width: size!, height: size),
         circlePaint);
     //paint caret
     if (decorationController.paintCarat) {
@@ -271,12 +271,13 @@ class CardPainter extends CustomPainter {
     UI.Picture picture = recorder.endRecording();
     UI.Image image = await picture.toImage(
         canvasDimensions[0].round(), canvasDimensions[1].round());
-    ByteData imageData = await image.toByteData(format: UI.ImageByteFormat.png);
+    ByteData imageData =
+        (await image.toByteData(format: UI.ImageByteFormat.png))!;
     Uint8List test = imageData.buffer.asUint8List();
-    IMG.Image imgImage = IMG.decodeImage(test);
+    IMG.Image imgImage = IMG.decodeImage(test)!;
     IMG.Image resized =
         IMG.copyResize(imgImage, width: aspect[0], height: aspect[1]);
-    return IMG.encodePng(resized, level: 0);
+    return IMG.encodePng(resized, level: 0) as Uint8List;
   }
 
   Future<Uint8List> _mergeArtWithFrame(IMG.Image art, String framePath) async {
@@ -284,12 +285,12 @@ class CardPainter extends CustomPainter {
     final frame = IMG.decodeImage(frameBytes.buffer
         .asUint8List(frameBytes.offsetInBytes, frameBytes.lengthInBytes));
     final mergedImage = IMG.Image(656, 778);
-    IMG.copyInto(mergedImage, frame, blend: true);
+    IMG.copyInto(mergedImage, frame!, blend: true);
     IMG.copyInto(mergedImage, art, blend: true);
-    return IMG.encodePng(mergedImage, level: 1);
+    return IMG.encodePng(mergedImage, level: 1) as Uint8List;
   }
 
-  Future<String> capturePNG(String uniqueId, [String framePath]) async {
+  Future<String> capturePNG(String uniqueId, [String? framePath]) async {
     File file;
     Uint8List result;
     if (framePath == null) {
@@ -297,7 +298,7 @@ class CardPainter extends CustomPainter {
     } else {
       Uint8List artData = await _getArtwork(frameDimensions);
       final artImage = IMG.decodeImage(artData);
-      result = await _mergeArtWithFrame(artImage, framePath);
+      result = await _mergeArtWithFrame(artImage!, framePath);
     }
     file = await File("$myAppStoragePath/$uniqueId.png").writeAsBytes(result);
     return file.path;

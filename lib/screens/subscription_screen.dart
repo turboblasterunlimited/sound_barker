@@ -7,10 +7,10 @@ import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:K9_Karaoke/widgets/loading_half_screen_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:purchases_flutter/purchases_flutter.dart';
 
 import 'account_screen.dart';
-import 'menu_screen.dart';
 
 class SubscriptionScreen extends StatefulWidget {
   static const routeName = 'subscription-screen';
@@ -21,8 +21,8 @@ class SubscriptionScreen extends StatefulWidget {
 }
 
 class _SubscriptionScreenState extends State<SubscriptionScreen> {
-  TheUser user;
-  CurrentActivity currentActivity;
+  late TheUser user;
+  late CurrentActivity currentActivity;
 
   makePurchase(BuildContext ctx, Package package) {
     Function errorCallback = (errorMessage) => showError(ctx, errorMessage);
@@ -44,7 +44,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
   Column purchaseButtons(ctx) {
     print("purchase buttons init");
-    List<Package> inactivePackages = user.getInactivePackages();
+    List<Package> inactivePackages = user.getInactivePackages()!;
     print("inactive packages: $inactivePackages");
     return Column(
       children: inactivePackages
@@ -167,7 +167,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                                 children: <TextSpan>[
                                   TextSpan(
                                     text:
-                                        "YOUR ${(user.getSubscriptionName()?.toUpperCase())} SUBSCRIPTION\nIS",
+                                        "YOUR ${(user.getSubscriptionName().toUpperCase())} SUBSCRIPTION\nIS",
                                     style: TextStyle(
                                         fontFamily: "Museo",
                                         fontSize: 20,

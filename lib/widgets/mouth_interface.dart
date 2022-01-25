@@ -30,8 +30,8 @@ class MouthInterface extends StatefulWidget {
 }
 
 class _MouthInterfaceState extends State<MouthInterface> {
-  KaraokeCard card;
-  CurrentActivity currentActivity;
+  KaraokeCard? card;
+  CurrentActivity? currentActivity;
   // List<double> pinkMouthToneAsDecimal = [
   //   0.5686274509,
   //   0.39607843137,
@@ -43,32 +43,32 @@ class _MouthInterfaceState extends State<MouthInterface> {
   //   0.12549019607
   // ];
 
-  ImageController imageController;
+  ImageController? imageController;
 
   List<int> fleshMouthTone = [145, 101, 110];
   List<int> pinkMouthTone = [145, 55, 55];
   List<int> redMouthTone = [100, 10, 10];
 
   // MOUTH
-  List<int> currentMouthColor;
+  List<int>? currentMouthColor;
   double mouthColorSliderValue = 0.0;
 
   // LIPS
-  List<int> currentLipColor;
+  List<int>? currentLipColor;
   double lipColorSliderValue = 0.0;
 
-  double currentLipThickness;
+  double? currentLipThickness;
 
   @override
   void dispose() {
-    imageController.cancelMouthOpenAndClose();
+    imageController!.cancelMouthOpenAndClose();
     super.dispose();
   }
 
   List<int> interpolate(double sliderVal) {
     List<int> result = [0, 0, 0];
     Color color = Color.lerp(
-        Colors.black, Color.fromRGBO(145, 101, 110, 1.0), sliderVal / 3.0);
+        Colors.black, Color.fromRGBO(145, 101, 110, 1.0), sliderVal / 3.0)!;
     result[0] = color.red;
     result[1] = color.green;
     result[2] = color.blue;
@@ -92,10 +92,10 @@ class _MouthInterfaceState extends State<MouthInterface> {
   }
 
   void handleSubmitButton() {
-    imageController.cancelMouthOpenAndClose();
-    card.picture.updateMouth(colorToDecimal(currentMouthColor),
-        colorToDecimal(currentLipColor), currentLipThickness);
-    currentActivity.setCardCreationStep(CardCreationSteps.song);
+    imageController!.cancelMouthOpenAndClose();
+    card!.picture!.updateMouth(colorToDecimal(currentMouthColor!),
+        colorToDecimal(currentLipColor!), currentLipThickness);
+    currentActivity!.setCardCreationStep(CardCreationSteps.song);
   }
 
   List get sliderMouthTone {
@@ -125,7 +125,7 @@ class _MouthInterfaceState extends State<MouthInterface> {
       context,
       MaterialPageRoute(
         builder: (context) =>
-            SetPictureCoordinatesScreen(card.picture, editing: true),
+            SetPictureCoordinatesScreen(card!.picture!, editing: true),
       ),
     );
   }
@@ -134,20 +134,20 @@ class _MouthInterfaceState extends State<MouthInterface> {
     setState(() {
       currentLipThickness = val;
     });
-    imageController.setLipThickness(currentLipThickness);
+    imageController!.setLipThickness(currentLipThickness);
   }
 
   @override
   Widget build(BuildContext context) {
-    card ??= Provider.of<KaraokeCards>(context).current;
+    card ??= Provider.of<KaraokeCards>(context).current!;
     currentActivity ??= Provider.of<CurrentActivity>(context);
     imageController ??= Provider.of<ImageController>(context);
-    currentMouthColor ??= colorToInt(card.picture.mouthColor);
-    currentLipColor ??= colorToInt(card.picture.mouthColor);
-    currentLipThickness ??= card.picture.lipThickness;
+    currentMouthColor ??= colorToInt(card!.picture!.mouthColor!);
+    currentLipColor ??= colorToInt(card!.picture!.mouthColor!);
+    currentLipThickness ??= card!.picture!.lipThickness;
 
-    print("Current picture: ${card.picture?.name}");
-    imageController.startMouthOpenAndClose();
+    print("Current picture: ${card!.picture?.name}");
+    imageController!.startMouthOpenAndClose();
     return Column(
       children: <Widget>[
         InterfaceTitleNav(title: "MOUTH & LIPS", backCallback: backCallback),
@@ -180,8 +180,8 @@ class _MouthInterfaceState extends State<MouthInterface> {
                       // jmf -- changed to use interpolate
                       currentMouthColor = interpolate(sliderVal);
                     });
-                    imageController
-                        .setMouthColor(colorToDecimal(currentMouthColor));
+                    imageController!
+                        .setMouthColor(colorToDecimal(currentMouthColor!));
                   },
                   onChangeEnd: (_) {},
                 ),
@@ -230,7 +230,7 @@ class _MouthInterfaceState extends State<MouthInterface> {
                     ),
                   ),
                   child: Slider(
-                    value: currentLipThickness,
+                    value: currentLipThickness!,
                     min: 0,
                     max: 0.4,
                     onChanged: (double sliderVal) {
@@ -245,7 +245,7 @@ class _MouthInterfaceState extends State<MouthInterface> {
 
         // LIPS COLOR
         Opacity(
-          opacity: currentLipThickness > 0 ? 1 : 0.5,
+          opacity: currentLipThickness! > 0 ? 1 : 0.5,
           child: Stack(
             children: [
               Align(
@@ -267,15 +267,15 @@ class _MouthInterfaceState extends State<MouthInterface> {
                     value: lipColorSliderValue,
                     min: 0,
                     max: 3,
-                    onChanged: currentLipThickness > 0
+                    onChanged: currentLipThickness! > 0
                         ? (double sliderVal) {
                             setState(() {
                               lipColorSliderValue = sliderVal;
                               currentLipColor = interpolate(sliderVal);
                             });
 
-                            imageController
-                                .setLipColor(colorToDecimal(currentLipColor));
+                            imageController!
+                                .setLipColor(colorToDecimal(currentLipColor!));
                           }
                         : null,
                     onChangeEnd: (_) {},

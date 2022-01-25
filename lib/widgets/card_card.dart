@@ -6,7 +6,8 @@ import 'package:K9_Karaoke/screens/main_screen.dart';
 import 'package:K9_Karaoke/widgets/subscribe_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:line_awesome_icons/line_awesome_icons.dart';
+
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'dart:io';
@@ -16,18 +17,18 @@ class CardCard extends StatefulWidget {
   final KaraokeCards cards;
   // User subscription is active.
   final bool active;
-  CardCard(this.card, this.cards, this.active, {Key key}) : super(key: key);
+  CardCard(this.card, this.cards, this.active, {Key? key}) : super(key: key);
 
   @override
   _CardCardState createState() => _CardCardState();
 }
 
 class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
-  AnimationController animationController;
-  Animation<double> animateScale;
-  ImageController imageController;
-  CurrentActivity currentActivity;
-  TheUser user;
+  late AnimationController animationController;
+  late Animation<double> animateScale;
+  late ImageController imageController;
+  late CurrentActivity currentActivity;
+  late TheUser user;
 
   @override
   void initState() {
@@ -42,7 +43,7 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    animationController?.dispose();
+    animationController.dispose();
     super.dispose();
   }
 
@@ -68,7 +69,7 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
   void handleTap() {
     if (!widget.active) return subscribeDialog();
     widget.cards.setCurrent(widget.card);
-    imageController.createDog(widget.card.picture);
+    imageController.createDog(widget.card.picture!);
     currentActivity.current = Activities.cardCreation;
     currentActivity.setCardCreationStep(
         CardCreationSteps.style, CardCreationSubSteps.three);
@@ -80,7 +81,7 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
 
   Widget _decorationImageSelectable(image) {
     return (widget.card.decorationImage != null &&
-            widget.card.decorationImage.hasFrameDimension)
+            widget.card.decorationImage!.hasFrameDimension)
         ? Positioned.fill(
             child: LayoutBuilder(
               builder: (context, constraints) {
@@ -98,12 +99,12 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
 
   Widget get _imageWidget {
     return Image.file(
-      File(widget.card.picture.filePath),
+      File(widget.card.picture!.filePath!),
     );
   }
 
   Widget _getImage() {
-    Picture picture = widget.card.picture;
+    Picture picture = widget.card.picture!;
     if (picture.hasFile) {
       return _imageWidget;
     } else {
@@ -116,7 +117,7 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
             return FittedBox(
               fit: BoxFit.cover,
               child: Icon(
-                LineAwesomeIcons.exclamation_circle,
+                FontAwesomeIcons.exclamationCircle,
                 color: Theme.of(context).errorColor,
                 size: 50,
               ),
@@ -143,7 +144,7 @@ class _CardCardState extends State<CardCard> with TickerProviderStateMixin {
                 ),
                 if (widget.card.decorationImage != null)
                   Image.file(
-                    File(widget.card.decorationImage.filePath),
+                    File(widget.card.decorationImage!.filePath!),
                   ),
                 if (!widget.active)
                   Opacity(

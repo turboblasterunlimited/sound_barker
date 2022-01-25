@@ -6,7 +6,7 @@ enum CenterPageEnlargeStrategy { scale, height }
 
 class CarouselOptions {
   /// Set carousel height and overrides any existing [aspectRatio].
-  final double height;
+  double? height;
 
   /// Aspect ratio is used if no height have been declared.
   ///
@@ -67,10 +67,10 @@ class CarouselOptions {
   final Axis scrollDirection;
 
   /// Called whenever the page in the center of the viewport changes.
-  final Function(int index, CarouselPageChangedReason reason) onPageChanged;
+  Function(int index, CarouselPageChangedReason reason)? onPageChanged;
 
   /// Called whenever the carousel is scrolled
-  final ValueChanged<double> onScrolled;
+  ValueChanged<double>? onScrolled;
 
   /// How the carousel should respond to user input.
   ///
@@ -81,7 +81,7 @@ class CarouselOptions {
   /// [PageScrollPhysics] prior to being used.
   ///
   /// Defaults to matching platform conventions.
-  final ScrollPhysics scrollPhysics;
+  ScrollPhysics? scrollPhysics;
 
   /// Set to false to disable page snapping, useful for custom scroll behavior.
   ///
@@ -107,7 +107,7 @@ class CarouselOptions {
   final bool pauseAutoPlayInFiniteScroll;
 
   /// Pass a `PageStoragekey` if you want to keep the pageview's position when it was recreated.
-  final PageStorageKey pageViewKey;
+  PageStorageKey? pageViewKey;
 
   /// Use `enlargeStrategy` to determine which method to enlarge the center page.
   final CenterPageEnlargeStrategy enlargeStrategy;

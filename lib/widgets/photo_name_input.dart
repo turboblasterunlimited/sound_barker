@@ -1,13 +1,16 @@
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:line_awesome_icons/line_awesome_icons.dart';
+
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'package:provider/provider.dart';
 
 import '../providers/pictures.dart';
 
+// ignore: must_be_immutable
 class PhotoNameInput extends StatefulWidget {
-  Picture picture;
+  Picture? picture;
   final Function updateNameCallback;
 
   PhotoNameInput(this.updateNameCallback, [this.picture]);
@@ -17,11 +20,11 @@ class PhotoNameInput extends StatefulWidget {
 }
 
 class _PhotoNameInputState extends State<PhotoNameInput> {
-  KaraokeCards cards;
+  late KaraokeCards cards;
   final _textFormFocus = FocusNode();
   final _textController = TextEditingController();
   double textWidth = 150;
-  double maxTextWidth;
+  double? maxTextWidth;
 
   void handleNameChange(name) {
     if (name != "") widget.updateNameCallback(name);
@@ -32,20 +35,20 @@ class _PhotoNameInputState extends State<PhotoNameInput> {
   int get nameLength {
     if (widget.picture == null) return 0;
     int inputLength = _textController.text.length;
-    int nameLength = widget.picture.name.length;
+    int nameLength = widget.picture!.name!.length;
     return inputLength > nameLength ? inputLength : nameLength;
   }
 
   double _getTextInputWidth() {
     double newWidth = nameLength * 5.1 + 150;
-    return newWidth > maxTextWidth ? maxTextWidth : newWidth;
+    return newWidth > maxTextWidth! ? maxTextWidth! : newWidth;
   }
 
   @override
   Widget build(BuildContext context) {
     maxTextWidth = MediaQuery.of(context).size.width / 2;
     cards = Provider.of<KaraokeCards>(context);
-    widget.picture ??= cards.current.picture;
+    widget.picture ??= cards.current != null ? cards.current!.picture : null;
 
     return widget.picture == null
         ? Center()
@@ -61,18 +64,18 @@ class _PhotoNameInputState extends State<PhotoNameInput> {
                     // onTap: () {},
                     maxLength: 20,
                     focusNode: _textFormFocus,
-                    autofocus: widget.picture.isNamed ? false : true,
-                    enabled: !widget.picture.isStock,
+                    autofocus: widget.picture!.isNamed ? false : true,
+                    enabled: !widget.picture!.isStock!,
                     style: TextStyle(color: Colors.grey[600], fontSize: 20),
-                    textAlign: widget.picture.isStock
+                    textAlign: widget.picture!.isStock!
                         ? TextAlign.center
                         : TextAlign.right,
                     decoration: InputDecoration(
-                        hintText: widget.picture.name,
+                        hintText: widget.picture!.name,
                         counterText: "",
-                        suffixIcon: widget.picture.isStock
+                        suffixIcon: widget.picture!.isStock!
                             ? null
-                            : Icon(LineAwesomeIcons.edit),
+                            : Icon(FontAwesomeIcons.edit),
                         border: InputBorder.none),
                     onFieldSubmitted: (val) => handleNameChange(val),
                   ),

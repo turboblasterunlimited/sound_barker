@@ -1,15 +1,17 @@
 import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:purchases_flutter/purchases_flutter.dart';
 
 class TheUser with ChangeNotifier {
   // NEED TO ADD USER APP ID (UUID) FOR PURCHASES INSTEAD OF EMAIL.
-  String email;
-  String uuid;
-  bool agreedToTerms;
-  PurchaserInfo purchaserInfo;
-  List<Package> availablePackages;
-  Offerings offerings;
+  String? email;
+  String? uuid;
+  bool? agreedToTerms;
+  PurchaserInfo? purchaserInfo;
+  List<Package>? availablePackages;
+  late Offerings offerings;
   bool isLoading = false;
   bool filesLoaded = false;
 
@@ -62,10 +64,10 @@ class TheUser with ChangeNotifier {
     });
   }
 
-  Package getActivePackage() {
-    if (purchaserInfo.activeSubscriptions.isEmpty) return null;
-    String sku = purchaserInfo.activeSubscriptions[0];
-    Package activePackage = availablePackages
+  Package? getActivePackage() {
+    if (purchaserInfo!.activeSubscriptions.isEmpty) return null;
+    String sku = purchaserInfo!.activeSubscriptions[0];
+    Package activePackage = availablePackages!
         .firstWhere((Package package) => package.product.identifier == sku);
     print("active Package: $activePackage");
     return activePackage;
@@ -73,14 +75,14 @@ class TheUser with ChangeNotifier {
 
   // monthly OR yearly
   String getSubscriptionName() {
-    return getActivePackage()?.packageType.toString().split('.').last;
+    return getActivePackage()!.packageType.toString().split('.').last;
   }
 
-  List<Package> getInactivePackages() {
+  List<Package>? getInactivePackages() {
     print("Getting inactive packages");
-    Package activePackage = getActivePackage();
+    Package? activePackage = getActivePackage();
     List<Package> remainingPackages =
-        availablePackages != null ? availablePackages.toList() : null;
+        (availablePackages != null ? availablePackages!.toList() : null)!;
     print("packages: $remainingPackages");
     print("active packages: $activePackage");
 
@@ -100,12 +102,12 @@ class TheUser with ChangeNotifier {
   }
 
   Future<void> getPackages() async {
-    if (availablePackages != null) return availablePackages;
+    if (availablePackages != null) return /* jmf 12-22-21 availablePackages */;
     try {
       offerings = await Purchases.getOfferings();
-      if (offerings.current == null) return null;
-      availablePackages = offerings.current.availablePackages;
-      if (availablePackages.isEmpty) return null;
+      if (offerings.current == null) return;
+      availablePackages = offerings.current!.availablePackages;
+      if (availablePackages!.isEmpty) return;
     } catch (e) {
       print("get offerings error: $e");
     }
@@ -119,7 +121,7 @@ class TheUser with ChangeNotifier {
       await Purchases.purchasePackage(package);
       print("Purchaser info: $purchaserInfo");
     } catch (e) {
-      var errorCode = PurchasesErrorHelper.getErrorCode(e);
+      var errorCode = PurchasesErrorHelper.getErrorCode(e as PlatformException);
       errorCallback(errorCode.toString());
       if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
         errorCallback("Purchase Failed");
@@ -132,7 +134,7 @@ class TheUser with ChangeNotifier {
   bool get subscribed {
     // return true;
     if (purchaserInfo == null) return false;
-    print("User's active subscriptions: ${purchaserInfo.entitlements.active}");
-    return purchaserInfo.entitlements.active.isNotEmpty;
+    print("User's active subscriptions: ${purchaserInfo!.entitlements.active}");
+    return purchaserInfo!.entitlements.active.isNotEmpty;
   }
 }

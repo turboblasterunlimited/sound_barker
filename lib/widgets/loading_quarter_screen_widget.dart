@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class LoadingQuarterScreenWidget extends StatefulWidget {
-  final String message;
-  final double size;
+  String? message;
+  double? size;
 
   LoadingQuarterScreenWidget(this.message, [this.size]);
   @override
@@ -22,7 +22,7 @@ class _LoadingQuarterScreenWidget extends State<LoadingQuarterScreenWidget> {
       children: <Widget>[
         SpinKitWave(
           color: Colors.blue,
-          size: widget.size == null ? 100 : widget.size,
+          size: widget.size == null ? 100 : widget.size!,
         ),
         Padding(
           padding: const EdgeInsets.only(top: 25.0),

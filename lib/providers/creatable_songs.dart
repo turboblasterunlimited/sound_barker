@@ -3,6 +3,21 @@ import 'package:flutter/material.dart';
 
 class CreatableSongs with ChangeNotifier {
   List<CreatableSong> all = [];
+  CreatableSong? _nullSong;
+
+  CreatableSong nullSong() {
+    if (_nullSong == null) {
+      _nullSong = CreatableSong(
+        name: "",
+        style: "",
+        arrangement: {"arrangement": 0},
+        backingTrackUrl: "",
+        backingTrackOffset: 0,
+        displayOrder: 0,
+      );
+    }
+    return _nullSong!;
+  }
 
   void sort() {
     print("sorting creatables");
@@ -21,7 +36,7 @@ class CreatableSongs with ChangeNotifier {
     return all.firstWhere(
         (existing) =>
             existing.fullName == getFullName(data["name"], data["style"]),
-        orElse: () => null);
+        orElse: () => nullSong());
   }
 
   void createNewSong(data) {
@@ -30,7 +45,8 @@ class CreatableSongs with ChangeNotifier {
       style: data["style"],
       arrangement: {data["arrangement"]: data["id"]},
       backingTrackUrl: "backing_tracks/${data["backing_track"]}/0.aac",
-      backingTrackOffset: data["backingtrack_offset"],
+      backingTrackOffset:
+          data["backingtrack_offset"] != null ? data["backingtrack_offset"] : 0,
       displayOrder: data["display_order"],
     );
     all.add(newSong);
@@ -46,10 +62,10 @@ class CreatableSongs with ChangeNotifier {
     List data = await RestAPI.retrieveAllCreatableSongs();
     // creatable songs have two arrangements which exist as separate songs on the server. They are combined on the frontend into one song with two versions.
     data.forEach((songData) {
-            print("checkpoint");
+      print("checkpoint");
 
       CreatableSong existing = dataMatchesSong(songData);
-      if (existing == null) {
+      if (existing.isNull()) {
         createNewSong(songData);
       } else {
         addSongArrangement(existing, songData);
@@ -68,12 +84,12 @@ class CreatableSong {
   final int displayOrder;
 
   CreatableSong(
-      {this.name,
-      this.style,
-      this.backingTrackUrl,
-      this.arrangement,
-      this.backingTrackOffset,
-      this.displayOrder});
+      {required this.name,
+      required this.style,
+      required this.backingTrackUrl,
+      required this.arrangement,
+      required this.backingTrackOffset,
+      required this.displayOrder});
 
   List<int> get ids {
     return [arrangement["harmonized"], arrangement["pitched"]];
@@ -81,5 +97,9 @@ class CreatableSong {
 
   String get fullName {
     return CreatableSongs.getFullName(name, style);
+  }
+
+  bool isNull() {
+    return this.name.isEmpty;
   }
 }

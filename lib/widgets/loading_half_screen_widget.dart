@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
+// ignore: must_be_immutable
 class LoadingHalfScreenWidget extends StatefulWidget {
-  final String message;
-  final double size;
+  String? message;
+  double? size;
 
   LoadingHalfScreenWidget(this.message, [this.size]);
   @override
@@ -20,7 +21,7 @@ class _LoadingHalfScreenWidget extends State<LoadingHalfScreenWidget> {
         children: <Widget>[
           SpinKitWave(
             color: Colors.blue,
-            size: widget.size == null ? 100 : widget.size,
+            size: widget.size == null ? 100 : widget.size!,
           ),
           Padding(
             padding: const EdgeInsets.only(top: 25.0),

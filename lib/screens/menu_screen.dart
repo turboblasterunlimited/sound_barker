@@ -1,3 +1,4 @@
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:K9_Karaoke/animations/waggle.dart';
 import 'package:K9_Karaoke/providers/current_activity.dart';
 import 'package:K9_Karaoke/providers/karaoke_card_decoration_controller.dart';
@@ -10,7 +11,6 @@ import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/widgets/custom_appbar.dart';
 import 'package:K9_Karaoke/widgets/social_links_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
 
 class MenuScreen extends StatefulWidget {
@@ -21,9 +21,9 @@ class MenuScreen extends StatefulWidget {
 }
 
 class _MenuState extends State<MenuScreen> {
-  KaraokeCards cards;
-  CurrentActivity currentActivity;
-  KaraokeCardDecorationController cardDecorator;
+  late KaraokeCards cards;
+  late CurrentActivity currentActivity;
+  late KaraokeCardDecorationController cardDecorator;
 
   void handleCreateNewCard() {
     cards.newCurrent();

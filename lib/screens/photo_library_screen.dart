@@ -17,8 +17,8 @@ class PhotoLibraryScreen extends StatefulWidget {
 }
 
 class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
-  Pictures pictures;
-  KaraokeCards cards;
+  late Pictures pictures;
+  late KaraokeCards cards;
 
   List<Widget> _pictureGridTiles(List<Picture> pics, [usersDisplayedPictures]) {
     List<Widget> widgets = [];
@@ -70,7 +70,7 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
   }
 
   void _backCallback() {
-    if (cards.current != null && cards.current.hasPicture)
+    if (cards.current != null && cards.current!.hasPicture)
       Navigator.of(context).pop();
     else
       Navigator.of(context).pushNamed(MenuScreen.routeName);
