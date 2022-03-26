@@ -74,6 +74,8 @@ class Gcloud {
 
     Response? response;
     try {
+      print(bucketName.toString());
+      print(bucketFp.toString());
       response = await HttpController.dioGet(
         "https://storage.googleapis.com/$bucketName/$bucketFp",
         //Received data with List<int>

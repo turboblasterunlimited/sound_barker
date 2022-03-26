@@ -64,17 +64,47 @@ class TheUser with ChangeNotifier {
     });
   }
 
+  Package? matchCrossPlatformSubscription(String sku) {
+    Package? package;
+    for (var i = 0; i < availablePackages!.length; i++) {
+      package = availablePackages![i];
+      String candidate = package.product.identifier;
+      // match 39 for monthly and 24 for yearly subscriptions
+      // this compensates for mismatch in strings
+      candidate = candidate.substring(3, 5);
+      var test = sku.substring(3, 5);
+      if (test == candidate) {
+        break; // found package
+      }
+    }
+    return package;
+  }
+
+  String getSubscriptionProvider() {
+    String result = "No subscription";
+    if (purchaserInfo!.activeSubscriptions.isNotEmpty) {
+      String sku = purchaserInfo!.activeSubscriptions[0];
+      // hack to differentiate who subscription purchased from
+      result = sku.substring(0, 2) == "k9" ? "google" : "apple";
+    }
+    return result;
+  }
+
   Package? getActivePackage() {
     if (purchaserInfo!.activeSubscriptions.isEmpty) return null;
     String sku = purchaserInfo!.activeSubscriptions[0];
-    Package activePackage = availablePackages!
-        .firstWhere((Package package) => package.product.identifier == sku);
+    Package? activePackage = matchCrossPlatformSubscription(sku);
+    // Package activePackage = availablePackages!
+    //     .firstWhere((Package package) => package.product.identifier == sku);
     print("active Package: $activePackage");
     return activePackage;
   }
 
   // monthly OR yearly
   String getSubscriptionName() {
+    if (getActivePackage() == null) {
+      return "";
+    }
     return getActivePackage()!.packageType.toString().split('.').last;
   }
 

@@ -62,6 +62,10 @@ class _PlaybackCardState extends State<PlaybackCard> {
     // );
   }
 
+  void widgetSelect() {
+    widget.select();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -76,7 +80,7 @@ class _PlaybackCardState extends State<PlaybackCard> {
                     color: Theme.of(context).primaryColor,
                   ),
             iconSize: 36,
-            onPressed: widget.select,
+            onPressed: /*widget.select*/ widgetSelect,
           ),
         ]),
         // IconButton(

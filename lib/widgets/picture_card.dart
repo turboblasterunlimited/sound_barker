@@ -63,6 +63,8 @@ class _PictureCardState extends State<PictureCard>
     print("dog name: ${widget.picture.name}");
     cards.setCurrentPicture(widget.picture);
     currentActivity.setCardCreationStep(CardCreationSteps.song);
+    currentActivity.cardType =
+        null; // needed when redoing card after save & send
     imageController.createDog(widget.picture);
     Navigator.popUntil(context, ModalRoute.withName(MainScreen.routeName));
   }

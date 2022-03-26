@@ -1,6 +1,7 @@
 import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/karaoke_cards.dart';
 import 'package:K9_Karaoke/providers/the_user.dart';
+import 'package:K9_Karaoke/screens/main_screen.dart';
 import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/widgets/photo_name_input.dart';
 import 'package:flutter/material.dart';
@@ -74,6 +75,16 @@ class _CustomAppBarState extends State<CustomAppBar> {
 //    return width;
   }
 
+  gotoStart(BuildContext context) {
+    Navigator.pushAndRemoveUntil<dynamic>(
+      context,
+      MaterialPageRoute<dynamic>(
+        builder: (BuildContext context) => MainScreen(),
+      ),
+      (route) => false, //if you want to disable back feature set to false
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     cards ??= Provider.of<KaraokeCards>(context);
@@ -129,6 +140,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                       //   ),
                       onPressed: () {
                         SystemChrome.setEnabledSystemUIOverlays([]);
+//                        gotoStart(context);
                         Navigator.of(context).pushNamed(MenuScreen.routeName);
                         //Navigator.of(context).pop();
                       },
@@ -142,6 +154,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                     ),
                     onPressed: () {
                       SystemChrome.setEnabledSystemUIOverlays([]);
+//                      gotoStart(context);
                       Navigator.of(context).pushNamed(MenuScreen.routeName);
                     },
                   ),

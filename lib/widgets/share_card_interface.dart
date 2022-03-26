@@ -1,6 +1,7 @@
 import 'package:K9_Karaoke/icons/custom_icons.dart';
 import 'package:K9_Karaoke/providers/the_user.dart';
 import 'package:K9_Karaoke/screens/envelope_screen.dart';
+import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/screens/photo_library_screen.dart';
 import 'package:K9_Karaoke/widgets/custom_dialog.dart';
 import 'package:K9_Karaoke/widgets/error_dialog.dart';
@@ -212,8 +213,9 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                                 currentActivity.setCardCreationStep(
                                     CardCreationSteps.snap);
                                 currentActivity.startCreateCard();
+                                currentActivity.cardType = null;
                                 Navigator.of(context)
-                                    .pushNamed(PhotoLibraryScreen.routeName);
+                                    .pushNamed(MenuScreen.routeName);
                               },
                               child: Text(
                                 "New Card",

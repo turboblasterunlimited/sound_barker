@@ -143,14 +143,32 @@ class KaraokeCards with ChangeNotifier {
     notifyListeners();
   }
 
+  // added JMF 22-2-25 to fetch last set bark for
+  // displayed barks
+  Bark? getCurrentShortBark(bark) {
+    return current!.shortBark;
+  }
+
   void setCurrentMediumBark(bark) {
     current!.mediumBark = bark;
     notifyListeners();
   }
 
+  // added JMF 22-2-25 to fetch last set bark for
+  // displayed barks
+  Bark? getCurrentMediumBark(bark) {
+    return current!.mediumBark;
+  }
+
   void setCurrentLongBark(bark) {
     current!.longBark = bark;
     notifyListeners();
+  }
+
+  // added JMF 22-2-25 to fetch last set bark for
+  // displayed barks
+  Bark? getCurrentLongBark(bark) {
+    return current!.longBark;
   }
 
   void setCurrentPicture(newPicture) {

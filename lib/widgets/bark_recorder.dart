@@ -89,6 +89,8 @@ class BarkRecorderState extends State<BarkRecorder> {
     await barks.setTempRawBark(Bark(filePath: filePath));
   }
 
+  // todo -- add alternative to startRecord/StopRecorder to allow selection of fil
+
   void addCroppedBarksToAllBarks(Barks barks, croppedBarks) async {
     setState(() => _loading = true);
     await barks.uploadRawBarkAndRetrieveCroppedBarks(card!.picture!.fileId);

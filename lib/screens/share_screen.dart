@@ -33,8 +33,11 @@ class _ShareScreenState extends State<ShareScreen> {
   String? loadingMessage;
 
   void _handleShare(ctx) async {
+    var msg = "This is a digital greeting card from K-9 Karaoke.  " +
+        "If you are concerned that this might be spam, please contact the sender for confirmation that this is not spam.";
+
     await Share.share(
-        "K-9 Karaoke Card\n\n$cardMessage\n\n$shareLink\n\nCreated with K-9 Karaoke.",
+        "K-9 Karaoke Card\n\n$cardMessage\n\n$shareLink\n\n" + msg,
         subject: "K-9 Karaoke");
     SystemChrome.restoreSystemUIOverlays();
     final snackBar = SnackBar(

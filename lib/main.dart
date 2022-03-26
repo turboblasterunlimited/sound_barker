@@ -42,6 +42,7 @@ import './providers/barks.dart';
 import './providers/songs.dart';
 import './providers/image_controller.dart';
 import './providers/flutter_sound_controller.dart';
+import 'widgets/manage_subscriptions.dart';
 
 final sentry = SentryClient(SentryOptions(
     dsn:
@@ -151,6 +152,7 @@ class MyApp extends StatelessWidget {
           routes: {
             InfoScreen.routeName: (ctx) => InfoScreen(),
             SubscriptionScreen.routeName: (ctx) => SubscriptionScreen(),
+            ManageSubscriptions.routeName: (ctx) => ManageSubscriptions(),
             AboutScreen.routeName: (ctx) => AboutScreen(),
             PrivacyPolicyScreen.routeName: (ctx) => PrivacyPolicyScreen(),
             TermsOfUseScreen.routeName: (ctx) => TermsOfUseScreen(),

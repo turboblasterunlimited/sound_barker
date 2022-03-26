@@ -35,6 +35,8 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
   bool _isFirstLoad = true;
   KaraokeCards? cards;
 
+  bool _useShorterBarks = false;
+
   String get _currentBarkLength {
     if (currentActivity.isTwo) {
       return "SHORT";
@@ -65,9 +67,22 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
     if (currentActivity.isTwo) {
       return barks.barksOfLength("short", stock: stock, fx: fx);
     } else if (currentActivity.isThree) {
-      return barks.barksOfLength("medium", stock: stock, fx: fx);
+      var barklist = barks.barksOfLength("medium", stock: stock, fx: fx);
+      if (_useShorterBarks) {
+        barklist =
+            barklist + barks.barksOfLength("short", stock: stock, fx: fx);
+      }
+      //return barks.barksOfLength("medium", stock: stock, fx: fx);
+      return barklist;
     } else if (currentActivity.isFour) {
-      return barks.barksOfLength("finale", stock: stock, fx: fx);
+      var barklist = barks.barksOfLength("finale", stock: stock, fx: fx);
+      if (_useShorterBarks) {
+        barklist = barklist +
+            barks.barksOfLength("short", stock: stock, fx: fx) +
+            barks.barksOfLength("medium", stock: stock, fx: fx);
+      }
+      return barklist;
+      // return barks.barksOfLength("finale", stock: stock, fx: fx);
     }
   }
 
@@ -243,6 +258,18 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
     cards = Provider.of<KaraokeCards>(context);
     _updateDisplayBarks();
 
+    Color getColor(Set<MaterialState> states) {
+      const Set<MaterialState> interactiveStates = <MaterialState>{
+        MaterialState.pressed,
+        MaterialState.hovered,
+        MaterialState.focused,
+      };
+      if (states.any(interactiveStates.contains)) {
+        return Theme.of(context).primaryColor;
+      }
+      return Theme.of(context).primaryColor;
+    }
+
     // Show Bark Length Info Modal
     if (!cards!.current!.seenBarkLengthInfo) {
       cards!.current!.setSeenBarkLengthInfo(true);
@@ -407,7 +434,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
         /**
          * JMF 3/29/2021: Added header row
          */
-        Row(children: <Widget>[
+        Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
           // Align(
           //   alignment: Alignment.centerLeft,
           //   child: Padding(
@@ -422,7 +449,42 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
           //     ),
           //   ),
           // ),
-          Expanded(
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Flexible(
+                  flex: 1,
+                  child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        "INCLUDE SHORTER BARKS",
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          // decoration: TextDecoration.underline,
+                        ),
+                        textAlign: TextAlign.center,
+                      ))),
+              Flexible(
+                flex: 1,
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Checkbox(
+                      checkColor: Colors.white,
+                      //activeColor: Theme.of(context).primaryColor,
+                      fillColor: MaterialStateProperty.resolveWith(getColor),
+                      value: currentActivity.isTwo ? false : _useShorterBarks,
+                      onChanged: (bool? value) {
+                        var s = currentActivity.isTwo ? false : value!;
+                        setState(() {
+                          _useShorterBarks = s;
+                        });
+                      }),
+                ),
+              ),
+            ],
+          ),
+          Flexible(
               flex: 1,
               child: Align(
                   alignment: Alignment.center,

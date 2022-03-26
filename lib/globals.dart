@@ -19,7 +19,7 @@ const String proto = "https";
 // const String bucketName = 'song_barker_sequences';
 
 // PROD
-const String serverIP = '68.183.113.8';
+const String serverIP = '167.99.119.222';
 const String serverURL = 'k-9karaoke.com';
 const String bucketName = 'k9karaoke-prod';
 
