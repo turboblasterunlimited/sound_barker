@@ -35,7 +35,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
   late CurrentActivity currentActivity;
   String? loadingMessage;
   String saveAndSendButtonText = "Save & Send";
-
+  bool isSavingAndSending = false;
   @override
   void dispose() {
     soundController!.stopPlayer();
@@ -123,14 +123,19 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
               header: "Are you sure you're done?",
               bodyText: "You can no longer edit your card after this step!",
               primaryFunction: (BuildContext modalContext) async {
-                print("Editing done");
-                await createBaseCard();
-                Navigator.of(modalContext)
-                    .popAndPushNamed(EnvelopeScreen.routeName);
+                if (!isSavingAndSending) {
+                  print("Editing done");
+                  setState(() => isSavingAndSending = true);
+                  await createBaseCard();
+                  Navigator.of(modalContext)
+                      .popAndPushNamed(EnvelopeScreen.routeName);
+                }
               },
               secondaryFunction: (BuildContext modalContext) async {
-                print("Editing continues");
-                Navigator.of(modalContext).pop();
+                if (!isSavingAndSending) {
+                  print("Editing continues");
+                  Navigator.of(modalContext).pop();
+                }
               },
               iconPrimary: Icon(
                 CustomIcons.modal_logout,

@@ -96,6 +96,10 @@ class _SongSelectInterfaceState extends State<SongSelectInterface>
           creatableSongs!.all[i], soundController, cards!, currentActivity!),
     );
 
+    // void stopAllPlayback() {
+
+    // }
+
     // jmf - 9/23/2021: hack to make 99 Bottles of Beer last
     if (creatableSongs != null && creatableSongs!.all.length > 0) {
       if (creatableSongs!.all[0].name == "99 Bottles of Beer") {

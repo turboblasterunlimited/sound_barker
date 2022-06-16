@@ -322,15 +322,59 @@ class KaraokeCard with ChangeNotifier {
     // Combine with song
     if (hasASong) {
       File tempFile = File("$myAppStoragePath/tempFile.wav");
+
       // concat and save card audio file
-      await FFMpeg.process.execute(
-          '-i "concat:${message.path}|${song!.filePath}" -ac 1 ${tempFile.path}');
-      await FFMpeg.process.execute('-i ${tempFile.path} ${audio!.filePath}');
+
+      if (Platform.operatingSystem == 'ios') {
+        await FFMpeg.process.execute(
+            '-i "concat:${message.path}|${song!.filePath}" -ac 1 ${tempFile.path}');
+        await FFMpeg.process.execute('-i ${tempFile.path} ${audio!.filePath}');
+      } else {
+        // must be android
+        var cmd =
+            "-i ${message.path} -i ${song!.filePath} -filter_complex 'concat=n=2:v=0:a=1[a]' -map '[a]' -codec:a libmp3lame -qscale:a 2 ${tempFile.path}";
+        await FFMpeg.process.execute(cmd);
+        File(tempFile.path).copySync(audio!.filePath!);
+      }
+
       if (tempFile.existsSync()) tempFile.deleteSync();
+
       // concat and return amplitudes
       List<double> songAmplitudes =
           await AmplitudeExtractor.fileToList(song!.amplitudesPath!);
       audio!.amplitudes = message.amps! + songAmplitudes;
+    } else {
+      // make card.message into card.audio
+      File(message.path!).copySync(audio!.filePath!);
+      audio!.amplitudes = message.amps;
+    }
+
+    print(
+        '\n\n********************** =>The platform is ${Platform.operatingSystem}\n\n');
+  }
+
+  Future<void> combineMessageAndSong1() async {
+    // if already have a combined audio file
+    markLastAudioForDelete();
+    audio = CardAudio();
+    audio!.filePath = "$myAppStoragePath/${audio!.fileId}.aac";
+
+    // Combine with song
+    if (hasASong) {
+      File tempFile = File("$myAppStoragePath/tempFile.wav");
+
+      var cmd =
+          "-i ${message.path} -i ${song!.filePath} -filter_complex 'concat=n=2:v=0:a=1[a]' -map '[a]' -codec:a libmp3lame -qscale:a 2 ${tempFile.path}";
+      await FFMpeg.process.execute(cmd);
+      File(tempFile.path).copySync(audio!.filePath!);
+
+      if (tempFile.existsSync()) tempFile.deleteSync();
+
+      // concat and return amplitudes
+      List<double> songAmplitudes =
+          await AmplitudeExtractor.fileToList(song!.amplitudesPath!);
+      audio!.amplitudes = message.amps! + songAmplitudes;
+      print("Finished concat message + song");
     } else {
       // make card.message into card.audio
       File(message.path!).copySync(audio!.filePath!);

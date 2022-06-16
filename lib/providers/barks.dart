@@ -44,10 +44,23 @@ class Barks with ChangeNotifier {
     if (fx == true) stock = true;
 
     List<Bark> barks = stock ? stockBarks : all;
+    barks.sort(); // added JMF - 27 April 2022
     if (fx == true) {
       print("test: fx");
-      return List.from(barks
+      List<Bark> sfx = List.from(barks
           .where((Bark bark) => bark.length == length && bark.type != "bark"));
+      if (length == "medium") {
+        sfx += List.from(barks.where(
+            (Bark bark) => bark.length == "short" && bark.type != "bark"));
+      } else if (length == "finale") {
+        sfx += List.from(barks.where(
+            (Bark bark) => bark.length == "medium" && bark.type != "bark"));
+        sfx += List.from(barks.where(
+            (Bark bark) => bark.length == "short" && bark.type != "bark"));
+      }
+      return sfx;
+      // return List.from(barks
+      //     .where((Bark bark) => bark.length == length && bark.type != "bark"));
     } else if (stock == true) {
       print("test: stock");
       return List.from(barks.where((Bark bark) {
@@ -183,7 +196,7 @@ class Barks with ChangeNotifier {
   }
 }
 
-class Bark extends Asset {
+class Bark extends Asset implements Comparable {
   String? name;
   String? fileUrl;
   // filePath is initially used for file upload from temp directory. Later (for cropped barks) it can be used for playback.
@@ -255,4 +268,89 @@ class Bark extends Asset {
   void deleteFromServer() {
     RestAPI.deleteBark(this);
   }
+
+// Added - jmf 27 April 2022
+  int dogSizeCode() {
+    if (name!.startsWith("Puppy")) {
+      return 0;
+    } else if (name!.startsWith("Small")) {
+      return 1;
+    } else if (name!.startsWith("Medium") || name!.startsWith("Dog")) {
+      return 2;
+    } else {
+      return 3;
+    }
+  }
+
+  bool isNumeric(String s) {
+    if (s == null) {
+      return false;
+    }
+    return double.tryParse(s) != null;
+  }
+
+  int compareNames(other) {
+    if (name == null) {
+      return 1; // null is bigger than anything so is last
+    }
+    var me = name!.split(" ");
+    var meLast = me[me.length - 1];
+
+    var them = other.name.split(" ");
+    var themLast = them[them.length - 1];
+
+    var mePrefix = "";
+    var themPrefix = "";
+    for (int i = 0; i < me.length - 1; i++) {
+      mePrefix += me[i];
+    }
+    for (int i = 0; i < them.length - 1; i++) {
+      themPrefix += them[i];
+    }
+
+    if (mePrefix != themPrefix) {
+      return name!.compareTo(other.name);
+    }
+
+    // compare number suffix if names are same except for numeric suffix.
+    if (me.length >= 2 &&
+        isNumeric(meLast) &&
+        them.length >= 2 &&
+        isNumeric(themLast)) {
+      if (mePrefix == themPrefix) {
+        var meIndex = double.tryParse(meLast);
+        var themIndex = double.tryParse(themLast);
+        if (meIndex == null && themIndex == null) {
+          return name!.compareTo(other.name);
+        } else if (themIndex == null) {
+          return -1;
+        } else if (meIndex! < themIndex) {
+          return -1;
+        } else if (meIndex > themIndex) {
+          return 1;
+        } else {
+          return 0;
+        }
+      }
+    } // end compare strings with numeric suffixes
+    else {
+      return name!.compareTo(other.name);
+    }
+
+    return 0;
+  }
+
+  @override
+  int compareTo(other) {
+    num sign = dogSizeCode() - other.dogSizeCode();
+    if (sign < 0) {
+      return -1;
+    } else if (sign > 0) {
+      return 1;
+    } else {
+//      return name!.compareTo(other.name);
+      return compareNames(other);
+    }
+  }
+  // End Added -- jmf
 }

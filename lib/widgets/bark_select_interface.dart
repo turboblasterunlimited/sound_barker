@@ -89,10 +89,11 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
   updateDisplayedBarks({bool stock = false, bool fx = false}) {
     List? newBarks = getBarksOfCurrentLength(stock: stock, fx: fx);
     if (newBarks == null) return;
+
     List toRemove = [];
     // remove barks
     displayedBarks!.asMap().forEach((i, bark) {
-      if (newBarks.indexOf(bark) == -1) toRemove.add(i);
+      if (newBarks?.indexOf(bark) == -1) toRemove.add(i);
     });
 
     toRemove.reversed.forEach((i) {
@@ -115,6 +116,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
 
   _updateDisplayBarks() {
     if (_isFirstLoad) {
+      setState(() => _useShorterBarks = false);
       displayedBarks = getBarksOfCurrentLength();
       setState(() => _isFirstLoad = false);
     } else {
@@ -189,9 +191,10 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
   }
 
   Function? skipLogic() {
-    if (_canSkipShort || _canSkipMedium || _canSkipLong)
+    if (_canSkipShort || _canSkipMedium || _canSkipLong) {
+      setState(() => _useShorterBarks = false);
       return currentActivity.setNextSubStep;
-    else
+    } else
       return null;
   }
 
@@ -454,34 +457,56 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Flexible(
-                  flex: 1,
-                  child: Align(
-                      alignment: Alignment.centerRight,
-                      child: Text(
-                        "INCLUDE SHORTER BARKS",
-                        style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          // decoration: TextDecoration.underline,
-                        ),
-                        textAlign: TextAlign.center,
-                      ))),
-              Flexible(
                 flex: 1,
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Checkbox(
-                      checkColor: Colors.white,
-                      //activeColor: Theme.of(context).primaryColor,
-                      fillColor: MaterialStateProperty.resolveWith(getColor),
-                      value: currentActivity.isTwo ? false : _useShorterBarks,
-                      onChanged: (bool? value) {
-                        var s = currentActivity.isTwo ? false : value!;
-                        setState(() {
-                          _useShorterBarks = s;
-                        });
-                      }),
-                ),
+                child: (currentActivity.isTwo || currentBarks == BarkTypes.fx)
+                    ? Text(" ")
+                    : Align(
+                        alignment: Alignment.centerLeft,
+                        child: CheckboxListTile(
+                          title: Text("Include Shorter Barks"),
+                          value:
+                              currentActivity.isTwo ? false : _useShorterBarks,
+                          onChanged: (bool? value) {
+                            var s = currentActivity.isTwo ? false : value!;
+                            setState(() {
+                              _useShorterBarks = s;
+                            });
+                          },
+                          controlAffinity: ListTileControlAffinity
+                              .leading, //  <-- leading Checkbox
+                        ),
+                      ),
               ),
+              // Flexible(
+              //   flex: 1,
+              //   child: Align(
+              //     alignment: Alignment.centerLeft,
+              //     child: Checkbox(
+              //         checkColor: Colors.white,
+              //         //activeColor: Theme.of(context).primaryColor,
+              //         fillColor: MaterialStateProperty.resolveWith(getColor),
+              //         value: currentActivity.isTwo ? false : _useShorterBarks,
+              //         onChanged: (bool? value) {
+              //           var s = currentActivity.isTwo ? false : value!;
+              //           setState(() {
+              //             _useShorterBarks = s;
+              //           });
+              //         }),
+              //   ),
+              // ),
+              // Flexible(
+              //     flex: 1,
+              //     fit: FlexFit.loose,
+              //     child: Align(
+              //         alignment: Alignment.centerLeft,
+              //         child: Text(
+              //           "USE SHORT BARKS",
+              //           style: TextStyle(
+              //             color: Theme.of(context).primaryColor,
+              //             // decoration: TextDecoration.underline,
+              //           ),
+              //           textAlign: TextAlign.left,
+              //         ))),
             ],
           ),
           Flexible(
@@ -489,10 +514,13 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
               child: Align(
                   alignment: Alignment.center,
                   child: Text(
-                    "LISTEN TO BARK",
+                    "Listen to " +
+                        _currentBarkLength +
+                        (currentBarks != BarkTypes.fx ? " barks" : " fx"),
                     style: TextStyle(
                       color: Theme.of(context).primaryColor,
                       // decoration: TextDecoration.underline,
+                      fontSize: 20,
                     ),
                     textAlign: TextAlign.center,
                   ))),

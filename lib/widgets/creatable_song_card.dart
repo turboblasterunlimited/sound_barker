@@ -14,8 +14,10 @@ class CreatableSongCard extends StatefulWidget {
   final KaraokeCards cards;
   final CurrentActivity currentActivity;
 
+  //final void Function() cancelSelectionCallback;
+
   CreatableSongCard(this.creatableSong, this.soundController, this.cards,
-      this.currentActivity);
+      this.currentActivity /*, this.cancelSelectionCallback*/);
 
   @override
   _CreatableSongCardState createState() => _CreatableSongCardState();
@@ -33,9 +35,12 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
   }
 
   VoidCallback stopPlayerCallBack() {
+    setState(() => isPlaying = false);
     return () {
       widget.soundController.stopPlayer();
-      if (mounted) setState(() => isPlaying = false);
+      if (mounted) {
+        setState(() => isPlaying = false);
+      }
     };
   }
 
@@ -45,7 +50,7 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
       await widget.soundController.startPlayer(
           "https://storage.googleapis.com/song_barker_sequences/" +
               widget.creatableSong.backingTrackUrl,
-          stopCallback: stopPlayerCallBack(),
+          stopCallback: stopPlayerCallBack,
           mediaType: Media.webfile);
       Future.delayed(Duration(milliseconds: 50), () {
         setState(() {
@@ -53,6 +58,7 @@ class _CreatableSongCardState extends State<CreatableSongCard> {
           isPlaying = true;
         });
       });
+      print("Play song successfully started");
     } catch (e) {
       showError(context, e.toString());
     }

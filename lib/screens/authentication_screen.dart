@@ -102,8 +102,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                       });
                     },
                     controller: _textFieldController,
-                    decoration:
-                        InputDecoration(hintText: "Email you signed up with"),
+                    decoration: InputDecoration(
+                        hintText: "Email address you signed up with."),
                   ),
                   Positioned(
                     bottom: 20,

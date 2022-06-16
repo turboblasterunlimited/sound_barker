@@ -18,7 +18,7 @@ import 'menu_screen.dart';
 const String apple_subscription = "Subscription Provider: Apple\n\n";
 const String apple_management_info1 = "Go to Settings on your iOS device.\n";
 const String apple_management_info2 =
-    "Tap to Settings/AppleID/Subscriptions.\n";
+    "Tap on AppleID then Subscriptions. Scroll down till you see K-9 Karaoke.\n";
 
 const String google_subscription = "Subscription Provider: Google Play.\n\n";
 const String google_management_info1 =
@@ -28,7 +28,8 @@ const String google_management_info3 =
     "Tap Payments & subscriptions then tap Subscriptions\n";
 
 const String common_management_info1 = "To manage your subscription:\n";
-const String common_management_info2 = "Tap K-9 Karaoke.\n";
+const String common_management_info2 =
+    "Tap K-9 Karaoke to change or cancel your subscription.\n";
 const String common_management_info3 =
     "Tap desired option to change or cancel the subscription";
 
