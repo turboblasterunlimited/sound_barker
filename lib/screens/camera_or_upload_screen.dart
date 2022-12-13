@@ -41,6 +41,7 @@ class CameraOrUploadScreen extends StatelessWidget {
 
   Future<bool> _getPermission(source, context) async {
     PermissionStatus status;
+    print(source);
     if (source == ImageSource.gallery) {
       status = await Permission.photos.request();
       if (!status.isGranted) {
@@ -161,39 +162,69 @@ class CameraOrUploadScreen extends StatelessWidget {
                       children: <Widget>[
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: FlatButton(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 25, vertical: 10),
-                            child:
-                                Text("Camera", style: TextStyle(fontSize: 20)),
-                            // color: Theme.of(context).primaryColor,
-                            onPressed: () => _handleCameraButton(context),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(22.0),
-                              side: BorderSide(
+                          child: TextButton(
+                            onPressed:() => _handleCameraButton(context),
+                            child: Container(
+                              decoration: BoxDecoration(
                                 color: Theme.of(context).primaryColor,
-                                width: 3,
+                                borderRadius: BorderRadius.all(Radius.circular(22.0)),
+
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 25),
+                              child: const Text("Camera",
+                                  style:TextStyle(color: Colors.white, fontSize: 20)
                               ),
                             ),
                           ),
+                          // child: FlatButton(
+                          //   padding: EdgeInsets.symmetric(
+                          //       horizontal: 25, vertical: 10),
+                          //   child:
+                          //       Text("Camera", style: TextStyle(fontSize: 20)),
+                          //   // color: Theme.of(context).primaryColor,
+                          //   onPressed: () => _handleCameraButton(context),
+                          //   shape: RoundedRectangleBorder(
+                          //     borderRadius: BorderRadius.circular(22.0),
+                          //     side: BorderSide(
+                          //       color: Theme.of(context).primaryColor,
+                          //       width: 3,
+                          //     ),
+                          //   ),
+                          // ),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: FlatButton(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 25, vertical: 10),
-                            child:
-                                Text("Upload", style: TextStyle(fontSize: 20)),
-                            // color: Theme.of(context).primaryColor,
-                            onPressed: () => _handleUploadButton(context),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(22.0),
-                              side: BorderSide(
+                          child: TextButton(
+                            onPressed:()=>_handleUploadButton(context),
+                            child: Container(
+                              decoration: BoxDecoration(
                                 color: Theme.of(context).primaryColor,
-                                width: 3,
+                                borderRadius: BorderRadius.all(Radius.circular(22.0)),
+
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 25),
+                              child: const Text("Upload",
+                                  style:TextStyle(color: Colors.white, fontSize: 20)
                               ),
                             ),
                           ),
+                          // child: FlatButton(
+                          //   padding: EdgeInsets.symmetric(
+                          //       horizontal: 25, vertical: 10),
+                          //   child:
+                          //       Text("Upload", style: TextStyle(fontSize: 20)),
+                          //   // color: Theme.of(context).primaryColor,
+                          //   onPressed: () => _handleUploadButton(context),
+                          //   shape: RoundedRectangleBorder(
+                          //     borderRadius: BorderRadius.circular(22.0),
+                          //     side: BorderSide(
+                          //       color: Theme.of(context).primaryColor,
+                          //       width: 3,
+                          //     ),
+                          //   ),
+                          // ),
                         ),
                         Padding(padding: EdgeInsets.all(40)),
                       ],

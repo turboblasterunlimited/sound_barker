@@ -196,7 +196,7 @@ class BarkRecorderState extends State<BarkRecorder> {
         // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           InterfaceTitleNav(
-            title: 'CAPTURE BARKS\nUSING ...',
+            title: 'CAPTURE BARKS USING',
             titleSize: 16,
             backCallback: _backCallback,
           ),

@@ -63,6 +63,13 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     return "${string[0].toUpperCase()}${string.substring(1)}";
   }
 
+  String planDescription() {
+    var s = "WOULD YOU LIKE TO SUBSCRIBE \nTO A PLAN?";
+    var t = "Both plans include sending and saving an unlimited number of " +
+        "cards during the term of the subscription.";
+    return s + "\n\n" + t;
+  }
+
   Column purchaseButtons(ctx) {
     print("purchase buttons init");
     List<Package> inactivePackages = user.getInactivePackages()!;
@@ -102,6 +109,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
           .toList(),
     );
   }
+
 
   // void goToMainMenu(context) {
   //   if (currentActivity.isCreateCard) {
@@ -182,7 +190,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                             child: Padding(
                               padding: const EdgeInsets.all(20.0),
                               child: Text(
-                                "WOULD YOU LIKE TO SUBSCRIBE TO A PLAN?",
+                                //"WOULD YOU LIKE TO SUBSCRIBE TO A PLAN?\n",
+                                planDescription(),
                                 style: TextStyle(
                                     fontFamily: "Museo",
                                     fontSize: 20,

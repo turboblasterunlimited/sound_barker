@@ -63,6 +63,12 @@ When done with the recipient’s name and typed message press Share to send it v
 
 18b,  SHARE CARD (without envelope):   Share to send it via text/SMS, email, WhatsApp, Facebook, etc. or Copy link to paste it somewhere.
 
+19a, SIGN IN/SIGN UP OPTIONS: If you signed up with email and password then you can either sign in with email and a password or with Google Sign In if a Google account is connected to that email. An account created with Apple or Google Sign In can only be accessed signing in via Apple or Google respectively.
+
+19b, SIGN IN/SIGN UP OPTIONS: When you sign up with Apple you are given a choice to show or hide the email associated to that account.  If you choose to hide your email, then a proxy email address is assigned and will be visible when you log out or select About from the main menu.
+
+20, ABOUT: The About function, available from the main menu displays the size of your screen, the url of the server connected to, what account account was used to create, and some basic information about the application.  
+
 ''';
   @override
   Widget build(BuildContext context) {

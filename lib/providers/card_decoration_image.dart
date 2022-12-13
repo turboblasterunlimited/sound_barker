@@ -7,7 +7,7 @@ import 'package:image/image.dart' as IMG;
 import 'package:K9_Karaoke/services/rest_api.dart';
 import 'package:uuid/uuid.dart';
 
-class CardDecorationImages with ChangeNotifier {
+class                        CardDecorationImages with ChangeNotifier {
   List<CardDecorationImage> all = [];
 
   CardDecorationImage? findById(id) {

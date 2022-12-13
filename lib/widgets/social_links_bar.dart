@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 const faceBookURL = "https://www.facebook.com/K9Karaoke1/";
-const instagramURL = "https://www.instagram.com/ribbond_dental/";
+const instagramURL = "https://www.instagram.com/k9_karaoke/";
 
 void _launchFacebook() async => await canLaunch(faceBookURL)
     ? await launch(faceBookURL)

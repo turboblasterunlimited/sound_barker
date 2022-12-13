@@ -41,24 +41,52 @@ class UserAgreement extends StatelessWidget {
               child: ButtonBar(
                 alignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  FlatButton(
-                    padding: EdgeInsets.symmetric(vertical: 6, horizontal: 20),
-                    child: Text("Decline", style: TextStyle(fontSize: 20)),
-                    color: Theme.of(context).errorColor,
-                    onPressed: userDeclines,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(22.0),
+                  TextButton(
+                    onPressed:userDeclines,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).errorColor,
+                        borderRadius: BorderRadius.all(Radius.circular(22.0)),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                          vertical: 6, horizontal: 20),
+                      child: const Text("Decline",
+                          style:TextStyle(color: Colors.white, fontSize: 20)
+                      ),
                     ),
                   ),
-                  FlatButton(
-                    padding: EdgeInsets.symmetric(vertical: 6, horizontal: 22),
-                    child: Text("Agree", style: TextStyle(fontSize: 20)),
-                    color: Theme.of(context).primaryColor,
-                    onPressed: userAgrees,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(22.0),
+                  TextButton(
+                    onPressed:userAgrees,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                        borderRadius: BorderRadius.all(Radius.circular(22.0)),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                          vertical: 6, horizontal: 20),
+                      child: const Text("Accept",
+                          style:TextStyle(color: Colors.white, fontSize: 20)
+                      ),
                     ),
                   ),
+                  // FlatButton(
+                  //   padding: EdgeInsets.symmetric(vertical: 6, horizontal: 20),
+                  //   child: Text("Decline", style: TextStyle(fontSize: 20)),
+                  //   color: Theme.of(context).errorColor,
+                  //   onPressed: userDeclines,
+                  //   shape: RoundedRectangleBorder(
+                  //     borderRadius: BorderRadius.circular(22.0),
+                  //   ),
+                  // ),
+                  // FlatButton(
+                  //   padding: EdgeInsets.symmetric(vertical: 6, horizontal: 22),
+                  //   child: Text("Agree", style: TextStyle(fontSize: 20)),
+                  //   color: Theme.of(context).primaryColor,
+                  //   onPressed: userAgrees,
+                  //   shape: RoundedRectangleBorder(
+                  //     borderRadius: BorderRadius.circular(22.0),
+                  //   ),
+                  // ),
                 ],
               ),
             ),

@@ -329,7 +329,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Stack(
-                    overflow: Overflow.visible,
+                    clipBehavior: Clip.none,
                     children: [
                       RawMaterialButton(
                         constraints:
@@ -373,7 +373,7 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
                     ],
                   ),
                   Stack(
-                    overflow: Overflow.visible,
+                    clipBehavior: Clip.none,
                     children: [
                       RawMaterialButton(
                         constraints:
@@ -463,7 +463,11 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
                     : Align(
                         alignment: Alignment.centerLeft,
                         child: CheckboxListTile(
-                          title: Text("Include Shorter Barks"),
+                          title: Transform.translate(
+                            offset: const Offset(-20, 0),
+                            child: Text("Include shorter barks"),
+                          ),
+
                           value:
                               currentActivity.isTwo ? false : _useShorterBarks,
                           onChanged: (bool? value) {
@@ -513,17 +517,26 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
               flex: 1,
               child: Align(
                   alignment: Alignment.center,
-                  child: Text(
-                    "Listen to " +
-                        _currentBarkLength +
-                        (currentBarks != BarkTypes.fx ? " barks" : " fx"),
-                    style: TextStyle(
+                  child: _noDisplayedBarks() ?
+                    Text("",
+                      style: TextStyle(
                       color: Theme.of(context).primaryColor,
                       // decoration: TextDecoration.underline,
                       fontSize: 20,
-                    ),
-                    textAlign: TextAlign.center,
-                  ))),
+                      ),
+                      textAlign: TextAlign.center,)
+
+                    : Text(
+                                "Listen to " +
+                                    _currentBarkLength +
+                                    (currentBarks != BarkTypes.fx ? " barks" : " fx"),
+                                style: TextStyle(
+                                  color: Theme.of(context).primaryColor,
+                                  // decoration: TextDecoration.underline,
+                                  fontSize: 20,
+                                ),
+                                textAlign: TextAlign.center,
+                              ))),
         ]),
         SizedBox(
           height: MediaQuery.of(context).size.height / 2.2,

@@ -1,13 +1,13 @@
 buildscript {
-    ext.kotlin_version = '1.5.0'
+    ext.kotlin_version = '1.6.10'
     repositories {
         google()
         mavenCentral()
-        jcenter()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.0.1'
+        classpath 'com.google.gms:google-services:4.3.13'
+        classpath 'com.android.tools.build:gradle:7.1.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -16,9 +16,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        jcenter()     
     }
-
 }
 
 rootProject.buildDir = '../build'
@@ -32,4 +30,3 @@ subprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
-

@@ -44,7 +44,7 @@ class _ShareScreenState extends State<ShareScreen> {
       content: Text('Done Sharing!'),
     );
     Navigator.of(ctx).popUntil(ModalRoute.withName(MainScreen.routeName));
-    Scaffold.of(ctx).showSnackBar(snackBar);
+    ScaffoldMessenger.of(ctx).showSnackBar(snackBar);
     // Navigator.of(context).popUntil(ModalRoute.withName(MainScreen.routeName));
     // Scaffold.of(context).showSnackBar(snackBar);
   }
@@ -74,7 +74,7 @@ class _ShareScreenState extends State<ShareScreen> {
     final snackBar = SnackBar(
       content: Text('Card link copied to Clipboard'),
     );
-    Scaffold.of(ctx).showSnackBar(snackBar);
+    ScaffoldMessenger.of(ctx).showSnackBar(snackBar);
   }
 
   @override

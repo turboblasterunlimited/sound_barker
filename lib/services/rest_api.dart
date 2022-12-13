@@ -93,6 +93,53 @@ class RestAPI {
     return response?.data;
   }
 
+//   signInFirebase(token) async {
+//     var url = Uri.parse("http://10.0.0.216:3000/signin");
+//     Map data = {
+//       'id_token': token
+//     };
+//     //encode Map to JSON
+//     var body = json.encode(data);
+//
+//     var response = await http.post(url, headers: {"Content-Type": "application/json"}, body: body);
+//     print("*********************************************************************");
+//     print("${response.statusCode}");
+//     print("${response.body}");
+//     print("*********************************************************************");
+//     final parsed = json.decode(response.body);
+//     print(parsed);
+//     return parsed;
+//
+// //    var response = await http.post(url, body:{'id_token': token});
+// //    return response;
+//   }
+
+  // added jmf 25-oct-22 for google signin.
+  // static Future<dynamic> firebaseSignIn(token) async {
+  //   Map
+  // }
+
+  // added jmf 7-7-22 for apple signin
+  static Future<dynamic> appleSignUp(authCode, userId, email, name) async {
+    Map data = {
+      "token": authCode,
+      "email": email,
+      "name": name,
+      "apple_id": userId
+    };
+    var response;
+    try {
+      response = await HttpController.dioPost(
+        'https://$serverURL/authenticateAppleSignin',
+        data: data,
+      );
+    } catch (e) {
+      return _handleAccountError(response, e);
+    }
+    print("user apple signup response: $response");
+    return response?.data;
+  }
+
   static Future<dynamic> userResendConfirmationEmail(email) async {
     Map data = {"email": email.toLowerCase()};
     var response;

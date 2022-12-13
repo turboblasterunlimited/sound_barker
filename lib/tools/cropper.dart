@@ -11,7 +11,7 @@ Future<void> resizeImage(filePath) async {
 }
 
 Future<bool> cropImage(picture, toolbarColor, widgetColor) async {
-  File newFile = (await ImageCropper.cropImage(
+  File newFile = (await ImageCropper().cropImage(
     sourcePath: picture.filePath,
     aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
     compressQuality: 80,

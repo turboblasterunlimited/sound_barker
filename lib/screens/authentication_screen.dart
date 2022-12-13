@@ -25,6 +25,13 @@ import '../services/authenticate_user.dart';
 import 'package:K9_Karaoke/globals.dart';
 import 'package:email_validator/email_validator.dart';
 
+// added jmf 25-oct-22
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
+// added jmf 7-7-22
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+
 class AuthenticationScreen extends StatefulWidget {
   static const routeName = 'authentication-screen';
 
@@ -33,7 +40,7 @@ class AuthenticationScreen extends StatefulWidget {
 }
 
 class _AuthenticationScreenState extends State<AuthenticationScreen> {
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _scaffoldKey = GlobalKey<ScaffoldMessengerState>();
   late final VoidCallback
       onPressed; // jmf - 22-12-21: changed to VoidCallback for null saftey changes
   bool signingIn = false;
@@ -51,6 +58,28 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   TextEditingController _textFieldController = TextEditingController();
   String? forgotPasswordEmail;
   String? valueText;
+
+  void _showErrorDialog(BuildContext context, String message, [String title = "Network Error"]) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(title),
+            content: Expanded(
+                child:Text(message)
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text("OK"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
 
   void _displayResetPasswordInstructions(BuildContext context) async {
     return showDialog(
@@ -118,9 +147,13 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
               ),
             ),
             actions: <Widget>[
-              FlatButton(
-                color: Colors.red,
-                textColor: Colors.white,
+              TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor:Colors.red,
+                  foregroundColor: Colors.white,
+                ),
+                // color: Colors.red,
+                // textColor: Colors.white,
                 child: Text('CANCEL'),
                 onPressed: () {
                   setState(() {
@@ -128,9 +161,13 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                   });
                 },
               ),
-              FlatButton(
-                color: Colors.blue,
-                textColor: Colors.white,
+              TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor:Colors.red,
+                  foregroundColor: Colors.white,
+                ),
+                //color: Colors.blue,
+                //textColor: Colors.white,
                 child: Text('OK'),
                 onPressed: () {
                   setState(() {
@@ -250,7 +287,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       print("the response data: $responseData");
       _handleSignedIn();
     } else {
-      showError(c!, responseData["error"]);
+      //showError(c!, responseData["error"]);
+      _showErrorDialog(c!, responseData['error'], "Sign In Error");
     }
   }
 
@@ -290,6 +328,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       }
     } catch (e) {
       // webview will inform user if no internet
+      print(e);
     }
     return true;
   }
@@ -297,7 +336,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   // ALL GOOGLE
   String getGoogleClientID() {
     if (Platform.isAndroid) {
-      return "885484185769-05vl2rnlup9a9hdkrs78ao1jvmn1804t.apps.googleusercontent.com";
+      return "867304541572-79nvntdsqfk463hn6cev8pls8jg64fid.apps.googleusercontent.com";
+//      return "885484185769-05vl2rnlup9a9hdkrs78ao1jvmn1804t.apps.googleusercontent.com";
     } else if (Platform.isIOS) {
       return "885484185769-b78ks9n5vlka0enrl33p6hkmahhg5o7i.apps.googleusercontent.com";
     } else {
@@ -306,31 +346,110 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   }
 
   // jmf - 12-22-21: Added exception handling for null id.
-  Future<void> _handleGoogleAuthentication() async {
+  Future<bool> _handleGoogleAuthentication() async {
     // setState(() => signingIn = true);
     var token;
     var response;
     String clientId;
 
-    // hardcoded for google right now.
-    var issuer = Issuer.google;
+    // jmf - 25-oct-22, new google signin
     try {
-      clientId = getGoogleClientID();
-      if (clientId.isEmpty) {
-        throw new Exception("No Google ClientId");
+      final GoogleSignInAccount? googleUser = await GoogleSignIn(scopes: <String>["email"]).signIn();
+
+      print(googleUser);
+
+      print("google signin");
+      if(googleUser == null) {
+        throw new Exception("No google user");
       }
-      token =
-          await authenticate(issuer, clientId, ['email', 'openid', 'profile']);
+
+      // Obtain the auth details from the list of google accounts
+      final GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
+
+      if(googleAuth == null) {
+        throw new Exception("Couldn't authenticate google user");
+      }
+
+      Map data = {
+        "id_token": googleAuth.idToken
+      };
       response = await HttpController.dioPost(
         'https://$serverURL/openid-token/$platform',
-        data: token,
+        data: data,
       );
       _handleSigninResponse(response?.data);
-    } catch (e) {
+    }
+    catch (e) {
       print("Exception caught by K9: " + e.toString());
-      showError(
-        c!,
+      // showError(
+      //   c!,
+      // );
+
+      _showErrorDialog(c!, e.toString(), "Google sign-in error");
+    }
+    return true;
+    // Create a new credential
+    // final credential = GoogleAuthProvider.credential(
+    //   accessToken: googleAuth.accessToken,
+    //   idToken: googleAuth.idToken,
+    // );
+
+
+    // old google signin
+    // hardcoded for google right now.
+    // var issuer = Issuer.google;
+    // try {
+    //   clientId = getGoogleClientID();
+    //   if (clientId.isEmpty) {
+    //     throw new Exception("No Google ClientId");
+    //   }
+    //   token =
+    //       await authenticate(issuer, clientId, ['email', 'openid', 'profile']);
+    //   response = await HttpController.dioPost(
+    //     'https://$serverURL/openid-token/$platform',
+    //     data: token,
+    //   );
+    //   _handleSigninResponse(response?.data);
+    // } catch (e) {
+    //   print("Exception caught by K9: " + e.toString());
+    //   showError(
+    //     c!,
+    //   );
+    // }
+  }
+
+  // jmf 7-7-22: Add Apple Signaturer
+  Future _handleAppleSignIn() async {
+    // FocusScope.of(context).unfocus();
+    // late BuildContext loadingContext;
+    // _showLoadingModal((ctx) => loadingContext = ctx);
+    try {
+      final credential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
       );
+
+      print(credential);
+
+      // Now send the credential (especially `credential.authorizationCode`) to your server to create a session
+      // after they have been validated with Apple (see `Integration` section for more information on how to do this)
+
+      // Create a newvar email = (credential.email != null ? credential.email : "")!;
+
+      Map response = await RestAPI.appleSignUp(credential.authorizationCode,
+          credential.userIdentifier, credential.email, "Canine Friend");
+      var userObj = response["user"];
+      print("USER OBJECT: $userObj");
+//      Navigator.of(loadingContext).pop();
+      if (!response["success"]) {
+        showError(c!, response["error"]);
+      } else {
+        _handleSigninResponse(response);
+      }
+    } catch (e) {
+      print(e);
     }
   }
 
@@ -342,8 +461,13 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     var userObj = response["user"];
     print("USER OBJECT: $userObj");
     Navigator.of(loadingContext).pop();
-    if (!response["success"])
-      showError(c!, response["error"]);
+    if (!response["success"]) {
+      var message = response["error"].toString().contains("account already exists, but was created with openid")
+                      ? "Account created with Google Sign-In.  Please sign in with Google to access your account"
+                      : response["error"];
+      _showErrorDialog(c!, message, "Sign In Error");
+      //showError(c!, response["error"]);
+    }
     else if (response["account_already_exists"] == true) {
       await _handleManualSignIn();
     } else {
@@ -442,7 +566,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     double iconPaddingTop = height > 1000 ? 130 : 0;
     const largeScreenLogoOffset = 430.0;
     const normalScreenLogoOffset = 200.0;
-
+//    print("PLATFORM ===============> " + Platform.operatingSystem);
     return SafeArea(
       child: _showAgreement
           ? UserAgreement(acceptAgreement)
@@ -557,36 +681,69 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                     children: <Widget>[
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
-                                        child: FlatButton(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 20),
-                                          child: Text("Sign Up",
-                                              style: TextStyle(fontSize: 20)),
-                                          color: Theme.of(context).primaryColor,
-                                          onPressed: _handleSignUp(
-                                            _handleManualSignUp,
-                                            manualSignUp: true,
-                                          ),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(22.0),
+                                        child: TextButton(
+                                          onPressed:_handleSignUp(
+                                                _handleManualSignUp,
+                                                manualSignUp: true,
+                                              ),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: Theme.of(context).primaryColor,
+                                              borderRadius: BorderRadius.all(Radius.circular(22.0)),
+                                           ),
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 10, horizontal: 20),
+                                            child: const Text("Sign Up",
+                                                          style:TextStyle(color: Colors.white, fontSize: 20)),
                                           ),
                                         ),
+                                        // child: FlatButton(
+                                        //   padding: EdgeInsets.symmetric(
+                                        //       vertical: 10, horizontal: 20),
+                                        //   child: Text("Sign Up",
+                                        //       style: TextStyle(fontSize: 20)),
+                                        //   color: Theme.of(context).primaryColor,
+                                        //   onPressed: _handleSignUp(
+                                        //     _handleManualSignUp,
+                                        //     manualSignUp: true,
+                                        //   ),
+                                        //   shape: RoundedRectangleBorder(
+                                        //     borderRadius:
+                                        //         BorderRadius.circular(22.0),
+                                        //   ),
+                                        // ),
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
-                                        child: FlatButton(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 20),
-                                          child: Text("Sign In",
-                                              style: TextStyle(fontSize: 20)),
-                                          color: Theme.of(context).primaryColor,
-                                          onPressed: _handleSignInButton,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(22.0),
+                                        child: TextButton(
+                                          onPressed:_handleSignUp(
+                                            _handleManualSignUp,
+                                            manualSignUp: true,
+                                          ),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: Theme.of(context).primaryColor,
+                                              borderRadius: BorderRadius.all(Radius.circular(22.0)),
+                                            ),
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 10, horizontal: 20),
+                                            child: const Text("Sign In",
+                                                style:TextStyle(color: Colors.white, fontSize: 20)
+                                            ),
                                           ),
                                         ),
+                                        // child: FlatButton(
+                                        //   padding: EdgeInsets.symmetric(
+                                        //       vertical: 10, horizontal: 20),
+                                        //   child: Text("Sign In",
+                                        //       style: TextStyle(fontSize: 20)),
+                                        //   color: Theme.of(context).primaryColor,
+                                        //   onPressed: _handleSignInButton,
+                                        //   shape: RoundedRectangleBorder(
+                                        //     borderRadius:
+                                        //         BorderRadius.circular(22.0),
+                                        //   ),
+                                        // ),
                                       ),
                                     ],
                                   ),
@@ -595,36 +752,62 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                       children: <Widget>[
                                         Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: FlatButton(
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: 5, horizontal: 10),
-                                            child: Text("Forgot Password",
-                                                style: TextStyle(fontSize: 14)),
-                                            color:
-                                                Theme.of(context).primaryColor,
+                                          child: TextButton(
                                             onPressed: _handleForgotPassword,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(22.0),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                color: Theme.of(context).primaryColor,
+                                                borderRadius: BorderRadius.all(Radius.circular(22.0)),
+                                              ),
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 5, horizontal: 10),
+                                              child: const Text("Forgot Password",
+                                                  style:TextStyle(color: Colors.white, fontSize: 14)),
                                             ),
                                           ),
+                                          // child: FlatButton(
+                                          //   padding: EdgeInsets.symmetric(
+                                          //       vertical: 5, horizontal: 10),
+                                          //   child: Text("Forgot Password",
+                                          //       style: TextStyle(fontSize: 14)),
+                                          //   color:
+                                          //       Theme.of(context).primaryColor,
+                                          //   onPressed: _handleForgotPassword,
+                                          //   shape: RoundedRectangleBorder(
+                                          //     borderRadius:
+                                          //         BorderRadius.circular(22.0),
+                                          //   ),
+                                          // ),
                                         ),
                                         Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: FlatButton(
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: 5, horizontal: 10),
-                                            child: Text("Resend Confirm Email",
-                                                style: TextStyle(fontSize: 14)),
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                            onPressed: _handResendButton(
-                                                _handleResendConfirmationEmail),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(22.0),
-                                            ),
-                                          ),
+                                            child: TextButton(
+                                              onPressed: _handleForgotPassword,
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  color: Theme.of(context).primaryColor,
+                                                  borderRadius: BorderRadius.all(Radius.circular(22.0)),
+                                                ),
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 5, horizontal: 10),
+                                                child: const Text("Resend Confirm Email",
+                                                    style:TextStyle(color: Colors.white, fontSize: 14)),
+                                              ),
+                                          // child: FlatButton(
+                                          //   padding: EdgeInsets.symmetric(
+                                          //       vertical: 5, horizontal: 10),
+                                          //   child: Text("Resend Confirm Email",
+                                          //       style: TextStyle(fontSize: 14)),
+                                          //   color:
+                                          //       Theme.of(context).primaryColor,
+                                          //   onPressed: _handResendButton(
+                                          //       _handleResendConfirmationEmail),
+                                          //   shape: RoundedRectangleBorder(
+                                          //     borderRadius:
+                                          //         BorderRadius.circular(22.0),
+                                          //   ),
+                                          // ),
+                                        ),
                                         ),
                                       ]),
                                   Container(
@@ -640,14 +823,76 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                     child: GoogleAuthButton(
                                       text: "Continue with Google",
                                       onPressed: _handleSignUp(
-                                          _handleGoogleAuthentication),
+                                          _handleGoogleAuthentication
+                                      ),
                                     ),
                                   ),
-                                  Padding(
+                                  // Padding(
+                                  //   padding: const EdgeInsets.only(top: 15.0),
+                                  //   child: FacebookAuthButton(
+                                  //     onPressed: _handleSignUp(
+                                  //         _handleFacebookAuthentication),
+                                  //   ),
+                                  // ),
+                                  if (Platform.operatingSystem == "ios") Padding(
                                     padding: const EdgeInsets.only(top: 15.0),
-                                    child: FacebookAuthButton(
-                                      onPressed: _handleSignUp(
-                                          _handleFacebookAuthentication),
+                                    // child: SignInWithAppleButton(
+                                    //   onPressed: () async {
+                                    //     final credential = await SignInWithApple
+                                    //         .getAppleIDCredential(
+                                    //       scopes: [
+                                    //         AppleIDAuthorizationScopes.email,
+                                    //         AppleIDAuthorizationScopes.fullName,
+                                    //       ],
+
+                                    //       // TODO: Remove these if you have no need for them
+                                    //       nonce: 'example-nonce',
+                                    //       state: 'example-state',
+                                    //     );
+
+                                    //     // ignore: avoid_print
+                                    //     print(credential);
+
+                                    //     // This is the endpoint that will convert an authorization code obtained
+                                    //     // via Sign in with Apple into a session in your system
+                                    //     // final signInWithAppleEndpoint = Uri(
+                                    //     //   scheme: 'https',
+                                    //     //   host:
+                                    //     //       'flutter-sign-in-with-apple-example.glitch.me',
+                                    //     //   path: '/sign_in_with_apple',
+                                    //     //   queryParameters: <String, String>{
+                                    //     //     'code':
+                                    //     //         credential.authorizationCode,
+                                    //     //     if (credential.givenName != null)
+                                    //     //       'firstName':
+                                    //     //           credential.givenName!,
+                                    //     //     if (credential.familyName != null)
+                                    //     //       'lastName':
+                                    //     //           credential.familyName!,
+                                    //     //     'useBundleId': !kIsWeb &&
+                                    //     //             (Platform.isIOS ||
+                                    //     //                 Platform.isMacOS)
+                                    //     //         ? 'true'
+                                    //     //         : 'false',
+                                    //     //     if (credential.state != null)
+                                    //     //       'state': credential.state!,
+                                    //     //   },
+                                    //     // );
+
+                                    //     // final session =
+                                    //     //     await http.Client().post(
+                                    //     //   signInWithAppleEndpoint,
+                                    //     // );
+
+                                    //     // // If we got this far, a session based on the Apple ID credential has been created in your system,
+                                    //     // // and you can now set this as the app's session
+                                    //     // // ignore: avoid_print
+                                    //     // print(session);
+                                    //   },
+                                    // ),
+                                    child: AppleAuthButton(
+                                      onPressed:
+                                          _handleSignUp(_handleAppleSignIn),
                                     ),
                                   ),
                                 ],

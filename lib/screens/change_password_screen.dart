@@ -22,7 +22,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   late String codeDialog;
   late String valueText;
   TextEditingController _textFieldController = TextEditingController();
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _scaffoldKey = GlobalKey<ScaffoldMessengerState>();
   bool signingIn = false;
   late FocusNode passwordFocusNode;
   FocusNode? currentPasswordFocusNode;
@@ -254,35 +254,67 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                             Padding(
                               padding: const EdgeInsets.symmetric(
                                   vertical: 20, horizontal: 0),
-                              child: FlatButton(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 20),
-                                child: Text("Cancel",
-                                    style: TextStyle(fontSize: fontSize)),
-                                color: Theme.of(context).primaryColor,
+                              child: TextButton(
                                 onPressed: () {
                                   Navigator.pop(context);
                                 },
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(22.0),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).primaryColor,
+                                    borderRadius: BorderRadius.all(Radius.circular(22.0)),
+                                  ),
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 20),
+                                  child: const Text("Sign In",
+                                      style:TextStyle(color: Colors.white, fontSize: 20)
+                                  ),
                                 ),
                               ),
+                              // child: FlatButton(
+                              //   padding: EdgeInsets.symmetric(
+                              //       vertical: 10, horizontal: 20),
+                              //   child: Text("Cancel",
+                              //       style: TextStyle(fontSize: fontSize)),
+                              //   color: Theme.of(context).primaryColor,
+                              //   onPressed: () {
+                              //     Navigator.pop(context);
+                              //   },
+                              //   shape: RoundedRectangleBorder(
+                              //     borderRadius: BorderRadius.circular(22.0),
+                              //   ),
+                              // ),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: FlatButton(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 20),
-                                child: Text("Change Password",
-                                    style: TextStyle(fontSize: fontSize)),
-                                color: Theme.of(context).primaryColor,
-                                onPressed: isValidState()
+                              child: TextButton(
+                                onPressed:  isValidState()
                                     ? handleChangePassword
                                     : null,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(22.0),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).primaryColor,
+                                    borderRadius: BorderRadius.all(Radius.circular(22.0)),
+                                  ),
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 20),
+                                  child: const Text("Change Password",
+                                      style:TextStyle(color: Colors.white, fontSize: 20)
+                                  ),
                                 ),
                               ),
+                              // child: FlatButton(
+                              //   padding: EdgeInsets.symmetric(
+                              //       vertical: 10, horizontal: 20),
+                              //   child: Text("Change Password",
+                              //       style: TextStyle(fontSize: fontSize)),
+                              //   color: Theme.of(context).primaryColor,
+                              //   onPressed: isValidState()
+                              //       ? handleChangePassword
+                              //       : null,
+                              //   shape: RoundedRectangleBorder(
+                              //     borderRadius: BorderRadius.circular(22.0),
+                              //   ),
+                              // ),
                             ),
                           ],
                         ),

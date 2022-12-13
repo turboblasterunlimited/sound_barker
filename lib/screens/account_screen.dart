@@ -27,7 +27,8 @@ class AccountScreen extends StatefulWidget {
 
 class _AccountState extends State<AccountScreen> {
   TheUser? user;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+//  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _scaffoldKey = GlobalKey<ScaffoldMessengerState>();
   KaraokeCards? cards;
   Songs? songs;
   Barks? barks;
@@ -47,6 +48,28 @@ class _AccountState extends State<AccountScreen> {
     pictures!.deleteAll();
     barks!.deleteAll();
     songs!.deleteAll();
+  }
+
+  void _showErrorDialog(BuildContext context, String message, [String title = "Change password not available for this account"]) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Expanded(
+              child:Text(message)
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _handleDeleteAccount() async {
@@ -97,8 +120,11 @@ class _AccountState extends State<AccountScreen> {
     return showDialog(
         context: context,
         builder: (BuildContext ctx) {
+          var _email = user!.account_type == "Apple"
+                    ? user!.apple_proxy_email
+                    : user!.email;
           return CustomDialog(
-            header: "Logout from ${user!.email}?",
+            header: "Logout from ${_email}?",
             bodyText:
                 "You don't have to logout to exit the app.\n\nYou will have to login again to use K-9 Karaoke.",
             primaryFunction: (BuildContext modalContext) async {
@@ -183,8 +209,16 @@ class _AccountState extends State<AccountScreen> {
               ),
               GestureDetector(
                 onTap: () {
-                  Navigator.of(context)
-                      .pushNamed(ChangePasswordScreen.routeName);
+                  if(user!.account_type == "email") {
+                    Navigator.of(context)
+                        .pushNamed(ChangePasswordScreen.routeName);
+                  }
+                  else {
+                    var create = user!.account_type;
+                    var message = "Change password is only available if account was created via email.";
+                    message += "Your account was created via " + create! + " sign-in.";
+                    _showErrorDialog(context, message);
+                  }
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),

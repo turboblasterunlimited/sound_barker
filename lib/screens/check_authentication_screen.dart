@@ -108,7 +108,9 @@ class _CheckAuthenticationScreenState extends State<CheckAuthenticationScreen> {
 
   void tryAgain() {
     setState(() => noInternet = false);
+    print("about to call signedInOrGotoAuthScreen from tryAgain");
     signedInOrGotoAuthScreen();
+    print("tryAgain: returned from signInOrGoToAuthScreen");
   }
 
   @override
@@ -117,7 +119,9 @@ class _CheckAuthenticationScreenState extends State<CheckAuthenticationScreen> {
 
     if (firstBuild) {
       setState(() => firstBuild = false);
+      print("about to call signedInOrGotoAuthScreen from first build");
       signedInOrGotoAuthScreen();
+      print("returned from first build");
     }
     return Scaffold(
       extendBodyBehindAppBar: true,

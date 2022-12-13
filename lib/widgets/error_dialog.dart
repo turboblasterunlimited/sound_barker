@@ -5,7 +5,7 @@ void showError(BuildContext context,
     [String message = "You must be connected to the internet"]) {
   print("message is: $message");
   SystemChrome.setEnabledSystemUIOverlays([]);
-  Scaffold.of(context).showSnackBar(
+  ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: Text(message),
     ),

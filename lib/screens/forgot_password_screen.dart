@@ -26,27 +26,64 @@ class _ForgotPasswordDialogState extends State<ForgotPasswordDialog> {
               decoration: InputDecoration(hintText: "Text Field in Dialog"),
             ),
             actions: <Widget>[
-              FlatButton(
-                color: Colors.red,
-                textColor: Colors.white,
-                child: Text('CANCEL'),
+              TextButton(
                 onPressed: () {
                   setState(() {
                     Navigator.pop(context);
                   });
                 },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.all(Radius.circular(22.0)),
+                  ),
+                  padding: EdgeInsets.symmetric(
+                      vertical: 10, horizontal: 20),
+                  child: const Text("CANCEL",
+                      style:TextStyle(color: Colors.white, fontSize: 20)
+                  ),
+                ),
               ),
-              FlatButton(
-                color: Colors.green,
-                textColor: Colors.white,
-                child: Text('OK'),
+              TextButton(
                 onPressed: () {
                   setState(() {
                     codeDialog = valueText;
                     Navigator.pop(context);
                   });
                 },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.all(Radius.circular(22.0)),
+                  ),
+                  padding: EdgeInsets.symmetric(
+                      vertical: 10, horizontal: 20),
+                  child: const Text("OK",
+                      style:TextStyle(color: Colors.white, fontSize: 20)
+                  ),
+                ),
               ),
+              // FlatButton(
+              //   color: Colors.red,
+              //   textColor: Colors.white,
+              //   child: Text('CANCEL'),
+              //   onPressed: () {
+              //     setState(() {
+              //       Navigator.pop(context);
+              //     });
+              //   },
+              // ),
+              // FlatButton(
+              //   color: Colors.green,
+              //   textColor: Colors.white,
+              //   child: Text('OK'),
+              //   onPressed: () {
+              //     setState(() {
+              //       codeDialog = valueText;
+              //       Navigator.pop(context);
+              //     });
+              //   },
+              // ),
             ],
           );
         });
@@ -63,14 +100,32 @@ class _ForgotPasswordDialogState extends State<ForgotPasswordDialog> {
         title: Text('Alert Dialog'),
       ),
       body: Center(
-        child: FlatButton(
-          color: Colors.teal,
-          textColor: Colors.white,
+        child: TextButton(
           onPressed: () {
-            _displayTextInputDialog(context);
+            setState(() {
+              Navigator.pop(context);
+            });
           },
-          child: Text('Press For Alert'),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.red,
+              borderRadius: BorderRadius.all(Radius.circular(22.0)),
+            ),
+            padding: EdgeInsets.symmetric(
+                vertical: 10, horizontal: 20),
+            child: const Text("Press for alert",
+                style:TextStyle(color: Colors.white, fontSize: 20)
+            ),
+          ),
         ),
+        // child: FlatButton(
+        //   color: Colors.teal,
+        //   textColor: Colors.white,
+        //   onPressed: () {
+        //     _displayTextInputDialog(context);
+        //   },
+        //   child: Text('Press For Alert'),
+        // ),
       ),
     );
   }

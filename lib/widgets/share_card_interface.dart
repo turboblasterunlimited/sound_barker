@@ -78,7 +78,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
       cards!.current!.uuid = Uuid().v4();
       cards!.addCurrent();
       await RestAPI.createCard(cards!.current!);
-      loadingMessage = null;
+      setState(() => loadingMessage = null);
     } catch (e) {
       cards!.current!.uuid = null;
       showError(context, e.toString());

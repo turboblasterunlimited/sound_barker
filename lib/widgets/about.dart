@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../globals.dart';
+import '../providers/the_user.dart';
 
 class About extends StatelessWidget {
   final italic =
@@ -25,6 +27,9 @@ K-9 Karaoke is an app for making greeting cards in which your dog sings/barks so
 The first K-9 Karaoke greeting card is free.  After that then please subscribe to either a monthly or yearly account for unlimited use.   ''';
   @override
   Widget build(BuildContext context) {
+    TheUser user = Provider.of<TheUser>(context);
+    var email = (user.email == null) ? "Unknown" : user.email!;
+    var account_type = (user.account_type == null) ? "Unknown" : user.account_type!;
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     var screenSize = "Your screen is " +
@@ -33,7 +38,12 @@ The first K-9 Karaoke greeting card is free.  After that then please subscribe t
         (screenHeight).round().toString() +
         ".\n\n";
 
-    var server = "You are connected to " + serverURL.toString() + ".\n\n";
+    var resolved_email = account_type == "Apple"
+            ? user.apple_proxy_email : email;
+    var server = "You are connected to " + serverURL.toString()
+        + " as " + resolved_email!
+        + "\nAccount created via " + account_type
+        + ".\n\n";
 
     return SingleChildScrollView(
       child: Padding(

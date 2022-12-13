@@ -86,10 +86,10 @@ class PersonalMessageInterfaceState extends State<PersonalMessageInterface> {
 
   void startRecorder() async {
     PermissionStatus status = await Permission.microphone.request();
-    if (!status.isGranted) {
-      showError(context, "Accept microphone permisions to record");
-      return;
-    }
+    // if (!status.isGranted) {
+    //   showError(context, "Accept microphone permisions to record");
+    //   return;
+    // }
 
     message!.deleteEverything();
     print("message filepath: ${message!.filePath}");

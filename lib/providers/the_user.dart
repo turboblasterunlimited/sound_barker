@@ -8,6 +8,8 @@ class TheUser with ChangeNotifier {
   // NEED TO ADD USER APP ID (UUID) FOR PURCHASES INSTEAD OF EMAIL.
   String? email;
   String? uuid;
+  String? account_type;
+  String? apple_proxy_email;
   bool? agreedToTerms;
   PurchaserInfo? purchaserInfo;
   List<Package>? availablePackages;
@@ -32,7 +34,9 @@ class TheUser with ChangeNotifier {
   }
 
   Future<void> signIn(Map userObj) async {
+    account_type = userObj["account_type"];
     email = userObj["user_id"];
+    apple_proxy_email = userObj["email"];
     agreedToTerms = userObj["user_agreed_to_terms_v1"] == 1;
     uuid = userObj["account_uuid"];
     await _initPurchases();
@@ -148,7 +152,8 @@ class TheUser with ChangeNotifier {
     notifyListeners();
     print("Attempting Purchase");
     try {
-      await Purchases.purchasePackage(package);
+      purchaserInfo = await Purchases.purchasePackage(package);
+      //print(pinfo);
       print("Purchaser info: $purchaserInfo");
     } catch (e) {
       var errorCode = PurchasesErrorHelper.getErrorCode(e as PlatformException);
