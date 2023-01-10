@@ -15,6 +15,7 @@ import 'package:K9_Karaoke/widgets/social_links_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../widgets/info_popup.dart';
 import 'change_password_screen.dart';
 import 'menu_screen.dart';
 
@@ -123,10 +124,13 @@ class _AccountState extends State<AccountScreen> {
           var _email = user!.account_type == "Apple"
                     ? user!.apple_proxy_email
                     : user!.email;
+          if(_email == InfoPopup.guest) {
+            _email = InfoPopup.guest_label;
+          }
           return CustomDialog(
             header: "Logout from ${_email}?",
             bodyText:
-                "You don't have to logout to exit the app.\n\nYou will have to login again to use K-9 Karaoke.",
+                "If you logout, you will have to login again to use K-9 Karaoke.",
             primaryFunction: (BuildContext modalContext) async {
               var response = await user!.logout();
               if (response["success"]) {
@@ -148,6 +152,10 @@ class _AccountState extends State<AccountScreen> {
             isYesNo: true,
           );
         });
+  }
+
+  bool _isPreview(TheUser? user) {
+    return user!.email == InfoPopup.guest;
   }
 
   Widget build(BuildContext context) {
@@ -195,8 +203,10 @@ class _AccountState extends State<AccountScreen> {
                 ),
               ),
               GestureDetector(
-                onTap: () => Navigator.of(context)
-                    .pushNamed(SubscriptionScreen.routeName),
+                onTap: () => _isPreview(user)
+                    ? InfoPopup.displayInfo(context, "Subscriptions aren't available to Guests..",
+                                      InfoPopup.signup)
+                    : Navigator.of(context).pushNamed(SubscriptionScreen.routeName),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
@@ -209,7 +219,11 @@ class _AccountState extends State<AccountScreen> {
               ),
               GestureDetector(
                 onTap: () {
-                  if(user!.account_type == "email") {
+                  if (_isPreview(user)) {
+                    InfoPopup.displayInfo(context, "Guests have no password to change.",
+                        InfoPopup.signup);
+                  }
+                  else if(user!.account_type == "email") {
                     Navigator.of(context)
                         .pushNamed(ChangePasswordScreen.routeName);
                   }
@@ -217,7 +231,7 @@ class _AccountState extends State<AccountScreen> {
                     var create = user!.account_type;
                     var message = "Change password is only available if account was created via email.";
                     message += "Your account was created via " + create! + " sign-in.";
-                    _showErrorDialog(context, message);
+                    InfoPopup.displayInfo(context, "Can't change password", message);
                   }
                 },
                 child: Padding(
@@ -231,7 +245,10 @@ class _AccountState extends State<AccountScreen> {
                 ),
               ),
               GestureDetector(
-                onTap: () => _handleDeleteAccount(),
+                onTap: () => _isPreview(user)
+                    ? InfoPopup.displayInfo(context, "Guests can't delete an account.",
+                    InfoPopup.signup)
+                    : _handleDeleteAccount(),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(

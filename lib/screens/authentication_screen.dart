@@ -25,6 +25,9 @@ import '../services/authenticate_user.dart';
 import 'package:K9_Karaoke/globals.dart';
 import 'package:email_validator/email_validator.dart';
 
+// added jmf 19-dec-22
+import '../widgets/info_popup.dart';
+
 // added jmf 25-oct-22
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -80,6 +83,31 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         },
       );
     }
+
+  void _displayInfo(BuildContext context, String title, String message) async {
+    return showDialog(
+        context: context,
+        builder: (ctx) {
+          return CustomDialog(
+            header: title,
+            bodyText: message,
+            primaryFunction:(BuildContext modalContext) { Navigator.of(modalContext).pop();},
+            primaryButtonText: "Ok",
+            iconPrimary: Icon(
+              CustomIcons.modal_paws_topleft,
+              size: 42,
+              color: Colors.grey[300],
+            ),
+            iconSecondary:Icon(
+              CustomIcons.modal_paws_topleft,
+              size: 42,
+              color: Colors.grey[300],
+            ),
+            isYesNo: false,
+            oneButton: true,
+          );
+        });
+  }
 
   void _displayResetPasswordInstructions(BuildContext context) async {
     return showDialog(
@@ -476,6 +504,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     }
   }
 
+
+
   Future _handleResendConfirmationEmail() async {
     FocusScope.of(context).unfocus();
     late BuildContext loadingContext;
@@ -507,11 +537,36 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     }
   }
 
+  Future<dynamic>_handlePreview({Function? success}) async {
+    var response = await RestAPI.userManualSignIn("support@turboblasterunlimited.com", "k9karaoke");
+    print("Response check: $response");
+    if (!response["success"]) {
+      showError(c!, response["error"]);
+    } else {
+      if (success != null) {
+        success.call();
+      }
+      _handleSigninResponse(response);
+    }
+  }
+
   Future<void> _handleSignInButton() async {
     FocusScope.of(context).unfocus();
     if (invalidInput)
       return showError(c!, "Please enter a valid email and password");
     _handleManualSignIn();
+  }
+
+  VoidCallback _handlePreviewButton()  {
+    return () async {
+      _handlePreview();
+    };
+    // return () {
+    //  _displayInfo(context, "Function not available to Guests.", "hello everybody");
+    // };
+    // return () {
+    //   InfoPopup.displayInfo(context, "Function not available to Guests.", "hello everybody");
+    // };
   }
 
   bool get invalidInput {
@@ -680,7 +735,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                     alignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       Padding(
-                                        padding: const EdgeInsets.all(8.0),
+                                        padding: const EdgeInsets.all(4.0),
                                         child: TextButton(
                                           onPressed:_handleSignUp(
                                                 _handleManualSignUp,
@@ -692,58 +747,47 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                               borderRadius: BorderRadius.all(Radius.circular(22.0)),
                                            ),
                                             padding: EdgeInsets.symmetric(
-                                                vertical: 10, horizontal: 20),
-                                            child: const Text("Sign Up",
-                                                          style:TextStyle(color: Colors.white, fontSize: 20)),
+                                                vertical: 10, horizontal: 10),
+                                            child: const Text("Sign In/Sign Up",
+                                                          style:TextStyle(color: Colors.white, fontSize: 14)),
                                           ),
                                         ),
-                                        // child: FlatButton(
-                                        //   padding: EdgeInsets.symmetric(
-                                        //       vertical: 10, horizontal: 20),
-                                        //   child: Text("Sign Up",
-                                        //       style: TextStyle(fontSize: 20)),
-                                        //   color: Theme.of(context).primaryColor,
-                                        //   onPressed: _handleSignUp(
-                                        //     _handleManualSignUp,
-                                        //     manualSignUp: true,
-                                        //   ),
-                                        //   shape: RoundedRectangleBorder(
-                                        //     borderRadius:
-                                        //         BorderRadius.circular(22.0),
-                                        //   ),
-                                        // ),
                                       ),
+                                      // Padding(
+                                      //   padding: const EdgeInsets.all(4.0),
+                                      //   child: TextButton(
+                                      //     onPressed:_handleSignUp(
+                                      //       _handleManualSignUp,
+                                      //       manualSignUp: true,
+                                      //     ),
+                                      //     child: Container(
+                                      //       decoration: BoxDecoration(
+                                      //         color: Theme.of(context).primaryColor,
+                                      //         borderRadius: BorderRadius.all(Radius.circular(22.0)),
+                                      //       ),
+                                      //       padding: EdgeInsets.symmetric(
+                                      //           vertical: 10, horizontal: 10),
+                                      //       child: const Text("Sign In",
+                                      //           style:TextStyle(color: Colors.white, fontSize: 20)
+                                      //       ),
+                                      //     ),
+                                      //   ),
+                                      // ),
                                       Padding(
-                                        padding: const EdgeInsets.all(8.0),
+                                        padding: const EdgeInsets.all(4.0),
                                         child: TextButton(
-                                          onPressed:_handleSignUp(
-                                            _handleManualSignUp,
-                                            manualSignUp: true,
-                                          ),
+                                          onPressed: _handlePreviewButton(),
                                           child: Container(
                                             decoration: BoxDecoration(
                                               color: Theme.of(context).primaryColor,
                                               borderRadius: BorderRadius.all(Radius.circular(22.0)),
                                             ),
                                             padding: EdgeInsets.symmetric(
-                                                vertical: 10, horizontal: 20),
-                                            child: const Text("Sign In",
-                                                style:TextStyle(color: Colors.white, fontSize: 20)
-                                            ),
+                                                vertical: 10, horizontal: 10),
+                                            child: const Text("Sign in as Guest",
+                                                style:TextStyle(color: Colors.white, fontSize: 14)),
                                           ),
                                         ),
-                                        // child: FlatButton(
-                                        //   padding: EdgeInsets.symmetric(
-                                        //       vertical: 10, horizontal: 20),
-                                        //   child: Text("Sign In",
-                                        //       style: TextStyle(fontSize: 20)),
-                                        //   color: Theme.of(context).primaryColor,
-                                        //   onPressed: _handleSignInButton,
-                                        //   shape: RoundedRectangleBorder(
-                                        //     borderRadius:
-                                        //         BorderRadius.circular(22.0),
-                                        //   ),
-                                        // ),
                                       ),
                                     ],
                                   ),

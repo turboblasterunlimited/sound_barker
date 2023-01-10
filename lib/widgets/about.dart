@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../globals.dart';
 import '../providers/the_user.dart';
+import 'info_popup.dart';
 
 class About extends StatelessWidget {
   final italic =
@@ -29,6 +30,9 @@ The first K-9 Karaoke greeting card is free.  After that then please subscribe t
   Widget build(BuildContext context) {
     TheUser user = Provider.of<TheUser>(context);
     var email = (user.email == null) ? "Unknown" : user.email!;
+    if(email == InfoPopup.guest) {
+      email = InfoPopup.guest_label;
+    }
     var account_type = (user.account_type == null) ? "Unknown" : user.account_type!;
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;

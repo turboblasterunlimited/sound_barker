@@ -12,6 +12,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/flutter_sound_controller.dart';
+import '../providers/the_user.dart';
+import 'info_popup.dart';
 
 class BarkSelectInterface extends StatefulWidget {
   @override
@@ -36,6 +38,8 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
   KaraokeCards? cards;
 
   bool _useShorterBarks = false;
+
+  TheUser? user;
 
   String get _currentBarkLength {
     if (currentActivity.isTwo) {
@@ -253,6 +257,16 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
     );
   }
 
+  void handle_my_barks(BuildContext ctx) {
+    if(user!.email == InfoPopup.guest) {
+      InfoPopup.displayInfo(ctx, "My Barks functionality not available to guests.",
+                InfoPopup.signup);
+    }
+    else {
+      setState(() => currentBarks = BarkTypes.myBarks);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     barks = Provider.of<Barks>(context);
@@ -260,6 +274,8 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
     currentActivity = Provider.of<CurrentActivity>(context);
     cards = Provider.of<KaraokeCards>(context);
     _updateDisplayBarks();
+
+    user ??= Provider.of<TheUser>(context, listen: false);
 
     Color getColor(Set<MaterialState> states) {
       const Set<MaterialState> interactiveStates = <MaterialState>{
@@ -297,8 +313,8 @@ class _BarkSelectInterfaceState extends State<BarkSelectInterface>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   RawMaterialButton(
-                    onPressed: () =>
-                        setState(() => currentBarks = BarkTypes.myBarks),
+                    onPressed: () => handle_my_barks(context),
+//                        setState(() => currentBarks = BarkTypes.myBarks),
                     child: Text(
                       "My Barks",
                       style: TextStyle(

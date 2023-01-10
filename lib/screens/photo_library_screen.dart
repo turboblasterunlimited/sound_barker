@@ -9,6 +9,9 @@ import 'package:K9_Karaoke/screens/menu_screen.dart';
 import 'package:K9_Karaoke/widgets/interface_title_nav.dart';
 import 'package:K9_Karaoke/widgets/picture_card.dart';
 
+import '../providers/the_user.dart';
+import '../widgets/info_popup.dart';
+
 class PhotoLibraryScreen extends StatefulWidget {
   static const routeName = 'photo-library-screen';
 
@@ -19,6 +22,10 @@ class PhotoLibraryScreen extends StatefulWidget {
 class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
   late Pictures pictures;
   late KaraokeCards cards;
+  TheUser? user;
+  bool _isPreview(TheUser? user) {
+    return user!.email == "support@turboblasterunlimited.com";
+  }
 
   List<Widget> _pictureGridTiles(List<Picture> pics, [usersDisplayedPictures]) {
     List<Widget> widgets = [];
@@ -44,9 +51,11 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
         borderRadius: BorderRadius.circular(10),
         child: GridTile(
           child: GestureDetector(
-            onTap: () {
-              Navigator.pushNamed(context, CameraOrUploadScreen.routeName);
-            },
+            onTap: () => _isPreview(user)
+                ? InfoPopup.displayInfo(context, "Guests can't take or upload photos.",
+                InfoPopup.signup)
+                : Navigator.pushNamed(context, CameraOrUploadScreen.routeName)
+            ,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
@@ -100,6 +109,10 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
   Widget build(BuildContext context) {
     pictures = Provider.of<Pictures>(context, listen: true);
     cards = Provider.of<KaraokeCards>(context, listen: false);
+
+    // need user for preview functionality guard
+    user ??= Provider.of<TheUser>(context, listen: false);
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomInset: false,

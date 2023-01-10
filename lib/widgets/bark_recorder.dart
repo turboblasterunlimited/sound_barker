@@ -20,6 +20,8 @@ import 'package:provider/provider.dart';
 
 import '../providers/barks.dart';
 import '../providers/flutter_sound_controller.dart';
+import '../providers/the_user.dart';
+import 'info_popup.dart';
 
 class BarkRecorder extends StatefulWidget {
   @override
@@ -41,6 +43,9 @@ class BarkRecorderState extends State<BarkRecorder> {
   // JMF 28/12/2021: added because static access no longer available
   // in ImagePicker 6.2.2
   final ImagePicker _picker = ImagePicker();
+
+  TheUser? user;
+
 
   @override
   void dispose() {
@@ -182,6 +187,24 @@ class BarkRecorderState extends State<BarkRecorder> {
     currentActivity.setCardCreationSubStep(CardCreationSubSteps.two);
   }
 
+  void checkAccountThenUploadVideo(BuildContext ctx) {
+    if(user!.email == InfoPopup.guest) {
+      InfoPopup.displayInfo(ctx, "Can't load audio from video as guest", InfoPopup.signup);
+    }
+    else {
+      _handleUploadVideoButton();
+    }
+  }
+
+  void checkAccountThenStartRecorder(BuildContext ctx) {
+    if(user!.email == InfoPopup.guest) {
+      InfoPopup.displayInfo(ctx, "Can't record audio as guest", InfoPopup.signup);
+    }
+    else {
+      onStartRecorderPressed();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     cards = Provider.of<KaraokeCards>(context);
@@ -189,6 +212,8 @@ class BarkRecorderState extends State<BarkRecorder> {
     barks = Provider.of<Barks>(context, listen: false);
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
     filePath = '$myAppStoragePath/tempRaw.aac';
+
+    user ??= Provider.of<TheUser>(context, listen: false);
 
     return SizedBox(
       height: 250,
@@ -220,9 +245,9 @@ class BarkRecorderState extends State<BarkRecorder> {
                               RawMaterialButton(
                                 constraints: const BoxConstraints(
                                     minWidth: 70.0, minHeight: 36.0),
-                                onPressed: _systemBusy()
+                                onPressed: () => _systemBusy()
                                     ? null
-                                    : _handleUploadVideoButton,
+                                    : checkAccountThenUploadVideo(context),
                                 child: Icon(
                                   Icons.movie,
                                   size: 20,
@@ -259,10 +284,10 @@ class BarkRecorderState extends State<BarkRecorder> {
                           child: Column(
                             children: <Widget>[
                               RawMaterialButton(
-                                onPressed:
+                                onPressed:() =>
                                     _loading || soundController.isPlaying()
                                         ? null
-                                        : onStartRecorderPressed,
+                                        : checkAccountThenStartRecorder(context),
                                 child: _loading
                                     ? SpinKitWave(
                                         color: Colors.white,

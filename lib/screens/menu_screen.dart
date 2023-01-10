@@ -13,6 +13,9 @@ import 'package:K9_Karaoke/widgets/social_links_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../providers/the_user.dart';
+import '../widgets/info_popup.dart';
+
 class MenuScreen extends StatefulWidget {
   static const routeName = 'menu-screen';
 
@@ -21,6 +24,7 @@ class MenuScreen extends StatefulWidget {
 }
 
 class _MenuState extends State<MenuScreen> {
+  TheUser? user;
   late KaraokeCards cards;
   late CurrentActivity currentActivity;
   late KaraokeCardDecorationController cardDecorator;
@@ -33,11 +37,18 @@ class _MenuState extends State<MenuScreen> {
     Navigator.of(context).popAndPushNamed(PhotoLibraryScreen.routeName);
   }
 
-  void handleMyCards() {
-    Navigator.of(context).popAndPushNamed(MyCardsScreen.routeName);
+  void handleMyCards(BuildContext ctx) {
+    if(user!.email == InfoPopup.guest) {
+      InfoPopup.displayInfo(ctx, "Only registered users can save or load previously created cards."
+        , InfoPopup.signup );
+    }
+    else {
+      Navigator.of(ctx).popAndPushNamed(MyCardsScreen.routeName);
+    }
   }
 
   Widget build(BuildContext context) {
+    user ??= Provider.of<TheUser>(context, listen: false);
     currentActivity = Provider.of<CurrentActivity>(context, listen: false);
     cards = Provider.of<KaraokeCards>(context, listen: false);
     cardDecorator =
@@ -81,7 +92,7 @@ class _MenuState extends State<MenuScreen> {
                 ),
               ),
               GestureDetector(
-                onTap: handleMyCards,
+                onTap: () =>handleMyCards(context),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text("My Cards",

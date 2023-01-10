@@ -21,6 +21,8 @@ import 'package:provider/provider.dart';
 import 'package:K9_Karaoke/providers/image_controller.dart';
 import 'package:uuid/uuid.dart';
 
+import 'info_popup.dart';
+
 class ShareCardInterface extends StatefulWidget {
   @override
   _ShareCardInterfaceState createState() => _ShareCardInterfaceState();
@@ -104,12 +106,18 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
     );
   }
 
-  void handleSaveAndSend() async {
-    if (!user!.subscribed && !cards!.currentIsFirst) return _subscribeDialog();
+  void handleSaveAndSend(BuildContext ctx) async {
+
 // jmf -- 18Oct2021
     // if (cards.current.uuid == null) await createBaseCard();
     // Navigator.of(context).pushNamed(EnvelopeScreen.routeName);
-    _warnThenSaveAndSend();
+    if(user!.email == InfoPopup.guest) {
+      InfoPopup.displayInfo(ctx, "Can't save or send a card as a guest", InfoPopup.signup);
+    }
+    else {
+      if (!user!.subscribed && !cards!.currentIsFirst) return _subscribeDialog();
+      _warnThenSaveAndSend();
+    }
   }
 
   void _warnThenSaveAndSend() async {
@@ -192,7 +200,7 @@ class _ShareCardInterfaceState extends State<ShareCardInterface> {
                           RawMaterialButton(
                             // IF USER IS NOT SUBSCRIBED AND OUT OF FREE CARDS,
                             // USER IS PREVENTED FROM SAVING/SENDING AND PROMPTED TO SUBSCRIBE.
-                            onPressed: handleSaveAndSend,
+                            onPressed: () => handleSaveAndSend(context),
                             child: Text(
                               cards!.current!.isSaved
                                   ? "Send Again"

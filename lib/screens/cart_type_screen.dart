@@ -8,6 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
+import '../providers/the_user.dart';
+import '../widgets/info_popup.dart';
+
 // ignore: must_be_immutable
 class CardTypeScreen extends StatelessWidget {
   static const routeName = 'card-type-screen';
@@ -26,6 +29,12 @@ class CardTypeScreen extends StatelessWidget {
         ),
       );
     if (!card.picture!.isStock!) Navigator.of(context).pop();
+  }
+
+  bool _isPreview(BuildContext context) {
+    TheUser? user;
+    user ??= Provider.of<TheUser>(context, listen: false);
+    return user!.email == InfoPopup.guest;
   }
 
   Widget build(BuildContext context) {
@@ -203,7 +212,9 @@ class CardTypeScreen extends StatelessWidget {
                         RawMaterialButton(
                           constraints:
                               BoxConstraints(maxWidth: 150, maxHeight: 45),
-                          onPressed: () {
+                          onPressed: _isPreview(context)
+                              ? () {InfoPopup.displayInfo(context, "Guests cannot access this function.", InfoPopup.signup);}
+                              : () {
                             currentActivity.setOldSong();
                             Navigator.of(context).pop();
                           },
